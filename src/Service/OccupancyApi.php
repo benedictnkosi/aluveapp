@@ -26,6 +26,7 @@ class OccupancyApi
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
+
         try {
             $sql = "SELECT room_id, rooms.name, (sum(
 	DATEDIFF(IF(check_out<=DATE(NOW()), check_out, DATE(NOW())),
@@ -47,7 +48,7 @@ order by occupancy;";
                     'result_message' => "failed to run query on database",
                     'result_code' => 1
                 );
-                $this->logger->info(print_r($responseArray));
+                $this->logger->info(print_r($responseArray, true));
             } else {
                 $numberOfUnits = 0;
                 $sum = 0;
@@ -102,7 +103,7 @@ order by occupancy;";
                     'result_message' => "failed to run query on database",
                     'result_code' => 1
                 );
-                $this->logger->info(print_r($responseArray));
+                $this->logger->info(print_r($responseArray,true));
             } else {
 
                 while ($results = $result->fetch_assoc()) {

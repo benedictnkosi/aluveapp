@@ -38,8 +38,11 @@ class BlockedRoomController extends AbstractController
         $blockedRooms = $blockedRoomApi->getBlockedRooms();
         $blockedRoomsHTML = new BlockedRoomsHTML($entityManager, $logger);
         $formattedHtml = $blockedRoomsHTML->formatHtml($blockedRooms);
+        $response = array(
+            'html' => $formattedHtml,
+        );
         $callback = $request->get('callback');
-        $response = new JsonResponse($formattedHtml , 200, array());
+        $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
     }

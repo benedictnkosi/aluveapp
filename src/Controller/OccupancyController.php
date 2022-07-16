@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Service\NotesApi;
 use App\Service\OccupancyApi;
+use App\Service\StatsApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,25 +18,28 @@ class OccupancyController extends AbstractController
     /**
      * @Route("api/occupancy/{days}")
      */
-    public function getOccupancy($days, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, OccupancyApi $occupancyApi): Response
+    public function getOccupancy($days, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, StatsApi $statsApi, OccupancyApi $occupancyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $occupancyApi->getOccupancy($days);
-        return  $this->json($response);
+        //$response = $statsApi->getReservationCount("checkOut", "today");
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
 
     /**
      * @Route("api/occupancy/perroom/{days}")
      */
-    public function getOccupancyPerRoom($days, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, OccupancyApi $occupancyApi): Response
+    public function getOccupancyPerRoom($days, LoggerInterface $logger, EntityManagerInterface $entityManager, OccupancyApi $occupancyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $occupancyApi->getOccupancyPerRoom($days);
-        $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
-        $response->setCallback($callback);
-        return $response;
+        return new Response(
+            $response
+        );
     }
 
 }

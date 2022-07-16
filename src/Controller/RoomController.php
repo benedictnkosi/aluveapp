@@ -37,7 +37,10 @@ class RoomController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate);
         $availableRoomsDropDownHTML = new AvailableRoomsDropDownHTML($entityManager, $logger);
-        $response = $availableRoomsDropDownHTML->formatHtml($rooms);
+        $html = $availableRoomsDropDownHTML->formatHtml($rooms);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -53,7 +56,10 @@ class RoomController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $rooms = $roomApi->getRoomsEntities();
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
-        $response = $roomsPageHTML->formatHtml($rooms, $roomApi);
+        $html = $roomsPageHTML->formatHtml($rooms, $roomApi);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -68,7 +74,10 @@ class RoomController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $rooms = $roomApi->getRoomsEntities();
         $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
-        $response = $roomsPageHTML->formatRightDivRoomsHtml($rooms);
+        $html = $roomsPageHTML->formatRightDivRoomsHtml($rooms);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -83,7 +92,10 @@ class RoomController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $rooms = $roomApi->getRoomsEntities();
         $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
-        $response = $roomsPageHTML->formatComboListHtml($rooms, true);
+        $html = $roomsPageHTML->formatComboListHtml($rooms, true);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -98,7 +110,10 @@ class RoomController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $statuses = $roomApi->getRoomStatuses();
         $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
-        $response = $roomsPageHTML->formatComboListHtml($statuses);
+        $html = $roomsPageHTML->formatComboListHtml($statuses);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -113,7 +128,10 @@ class RoomController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $bedSizes = $roomApi->getRoomBedSizes();
         $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
-        $response = $roomsPageHTML->formatComboListHtml($bedSizes);
+        $html = $roomsPageHTML->formatComboListHtml($bedSizes);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -128,7 +146,10 @@ class RoomController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $rooms = $roomApi->getAvailableRooms($checkin, $checkout);
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
-        $response = $roomsPageHTML->formatHtml($rooms);
+        $html = $roomsPageHTML->formatHtml($rooms);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

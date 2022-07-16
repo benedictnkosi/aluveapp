@@ -20,7 +20,10 @@ class NotificationController  extends AbstractController
     public function getNotifications(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, NotificationApi $notificationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $notificationApi->getNotifications();
+        $html = $notificationApi->getNotifications();
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

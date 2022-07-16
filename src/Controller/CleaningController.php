@@ -19,7 +19,10 @@ class CleaningController extends AbstractController
     public function getCleanings($roomId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $cleaningApi->getCleaningsByRoom($roomId);
+        $html = $cleaningApi->getCleaningsByRoom($roomId);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

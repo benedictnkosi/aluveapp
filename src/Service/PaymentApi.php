@@ -217,7 +217,7 @@ class PaymentApi
             $smsHelper->sendMessage($reservation->getGuest()->getPhoneNumber(), $messageBody);
             $this->logger->info("Successfully sent sms to guest");
         }catch (Exception $ex){
-            $this->logger->info(print_r($ex));
+            $this->logger->info(print_r($ex, true));
         }
 
     }
@@ -238,7 +238,7 @@ class PaymentApi
             mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
             $this->logger->info("Successfully sent email to guest");
         }catch (Exception $ex){
-            $this->logger->info(print_r($ex));
+            $this->logger->info(print_r($ex, true));
         }
     }
 

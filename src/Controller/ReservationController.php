@@ -63,11 +63,15 @@ class ReservationController extends AbstractController
         }
 
         $reservationHtml = new ReservationHtml($entityManager, $logger);
-        $response = $reservationHtml->formatHtml($reservations, $period);
+        $html = $reservationHtml->formatHtml($reservations, $period);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
+
     }
 
     /**
