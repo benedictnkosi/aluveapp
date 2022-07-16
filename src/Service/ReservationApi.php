@@ -22,6 +22,10 @@ class ReservationApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
+        if(session_id() === ''){
+            $logger->info("Session id is empty");
+            session_start();
+        }
     }
 
     public function getReservation($resId)
@@ -153,8 +157,7 @@ class ReservationApi
         try {
             $datetime = new DateTime();
             $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
-            $reservations = $this->em->getRepository(Reservations::class)->findBy(array('checkOut' => $datetime, 'status' => $status));
-            return $reservations;
+            return $this->em->getRepository(Reservations::class)->findBy(array('checkOut' => $datetime, 'status' => $status));
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),

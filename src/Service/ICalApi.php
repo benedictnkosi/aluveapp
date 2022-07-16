@@ -24,6 +24,10 @@ class ICalApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
+        if(session_id() === ''){
+            $logger->info("Session id is empty");
+            session_start();
+        }
     }
 
     function importIcalForRoom($roomId): array
@@ -235,7 +239,7 @@ class ICalApi
                 $roomName = $room->getName();
                 $icalString = 'BEGIN:VCALENDAR
 METHOD:PUBLISH
-PRODID:-//'.COMPANY_NAME.'//Aluve-'.$roomName.'-1// EN
+PRODID:-//'.$room->getPropert()->getName().'//Aluve-'.$roomName.'-1// EN
 CALSCALE:GREGORIAN
 VERSION:2.0';
                 foreach ($reservations as $reservation) {
@@ -249,7 +253,6 @@ VERSION:2.0';
                     $guestEmail = $reservation->getGuest()->getEmail();
 
                     $uid = $reservation->getUid();
-                    $title = COMPANY_NAME . " - " . $guestName . "  - Resa id: " . $resId;
                     // date/time is in SQL datetime format
 
                     $this->logger->info("create the event within the ical object");
@@ -261,7 +264,7 @@ DTSTART;VALUE=DATE:'.$event_end.'
 DTSTAMP:'.$now->format('Ymd').'T100058Z
 UID:'.$uid.'
 DESCRIPTION:NAME: '.$guestName.' \nEMAIL: '.$guestEmail.'
-SUMMARY:'.COMPANY_NAME.' - '.$guestName.'  - Resa id: '.$resId.'
+SUMMARY:'.$room->getPropert()->getName().' - '.$guestName.'  - Resa id: '.$resId.'
 STATUS:CONFIRMED
 CREATED:'.$reservation->getReceivedOn()->format('Ymd').'T222001Z
 END:VEVENT';

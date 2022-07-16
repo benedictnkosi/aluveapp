@@ -22,6 +22,16 @@ class ScheduleMessages
     private $id;
 
     /**
+     * @var MessageTemplate
+     *
+     * @ORM\ManyToOne(targetEntity="MessageTemplate")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="message_template", referencedColumnName="id")
+     * })
+     */
+    private $messageTemplate;
+
+    /**
      * @var ScheduleTimes
      *
      * @ORM\ManyToOne(targetEntity="ScheduleTimes")
@@ -42,16 +52,6 @@ class ScheduleMessages
     private $room;
 
     /**
-     * @var MessageTemplate
-     *
-     * @ORM\ManyToOne(targetEntity="MessageTemplate")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="message_template", referencedColumnName="id")
-     * })
-     */
-    private $messageTemplate;
-
-    /**
      * @return int
      */
     public function getId(): int
@@ -65,6 +65,22 @@ class ScheduleMessages
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return MessageTemplate
+     */
+    public function getMessageTemplate(): MessageTemplate
+    {
+        return $this->messageTemplate;
+    }
+
+    /**
+     * @param MessageTemplate $messageTemplate
+     */
+    public function setMessageTemplate(MessageTemplate $messageTemplate): void
+    {
+        $this->messageTemplate = $messageTemplate;
     }
 
     /**
@@ -97,22 +113,6 @@ class ScheduleMessages
     public function setRoom(Rooms $room): void
     {
         $this->room = $room;
-    }
-
-    /**
-     * @return MessageTemplate
-     */
-    public function getMessageTemplate(): MessageTemplate
-    {
-        return $this->messageTemplate;
-    }
-
-    /**
-     * @param MessageTemplate $messageTemplate
-     */
-    public function setMessageTemplate(MessageTemplate $messageTemplate): void
-    {
-        $this->messageTemplate = $messageTemplate;
     }
 
 

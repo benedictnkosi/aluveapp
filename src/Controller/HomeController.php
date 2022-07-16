@@ -9,11 +9,14 @@ use App\Service\ReservationApi;
 use App\Service\RoomApi;
 use App\Service\SecurityApi;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+
+
 require_once(__DIR__ . '/../app/application.php');
 
 class HomeController extends AbstractController
@@ -22,41 +25,44 @@ class HomeController extends AbstractController
     /**
      * @Route("/api/login/{secretPin}")
      */
-    public function login($secretPin, LoggerInterface $logger,EntityManagerInterface $entityManager, SecurityApi $securityApi ): Response
+    public function login($secretPin, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, SecurityApi $securityApi ): Response
     {
         $logger->info("Starting Method: " . __METHOD__ );
-        $result = $securityApi->login($secretPin);
-        return  $this->json($result);
+        $response = $securityApi->login($secretPin);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
     /**
      * @Route("/api/logout")
      */
-    public function logout(LoggerInterface $logger, SecurityApi $securityApi ): Response
+    public function logout(LoggerInterface $logger, Request $request, SecurityApi $securityApi ): Response
     {
         $logger->info("Starting Method: " . __METHOD__ );
-        $result = $securityApi->logout();
-        return  $this->json($result);
+        $response = $securityApi->logout();
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
     /**
-     * @Route("/admin/true")
+     * @Route("/api/isloggedin")
      */
-    public function admin(LoggerInterface $logger): Response
+    public function isLoggedIn(LoggerInterface $logger,  Request $request, SecurityApi $securityApi): JsonResponse
     {
         $logger->info("Starting Method: " . __METHOD__ );
         if(session_id() === ''){
             $logger->info("Session id is empty");
             session_start();
         }
-        if(isset($_SESSION['PROPERTY_ID'])) {
-            $logger->info("Session found ");
-            return $this->render('admin.html');
-        }else{
-            $logger->info("Session not found");
-            return $this->render('login.html');
-        }
-
+        $response = $securityApi->isloggedin();
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
     /**
@@ -113,17 +119,17 @@ class HomeController extends AbstractController
                     'due'=> "R" . number_format((float)$paymentApi->getTotalDue($reservation_id), 2, '.', '')  ,
                     'total_for_rooms_addons'=>  "R" . number_format((float)$totalForAll, 2, '.', '') ,
                     'payments'=>$paymentApi->getReservationPaymentsHtml($reservation_id),
-                    'total_payments'=> "-R" . number_format((float)$totalPayments, 2, '.', ''),
-                    'bank_name'=>BANK_NAME,
+                    'total_payments'=> "-R" . number_format((float)$totalPayments, 2, '.', '')
+                   /* 'bank_name'=>BANK_NAME,
                     'account_type'=>ACCOUNT_TYPE,
                     'account_number'=>ACCOUNT_NUMBER,
                     'branch_code'=>BRANCH_CODE,
                     'company_name'=>COMPANY_NAME,
-                    'company_address_line_1'=>COMPANY_ADDRESS_LINE_1,
+                    'company_address_line_1'=>COMPANY_ADDRESS,
                     'company_address_suburb'=>COMPANY_ADDRESS_SUBURB,
                     'company_address_city'=>COMPANY_ADDRESS_CITY,
                     'company_phone'=>COMPANY_PHONE_NUMBER,
-                    'company_email'=>EMAIL_ADDRESS
+                    'company_email'=>EMAIL_ADDRESS*/
                 ]);
         }else{
             if (str_contains($page, 'room.html')) {

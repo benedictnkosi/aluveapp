@@ -22,6 +22,11 @@ class RoomApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
+
+        if(session_id() === ''){
+            $logger->info("Session id is empty");
+            session_start();
+        }
     }
 
     public function getAvailableRooms($checkInDate, $checkOutDate): array
@@ -193,6 +198,7 @@ class RoomApi
                     'result_message' => 'Property ID not set, please logout and login again',
                     'result_code'=> 1
                 );
+                $this->logger->info("Ending Method before the return: " . __METHOD__);
             }else{
                 if ($roomId == 0) {
                     $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property'=>$_SESSION['PROPERTY_ID']));

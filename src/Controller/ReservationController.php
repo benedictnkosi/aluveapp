@@ -11,8 +11,10 @@ use DateTime;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class ReservationController extends AbstractController
 {
@@ -20,20 +22,24 @@ class ReservationController extends AbstractController
     /**
      * @Route("api/calendar")
      */
-    public function getCalendar( LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function getCalendar( LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $calendarHtml = new CalendarHTML($entityManager, $logger);
-        $formattedHtml = $calendarHtml->formatHtml();
-        return new Response(
-            $formattedHtml
+        $html = $calendarHtml->formatHtml();
+        $response = array(
+            'html' => $html,
         );
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
     /**
      * @Route("api/reservations/{period}")
      */
-    public function getReservations($period, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function getReservations($period, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $reservations = "";
@@ -57,16 +63,17 @@ class ReservationController extends AbstractController
         }
 
         $reservationHtml = new ReservationHtml($entityManager, $logger);
-        $formattedHtml = $reservationHtml->formatHtml($reservations, $period);
-        return new Response(
-            $formattedHtml
-        );
+        $response = $reservationHtml->formatHtml($reservations, $period);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
     /**
      * @Route("api/reservations/{reservationId}/update/{field}/{newValue}")
      */
-    public function updateReservation($reservationId, $field, $newValue, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
+    public function updateReservation($reservationId, $field, $newValue, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
@@ -136,41 +143,53 @@ class ReservationController extends AbstractController
                 return $this->json($responseArray);
         }
         $response = $reservationApi->updateReservation($reservation);
-        return $this->json($response);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
     /**
      * @Route("api/reservations/{reservationId}/update/dates/{checkInDate}/{checkOutDate}")
      */
-    public function updateReservationDates($reservationId, $checkInDate, $checkOutDate, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function updateReservationDates($reservationId, $checkInDate, $checkOutDate, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
         $reservation = $reservationApi->getReservation($reservationId);
         $response = $reservationApi->updateReservationDate($reservation, $checkInDate, $checkOutDate);
-        return $this->json($response);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
     /**
      * @Route("api/reservations/{reservationId}/update_room/{roomId}")
      */
-    public function updateReservationRoom($reservationId, $roomId, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function updateReservationRoom($reservationId, $roomId, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
         $reservation = $reservationApi->getReservation($reservationId);
         $response = $reservationApi->updateReservationRoom($reservation, $roomId);
-        return $this->json($response);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
     /**
      * @Route("api/reservations/create/{roomId}/{guestName}/{phoneNumber}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
      * @throws \Exception
      */
-    public function creatReservation($roomId,$guestName,$phoneNumber,$checkInDate,$checkOutDate,$email, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
+    public function creatReservation($roomId,$guestName,$phoneNumber,$checkInDate,$checkOutDate,$email, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
     {
         $response = $reservationApi->createReservation($roomId,$guestName,$phoneNumber,$email,$checkInDate,$checkOutDate);
-        return $this->json($response);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
 

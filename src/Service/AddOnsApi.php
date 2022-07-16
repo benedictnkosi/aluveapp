@@ -20,6 +20,10 @@ class AddOnsApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
+        if(session_id() === ''){
+            $logger->info("Session id is empty");
+            session_start();
+        }
     }
 
     public function getAddOn($addOnName)
@@ -221,9 +225,10 @@ class AddOnsApi
         $this->logger->info("Starting Method: " . __METHOD__ );
         $responseArray = array();
         try{
+            $this->logger->info("attempting to talk to db" );
             //check if add-on with the same name does not exist
             $existingAddOn = $this->em->getRepository(AddOns::class)->findBy(array('name'=>$addOnName));
-
+            $this->logger->info("db connect done success");
             if($existingAddOn != null){
                 $responseArray[] = array(
                     'result_message' => "Add on with the same name already exists",

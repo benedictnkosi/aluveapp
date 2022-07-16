@@ -18,6 +18,10 @@ class GuestApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
+        if(session_id() === ''){
+            $logger->info("Session id is empty");
+            session_start();
+        }
     }
 
     public function createGuest($name,$phoneNumber, $email): array

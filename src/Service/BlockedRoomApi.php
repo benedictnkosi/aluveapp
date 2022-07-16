@@ -17,6 +17,10 @@ class BlockedRoomApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
+        if(session_id() === ''){
+            $logger->info("Session id is empty");
+            session_start();
+        }
     }
 
     public function blockRoom($roomId, $date, $comments): array

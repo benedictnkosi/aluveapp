@@ -21,6 +21,10 @@ class ScheduleMessageApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
+        if (session_id() === '') {
+            $logger->info("Session id is empty");
+            session_start();
+        }
     }
 
     public function createScheduleMessage($messageId, $scheduleId, $rooms): array
@@ -47,17 +51,17 @@ class ScheduleMessageApi
             }
 
             $roomsArray = explode(" ", $rooms);
-            foreach ($roomsArray as $roomId){
+            foreach ($roomsArray as $roomId) {
                 //check if duplicate
                 $this->logger->info("sql for checking duplicate");
                 $scheduleMessage = $this->em->getRepository(ScheduleMessages::class)->findOneBy(
                     array('messageSchedule' => $scheduleId,
                         'messageTemplate' => $messageId,
-                    'room'=>$roomId));
+                        'room' => $roomId));
 
                 $room = $this->em->getRepository(Rooms::class)->findOneBy(
                     array('id' => $roomId));
-                if($room != null){
+                if ($room != null) {
                     if ($scheduleMessage === null) {
                         $scheduleMessage = new ScheduleMessages();
                         $scheduleMessage->setMessageSchedule($scheduleTime);
@@ -129,7 +133,7 @@ class ScheduleMessageApi
 
     }
 
-    public function getScheduledMessages($roomId): string
+    public function getScheduledMessages(): string
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $html = '<table id="scheduled_messages_table">
@@ -140,25 +144,31 @@ class ScheduleMessageApi
                                 <th>Delete</th>
                             </tr>';
         try {
-            $scheduleMessages = $this->em->getRepository(ScheduleMessages::class)->findBy(array('room' => $roomId));
+            if (!isset($_SESSION['PROPERTY_ID'])) {
+                $responseArray[] = array(
+                    'result_message' => 'Property ID not set, please logout and login again',
+                    'result_code' => 1
+                );
+            } else {
+                $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $_SESSION['PROPERTY_ID']));
+                foreach ($rooms as $room) {
+                    $scheduleMessages = $this->em->getRepository(ScheduleMessages::class)->findBy(array('room' => $room->getId()));
 
-            foreach ($scheduleMessages as $scheduleMessage) {
-                $roomIds = explode(",", $scheduleMessage->getRooms());
-                $roomNames = "";
-                foreach ($roomIds as $roomId) {
-                    $room = $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $roomId));
-                    $roomNames .= $room->getName() . '</br>';
-                }
-
-                $html .= '<tr>
+                    foreach ($scheduleMessages as $scheduleMessage) {
+                        $html .= '<tr>
                                 <td>' . $scheduleMessage->getMessageTemplate()->getName() . '</td>
                                 <<td>' . $scheduleMessage->getMessageSchedule()->getName() . '</td>
-                                <td>' . $roomNames . '</td>
+                                <td>' . $room->getName() . '</td>
                                 <td><input type="submit" value="Delete" class="deleteScheduledMessage" data-id="' . $scheduleMessage->getId() . '"></td>
                             </tr>
                            ';
+                    }
+                }
+
+                $html .= '</table>';
             }
-            $html .= '</table>';
+
+
             $this->logger->info("Ending Method before the return: " . __METHOD__);
         } catch (Exception $ex) {
             $this->logger->info($ex->getMessage());

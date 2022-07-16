@@ -13,13 +13,17 @@ require_once(__DIR__ . '/../app/application.php');
 
 class SecurityApi
 {
-    private $em;
-    private $logger;
+    private EntityManagerInterface $em;
+    private LoggerInterface $logger;
 
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
         $this->em = $entityManager;
         $this->logger = $logger;
+        if(session_id() === ''){
+            $logger->info("Session id is empty");
+            session_start();
+        }
     }
 
     public function login($pin): array
@@ -29,11 +33,20 @@ class SecurityApi
         try {
             $property = $this->em->getRepository(Property::class)->findOneBy(array('secret' => $pin));
             if ($property != null) {
-                if(session_id() === ''){
+                if (session_id() === '') {
                     session_start();
                 }
 
                 $_SESSION["PROPERTY_ID"] = $property->getID();
+                $_SESSION["BANK_NAME"] = $property->getBankName();
+                $_SESSION["ACCOUNT_TYPE"] = $property->getBankAccountType();
+                $_SESSION["ACCOUNT_NUMBER"] = $property->getBankAccountNumber();
+                $_SESSION["BRANCH_CODE"] = $property->getBankBranchCode();
+                $_SESSION["COMPANY_NAME"] = $property->getName();
+                $_SESSION["COMPANY_ADDRESS"] = $property->getAddress();
+                $_SESSION["COMPANY_PHONE_NUMBER"] = $property->getPhoneNumber();
+                $_SESSION["EMAIL_ADDRESS"] = $property->getEmailAddress();
+                $_SESSION["SERVER_NAME"] = $property->getServerName();
                 $responseArray[] = array(
                     'property_id' => $property->getID(),
                     'result_message' => "Success",
@@ -57,11 +70,42 @@ class SecurityApi
         return $responseArray;
     }
 
+    public function isLoggedIn(): array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+
+            if(session_id() === ''){
+                $this->logger->info("Session id is empty");
+                session_start();
+            }
+            if(isset($_SESSION['PROPERTY_ID'])) {
+                $this->logger->info("Session found ");
+                $responseArray[] = array(
+                    'logged_in' => true
+                );
+            }else{
+                $this->logger->info("Session not found");
+                $responseArray[] = array(
+                    'logged_in' => false
+                );
+            }
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'logged_in' => false,
+                'exception' => $ex->getMessage()
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+        return $responseArray;
+    }
+
     public function logout(): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
-        try{
+        try {
             // remove all session variables
             session_unset();
             // destroy the session

@@ -55,7 +55,7 @@ class CalendarHTML
         }
         $htmlString .= '</tr>';
 
-        $rooms = $roomsApi->getRoomsEntities(0);
+        $rooms = $roomsApi->getRoomsEntities();
         foreach ($rooms as $room) {
             $htmlString .= '<tr><th class="headcol">' . $room->getName() . '</th>';
             $reservations = $reservationApi->getUpComingReservations($room->getId());

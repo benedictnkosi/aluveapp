@@ -16,6 +16,10 @@ class OccupancyApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
+        if(session_id() === ''){
+            $logger->info("Session id is empty");
+            session_start();
+        }
     }
 
     public function getOccupancy($days)
@@ -35,7 +39,7 @@ group by room_id
 order by occupancy;";
 
             //echo $sql;
-            $databaseHelper = new DatabaseHelper($this->em, $this->logger);
+            $databaseHelper = new DatabaseHelper( $this->logger);
             $result = $databaseHelper->queryDatabase($sql);
 
             if (!$result) {
@@ -90,7 +94,7 @@ group by room_id
 order by occupancy;";
 
             //echo $sql;
-            $databaseHelper = new DatabaseHelper($this->em, $this->logger);
+            $databaseHelper = new DatabaseHelper($this->logger);
             $result = $databaseHelper->queryDatabase($sql);
 
             if (!$result) {
