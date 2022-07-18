@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Helpers\FormatHtml\ConfigAddonsHTML;
 use App\Service\AddOnsApi;
 use App\Service\PaymentApi;
+use App\Service\SecurityApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,12 +19,18 @@ class AddOnController extends AbstractController
     /**
      * @Route("api/addon/{addonid}/reservation/{reservationId}/quantity/{quantity}")
      */
-    public function addPayment($addonid, $reservationId, $quantity, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
+    public function addAdOnToReservation($addonid, $reservationId, $quantity, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        if(!isset($_SESSION['PROPERTY_ID'])) {
-            return $this->render('login.html');
+        $securityApi = new SecurityApi($entityManager, $logger );
+        $response = array();
+        if(!$securityApi->isLoggedInBoolean()) {
+            $response[] = array(
+                'result_message' => "Session expired, please logout and login again",
+                'result_code' => 1
+            );
         }
+
         $response = $addOnsApi->addAdOnToReservation($reservationId,$addonid, $quantity);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
@@ -52,6 +59,8 @@ class AddOnController extends AbstractController
     public function createAddon($addOnName, $addOnPrice, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+
+
         $response = $addOnsApi->createAddOn($addOnName, $addOnPrice);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
@@ -66,10 +75,16 @@ class AddOnController extends AbstractController
     public function deleteAddOn($addOnId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        if(!isset($_SESSION['PROPERTY_ID'])) {
-            return $this->render('login.html');
+        $securityApi = new SecurityApi($entityManager, $logger );
+        $response = array();
+        if(!$securityApi->isLoggedInBoolean()) {
+            $response[] = array(
+                'result_message' => "Session expired, please logout and login again",
+                'result_code' => 1
+            );
+        }else{
+            $response = $addOnsApi->deleteAddOn($addOnId);
         }
-        $response = $addOnsApi->deleteAddOn($addOnId);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

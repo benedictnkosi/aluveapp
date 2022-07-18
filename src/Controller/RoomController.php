@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Helpers\FormatHtml\AvailableRoomsDropDownHTML;
 use App\Helpers\FormatHtml\ConfigurationRoomsHTML;
+use App\Helpers\FormatHtml\RoomImagesHTML;
 use App\Helpers\FormatHtml\RoomsPageHTML;
 use App\Service\RoomApi;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +18,17 @@ use Symfony\Component\HttpFoundation\Request;
 class RoomController extends AbstractController
 {
     /**
-     * @Route("/api/rooms/{roomId}", name="rooms", defaults={"roomId": 0})
+     * @Route("/api/rooms/addimage/{roomId}/{fileName}")
+     */
+    public function addImageToRoom($roomId,$fileName, LoggerInterface $logger, RoomApi $roomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $roomApi->addImageToRoom($fileName, $roomId);
+        return new JsonResponse($response);
+    }
+
+    /**
+     * @Route("/api/rooms/{roomId}", name="rooms", defaults={"roomId": "all"})
      */
     public function getRooms($roomId, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
@@ -35,7 +46,7 @@ class RoomController extends AbstractController
     public function getAvailableRooms($checkInDate, $checkOutDate,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate);
+        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate, $request);
         $availableRoomsDropDownHTML = new AvailableRoomsDropDownHTML($entityManager, $logger);
         $html = $availableRoomsDropDownHTML->formatHtml($rooms);
         $response = array(
@@ -45,7 +56,6 @@ class RoomController extends AbstractController
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
-
     }
 
     /**
@@ -54,7 +64,7 @@ class RoomController extends AbstractController
     public function getRoomsHtml(LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getRoomsEntities();
+        $rooms = $roomApi->getRoomsEntities($request);
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatHtml($rooms, $roomApi);
         $response = array(
@@ -72,7 +82,7 @@ class RoomController extends AbstractController
     public function getConfigurationRooms(LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getRoomsEntities();
+        $rooms = $roomApi->getRoomsEntities($request);
         $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatRightDivRoomsHtml($rooms);
         $response = array(
@@ -90,7 +100,7 @@ class RoomController extends AbstractController
     public function getComboListRooms(LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getRoomsEntities();
+        $rooms = $roomApi->getRoomsEntities($request);
         $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatComboListHtml($rooms, true);
         $response = array(
@@ -139,14 +149,31 @@ class RoomController extends AbstractController
     }
 
     /**
+     * @Route("/api/combolistroomtvs")
+     */
+    public function getComboListRoomTvs(LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $bedSizes = $roomApi->getRoomTvs();
+        $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
+        $html = $roomsPageHTML->formatComboListHtml($bedSizes);
+        $response = array(
+            'html' => $html,
+        );
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+    /**
      * @Route("/api/roomspage/{checkin}/{checkout}")
      */
     public function getFilteredRoomsHtml($checkin, $checkout, LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getAvailableRooms($checkin, $checkout);
+        $rooms = $roomApi->getAvailableRooms($checkin, $checkout, $request);
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
-        $html = $roomsPageHTML->formatHtml($rooms);
+        $html = $roomsPageHTML->formatHtml($rooms, $request);
         $response = array(
             'html' => $html,
         );
@@ -163,6 +190,24 @@ class RoomController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $description);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
+     * @Route("/api/roomslide/{roomId}")
+     */
+    public function getRoomSlide($roomId,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $roomImages = $roomApi->getRoomImages($roomId);
+        $roomImagesHtml = new RoomImagesHTML($entityManager, $logger);
+        $imagesHtml = $roomImagesHtml->formatHtml($roomImages);
+        $response = array(
+            'html' => $imagesHtml,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

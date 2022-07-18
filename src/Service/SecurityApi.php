@@ -37,7 +37,8 @@ class SecurityApi
                     session_start();
                 }
 
-                $_SESSION["PROPERTY_ID"] = $property->getID();
+                $_SESSION["PROPERTY_ID"] = $property->getId();
+                $_SESSION["PROPERTY_UID"] = $property->getUid();
                 $_SESSION["BANK_NAME"] = $property->getBankName();
                 $_SESSION["ACCOUNT_TYPE"] = $property->getBankAccountType();
                 $_SESSION["ACCOUNT_NUMBER"] = $property->getBankAccountNumber();
@@ -48,7 +49,8 @@ class SecurityApi
                 $_SESSION["EMAIL_ADDRESS"] = $property->getEmailAddress();
                 $_SESSION["SERVER_NAME"] = $property->getServerName();
                 $responseArray[] = array(
-                    'property_id' => $property->getID(),
+                    'property_id' => $property->getId(),
+                    'property_uid' => $property->getUid(),
                     'result_message' => "Success",
                     'result_code' => 0
                 );
@@ -70,21 +72,29 @@ class SecurityApi
         return $responseArray;
     }
 
+    public function isLoggedInBoolean(): bool
+    {
+        $result  = $this->isLoggedIn();
+        return $result[0]['logged_in'];
+    }
+
     public function isLoggedIn(): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-
-            if(session_id() === ''){
-                $this->logger->info("Session id is empty");
-                session_start();
-            }
-            if(isset($_SESSION['PROPERTY_ID'])) {
-                $this->logger->info("Session found ");
-                $responseArray[] = array(
-                    'logged_in' => true
-                );
+            if(isset($_COOKIE['PROPERTY_UID'])) {
+                $this->logger->info("PROPERTY_UID found in cookie ");
+                $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $_COOKIE['PROPERTY_UID']));
+                if ($property != null) {
+                    $responseArray[] = array(
+                        'logged_in' => true
+                    );
+                }else{
+                    $responseArray[] = array(
+                        'logged_in' => false
+                    );
+                }
             }else{
                 $this->logger->info("Session not found");
                 $responseArray[] = array(
@@ -124,4 +134,7 @@ class SecurityApi
         $this->logger->info(print_r($responseArray, true));
         return $responseArray;
     }
+
+
+
 }

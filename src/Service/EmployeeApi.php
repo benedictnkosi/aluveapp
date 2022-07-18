@@ -18,7 +18,7 @@ class EmployeeApi
         $this->em = $entityManager;
         $this->logger = $logger;
         if(session_id() === ''){
-            $logger->info("Session id is empty");
+            $logger->info("Session id is empty". __METHOD__ );
             session_start();
         }
     }
@@ -28,13 +28,14 @@ class EmployeeApi
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            if(!isset($_SESSION['PROPERTY_ID'])) {
+            $securityApi = new SecurityApi($this->em, $this->logger );
+            if(!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
-                    'result_message' => 'Property ID not set, please logout and login again',
-                    'result_code'=> 1
+                    'result_message' => "Session expired, please logout and login again",
+                    'result_code' => 1
                 );
             }else{
-                return $this->em->getRepository(Employee::class)->findBy(array('property'=>$_SESSION['PROPERTY_ID']));
+                return $this->em->getRepository(Employee::class)->findBy(array('property'=>$_COOKIE['PROPERTY_ID']));
             }
         }catch (Exception $ex) {
             $responseArray[] = array(
@@ -115,13 +116,15 @@ class EmployeeApi
         $responseArray = array();
         try{
             //check if employee with the same name does not exist
-            if(!isset($_SESSION['PROPERTY_ID'])) {
+            $securityApi = new SecurityApi($this->em, $this->logger );
+            $securityApi = new SecurityApi($this->em, $this->logger );
+            if(!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
-                    'result_message' => 'Property ID not set, please logout and login again',
-                    'result_code'=> 1
+                    'result_message' => "Session expired, please logout and login again",
+                    'result_code' => 1
                 );
             }else{
-                $existingEmployees = $this->em->getRepository(Employee::class)->findBy(array('name'=>$employeeName, 'property'=>$_SESSION['PROPERTY_ID']));
+                $existingEmployees = $this->em->getRepository(Employee::class)->findBy(array('name'=>$employeeName, 'property'=>$_COOKIE['PROPERTY_ID']));
 
                 if($existingEmployees != null){
                     $responseArray[] = array(
@@ -129,7 +132,7 @@ class EmployeeApi
                         'result_code'=> 1
                     );
                 }else{
-                    $property = $this->em->getRepository(Property::class)->findOneBy(array('id'=>$_SESSION['PROPERTY_ID']));
+                    $property = $this->em->getRepository(Property::class)->findOneBy(array('id'=>$_COOKIE['PROPERTY_ID']));
                     $employee = new Employee();
                     $employee->setName($employeeName);
                     $employee->setProperty($property);

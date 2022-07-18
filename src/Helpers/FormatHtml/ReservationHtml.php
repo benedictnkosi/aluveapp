@@ -28,7 +28,7 @@ class ReservationHtml
         $this->logger = $logger;
     }
 
-    public function formatHtml($reservations, $period): string
+    public function formatHtml($reservations, $period, $request): string
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $htmlString = "";
@@ -67,7 +67,7 @@ class ReservationHtml
         $notesApi = new NotesApi($this->em, $this->logger);
         $cleaningApi = new CleaningApi($this->em, $this->logger);
         $roomApi = new RoomApi($this->em, $this->logger);
-        $rooms = $roomApi->getRoomsEntities();
+        $rooms = $roomApi->getRoomsEntities($request);
 
         foreach ($reservations as $reservation) {
             //guest name and reservation ID

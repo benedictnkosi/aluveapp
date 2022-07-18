@@ -29,13 +29,14 @@ class GuestApi
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            if(!isset($_SESSION['PROPERTY_ID'])) {
+            $securityApi = new SecurityApi($this->em, $this->logger );
+            if(!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
-                    'result_message' => 'Property ID not set, please logout and login again',
-                    'result_code'=> 1
+                    'result_message' => "Session expired, please logout and login again",
+                    'result_code' => 1
                 );
             }else{
-                $property = $this->em->getRepository(Property::class)->findOneBy(array('id'=>$_SESSION['PROPERTY_ID']));
+                $property = $this->em->getRepository(Property::class)->findOneBy(array('id'=>$_COOKIE['PROPERTY_ID']));
                 $guest = new Guest();
                 $guest->setName($name);
                 $guest->setPhoneNumber($phoneNumber);
@@ -143,19 +144,20 @@ class GuestApi
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         try {
-            if(!isset($_SESSION['PROPERTY_ID'])) {
+            $securityApi = new SecurityApi($this->em, $this->logger );
+            if(!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
-                    'result_message' => 'Property ID not set, please logout and login again',
-                    'result_code'=> 1
+                    'result_message' => "Session expired, please logout and login again",
+                    'result_code' => 1
                 );
             }else{
                 if ($filterValue == 0) {
-                    $guests = $this->em->getRepository(Guest::class)->findBy(array('property'=>$_SESSION['PROPERTY_ID']));
+                    $guests = $this->em->getRepository(Guest::class)->findBy(array('property'=>$_COOKIE['PROPERTY_ID']));
                 } else {
                     if (strlen($filterValue) > 4) {
-                        $guests = $this->em->getRepository(Guest::class)->findBy(array('phoneNumber' => $filterValue, 'property'=>$_SESSION['PROPERTY_ID']));
+                        $guests = $this->em->getRepository(Guest::class)->findBy(array('phoneNumber' => $filterValue, 'property'=>$_COOKIE['PROPERTY_ID']));
                     } else {
-                        $guests = $this->em->getRepository(Guest::class)->findBy(array('id' => $filterValue,  'property'=>$_SESSION['PROPERTY_ID']));
+                        $guests = $this->em->getRepository(Guest::class)->findBy(array('id' => $filterValue,  'property'=>$_COOKIE['PROPERTY_ID']));
                     }
                 }
                 $responseArray = array();
@@ -190,15 +192,16 @@ class GuestApi
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $guest = null;
+        $responseArray = array();
         try {
-            if(!isset($_SESSION['PROPERTY_ID'])) {
+            $securityApi = new SecurityApi($this->em, $this->logger );
+            if(!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
-                    'result_message' => 'Property ID not set, please logout and login again',
-                    'result_code'=> 1
+                    'result_message' => "Session expired, please logout and login again",
+                    'result_code' => 1
                 );
-                $this->logger->info(print_r($responseArray, true));
             }else{
-                $guest =  $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => $phoneNumber, 'property'=>$_SESSION['PROPERTY_ID']));
+                $guest =  $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => $phoneNumber, 'property'=>$_COOKIE['PROPERTY_ID']));
             }
         } catch (Exception $exception) {
             $responseArray[] = array(
@@ -272,7 +275,7 @@ class GuestApi
 
         $responseArray = array();
         try {
-            $guestPreviousRooms = getGuestPreviousRooms($guestId);
+            $guestPreviousRooms = $this->getGuestPreviousRooms($guestId);
             foreach ($guestPreviousRooms as $room) {
                 if ($room->getId() == $roomId) {
                     $responseArray[] = array(

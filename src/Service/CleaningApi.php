@@ -21,7 +21,7 @@ class CleaningApi
         $this->em = $entityManager;
         $this->logger = $logger;
         if(session_id() === ''){
-            $logger->info("Session id is empty");
+            $logger->info("Session id is empty". __METHOD__ );
             session_start();
         }
     }

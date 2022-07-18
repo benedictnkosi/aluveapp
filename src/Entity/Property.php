@@ -92,6 +92,13 @@ class Property
     private $bankBranchCode;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="uid", type="string", length=100, nullable=true)
+     */
+    private $uid;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -266,4 +273,22 @@ class Property
     {
         $this->bankBranchCode = $bankBranchCode;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getUid(): ?string
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param string|null $uid
+     */
+    public function setUid(?string $uid): void
+    {
+        $this->uid = $uid;
+    }
+
+
 }

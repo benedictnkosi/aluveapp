@@ -26,7 +26,7 @@ class CalendarHTML
         $this->logger = $logger;
     }
 
-    public function formatHtml(): string
+    public function formatHtml($request): string
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $htmlString = "";
@@ -55,7 +55,7 @@ class CalendarHTML
         }
         $htmlString .= '</tr>';
 
-        $rooms = $roomsApi->getRoomsEntities();
+        $rooms = $roomsApi->getRoomsEntities($request);
         foreach ($rooms as $room) {
             $htmlString .= '<tr><th class="headcol">' . $room->getName() . '</th>';
             $reservations = $reservationApi->getUpComingReservations($room->getId());

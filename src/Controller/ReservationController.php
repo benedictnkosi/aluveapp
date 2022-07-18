@@ -26,7 +26,7 @@ class ReservationController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $calendarHtml = new CalendarHTML($entityManager, $logger);
-        $html = $calendarHtml->formatHtml();
+        $html = $calendarHtml->formatHtml($request);
         $response = array(
             'html' => $html,
         );
@@ -63,7 +63,7 @@ class ReservationController extends AbstractController
         }
 
         $reservationHtml = new ReservationHtml($entityManager, $logger);
-        $html = $reservationHtml->formatHtml($reservations, $period);
+        $html = $reservationHtml->formatHtml($reservations, $period, $request);
         $response = array(
             'html' => $html,
         );

@@ -119,7 +119,7 @@ class ScheduleMessageApi
         $this->logger->info("Starting Method: " . __METHOD__);
         $html = "";
         try {
-            $messageTemplates = $this->em->getRepository(MessageTemplate::class)->findBy(array('property' => $_SESSION['PROPERTY_ID']));
+            $messageTemplates = $this->em->getRepository(MessageTemplate::class)->findBy(array('property' => $_COOKIE['PROPERTY_ID']));
             foreach ($messageTemplates as $messageTemplate) {
                 $html .= '<option value="' . $messageTemplate->getId() . '" class="template_option">' . $messageTemplate->getName() . '</option>';
             }
@@ -144,13 +144,14 @@ class ScheduleMessageApi
                                 <th>Delete</th>
                             </tr>';
         try {
-            if (!isset($_SESSION['PROPERTY_ID'])) {
+            $securityApi = new SecurityApi($this->em, $this->logger );
+            if(!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
-                    'result_message' => 'Property ID not set, please logout and login again',
+                    'result_message' => "Session expired, please logout and login again",
                     'result_code' => 1
                 );
-            } else {
-                $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $_SESSION['PROPERTY_ID']));
+            }else {
+                $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $_COOKIE['PROPERTY_ID']));
                 foreach ($rooms as $room) {
                     $scheduleMessages = $this->em->getRepository(ScheduleMessages::class)->findBy(array('room' => $room->getId()));
 
@@ -205,9 +206,10 @@ class ScheduleMessageApi
         try {
             $scheduleTime = $this->em->getRepository(ScheduleTimes::class)->findOneBy(array('name' => $scheduleTimeName));
             //get all rooms
-            if (!isset($_SESSION['PROPERTY_ID'])) {
+            $securityApi = new SecurityApi($this->em, $this->logger );
+            if(!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
-                    'result_message' => 'Property ID not set, please logout and login again',
+                    'result_message' => "Session expired, please logout and login again",
                     'result_code' => 1
                 );
             } else {
@@ -327,13 +329,14 @@ class ScheduleMessageApi
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            if (!isset($_SESSION['PROPERTY_ID'])) {
+            $securityApi = new SecurityApi($this->em, $this->logger );
+            if(!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
-                    'result_message' => 'Property ID not set, please logout and login again',
+                    'result_message' => "Session expired, please logout and login again",
                     'result_code' => 1
                 );
             } else {
-                $messageTemplate = $this->em->getRepository(MessageTemplate::class)->findOneBy(array('name' => $name, 'property' => $_SESSION['PROPERTY_ID']));
+                $messageTemplate = $this->em->getRepository(MessageTemplate::class)->findOneBy(array('name' => $name, 'property' => $_COOKIE['PROPERTY_ID']));
 
                 if ($messageTemplate != null) {
                     $responseArray[] = array(
@@ -342,7 +345,7 @@ class ScheduleMessageApi
                     );
                     return $responseArray;
                 }
-                $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_SESSION['PROPERTY_ID']));
+                $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_COOKIE['PROPERTY_ID']));
                 $messageTemplate = new MessageTemplate();
                 $messageTemplate->setName($name);
                 $messageTemplate->setMessage($message);

@@ -51,13 +51,9 @@ class HomeController extends AbstractController
     /**
      * @Route("/api/isloggedin")
      */
-    public function isLoggedIn(LoggerInterface $logger,  Request $request, SecurityApi $securityApi): JsonResponse
+    public function isLoggedIn(LoggerInterface $logger,  Request $request, EntityManagerInterface $entityManager, SecurityApi $securityApi): JsonResponse
     {
         $logger->info("Starting Method: " . __METHOD__ );
-        if(session_id() === ''){
-            $logger->info("Session id is empty");
-            session_start();
-        }
         $response = $securityApi->isloggedin();
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());

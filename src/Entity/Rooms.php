@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Rooms
  *
- * @ORM\Table(name="rooms", indexes={@ORM\Index(name="fk_room_property", columns={"property"}), @ORM\Index(name="rooms_ibfk_2", columns={"status"}), @ORM\Index(name="rooms_ibfk_1", columns={"bed"})})
+ * @ORM\Table(name="rooms", indexes={@ORM\Index(name="fk_room_property", columns={"property"}), @ORM\Index(name="fk_room_tv", columns={"tv"}), @ORM\Index(name="rooms_ibfk_2", columns={"status"}), @ORM\Index(name="rooms_ibfk_1", columns={"bed"})})
  * @ORM\Entity
  */
 class Rooms
@@ -69,6 +69,16 @@ class Rooms
      * @ORM\Column(name="description", type="text", length=65535, nullable=false)
      */
     private $description;
+
+    /**
+     * @var RoomTv
+     *
+     * @ORM\ManyToOne(targetEntity="RoomTv")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="tv", referencedColumnName="id")
+     * })
+     */
+    private $tv;
 
     /**
      * @var RoomStatus
@@ -229,6 +239,22 @@ class Rooms
     }
 
     /**
+     * @return RoomTv
+     */
+    public function getTv(): RoomTv
+    {
+        return $this->tv;
+    }
+
+    /**
+     * @param RoomTv $tv
+     */
+    public function setTv(RoomTv $tv): void
+    {
+        $this->tv = $tv;
+    }
+
+    /**
      * @return RoomStatus
      */
     public function getStatus(): RoomStatus
@@ -275,6 +301,4 @@ class Rooms
     {
         $this->bed = $bed;
     }
-
-
 }

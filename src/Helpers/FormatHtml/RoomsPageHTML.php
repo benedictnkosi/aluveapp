@@ -19,6 +19,9 @@ class RoomsPageHTML
     public function formatHtml($rooms, $roomApi): string
     {
         $html = "";
+        if($rooms === null){
+            return $html;
+        }
         foreach ($rooms as $room){
             $roomImages = $roomApi->getRoomImages($room->getId());
             $roomDefaultImage = "noimage.png";
@@ -40,7 +43,7 @@ class RoomsPageHTML
             $html.='<div class="maghny-gd-1 col-lg-4 col-md-6">
                 <div class="maghny-grid">
                     <figure class="effect-lily">
-                        <img class="img-fluid" src="assets/images/rooms/'.$roomDefaultImage. '" alt="">
+                        <img class="img-fluid" src="assets/images/rooms/thumb'.$roomDefaultImage. '" alt="">
                         <figcaption>
                             <div>
                                 <h4 class="top-text">
@@ -63,7 +66,7 @@ class RoomsPageHTML
                             <li><span class="fa fa-bed"></span> '.$size.' m2</li>
                         </ul>
                         <p><pre>'. substr($description, 0, 100).'...</pre></p>
-                        <a href="/booking.html" class="btn mt-sm-4 mt-3">Book Now</a>
+                        <a href="/booking.html?id='.$roomId.'" class="btn mt-sm-4 mt-3">Book Now</a>
                         <div class="room-info-bottom">
                             <ul class="room-amenities">
                                 <li><a href="javascript:void(0)"><span class="fa fa-bed" title="Bed"></span></a></li>
