@@ -63,4 +63,21 @@ class CommandsController extends AbstractController
 
         return new JsonResponse( $responseArray, 200, array());
     }
+
+    /**
+     * @Route("api/runcommand/gitversion")
+     */
+    public function gitVersion(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $command = 'git --version';
+        exec($command, $result);
+        $responseArray[] = array(
+            'command' =>  $command,
+            'result_message' => print_r($result, true),
+            'result_code' => 0
+        );
+
+        return new JsonResponse( $responseArray, 200, array());
+    }
 }
