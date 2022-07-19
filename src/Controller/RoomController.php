@@ -87,7 +87,7 @@ class RoomController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $rooms = $roomApi->getRoomsEntities($propertyUid);
         $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
-        $html = $roomsPageHTML->formatRightDivRoomsHtml($rooms);
+        $html = $roomsPageHTML->formatLeftDivRoomsHtml($rooms);
         $response = array(
             'html' => $html,
         );

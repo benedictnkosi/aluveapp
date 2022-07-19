@@ -16,18 +16,18 @@ class ConfigurationRoomsHTML
         $this->logger = $logger;
     }
 
-    public function formatRightDivRoomsHtml($rooms): string
+    public function formatLeftDivRoomsHtml($rooms): string
     {
         $htmlString = "";
 
         foreach ($rooms as $room) {
             $htmlString .='<a href="javascript:void(0)" data-roomId="'.$room->getId().'"
-                           class="active menuICons mobileMenuIcon roomsMenu">'.$room->getName().'
+                           class="ClickableButton roomsMenu">'.$room->getName().'
                         </a>';
         }
 
         $htmlString .='<a href="javascript:void(0)"
-                           class="active menuICons mobileMenuIcon roomsMenu" data-roomId="0">Add New Room
+                           class="ClickableButton roomsMenu" data-roomId="0">Add New Room
                            
     </a>';
 
