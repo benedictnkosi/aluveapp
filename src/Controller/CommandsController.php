@@ -91,7 +91,7 @@ class CommandsController extends AbstractController
         exec($command, $result);
         $responseArray[] = array(
             'command' =>  $command,
-            'result_messages' => print_r($result, true),
+            'result_message' => print_r($result, true),
             'result_code' => 0
         );
 
