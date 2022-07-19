@@ -96,7 +96,7 @@ class SecurityApi
                     );
                 }
             }else{
-                $this->logger->info("Session not found");
+                $this->logger->info("cookie PROPERTY_UID not found. cookie is".  print_r($_COOKIE, true) );
                 $responseArray[] = array(
                     'logged_in' => false
                 );
