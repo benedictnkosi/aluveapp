@@ -35,6 +35,7 @@ class CalendarHTML
         $reservationApi = new ReservationApi($this->em, $this->logger);
         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
         $numberOfDays = 180;
+        $numberOfFirstOfMonth = 0;
 
         //headings
         $htmlString .= "<tr><th class='calendar-table-header'>Room Name</th>";
@@ -44,24 +45,27 @@ class CalendarHTML
             $todayDate->add(DateInterval::createFromDateString('yesterday'));
             $tempDate = $todayDate->add(new DateInterval('P' . $x . 'D'));
 
+            if (strcmp($tempDate->format('d'), "01") == 0 ) {
+                $htmlString .= '<th class="new-month">' . $tempDate->format('M') . '</th>';
+                $numberOfFirstOfMonth++;
+            }
+
             if (strcmp($tempDate->format('D'), "Sat") == 0 || strcmp($tempDate->format('D'), "Sun") == 0) {
                 $htmlString .= '<th class="weekend">' . $tempDate->format('D') . '<br>' . $tempDate->format('d') . '</th>';
             } else {
                 $htmlString .= '<th>' . $tempDate->format('D') . '<br>' . $tempDate->format('d') . '</th>';
             }
-
-
         }
         $htmlString .= '</tr>';
 
         $rooms = $roomsApi->getRoomsEntities($propertyUid);
         foreach ($rooms as $room) {
             $htmlString .= '<tr><th class="headcol">' . $room->getName() . '</th>';
-            $reservations = $reservationApi->getUpComingReservations($room->getId());
+            $reservations = $reservationApi->getUpComingReservations($propertyUid, $room->getId());
             $blockedRooms = $blockRoomApi->getBlockedRooms($room->getId());
 
             if ($reservations === null && $blockedRooms === null) {
-                $htmlString .= str_repeat('<td class="available"></td>', $numberOfDays + 1);
+                $htmlString .= str_repeat('<td class="available"></td>', $numberOfDays + 1 + $numberOfFirstOfMonth);
             } else {
                 for ($x = 0; $x <= $numberOfDays; $x++) {
                     $todayDate = new DateTime();
@@ -73,6 +77,10 @@ class CalendarHTML
                     $resID = "";
                     $guestName = "";
                     $blockNote = "";
+
+                    if (strcmp($tempDate->format('d'), "01") == 0 ) {
+                        $htmlString .= '<td class="new-month"></td>';
+                    }
 
                     $this->logger->info("outside foreach for reservations temp date is " . $todayDate->format("Y-m-d") . " x is $x");
 
@@ -113,14 +121,14 @@ class CalendarHTML
                     }
 
                     $this->logger->info("checking if date booked");
+
+
                     if ($isDateBooked) {
                         if ($isCheckInDay === true) {
                             $htmlString .= '<td  class="booked checkin" resid="' . $resID . '" title="' . $resID . '"><img  src="images/' . $reservation->getOrigin() . '.png"  resid="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                         } else {
                             $htmlString .= '<td  class="booked" resid="' . $resID . '" title="' . $guestName . '"></td>';
                         }
-
-
                     } else if ($isDateBlocked) {
                         $htmlString .= '<td class="blocked" title="' . $blockNote . '"></td>';
                     } else if ($isDateBookedButOpen) {
