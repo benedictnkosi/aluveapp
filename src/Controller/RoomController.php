@@ -6,6 +6,7 @@ use App\Helpers\FormatHtml\AvailableRoomsDropDownHTML;
 use App\Helpers\FormatHtml\ConfigurationRoomsHTML;
 use App\Helpers\FormatHtml\RoomImagesHTML;
 use App\Helpers\FormatHtml\RoomsPageHTML;
+use App\Service\PropertyApi;
 use App\Service\RoomApi;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -43,10 +44,11 @@ class RoomController extends AbstractController
     /**
      * @Route("/api/rooms/{checkInDate}/{checkOutDate}")
      */
-    public function getAvailableRooms($checkInDate, $checkOutDate,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function getAvailableRooms($checkInDate, $checkOutDate,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate, $request);
+        $propertyUid = $propertyApi->getPropertyUidByHost($request);
+        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate, $propertyUid);
         $availableRoomsDropDownHTML = new AvailableRoomsDropDownHTML($entityManager, $logger);
         $html = $availableRoomsDropDownHTML->formatHtml($rooms);
         $response = array(

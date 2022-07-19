@@ -45,19 +45,19 @@ class ReservationController extends AbstractController
         $reservations = "";
         switch ($period) {
             case "future":
-                $reservations = $reservationApi->getUpComingReservations();
+                $reservations = $reservationApi->getUpComingReservations($propertyUid);
                 break;
             case "past":
-                $reservations = $reservationApi->getPastReservations();
+                $reservations = $reservationApi->getPastReservations($propertyUid);
                 break;
             case "checkout":
-                $reservations = $reservationApi->getCheckOutReservation();
+                $reservations = $reservationApi->getCheckOutReservation($propertyUid);
                 break;
             case "stayover":
-                $reservations = $reservationApi->getStayOversReservations();
+                $reservations = $reservationApi->getStayOversReservations($propertyUid);
                 break;
             case "pending":
-                $reservations = $reservationApi->getPendingReservations();
+                $reservations = $reservationApi->getPendingReservations($propertyUid);
                 break;
             default:
         }

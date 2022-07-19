@@ -25,7 +25,7 @@ class StatsApi
         }
     }
 
-    public function getReservationCount($type, $day): array
+    public function getReservationCount($type, $day, $propertyUid): array
     {
         $datetime = new DateTime();
         if (strcasecmp($day, "tomorrow") == 0) {
@@ -43,7 +43,7 @@ class StatsApi
         return $responseArray;
     }
 
-    public function getStayOverCount($day): array
+    public function getStayOverCount($day, $propertyUid): array
     {
         $datetime = new DateTime();
         if (strcasecmp($day, "tomorrow") == 0) {

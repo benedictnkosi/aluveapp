@@ -101,10 +101,13 @@ class BlockedRoomApi
             if($roomId != 0){
                 $roomFilter = " and b.room = $roomId ";
             }
-            $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+
             $blockedRooms = $this->em
                 ->createQuery("SELECT b FROM App\Entity\BlockedRooms b 
+            JOIN b.room r
+                JOIN r.property p
+            WHERE p.uid = '".$propertyUid."'
+            and
             WHERE b.toDate >= '".$datetime->format('Y-m-d')."' 
                     $roomFilter 
             order by b.fromDate asc ")

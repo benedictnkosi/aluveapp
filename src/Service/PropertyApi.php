@@ -81,10 +81,10 @@ class PropertyApi
         }
     }
 
-    public function getPropertyIdByHost($request)
+    public function getPropertyUidByHost($request)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
-        $propertyId = null;
+        $propertyUid = null;
         try {
             $referer = $request->headers->get('referer');
             $host = parse_url($referer, PHP_URL_HOST);
@@ -94,10 +94,10 @@ class PropertyApi
             $property = $this->em->getRepository(Property::class)->findOneBy(
                 array("serverName" => $host));
             if ($property != null) {
-                $propertyId = $property->getId();
-                $this->logger->info("property id found for host $propertyId - " . $host);
+                $propertyUid = $property->getUid();
+                $this->logger->info("property uid found for host $propertyUid - " . $host);
             } else {
-                $this->logger->info("property id NOT found for host " . $host);
+                $this->logger->info("property uid NOT found for host " . $host);
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
@@ -108,7 +108,7 @@ class PropertyApi
         }
 
         $this->logger->info("Ending Method before the return: " . __METHOD__);
-        return $propertyId;
+        return $propertyUid;
     }
 
 
@@ -118,8 +118,8 @@ class PropertyApi
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId = $propertyApi->getPropertyIdByHost($request);
-            if ($propertyId === null) {
+            $propertyUid = $propertyApi->getPropertyUidByHost($request);
+            if ($propertyUid === null) {
                 $responseArray[] = array(
                     'result_message' => 'Error finding property details',
                     'result_code' => 1
@@ -127,7 +127,7 @@ class PropertyApi
                 return $responseArray;
             } else {
                 $property = $this->em->getRepository(Property::class)->findOneBy(
-                    array("id" => $propertyId));
+                    array("uid" => $propertyUid));
             }
 
 

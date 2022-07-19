@@ -16,12 +16,12 @@ use Symfony\Component\HttpFoundation\Request;
 class OccupancyController extends AbstractController
 {
     /**
-     * @Route("api/occupancy/{days}")
+     * @Route("api/occupancy/{days}/{propertyUid}")
      */
-    public function getOccupancy($days, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, StatsApi $statsApi, OccupancyApi $occupancyApi): Response
+    public function getOccupancy($days, $propertyUid, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, StatsApi $statsApi, OccupancyApi $occupancyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $occupancyApi->getOccupancy($days);
+        $response = $occupancyApi->getOccupancy($days, $propertyUid);
         //$response = $statsApi->getReservationCount("checkOut", "today");
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
@@ -31,12 +31,12 @@ class OccupancyController extends AbstractController
 
 
     /**
-     * @Route("api/occupancy/perroom/{days}")
+     * @Route("api/occupancy/perroom/{days}/{propertyUid}")
      */
-    public function getOccupancyPerRoom($days, LoggerInterface $logger, EntityManagerInterface $entityManager, OccupancyApi $occupancyApi): Response
+    public function getOccupancyPerRoom($days,$propertyUid,  LoggerInterface $logger, EntityManagerInterface $entityManager, OccupancyApi $occupancyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $occupancyApi->getOccupancyPerRoom($days);
+        $response = $occupancyApi->getOccupancyPerRoom($days, $propertyUid);
         return new Response(
             $response
         );

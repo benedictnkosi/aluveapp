@@ -62,7 +62,7 @@ class ReservationApi
         return null;
     }
 
-    public function getPendingReservations()
+    public function getPendingReservations($propertyUid)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $datetime = new DateTime('today');
@@ -72,7 +72,10 @@ class ReservationApi
 
         $reservations = $this->em
             ->createQuery("SELECT r FROM App\Entity\Reservations r 
-            WHERE r.checkIn > '" . $datetime->format('Y-m-d') . "'
+                JOIN r.room a
+                JOIN a.property p
+            WHERE p.uid = '".$propertyUid."'
+            and r.checkIn > '" . $datetime->format('Y-m-d') . "'
             and r.status = '".$status->getId()."'
             order by r.checkIn asc")
             ->getResult();;
@@ -80,7 +83,7 @@ class ReservationApi
         return $reservations;
     }
 
-    public function getUpComingReservations($roomId = 0): array
+    public function getUpComingReservations($propertyUid, $roomId = 0): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $reservations = "";
@@ -96,7 +99,10 @@ class ReservationApi
 
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
-            WHERE r.checkIn <= '".$maxFutureDate->format('Y-m-d')."'
+                JOIN r.room a
+                JOIN a.property p
+            WHERE p.uid = '".$propertyUid."'
+            and r.checkIn <= '".$maxFutureDate->format('Y-m-d')."'
             and r.checkOut > '".$now->format('Y-m-d')."'
             and r.checkIn >= '".$now->format('Y-m-d')."'
                     $roomFilter 
@@ -119,7 +125,7 @@ class ReservationApi
         return $reservations;
     }
 
-    public function getPastReservations(): array
+    public function getPastReservations($propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $reservations = "";
@@ -131,7 +137,10 @@ class ReservationApi
 
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
-            WHERE r.checkOut < '" . $datetime->format('Y-m-d') . "'
+                JOIN r.room a
+                JOIN a.property p
+            WHERE p.uid = '".$propertyUid."'
+            and r.checkOut < '" . $datetime->format('Y-m-d') . "'
             and r.checkIn > '" . $maxPastDate->format('Y-m-d') . "'
             and r.status = '".$status->getId()."'
             order by r.checkOut desc")
@@ -150,14 +159,24 @@ class ReservationApi
         return $reservations;
     }
 
-    public function getCheckOutReservation(): array
+    public function getCheckOutReservation($propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
-        $responseArray = array();
+        $reservations = "";
         try {
             $datetime = new DateTime();
             $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
-            return $this->em->getRepository(Reservations::class)->findBy(array('checkOut' => $datetime, 'status' => $status));
+
+            $reservations = $this->em
+                ->createQuery("SELECT r FROM App\Entity\Reservations r 
+                JOIN r.room a
+                JOIN a.property p
+            WHERE p.uid = '".$propertyUid."'
+            and r.checkOut = '" . $datetime->format('Y-m-d') . "'
+            and r.status = '".$status->getId()."'
+            order by r.checkOut desc")
+                ->getResult();
+
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
@@ -166,7 +185,7 @@ class ReservationApi
             $this->logger->info(print_r($responseArray, true));
         }
         $this->logger->info("Ending Method before the return: " . __METHOD__);
-        return $responseArray;
+        return $reservations;
     }
 
     public function getReservationsByRoomAndDaysToCheckIn($roomId, $days)
@@ -228,7 +247,7 @@ class ReservationApi
         }
     }
 
-    public function getStayOversReservations(): array
+    public function getStayOversReservations($propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $reservations = "";
@@ -236,7 +255,10 @@ class ReservationApi
             $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
-            WHERE r.checkIn < CURRENT_DATE() 
+                JOIN r.room a
+                JOIN a.property p
+            WHERE p.uid = '".$propertyUid."'
+            and r.checkIn < CURRENT_DATE() 
             And r.checkOut > CURRENT_DATE() 
             and r.status = '".$status->getId()."'
             order by r.checkIn asc")

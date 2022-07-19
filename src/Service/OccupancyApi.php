@@ -22,7 +22,7 @@ class OccupancyApi
         }
     }
 
-    public function getOccupancy($days)
+    public function getOccupancy($days, $propertyUid)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -31,8 +31,10 @@ class OccupancyApi
             $sql = "SELECT room_id, rooms.name, (sum(
 	DATEDIFF(IF(check_out<=DATE(NOW()), check_out, DATE(NOW())),
 	IF(check_in<=DATE(NOW()) - INTERVAL " . $days . " DAY, DATE(NOW()) - INTERVAL " . $days . " DAY, check_in)))/" . $days . ")*100
-         AS occupancy FROM reservations, rooms
+         AS occupancy FROM reservations, rooms, property
 WHERE rooms.Id =reservations.room_id
+and rooms.property =property.id
+and property.uid = $propertyUid
 and (DATE(check_in) >= DATE(NOW()) - INTERVAL " . $days . " DAY or DATE(check_out) >= DATE(NOW()) - INTERVAL " . $days . " DAY)
 and DATE(check_in) < DATE(NOW())
 and reservations.`status` = 'confirmed'
@@ -77,7 +79,7 @@ order by occupancy;";
         return $responseArray;
     }
 
-    public function getOccupancyPerRoom($days): string
+    public function getOccupancyPerRoom($days, $propertyUid): string
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $htmlString = "";
@@ -86,8 +88,10 @@ order by occupancy;";
             $sql = "SELECT room_id, rooms.name, (sum(
 	DATEDIFF(IF(check_out<=DATE(NOW()), check_out, DATE(NOW())),
 	IF(check_in<=DATE(NOW()) - INTERVAL " . $days . " DAY, DATE(NOW()) - INTERVAL " . $days . " DAY, check_in)))/" . $days . ")*100
-         AS occupancy FROM reservations, rooms
+         AS occupancy FROM reservations, rooms, property
 WHERE rooms.Id =reservations.room_id
+and rooms.property =property.id
+and property.uid = $propertyUid 
 and (DATE(check_in) >= DATE(NOW()) - INTERVAL " . $days . " DAY or DATE(check_out) >= DATE(NOW()) - INTERVAL " . $days . " DAY)
 and DATE(check_in) < DATE(NOW())
 and reservations.`status` = 'confirmed'
