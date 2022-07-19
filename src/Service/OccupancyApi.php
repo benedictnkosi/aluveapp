@@ -34,7 +34,7 @@ class OccupancyApi
          AS occupancy FROM reservations, rooms, property
 WHERE rooms.Id =reservations.room_id
 and rooms.property =property.id
-and property.uid = $propertyUid
+and property.uid = '" .$propertyUid . "'
 and (DATE(check_in) >= DATE(NOW()) - INTERVAL " . $days . " DAY or DATE(check_out) >= DATE(NOW()) - INTERVAL " . $days . " DAY)
 and DATE(check_in) < DATE(NOW())
 and reservations.`status` = 'confirmed'
@@ -47,7 +47,7 @@ order by occupancy;";
 
             if (!$result) {
                 $responseArray[] = array(
-                    'result_message' => "failed to run query on database",
+                    'result_message' => "No results found",
                     'result_code' => 1
                 );
                 $this->logger->info(print_r($responseArray, true));
@@ -91,20 +91,20 @@ order by occupancy;";
          AS occupancy FROM reservations, rooms, property
 WHERE rooms.Id =reservations.room_id
 and rooms.property =property.id
-and property.uid = $propertyUid 
+and property.uid = '" .$propertyUid . "'
 and (DATE(check_in) >= DATE(NOW()) - INTERVAL " . $days . " DAY or DATE(check_out) >= DATE(NOW()) - INTERVAL " . $days . " DAY)
 and DATE(check_in) < DATE(NOW())
 and reservations.`status` = 'confirmed'
 group by room_id
 order by occupancy;";
+            $this->logger->info($sql);
 
-            //echo $sql;
             $databaseHelper = new DatabaseHelper($this->logger);
             $result = $databaseHelper->queryDatabase($sql);
 
             if (!$result) {
                 $responseArray[] = array(
-                    'result_message' => "failed to run query on database",
+                    'result_message' => "No results found",
                     'result_code' => 1
                 );
                 $this->logger->info(print_r($responseArray,true));

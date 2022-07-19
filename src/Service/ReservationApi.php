@@ -83,10 +83,10 @@ class ReservationApi
         return $reservations;
     }
 
-    public function getUpComingReservations($propertyUid, $roomId = 0): array
+    public function getUpComingReservations($propertyUid, $roomId = 0)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
-        $reservations = "";
+        $reservations = null;
         try {
             $roomFilter = "";
             if ($roomId != 0) {
@@ -115,11 +115,7 @@ class ReservationApi
                 'result_code' => 1
             );
             $this->logger->info(print_r($responseArray, true));
-
-            return $responseArray;
         }
-
-
         $this->logger->info("Ending Method before the return: " . __METHOD__);
 
         return $reservations;

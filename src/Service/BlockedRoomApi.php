@@ -91,7 +91,7 @@ class BlockedRoomApi
         return $responseArray;
     }
 
-    public function getBlockedRooms($propertyUid, $roomId = 0): array
+    public function getBlockedRooms($propertyUid, $roomId = 0)
     {
         $this->logger->info("Starting Method: " . __METHOD__ );
         $responseArray = array();
@@ -124,7 +124,7 @@ class BlockedRoomApi
         }
 
         $this->logger->info("Ending Method before the return: " . __METHOD__ );
-        return $responseArray;
+        return null;
     }
 
 

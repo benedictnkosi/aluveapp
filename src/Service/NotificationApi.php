@@ -21,16 +21,16 @@ class NotificationApi
         }
     }
 
-    public function getNotifications(): string
+    public function getNotifications($propertyUid): string
     {
-        return $this->getLongStayCleaningNotifications();
+        return $this->getLongStayCleaningNotifications($propertyUid);
     }
 
-    public function getLongStayCleaningNotifications(){
+    public function getLongStayCleaningNotifications($propertyUid){
         $this->logger->info("Starting Method: " . __METHOD__);
         //get active reservations where cleaning is more than 2 days
         $reservationApi = new ReservationApi($this->em, $this->logger);
-        $reservations = $reservationApi->getStayOversReservations();
+        $reservations = $reservationApi->getStayOversReservations($propertyUid);
         $CleaningApi = new CleaningApi($this->em, $this->logger);
         $notificationsHtml = "";
 

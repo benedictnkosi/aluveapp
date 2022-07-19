@@ -33,13 +33,14 @@ class OccupancyController extends AbstractController
     /**
      * @Route("api/occupancy/perroom/{days}/{propertyUid}")
      */
-    public function getOccupancyPerRoom($days,$propertyUid,  LoggerInterface $logger, EntityManagerInterface $entityManager, OccupancyApi $occupancyApi): Response
+    public function getOccupancyPerRoom($days,$propertyUid,  LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, OccupancyApi $occupancyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $occupancyApi->getOccupancyPerRoom($days, $propertyUid);
-        return new Response(
-            $response
-        );
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
     }
 
 }

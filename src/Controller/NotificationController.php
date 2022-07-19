@@ -15,12 +15,12 @@ use Symfony\Component\HttpFoundation\Request;
 class NotificationController  extends AbstractController
 {
     /**
-     * @Route("api/notifications")
+     * @Route("api/notifications/{propertyUid}")
      */
-    public function getNotifications(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, NotificationApi $notificationApi): Response
+    public function getNotifications($propertyUid, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, NotificationApi $notificationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $html = $notificationApi->getNotifications();
+        $html = $notificationApi->getNotifications($propertyUid);
         $response = array(
             'html' => $html,
         );

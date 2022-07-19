@@ -22,7 +22,7 @@ class BlockedRoomsHTML
         $htmlString = "";
 
         //if no reservations found
-        if (count($blockedRooms) < 1) {
+        if ($blockedRooms === null) {
             return '<div class="res-details">
 						<h4 class="guest-name">No blocked rooms found</h4>
 					</div>';

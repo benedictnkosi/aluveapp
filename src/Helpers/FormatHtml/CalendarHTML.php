@@ -60,10 +60,7 @@ class CalendarHTML
             $reservations = $reservationApi->getUpComingReservations($room->getId());
             $blockedRooms = $blockRoomApi->getBlockedRooms($room->getId());
 
-            $this->logger->info("reservations found for room " . $room->getName() . " " . count($reservations));
-            $this->logger->info("blocked found for room " . $room->getName() . " " . count($blockedRooms));
-
-            if (count($reservations) < 1 && count($blockedRooms) < 1) {
+            if ($reservations === null && $blockedRooms === null) {
                 $htmlString .= str_repeat('<td class="available"></td>', $numberOfDays + 1);
             } else {
                 for ($x = 0; $x <= $numberOfDays; $x++) {
@@ -105,12 +102,13 @@ class CalendarHTML
                     }
 
                     $this->logger->info("blocked rooms");
-
-                    foreach ($blockedRooms as &$blockedRoom) {
-                        if ($tempDate >= $blockedRoom->getFromDate() && $tempDate < $blockedRoom->getToDate()) {
-                            $isDateBlocked = true;
-                            $blockNote = $blockedRoom->getComment();
-                            break;
+                    if ($blockedRooms != null) {
+                        foreach ($blockedRooms as $blockedRoom) {
+                            if ($tempDate >= $blockedRoom->getFromDate() && $tempDate < $blockedRoom->getToDate()) {
+                                $isDateBlocked = true;
+                                $blockNote = $blockedRoom->getComment();
+                                break;
+                            }
                         }
                     }
 
