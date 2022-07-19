@@ -73,7 +73,7 @@ class RoomImagesHTML
                 $html .= '<div class="img-wrap image-thumbnail" id="image-thumbnail-' . $roomImage->getId() . '">
                             <span class="close" data-image-id="' . $roomImage->getId() . '">&times;</span>
                             <span class="default_image_star_div" data-image-id="' . $roomImage->getId() . '"><img class="default_image_star" src="images/' . $star . '" data-image-id="' . $roomImage->getId() . '"></span>
-                            <img class="" src="http://' . $_SERVER['SERVER_NAME'] . '/assets/images/rooms/thumb' . $roomImage->getName() . '">
+                            <img class="" src="/assets/images/rooms/thumb' . $roomImage->getName() . '">
                         </div>';
             }
         } else {
