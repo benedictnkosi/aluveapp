@@ -18,7 +18,7 @@ class CommandsController extends AbstractController
     /**
      * @Route("api/runcommand/clear")
      */
-    public function runCommand(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    public function runCommand(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $command = 'php ../bin/console doctrine:cache:clear-metadata';
@@ -50,7 +50,7 @@ class CommandsController extends AbstractController
     /**
      * @Route("api/runcommand/phpmemory")
      */
-    public function checkPHPMemory(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    public function checkPHPMemory(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $command = 'php -i | grep "memory_limit"';
@@ -67,10 +67,27 @@ class CommandsController extends AbstractController
     /**
      * @Route("api/runcommand/gitversion")
      */
-    public function gitVersion(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    public function gitVersion(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $command = 'git --version';
+        exec($command, $result);
+        $responseArray[] = array(
+            'command' =>  $command,
+            'result_message' => print_r($result, true),
+            'result_code' => 0
+        );
+
+        return new JsonResponse( $responseArray, 200, array());
+    }
+
+    /**
+     * @Route("api/runcommand/gitpull")
+     */
+    public function gitPull(LoggerInterface $logger): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $command = 'git pull origin main --force';
         exec($command, $result);
         $responseArray[] = array(
             'command' =>  $command,
