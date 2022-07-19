@@ -32,41 +32,19 @@ class RoomApi
         }
     }
 
-    public function getAvailableRooms($checkInDate, $checkOutDate, $request): array
+    public function getAvailableRooms($checkInDate, $checkOutDate, $propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-
-            //check if the PROPERTY_ID if not get it from the host
-            if (!isset($_COOKIE['PROPERTY_ID'])) {
-                $this->logger->info("PROPERTY_ID not found in session. checking if the host has a property id" . __METHOD__);
-                $propertyApi = new PropertyApi($this->em, $this->logger);
-                $propertyId = $propertyApi->getPropertyIdByHost($request);
-                if ($propertyId === null) {
-                    $responseArray[] = array(
-                        'result_message' => 'Property ID not set, please logout and login again',
-                        'result_code' => 1
-                    );
-                    return $responseArray;
-                } else {
-                    $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
-                    foreach ($rooms as $room) {
-                        if ($this->isRoomAvailable($room->getId(), $checkInDate, $checkOutDate)) {
-                            $responseArray[] = $room;
-                        }
-                    }
-                }
-            } else {
-                $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $_COOKIE['PROPERTY_ID']));
-                foreach ($rooms as $room) {
-                    if ($this->isRoomAvailable($room->getId(), $checkInDate, $checkOutDate)) {
-                        $responseArray[] = $room;
-                    }
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId = $propertyApi->getPropertyIdByUid($propertyUid);
+            $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
+            foreach ($rooms as $room) {
+                if ($this->isRoomAvailable($room->getId(), $checkInDate, $checkOutDate)) {
+                    $responseArray[] = $room;
                 }
             }
-
-
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
@@ -118,7 +96,7 @@ class RoomApi
         return $returnValue;
     }
 
-    public function getRooms($roomId): array
+    public function getRooms($roomId, $propertyUid = null): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -126,22 +104,9 @@ class RoomApi
 
             if (strcmp($roomId, "all") === 0) {
                 //check if the PROPERTY_ID if not get it from the host
-                if (!isset($_COOKIE['PROPERTY_ID'])) {
-                    $this->logger->info("PROPERTY_ID not found in session. checking if the host has a property id" . __METHOD__);
-                    $propertyApi = new PropertyApi($this->em, $this->logger);
-                    $propertyId = $propertyApi->getPropertyIdByHost();
-                    if ($propertyId === null) {
-                        $responseArray[] = array(
-                            'result_message' => 'Property ID not set, please logout and login again',
-                            'result_code' => 1
-                        );
-                        return $responseArray;
-                    } else {
-                        $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
-                    }
-                } else {
-                    $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $_COOKIE['PROPERTY_ID']));
-                }
+                $propertyApi = new PropertyApi($this->em, $this->logger);
+                $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+                $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
             } else {
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('id' => $roomId));
             }
@@ -222,15 +187,16 @@ class RoomApi
         return $responseArray;
     }
 
-    public function getRoomsEntities($request, $roomId = 0, ): ?array
+    public function getRoomsEntities($propertyUid, $roomId = 0,): ?array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         try {
             if ($roomId === 0) {
-                if (!isset($_COOKIE['PROPERTY_ID'])) {
+                $propertyApi = new PropertyApi($this->em, $this->logger);
+                $propertyId = $propertyApi->getPropertyIdByUid($propertyUid);
+                if (!isset($propertyUid)) {
                     $this->logger->info("PROPERTY_ID not found in session. checking if the host has a property id" . __METHOD__);
-                    $propertyApi = new PropertyApi($this->em, $this->logger);
-                    $propertyId = $propertyApi->getPropertyIdByHost($request);
+
                     if ($propertyId === null) {
                         $responseArray[] = array(
                             'result_message' => 'Property ID not set, please logout and login again',
@@ -242,7 +208,7 @@ class RoomApi
                         $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
                     }
                 } else {
-                    $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $_COOKIE['PROPERTY_ID']));
+                    $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
                 }
 
             } else {
@@ -395,52 +361,46 @@ class RoomApi
         return $responseArray;
     }
 
-    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $description): array
+    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $description, $propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            if (!isset($_COOKIE['PROPERTY_ID'])) {
-                $responseArray[] = array(
-                    'result_message' => 'Property ID not set, please logout and login again',
-                    'result_code' => 1
-                );
+            $room = $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $id));
+            if ($room == null) {
+                $room = new Rooms();
+                $successMessage = "Successfully created room";
             } else {
-                $room = $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $id));
-                if ($room == null) {
-                    $room = new Rooms();
-                    $successMessage = "Successfully created room";
-                } else {
-                    $successMessage = "Successfully updated room";
-                }
-                $bedSize = $this->em->getRepository(RoomBedSize::class)->findOneBy(array('id' => $bed));
-                $roomStatus = $this->em->getRepository(RoomStatus::class)->findOneBy(array('id' => $status));
-
-                if (strlen($linkedRoom) > 1) {
-                    $room->setLinkedRoom($linkedRoom);
-                }
-
-                $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_COOKIE['PROPERTY_ID']));
-
-                $room->setName($name);
-                $room->setPrice($price);
-                $room->setSleeps($sleeps);
-                $room->setStatus($roomStatus);
-                $room->setLinkedRoom($linkedRoom);
-                $room->setSize($size);
-                $room->setBed($bedSize);
-                $room->setStairs($stairs);
-                $room->setDescription($description);
-                $room->setProperty($property);
-
-                $this->em->persist($room);
-                $this->em->flush($room);
-
-                $responseArray[] = array(
-                    'result_message' => $successMessage,
-                    'result_code' => 0
-                );
+                $successMessage = "Successfully updated room";
             }
+            $bedSize = $this->em->getRepository(RoomBedSize::class)->findOneBy(array('id' => $bed));
+            $roomStatus = $this->em->getRepository(RoomStatus::class)->findOneBy(array('id' => $status));
+
+            if (strlen($linkedRoom) > 1) {
+                $room->setLinkedRoom($linkedRoom);
+            }
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId = $propertyApi->getPropertyIdByUid($propertyUid);
+            $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $propertyId));
+
+            $room->setName($name);
+            $room->setPrice($price);
+            $room->setSleeps($sleeps);
+            $room->setStatus($roomStatus);
+            $room->setLinkedRoom($linkedRoom);
+            $room->setSize($size);
+            $room->setBed($bedSize);
+            $room->setStairs($stairs);
+            $room->setDescription($description);
+            $room->setProperty($property);
+
+            $this->em->persist($room);
+            $this->em->flush($room);
+
+            $responseArray[] = array(
+                'result_message' => $successMessage,
+                'result_code' => 0
+            );
 
 
         } catch (Exception $ex) {

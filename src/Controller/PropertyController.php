@@ -49,7 +49,7 @@ class PropertyController extends AbstractController
     public function getPropertyIdByServerName( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->getPropertyIdByServerName($request);
+        $response = $propertyApi->getPropertyIdByHost($request);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

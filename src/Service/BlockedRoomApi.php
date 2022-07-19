@@ -91,7 +91,7 @@ class BlockedRoomApi
         return $responseArray;
     }
 
-    public function getBlockedRooms($roomId = 0): array
+    public function getBlockedRooms($propertyUid, $roomId = 0): array
     {
         $this->logger->info("Starting Method: " . __METHOD__ );
         $responseArray = array();
@@ -101,6 +101,8 @@ class BlockedRoomApi
             if($roomId != 0){
                 $roomFilter = " and b.room = $roomId ";
             }
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
             $blockedRooms = $this->em
                 ->createQuery("SELECT b FROM App\Entity\BlockedRooms b 
             WHERE b.toDate >= '".$datetime->format('Y-m-d')."' 
@@ -123,7 +125,8 @@ class BlockedRoomApi
     }
 
 
-    public function deleteBlockedRoom($blockedRoomId){
+    public function deleteBlockedRoom($blockedRoomId): array
+    {
         $this->logger->info("Starting Method: " . __METHOD__ );
         $responseArray = array();
         try{

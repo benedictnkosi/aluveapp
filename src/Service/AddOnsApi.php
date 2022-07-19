@@ -10,6 +10,7 @@ use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class AddOnsApi
 {
@@ -26,7 +27,7 @@ class AddOnsApi
         }
     }
 
-    public function getAddOn($addOnName)
+    public function getAddOn($addOnName, $propertyUid)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -38,9 +39,11 @@ class AddOnsApi
                     'result_code' => 1
                 );
             } else {
+                $propertyApi = new PropertyApi($this->em, $this->logger);
+                $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
                 return $this->em->getRepository(AddOns::class)->findOneBy(
                     array("name" => $addOnName,
-                        'property' => $_COOKIE['PROPERTY_ID']));
+                        'property' => $propertyId));
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
@@ -54,21 +57,14 @@ class AddOnsApi
         return $responseArray;
     }
 
-    public function getAddOns()
+    public function getAddOns($propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $securityApi = new SecurityApi($this->em, $this->logger );
-            if(!$securityApi->isLoggedInBoolean()) {
-                $responseArray[] = array(
-                    'result_message' => "Session expired, please logout and login again",
-                    'result_code' => 1
-                );
-            } else {
-                return $this->em->getRepository(AddOns::class)->findBy(array('property' => $_COOKIE['PROPERTY_ID']));
-            }
-
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            return $this->em->getRepository(AddOns::class)->findBy(array('property' => $propertyId));
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
@@ -222,7 +218,7 @@ class AddOnsApi
         return $responseArray;
     }
 
-    public function createAddOn($addOnName, $addOnPrice)
+    public function createAddOn($addOnName, $addOnPrice, $propertyUid)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -237,25 +233,18 @@ class AddOnsApi
                     'result_code' => 1
                 );
             } else {
-                $securityApi = new SecurityApi($this->em, $this->logger );
-                if(!$securityApi->isLoggedInBoolean()) {
-                    $responseArray[] = array(
-                        'result_message' => "Session expired, please logout and login again",
-                        'result_code' => 1
-                    );
-                } else {
-                    $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_COOKIE['PROPERTY_ID']));
-                    $addOn = new AddOns();
-                    $addOn->setPrice($addOnPrice);
-                    $addOn->setName($addOnName);
-                    $addOn->setProperty($property);
-                    $this->em->persist($addOn);
-                    $this->em->flush($addOn);
-                    $responseArray[] = array(
-                        'result_message' => "Successfully created add on",
-                        'result_code' => 0
-                    );
-                }
+                $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+                $addOn = new AddOns();
+                $addOn->setPrice($addOnPrice);
+                $addOn->setName($addOnName);
+                $addOn->setProperty($property);
+                $this->em->persist($addOn);
+                $this->em->flush($addOn);
+                $responseArray[] = array(
+                    'result_message' => "Successfully created add on",
+                    'result_code' => 0
+                );
+
 
             }
 

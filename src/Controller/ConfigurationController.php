@@ -14,12 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
 class ConfigurationController extends AbstractController
 {
     /**
-     * @Route("api/configuration/rooms")
+     * @Route("api/configuration/rooms/{propertyUid}")
      */
-    public function getConfigRooms(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function getConfigRooms($propertyUid, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->getRooms(0);
+        $response = $roomApi->getRooms(0, $propertyUid);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

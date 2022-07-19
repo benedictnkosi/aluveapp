@@ -18,39 +18,33 @@ class GuestApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
-        if(session_id() === ''){
+        if (session_id() === '') {
             $logger->info("Session id is empty");
             session_start();
         }
     }
 
-    public function createGuest($name,$phoneNumber, $email): array
+    public function createGuest($name, $phoneNumber, $email, $propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $securityApi = new SecurityApi($this->em, $this->logger );
-            if(!$securityApi->isLoggedInBoolean()) {
-                $responseArray[] = array(
-                    'result_message' => "Session expired, please logout and login again",
-                    'result_code' => 1
-                );
-            }else{
-                $property = $this->em->getRepository(Property::class)->findOneBy(array('id'=>$_COOKIE['PROPERTY_ID']));
-                $guest = new Guest();
-                $guest->setName($name);
-                $guest->setPhoneNumber($phoneNumber);
-                $guest->setEmail($email);
-                $guest->setProperty($property);
 
-                $this->em->persist($guest);
-                $this->em->flush($guest);
-                $responseArray[] = array(
-                    'result_code' => 0,
-                    'result_message' => 'Successfully created guest',
-                    'guest' => $guest
-                );
-            }
+            $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+            $guest = new Guest();
+            $guest->setName($name);
+            $guest->setPhoneNumber($phoneNumber);
+            $guest->setEmail($email);
+            $guest->setProperty($property);
+
+            $this->em->persist($guest);
+            $this->em->flush($guest);
+            $responseArray[] = array(
+                'result_code' => 0,
+                'result_message' => 'Successfully created guest',
+                'guest' => $guest
+            );
+
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
@@ -140,42 +134,35 @@ class GuestApi
         return $responseArray;
     }
 
-    public function getGuests($filterValue): array
+    public function getGuests($filterValue, $propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         try {
-            $securityApi = new SecurityApi($this->em, $this->logger );
-            if(!$securityApi->isLoggedInBoolean()) {
-                $responseArray[] = array(
-                    'result_message' => "Session expired, please logout and login again",
-                    'result_code' => 1
-                );
-            }else{
-                if ($filterValue == 0) {
-                    $guests = $this->em->getRepository(Guest::class)->findBy(array('property'=>$_COOKIE['PROPERTY_ID']));
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            if ($filterValue == 0) {
+                $guests = $this->em->getRepository(Guest::class)->findBy(array('property' => $propertyId));
+            } else {
+                if (strlen($filterValue) > 4) {
+                    $guests = $this->em->getRepository(Guest::class)->findBy(array('phoneNumber' => $filterValue, 'property' => $propertyId));
                 } else {
-                    if (strlen($filterValue) > 4) {
-                        $guests = $this->em->getRepository(Guest::class)->findBy(array('phoneNumber' => $filterValue, 'property'=>$_COOKIE['PROPERTY_ID']));
-                    } else {
-                        $guests = $this->em->getRepository(Guest::class)->findBy(array('id' => $filterValue,  'property'=>$_COOKIE['PROPERTY_ID']));
-                    }
-                }
-                $responseArray = array();
-
-                foreach ($guests as $guest) {
-                    $responseArray[] = array(
-                        'id' => $guest->getId(),
-                        'name' => $guest->getName(),
-                        'image_id' => $guest->getIdImage(),
-                        'phone_number' => $guest->getPhoneNumber(),
-                        'email' => $guest->getEmail(),
-                        'state' => $guest->getState(),
-                        'comments' => $guest->getComments(),
-                        'result_code' => 0
-                    );
+                    $guests = $this->em->getRepository(Guest::class)->findBy(array('id' => $filterValue, 'property' => $propertyId));
                 }
             }
+            $responseArray = array();
 
+            foreach ($guests as $guest) {
+                $responseArray[] = array(
+                    'id' => $guest->getId(),
+                    'name' => $guest->getName(),
+                    'image_id' => $guest->getIdImage(),
+                    'phone_number' => $guest->getPhoneNumber(),
+                    'email' => $guest->getEmail(),
+                    'state' => $guest->getState(),
+                    'comments' => $guest->getComments(),
+                    'result_code' => 0
+                );
+            }
         } catch (Exception $exception) {
             $responseArray[] = array(
                 'result_message' => $exception->getMessage(),
@@ -188,21 +175,15 @@ class GuestApi
         return $responseArray;
     }
 
-    public function getGuestByPhoneNumber($phoneNumber)
+    public function getGuestByPhoneNumber($phoneNumber, $propertyUid)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $guest = null;
         $responseArray = array();
         try {
-            $securityApi = new SecurityApi($this->em, $this->logger );
-            if(!$securityApi->isLoggedInBoolean()) {
-                $responseArray[] = array(
-                    'result_message' => "Session expired, please logout and login again",
-                    'result_code' => 1
-                );
-            }else{
-                $guest =  $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => $phoneNumber, 'property'=>$_COOKIE['PROPERTY_ID']));
-            }
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => $phoneNumber, 'property' => $propertyId));
         } catch (Exception $exception) {
             $responseArray[] = array(
                 'result_message' => $exception->getMessage(),
@@ -215,10 +196,10 @@ class GuestApi
         return $guest;
     }
 
-    function startsWith( $haystack, $needle ): bool
+    function startsWith($haystack, $needle): bool
     {
-        $length = strlen( $needle );
-        return substr( $haystack, 0, $length ) === $needle;
+        $length = strlen($needle);
+        return substr($haystack, 0, $length) === $needle;
     }
 
     public function getGuestStaysCount($guestId): array

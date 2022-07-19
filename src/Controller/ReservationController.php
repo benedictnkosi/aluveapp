@@ -37,9 +37,9 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("api/reservations/{period}")
+     * @Route("api/reservations/{period}/{propertyUid}")
      */
-    public function getReservations($period, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function getReservations($period, $propertyUid, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $reservations = "";
@@ -63,7 +63,7 @@ class ReservationController extends AbstractController
         }
 
         $reservationHtml = new ReservationHtml($entityManager, $logger);
-        $html = $reservationHtml->formatHtml($reservations, $period, $request);
+        $html = $reservationHtml->formatHtml($reservations, $period, $propertyUid);
         $response = array(
             'html' => $html,
         );

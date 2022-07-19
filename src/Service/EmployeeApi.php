@@ -17,27 +17,21 @@ class EmployeeApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
-        if(session_id() === ''){
-            $logger->info("Session id is empty". __METHOD__ );
+        if (session_id() === '') {
+            $logger->info("Session id is empty" . __METHOD__);
             session_start();
         }
     }
 
-    public function getEmployees(): array
+    public function getEmployees($propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $securityApi = new SecurityApi($this->em, $this->logger );
-            if(!$securityApi->isLoggedInBoolean()) {
-                $responseArray[] = array(
-                    'result_message' => "Session expired, please logout and login again",
-                    'result_code' => 1
-                );
-            }else{
-                return $this->em->getRepository(Employee::class)->findBy(array('property'=>$_COOKIE['PROPERTY_ID']));
-            }
-        }catch (Exception $ex) {
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            return $this->em->getRepository(Employee::class)->findBy(array('property' => $propertyId));
+        } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
@@ -48,116 +42,108 @@ class EmployeeApi
         return $responseArray;
     }
 
-    public function updateEmployeeName($employeeId,  $newValue)
+    public function updateEmployeeName($employeeId, $newValue)
     {
-        $this->logger->info("Starting Method: " . __METHOD__ );
+        $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
-        try{
-            $employee = $this->em->getRepository(Employee::class)->findOneBy(array("id"=>$employeeId));
-            if($employee === null){
+        try {
+            $employee = $this->em->getRepository(Employee::class)->findOneBy(array("id" => $employeeId));
+            if ($employee === null) {
                 $responseArray[] = array(
                     'result_message' => "Employee not found",
-                    'result_code'=> 1
+                    'result_code' => 1
                 );
                 $this->logger->info(print_r($responseArray, true));
-            }else{
+            } else {
                 $employee->setName($newValue);
                 $this->em->persist($employee);
                 $this->em->flush($employee);
 
                 $responseArray[] = array(
                     'result_message' => "Successfully updated employee",
-                    'result_code'=> 0
+                    'result_code' => 0
                 );
             }
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
-                'result_code'=> 1
+                'result_code' => 1
             );
             $this->logger->info(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__ );
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function deleteEmployee($employeeId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__ );
+        $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
-        try{
-            $employee = $this->em->getRepository(Employee::class)->findOneBy(array("id"=>$employeeId));
-            if($employee === null){
+        try {
+            $employee = $this->em->getRepository(Employee::class)->findOneBy(array("id" => $employeeId));
+            if ($employee === null) {
                 $responseArray[] = array(
                     'result_message' => "employee not found",
-                    'result_code'=> 1
+                    'result_code' => 1
                 );
                 $this->logger->info(print_r($responseArray, true));
-            }else{
+            } else {
                 $this->em->remove($employee);
                 $this->em->flush();
             }
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
-                'result_code'=> 1
+                'result_code' => 1
             );
             $this->logger->info(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__ );
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
-    public function createEmployee($employeeName)
+    public function createEmployee($employeeName, $propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__ );
+        $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
-        try{
+        try {
             //check if employee with the same name does not exist
-            $securityApi = new SecurityApi($this->em, $this->logger );
-            $securityApi = new SecurityApi($this->em, $this->logger );
-            if(!$securityApi->isLoggedInBoolean()) {
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $existingEmployees = $this->em->getRepository(Employee::class)->findBy(array('name' => $employeeName, 'property'=>$propertyId));
+
+            if ($existingEmployees != null) {
                 $responseArray[] = array(
-                    'result_message' => "Session expired, please logout and login again",
+                    'result_message' => "Employee with the same name already exists",
                     'result_code' => 1
                 );
-            }else{
-                $existingEmployees = $this->em->getRepository(Employee::class)->findBy(array('name'=>$employeeName, 'property'=>$_COOKIE['PROPERTY_ID']));
-
-                if($existingEmployees != null){
-                    $responseArray[] = array(
-                        'result_message' => "Employee with the same name already exists",
-                        'result_code'=> 1
-                    );
-                }else{
-                    $property = $this->em->getRepository(Property::class)->findOneBy(array('id'=>$_COOKIE['PROPERTY_ID']));
-                    $employee = new Employee();
-                    $employee->setName($employeeName);
-                    $employee->setProperty($property);
-                    $this->em->persist($employee);
-                    $this->em->flush($employee);
-                    $responseArray[] = array(
-                        'result_message' => "Successfully created employee",
-                        'result_code'=> 0
-                    );
-                }
+            } else {
+                $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+                $employee = new Employee();
+                $employee->setName($employeeName);
+                $employee->setProperty($property);
+                $this->em->persist($employee);
+                $this->em->flush($employee);
+                $responseArray[] = array(
+                    'result_message' => "Successfully created employee",
+                    'result_code' => 0
+                );
             }
 
 
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
-                'result_code'=> 1
+                'result_code' => 1
             );
             $this->logger->info(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__ );
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
-
 
 
 }

@@ -14,12 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
 class GuestController extends AbstractController
 {
     /**
-     * @Route("/api/guests/{guestId}", name="guests", defaults={"guestId": 0})
+     * @Route("/api/guests/{guestId}/{propertyUid}", name="guests", defaults={"guestId": 0})
      */
-    public function getGuests($guestId, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
+    public function getGuests($guestId, $propertyUid, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__ );
-        $response = $guestApi->getGuests($guestId);
+        $response = $guestApi->getGuests($guestId, $propertyUid);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

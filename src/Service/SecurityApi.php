@@ -2,12 +2,12 @@
 
 namespace App\Service;
 
-use App\Entity\Guest;
 use App\Entity\Property;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 require_once(__DIR__ . '/../app/application.php');
 
@@ -20,10 +20,6 @@ class SecurityApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
-        if(session_id() === ''){
-            $logger->info("Session id is empty");
-            session_start();
-        }
     }
 
     public function login($pin): array
@@ -37,17 +33,6 @@ class SecurityApi
                     session_start();
                 }
 
-                $_SESSION["PROPERTY_ID"] = $property->getId();
-                $_SESSION["PROPERTY_UID"] = $property->getUid();
-                $_SESSION["BANK_NAME"] = $property->getBankName();
-                $_SESSION["ACCOUNT_TYPE"] = $property->getBankAccountType();
-                $_SESSION["ACCOUNT_NUMBER"] = $property->getBankAccountNumber();
-                $_SESSION["BRANCH_CODE"] = $property->getBankBranchCode();
-                $_SESSION["COMPANY_NAME"] = $property->getName();
-                $_SESSION["COMPANY_ADDRESS"] = $property->getAddress();
-                $_SESSION["COMPANY_PHONE_NUMBER"] = $property->getPhoneNumber();
-                $_SESSION["EMAIL_ADDRESS"] = $property->getEmailAddress();
-                $_SESSION["SERVER_NAME"] = $property->getServerName();
                 $responseArray[] = array(
                     'property_id' => $property->getId(),
                     'property_uid' => $property->getUid(),
@@ -72,35 +57,28 @@ class SecurityApi
         return $responseArray;
     }
 
-    public function isLoggedInBoolean(): bool
+    public function isLoggedInBoolean($propertyUid): bool
     {
-        $result  = $this->isLoggedIn();
+        $result = $this->isLoggedIn($propertyUid);
         return $result[0]['logged_in'];
     }
 
-    public function isLoggedIn(): array
+    public function isLoggedIn($propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            if(isset($_COOKIE['PROPERTY_UID'])) {
-                $this->logger->info("PROPERTY_UID found in cookie ");
-                $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $_COOKIE['PROPERTY_UID']));
-                if ($property != null) {
-                    $responseArray[] = array(
-                        'logged_in' => true
-                    );
-                }else{
-                    $responseArray[] = array(
-                        'logged_in' => false
-                    );
-                }
-            }else{
-                $this->logger->info("cookie PROPERTY_UID not found. cookie is".  print_r($_COOKIE, true) );
+            $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+            if ($property != null) {
+                $responseArray[] = array(
+                    'logged_in' => true
+                );
+            } else {
                 $responseArray[] = array(
                     'logged_in' => false
                 );
             }
+
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'logged_in' => false,
@@ -110,6 +88,7 @@ class SecurityApi
         }
         return $responseArray;
     }
+
 
     public function logout(): array
     {
@@ -134,7 +113,6 @@ class SecurityApi
         $this->logger->info(print_r($responseArray, true));
         return $responseArray;
     }
-
 
 
 }

@@ -65,6 +65,22 @@ class PropertyApi
         return $responseArray;
     }
 
+    public function getPropertyIdByUid($propertyUid)
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        try {
+            $property = $this->em->getRepository(Property::class)->findOneBy(
+                array("uid" => $propertyUid));
+            if ($property != null) {
+                return $property->getId();
+            } else {
+                return null;
+            }
+        } catch (Exception) {
+            return null;
+        }
+    }
+
     public function getPropertyIdByHost($request)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
@@ -72,15 +88,15 @@ class PropertyApi
         try {
             $referer = $request->headers->get('referer');
             $host = parse_url($referer, PHP_URL_HOST);
-            $this->logger->info("referrer is " . $referer );
-            $this->logger->info("referrer host is " . $host );
+            $this->logger->info("referrer is " . $referer);
+            $this->logger->info("referrer host is " . $host);
 
             $property = $this->em->getRepository(Property::class)->findOneBy(
                 array("serverName" => $host));
             if ($property != null) {
                 $propertyId = $property->getId();
                 $this->logger->info("property id found for host $propertyId - " . $host);
-            }else{
+            } else {
                 $this->logger->info("property id NOT found for host " . $host);
             }
         } catch (Exception $ex) {
@@ -96,29 +112,24 @@ class PropertyApi
     }
 
 
-    public function contactUs($guestName, $email, $phoneNumber, $message): array
+    public function contactUs($guestName, $email, $phoneNumber, $message, $request): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            if (!isset($_COOKIE['PROPERTY_ID'])) {
-                $this->logger->info("PROPERTY_ID not found in session. checking if the host has a property id" . __METHOD__);
-                $propertyApi = new PropertyApi($this->em, $this->logger);
-                $propertyId = $propertyApi->getPropertyIdByHost();
-                if ($propertyId === null) {
-                    $responseArray[] = array(
-                        'result_message' => 'Property ID not set, please logout and login again',
-                        'result_code' => 1
-                    );
-                    return $responseArray;
-                } else {
-                    $property = $this->em->getRepository(Property::class)->findOneBy(
-                        array("id" => $propertyId));
-                }
-            }else{
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId = $propertyApi->getPropertyIdByHost($request);
+            if ($propertyId === null) {
+                $responseArray[] = array(
+                    'result_message' => 'Error finding property details',
+                    'result_code' => 1
+                );
+                return $responseArray;
+            } else {
                 $property = $this->em->getRepository(Property::class)->findOneBy(
-                    array("id" => $_COOKIE['PROPERTY_ID']));
+                    array("id" => $propertyId));
             }
+
 
             if ($property != null) {
                 $emailPrefix = "Message from $guestName\r\n Phone: $phoneNumber \r\nEmail: $email";

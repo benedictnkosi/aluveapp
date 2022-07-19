@@ -28,7 +28,7 @@ class ReservationHtml
         $this->logger = $logger;
     }
 
-    public function formatHtml($reservations, $period, $request): string
+    public function formatHtml($reservations, $period, $propertyUid): string
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $htmlString = "";
@@ -64,7 +64,7 @@ class ReservationHtml
         $notesApi = new NotesApi($this->em, $this->logger);
         $cleaningApi = new CleaningApi($this->em, $this->logger);
         $roomApi = new RoomApi($this->em, $this->logger);
-        $rooms = $roomApi->getRoomsEntities($request);
+        $rooms = $roomApi->getRoomsEntities($propertyUid);
 
         foreach ($reservations as $reservation) {
             //guest name and reservation ID
@@ -394,7 +394,7 @@ class ReservationHtml
                 $this->logger->info(" HTML output - add add-ons" . $reservation->getId());
                 $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display" id="div_add_on_' . $reservationId . '" ><select id="select_add_on_' . $reservationId . '">';
                 $htmlString .= ' <option value="none">Select Add On</option>';
-                $addOnsList = $addOnsApi->getAddOns();
+                $addOnsList = $addOnsApi->getAddOns($propertyUid);
                 if (count($addOnsList) > 0) {
                     foreach ($addOnsList as $addOn) {
                         $htmlString .= ' <option value="' . $addOn->getId() . '">' . $addOn->getName() . '</option>';
@@ -433,7 +433,7 @@ class ReservationHtml
                 $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display" id="div_mark_cleaned_' . $reservationId . '" ><select id="select_employee_' . $reservationId . '">';
                 $htmlString .= ' <option value="none">Select Cleaner</option>';
                 $employeeApi = new EmployeeApi($this->em, $this->logger);
-                $employees = $employeeApi->getEmployees();
+                $employees = $employeeApi->getEmployees($propertyUid);
                 if (count($employees) > 0) {
                     foreach ($employees as $employee) {
                         $htmlString .= ' <option value="' . $employee->getId() . '">' . $employee->getName() . '</option>';
