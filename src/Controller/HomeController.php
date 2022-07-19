@@ -36,19 +36,6 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/api/logout")
-     */
-    public function logout(LoggerInterface $logger, Request $request, SecurityApi $securityApi ): Response
-    {
-        $logger->info("Starting Method: " . __METHOD__ );
-        $response = $securityApi->logout();
-        $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
-        $response->setCallback($callback);
-        return $response;
-    }
-
-    /**
      * @Route("/api/isloggedin/{propertyUid}")
      */
     public function isLoggedIn($propertyUid, LoggerInterface $logger,  Request $request, EntityManagerInterface $entityManager, SecurityApi $securityApi): JsonResponse

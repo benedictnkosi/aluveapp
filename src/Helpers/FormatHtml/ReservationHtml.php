@@ -75,8 +75,7 @@ class ReservationHtml
 
             //output tomorrow
             if (strcasecmp($period, "future") === 0) {
-
-                if (!$todayHeadingWritten){
+                if (!$todayHeadingWritten && (strcmp($reservation->getCheckIn()->format("Y-m-d"), $now->format("Y-m-d")) == 0)){
                     $htmlString .= '<div class="res-details reservation-date-divider">
 						<h4>Today - ' . $now->format("d M") . '</h4>
 					</div>';
