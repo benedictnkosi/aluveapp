@@ -7,7 +7,7 @@
 /public/bundles/
 /var/
 /vendor/
-/src/app/
+/src/app/application.php
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
