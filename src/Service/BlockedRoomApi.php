@@ -26,7 +26,7 @@ class BlockedRoomApi
     public function blockRoom($roomId, $date, $comments): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
-
+        $this->logger->info("blocking room: " . $roomId);
 
         $responseArray = array();
         try {
@@ -50,6 +50,8 @@ class BlockedRoomApi
                 );
                 $this->logger->info("Ending Method before the return: " . __METHOD__);
                 return $responseArray;
+            }else{
+                $this->logger->info("Room is not null");
             }
 
             //check if the dates are the same, if same increment the to date by one day

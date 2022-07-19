@@ -378,13 +378,16 @@ class ReservationApi
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
+            //get property Id
+            $roomApi = new RoomApi($this->em,$this->logger);
+            $propertyUid = $roomApi->getRoom($roomId)->getProperty()->getUid();
             //get guest
             $guestApi = new GuestApi($this->em, $this->logger);
-            $guest = $guestApi->getGuestByPhoneNumber($phoneNumber);
+            $guest = $guestApi->getGuestByPhoneNumber($phoneNumber,$propertyUid);
             if ($guest == null) {
                 $this->logger->info("guest not found, creating a new guest");
                 //create guest
-                $response = $guestApi->createGuest($guestName, $phoneNumber, $email);
+                $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $propertyUid);
                 if ($response[0]['result_code'] != 0) {
                     $this->logger->info(print_r($response, true));
                     return $response;
@@ -445,7 +448,7 @@ class ReservationApi
             if($totalDays === 0){
                 $this->logger->info("Short Stay");
                 $addOnsApi = new AddOnsApi($this->em, $this->logger);
-                $addon = $addOnsApi->getAddOn("Short Stay - 3 Hours");
+                $addon = $addOnsApi->getAddOn("Short Stay - 3 Hours", $propertyUid);
                 $addOnsApi->addAdOnToReservation($reservation->getId(), $addon->getId(), 1);
             }else{
                 $this->logger->info("overnight Stay");
