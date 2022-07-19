@@ -61,11 +61,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/allrooms/{propertyUid}")
+     * @Route("/api/allrooms/")
      */
-    public function getRoomsHtml($propertyUid, LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function getRoomsHtml(LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        $propertyUid =   $propertyApi->getPropertyUidByHost($request);
         $rooms = $roomApi->getRoomsEntities($propertyUid);
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatHtml($rooms, $roomApi);
@@ -170,12 +171,14 @@ class RoomController extends AbstractController
     /**
      * @Route("/api/roomspage/{checkin}/{checkout}")
      */
-    public function getFilteredRoomsHtml($checkin, $checkout, LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function getFilteredRoomsHtml($checkin, $checkout, LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getAvailableRooms($checkin, $checkout, $request);
+        $propertyUid =   $propertyApi->getPropertyUidByHost($request);
+
+        $rooms = $roomApi->getAvailableRooms($checkin, $checkout, $propertyUid);
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
-        $html = $roomsPageHTML->formatHtml($rooms, $request);
+        $html = $roomsPageHTML->formatHtml($rooms, $roomApi);
         $response = array(
             'html' => $html,
         );
