@@ -31,11 +31,10 @@ class CalendarHTML
         $this->logger->info("Starting Method: " . __METHOD__);
         $htmlString = "";
 
-        $guestApi = new GuestApi($this->em, $this->logger);
         $roomsApi = new RoomApi($this->em, $this->logger);
         $reservationApi = new ReservationApi($this->em, $this->logger);
         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
-        $numberOfDays = 60;
+        $numberOfDays = 180;
 
         //headings
         $htmlString .= "<tr><th class='calendar-table-header'>Room Name</th>";

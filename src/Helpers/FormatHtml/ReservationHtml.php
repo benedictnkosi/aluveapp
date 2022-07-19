@@ -36,6 +36,7 @@ class ReservationHtml
         $tomorrow = new DateTime('tomorrow');
         $currentDate = $now->format("Y-m-d");
         $tomorrowHeadingWritten = false;
+        $todayHeadingWritten = false;
         //if no reservations found
         if (count($reservations) < 1) {
             return '<div class="res-details">
@@ -55,11 +56,7 @@ class ReservationHtml
 									</div>';
 
 
-        if (strcasecmp($period, "future") === 0) {
-            $htmlString .= '<div class="res-details reservation-date-divider">
-						<h4>Today - ' . $now->format("d M") . '</h4>
-					</div>';
-        }
+
 
         $guestApi = new GuestApi($this->em, $this->logger);
         $addOnsApi = new AddOnsApi($this->em, $this->logger);
@@ -78,6 +75,15 @@ class ReservationHtml
 
             //output tomorrow
             if (strcasecmp($period, "future") === 0) {
+
+                if (!$todayHeadingWritten){
+                    $htmlString .= '<div class="res-details reservation-date-divider">
+						<h4>Today - ' . $now->format("d M") . '</h4>
+					</div>';
+
+                $todayHeadingWritten = true;
+                }
+
                 if ((strcmp($reservation->getCheckIn()->format("Y-m-d"), $tomorrow->format("Y-m-d")) == 0)
                     && !$tomorrowHeadingWritten) {
                     $htmlString .= '<div class="res-details reservation-date-divider">
