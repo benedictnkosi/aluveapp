@@ -20,13 +20,13 @@ class ReservationController extends AbstractController
 {
 
     /**
-     * @Route("api/calendar")
+     * @Route("api/calendar/{propertyUid}")
      */
-    public function getCalendar( LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function getCalendar( $propertyUid, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $calendarHtml = new CalendarHTML($entityManager, $logger);
-        $html = $calendarHtml->formatHtml($request);
+        $html = $calendarHtml->formatHtml($propertyUid);
         $response = array(
             'html' => $html,
         );
