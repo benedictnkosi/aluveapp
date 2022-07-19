@@ -125,7 +125,7 @@ class CalendarHTML
 
                     if ($isDateBooked) {
                         if ($isCheckInDay === true) {
-                            $htmlString .= '<td  class="booked checkin" resid="' . $resID . '" title="' . $resID . '"><img  src="images/' . $reservation->getOrigin() . '.png"  resid="' . $resID . '" alt="checkin" class="image_checkin"></td>';
+                            $htmlString .= '<td  class="booked checkin" resid="' . $resID . '" title="' . $guestName . '"><img  src="images/' . $reservation->getOrigin() . '.png"  resid="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                         } else {
                             $htmlString .= '<td  class="booked" resid="' . $resID . '" title="' . $guestName . '"></td>';
                         }
