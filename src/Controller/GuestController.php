@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\GuestApi;
+use App\Service\PropertyApi;
 use App\Service\ReservationApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,12 +15,13 @@ use Symfony\Component\HttpFoundation\Request;
 class GuestController extends AbstractController
 {
     /**
-     * @Route("/api/guests/{guestId}/{propertyUid}", name="guests", defaults={"guestId": 0})
+     * @Route("/api/guests/{filterValue}", name="guests", defaults={"guestId": 0})
      */
-    public function getGuests($guestId, $propertyUid, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
+    public function getGuests($filterValue, LoggerInterface $logger, Request $request, GuestApi $guestApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__ );
-        $response = $guestApi->getGuests($guestId, $propertyUid);
+        $propertyUid =   $propertyApi->getPropertyUidByHost($request);
+        $response = $guestApi->getGuests($filterValue, $propertyUid);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
