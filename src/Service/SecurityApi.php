@@ -88,31 +88,4 @@ class SecurityApi
         }
         return $responseArray;
     }
-
-
-    public function logout(): array
-    {
-        $this->logger->info("Starting Method: " . __METHOD__);
-        $responseArray = array();
-        try {
-            // remove all session variables
-            session_unset();
-            // destroy the session
-            session_destroy();
-            $responseArray[] = array(
-                'result_message' => 'Successfully logged out',
-                'result_code' => 0
-            );
-        } catch (Exception $ex) {
-            $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
-                'result_code' => 1
-            );
-        }
-
-        $this->logger->info(print_r($responseArray, true));
-        return $responseArray;
-    }
-
-
 }

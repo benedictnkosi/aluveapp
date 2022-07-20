@@ -9,9 +9,6 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
-use ZCiCal;
-use ZCiCalDataNode;
-use ZCiCalNode;
 
 require_once(__DIR__ . '/../app/application.php');
 

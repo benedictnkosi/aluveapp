@@ -361,7 +361,7 @@ class RoomApi
         return $responseArray;
     }
 
-    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $description, $propertyUid): array
+    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $tv, $description, $propertyUid): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -374,6 +374,7 @@ class RoomApi
                 $successMessage = "Successfully updated room";
             }
             $bedSize = $this->em->getRepository(RoomBedSize::class)->findOneBy(array('id' => $bed));
+            $tvType = $this->em->getRepository(RoomTv::class)->findOneBy(array('id' => $tv));
             $roomStatus = $this->em->getRepository(RoomStatus::class)->findOneBy(array('id' => $status));
 
             if (strlen($linkedRoom) > 1) {
@@ -393,13 +394,15 @@ class RoomApi
             $room->setStairs($stairs);
             $room->setDescription($description);
             $room->setProperty($property);
+            $room->setTv($tvType);
 
             $this->em->persist($room);
             $this->em->flush($room);
 
             $responseArray[] = array(
                 'result_message' => $successMessage,
-                'result_code' => 0
+                'result_code' => 0,
+                'room_id' => $room->getId()
             );
 
 

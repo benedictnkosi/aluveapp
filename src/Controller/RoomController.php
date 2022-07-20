@@ -42,6 +42,19 @@ class RoomController extends AbstractController
     }
 
     /**
+     * @Route("/api/allrooms/{propertyUid}", name="rooms", defaults={"roomId": "all"})
+     */
+    public function getAllooms($propertyUid, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $roomApi->getRooms("all", $propertyUid);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
      * @Route("/api/rooms/{checkInDate}/{checkOutDate}")
      */
     public function getAvailableRooms($checkInDate, $checkOutDate,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
@@ -189,12 +202,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{bed}/{stairs}/{description}/{propertyUid")
+     * @Route("/api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{bed}/{stairs}/{tv}/{description}/{propertyUid}")
      */
-    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $description,$propertyUid, Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $tv, $description,$propertyUid, Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $description, $propertyUid);
+        $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs,$tv, $description, $propertyUid);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
