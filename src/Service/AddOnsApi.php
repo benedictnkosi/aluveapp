@@ -33,7 +33,7 @@ class AddOnsApi
         $responseArray = array();
         try {
             $securityApi = new SecurityApi($this->em, $this->logger);
-            if (!$securityApi->isLoggedInBoolean()) {
+            if (!$securityApi->isLoggedInBoolean($propertyUid)) {
                 $responseArray[] = array(
                     'result_message' => "Session expired, please logout and login again",
                     'result_code' => 1

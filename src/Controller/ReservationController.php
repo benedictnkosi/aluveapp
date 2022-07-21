@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Reservations;
+use App\Entity\ReservationStatus;
 use App\Helpers\FormatHtml\CalendarHTML;
 use App\Helpers\FormatHtml\ReservationHtml;
 use App\Service\ReservationApi;
@@ -77,7 +78,7 @@ class ReservationController extends AbstractController
     /**
      * @Route("api/reservations/{reservationId}/update/{field}/{newValue}")
      */
-    public function updateReservation($reservationId, $field, $newValue, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
+    public function updateReservation($reservationId, $field, $newValue, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
@@ -85,16 +86,14 @@ class ReservationController extends AbstractController
         $responseArray[] = array();
         switch ($field) {
             case "status":
-                $reservation->SetStatus($newValue);
+                $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('id' =>$newValue ));
+                $reservation->SetStatus($status);
                 break;
             case "check_in_time":
                 $reservation->SetCheckInTime($newValue);
                 break;
             case "check_out_time":
                 $reservation->SetCheckOutTime($newValue);
-                break;
-            case "cleaned_by":
-                $reservation->SetCleanedBy($newValue);
                 break;
             case "check_in_status":
                 $now = new DateTime();
@@ -106,7 +105,7 @@ class ReservationController extends AbstractController
                         $reservation->setCheckInTime($now->format("H:i"));
                     }else{
                         $responseArray[] = array(
-                            'result_message' => "Please make sure the guest Id and phone number is captured",
+                                'result_message' => "Please make sure the guest Id and phone number is captured",
                             'result_code' => 1
                         );
                         $logger->info(print_r($responseArray, true));
@@ -122,7 +121,8 @@ class ReservationController extends AbstractController
                         $logger->info($due);
                         $responseArray[] = array(
                             'result_message' => "Please make sure the guest has settled their balance",
-                            'result_code' => 1
+                            'result_code' => 1,
+                            'due' => $due
                         );
                         $logger->info(print_r($responseArray, true));
                         return $this->json($responseArray);

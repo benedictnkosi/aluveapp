@@ -265,7 +265,7 @@ class ReservationHtml
 
             //whatsapp guest
             $this->logger->info(" HTML output - whatsapp guest " . $reservation->getId());
-            $htmlString .= '<a title="Whatsapp Guest" target="_blank" href="https://api.whatsapp.com/send?phone=+27%20' . $guest->getPhoneNumber() . '&text=Hello,%20this%20is%20Aluve%20Guesthouse%20:)"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>';
+            $htmlString .= '<a title="Whatsapp Guest" target="_blank" href="https://api.whatsapp.com/send?phone=' . $guest->getPhoneNumber() . '&text=Hello)"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>';
 
             //booking created on
             $this->logger->info("HTML output - bottom right icons " . $reservation->getId());

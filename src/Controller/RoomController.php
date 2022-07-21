@@ -29,7 +29,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/rooms/{roomId}", name="rooms", defaults={"roomId": "all"})
+     * @Route("/api/rooms/{roomId}", defaults={"roomId": "all"})
      */
     public function getRooms($roomId, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
@@ -42,9 +42,9 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/allrooms/{propertyUid}", name="rooms", defaults={"roomId": "all"})
+     * @Route("/api/allrooms/{propertyUid}", defaults={"roomId": "all"})
      */
-    public function getAllooms($propertyUid, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
+    public function getAllRooms($propertyUid, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $roomApi->getRooms("all", $propertyUid);

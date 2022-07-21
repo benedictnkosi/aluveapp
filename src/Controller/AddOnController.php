@@ -58,7 +58,6 @@ class AddOnController extends AbstractController
         return $response;
     }
 
-
     /**
      * @Route("api/addon/delete/{addOnId}")
      */

@@ -128,7 +128,9 @@ class EmployeeApi
                 $this->em->flush($employee);
                 $responseArray[] = array(
                     'result_message' => "Successfully created employee",
-                    'result_code' => 0
+                    'result_code' => 0,
+                    'employee_id' => $employee->getId(),
+                    'employee_name' => $employee->getName()
                 );
             }
 

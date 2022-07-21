@@ -520,7 +520,7 @@ class ReservationApi
         return $isEligible;
     }
 
-    public function getAmountDue($reservation): bool
+    public function getAmountDue($reservation)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
 

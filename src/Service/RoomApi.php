@@ -148,7 +148,8 @@ class RoomApi
                         'linked_room' => $linkedRoomId,
                         'room_size' => $room->getSize(),
                         'uploaded_images' => $imagesHtml,
-                        'tv' => $room->getTv()->getName(),
+                        'tv' => $room->getTv()->getId(),
+                        'tv_name' => $room->getTv()->getName(),
                         'result_code' => 0
                     );
 
