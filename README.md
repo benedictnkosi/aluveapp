@@ -48,4 +48,10 @@ TRUNCATE TABLE `payments`;
 TRUNCATE TABLE `cleaning`;
 delete FROM `reservations` where id > 0;
 delete FROM `guest` where id > 0;
-INSERT INTO `reservations` (`id`, `check_in`, `check_out`, `room_id`, `guest_id`, `status`, `additional_info`, `received_on`, `updated_on`, `uid`, `origin`, `origin_url`, `check_in_status`, `cleanliness_score`, `checked_in_time`, `check_in_time`, `check_out_time`) VALUES (NULL, '2022-06-28', '2022-06-29', '2', '64', 'confirmed', '', '2022-06-28 16:09:32', '2022-06-28 16:09:32', '', 'aibnb', 'aibnb', 'not checked in', '0', NULL, '14:00', '10:00')
+delete from room_images where id > 0;
+delete from blocked_rooms where id > 0;
+delete from rooms where id > 0;
+delete from add_ons where id > 0;
+delete from employee where id > 0;
+delete from message_template where id > 0;
+delete from schedule_messages where id > 0;

@@ -53,7 +53,7 @@ class ICalApi
                     $checkInDate = date('Y-m-d', strtotime($event['DTSTART;VALUE=DATE']));//user friendly date
 
                     if ($yesterday > $date_event) {
-                        $this->logger->info($date_event->format('Y-m-d H:i:s') . " great in the past ");
+                        $this->logger->info($date_event->format('Y-m-d H:i:s') . " event in the past ");
                         continue;
                     }
 
@@ -103,7 +103,7 @@ class ICalApi
                         } else {
                             $responseArray[] = array(
                                 'result_code' => 0,
-                                'result_message' => 'Successfully imported reservation ' . $uid
+                                'result_message' => 'Successfully imported new reservation ' . $uid
                             );
                         }
                         $this->logger->info(print_r($responseArray, true));
