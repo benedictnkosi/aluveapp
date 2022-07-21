@@ -64,7 +64,40 @@ class AddOnsApi
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
             $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
-            return $this->em->getRepository(AddOns::class)->findBy(array('property' => $propertyId));
+            return $this->em->getRepository(AddOns::class)->findBy(array('property' => $propertyId, 'status'=> 'live'));
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+    public function getAddOnsJson($addOnId): array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $addOn = $this->em->getRepository(AddOns::class)->findOneBy(array('id' => $addOnId));
+            if($addOn === null){
+                $responseArray[] = array(
+                    'result_message' => "Add on not found for id $addOnId",
+                    'result_code' => 1
+                );
+            }else{
+                $responseArray[] = array(
+                    'id' => $addOn->getId(),
+                    'name' => $addOn->getName(),
+                    'price' => $addOn->getPrice(),
+                    'property' => $addOn->getProperty()->getId(),
+                    'status' => $addOn->getStatus(),
+                    'result_code' => 1
+                );
+            }
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
@@ -169,7 +202,7 @@ class AddOnsApi
                 $this->em->flush($addOn);
 
                 $responseArray[] = array(
-                    'result_message' => "Successfully updated add on",
+                    'result_message' => "Successfully updated add-on",
                     'result_code' => 0
                 );
             }
@@ -198,8 +231,8 @@ class AddOnsApi
                 );
                 $this->logger->info(print_r($responseArray, true));
             } else {
-
-                $this->em->remove($addOn);
+                $addOn->setStatus("deleted");
+                $this->em->persist($addOn);
                 $this->em->flush();
                 $responseArray[] = array(
                     'result_message' => "Successfully deleted add-on",
@@ -242,7 +275,8 @@ class AddOnsApi
                 $this->em->flush($addOn);
                 $responseArray[] = array(
                     'result_message' => "Successfully created add on",
-                    'result_code' => 0
+                    'result_code' => 0,
+                    'add_on_id' => $addOn->getId()
                 );
 
 

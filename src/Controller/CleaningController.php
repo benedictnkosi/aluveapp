@@ -32,7 +32,7 @@ class CleaningController extends AbstractController
     /**
      * @Route("api/cleaning/{reservationId}/cleaner/{cleanerId}")
      */
-    public function addPayment($reservationId, $cleanerId, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
+    public function addCleanerToReservation($reservationId, $cleanerId, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $cleaningApi->addCleaningToReservation($reservationId,$cleanerId);

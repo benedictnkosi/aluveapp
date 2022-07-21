@@ -30,7 +30,7 @@ class BlockedRoomsHTML
 
         foreach ($blockedRooms as $blockedRoom) {
             //heading
-            $htmlString .= '<div class="res-details">';
+            $htmlString .= '<div class="block-room-details">';
             //room name
             $htmlString .= '<h4 class="guest-name">' . $blockedRoom->getRoom()->getName() . ' - ' . $blockedRoom->getId() . '</h4>';
             //dates

@@ -44,6 +44,19 @@ class AddOnController extends AbstractController
     }
 
     /**
+     * @Route("api/addon/{addOnId}")
+     */
+    public function getAddOn($addOnId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $addOns = $addOnsApi->getAddOnsJson($addOnId);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($addOns , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
      * @Route("api/createaddon/{addOnName}/{addOnPrice}/{propertyUid}")
      */
     public function createAddon($addOnName, $addOnPrice,$propertyUid, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response

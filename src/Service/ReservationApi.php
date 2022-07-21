@@ -45,6 +45,48 @@ class ReservationApi
         return $responseArray;
     }
 
+    public function getReservationJson($resId): array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $reservation =  $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
+            if($reservation === null){
+                $responseArray[] = array(
+                    'result_message' => "Reservation not found for id $resId",
+                    'result_code' => 1
+                );
+
+            }else{
+                $responseArray[] = array(
+                    'id' => $reservation->GetId(),
+                    'check_in' => $reservation->getCheckIn()->format('Y-m-d'),
+                    'check_out' => $reservation->getCheckOut()->format('Y-m-d'),
+                    'status' => $reservation->getStatus()->getId(),
+                    'guest_name' => $reservation->getGuest()->getId(),
+                    'check_in_status' => $reservation->getCheckInStatus(),
+                    'check_in_time' => $reservation->getCheckInTime(),
+                    'check_out_time' => $reservation->getCheckOutTime(),
+                    'checked_in_time' => $reservation->getCheckedInTime(),
+                    'room_id' => $reservation->getRoom()->getId(),
+                    'room_name' => $reservation->getRoom()->getName(),
+                    'result_code' => 0
+                );
+            }
+
+
+            return $responseArray;
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
     public function getReservationByUID($uid)
     {
         $this->logger->info("Starting Method: " . __METHOD__);

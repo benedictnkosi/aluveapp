@@ -36,6 +36,13 @@ class AddOns
     private $price;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=50, nullable=false, options={"default"="live"})
+     */
+    private $status = 'live';
+
+    /**
      * @var Property
      *
      * @ORM\ManyToOne(targetEntity="Property")
@@ -91,6 +98,22 @@ class AddOns
     public function setPrice(string $price): void
     {
         $this->price = $price;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
     }
 
     /**

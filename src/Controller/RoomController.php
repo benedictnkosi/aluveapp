@@ -29,12 +29,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/rooms/{roomId}", defaults={"roomId": "all"})
+     * @Route("/api/rooms/{roomId}/{propertyUid}", defaults={"roomId": "all", "propertyUid": "none"})
      */
-    public function getRooms($roomId, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
+    public function getRooms($roomId, $propertyUid, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->getRooms($roomId);
+        $response = $roomApi->getRooms($roomId, $propertyUid);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -55,7 +55,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/rooms/{checkInDate}/{checkOutDate}")
+     * @Route("/api/availablerooms/{checkInDate}/{checkOutDate}")
      */
     public function getAvailableRooms($checkInDate, $checkOutDate,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {

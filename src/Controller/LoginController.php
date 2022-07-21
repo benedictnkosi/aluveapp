@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 require_once(__DIR__ . '/../app/application.php');
 
-class HomeController extends AbstractController
+class LoginController extends AbstractController
 {
 
     /**

@@ -23,23 +23,13 @@ class BlockedRoomApi
         }
     }
 
-    public function blockRoom($roomId, $date, $comments): array
+    public function blockRoom($roomId, $fromDate,$toDate , $comments): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $this->logger->info("blocking room: " . $roomId);
 
         $responseArray = array();
         try {
-            $dateArray = explode(" - ", $date);
-
-            //example date from request 06-28-2022%20-%2006-28-2022
-            $fromDate = $dateArray[0];
-            $toDate =  $dateArray[1];
-
-            //change the format
-            $fromDate = explode("-", $fromDate)[2] ."-" . explode("-", $fromDate)[0]."-" . explode("-", $fromDate)[1];
-            $toDate = explode("-", $toDate)[2] ."-" . explode("-", $toDate)[0]."-" . explode("-", $toDate)[1];
-
             //get the room
             $roomApi = new RoomApi( $this->em, $this->logger);
             $room = $roomApi->getRoom($roomId);
@@ -77,7 +67,8 @@ class BlockedRoomApi
 
             $responseArray[] = array(
                 'result_code' => 0,
-                'result_message' => 'Successfully blocked room'
+                'result_message' => 'Successfully blocked room',
+                'block_id' => $blockRoom->getId()
             );
             $this->logger->info(print_r($responseArray, true));
         } catch (Exception $ex) {
@@ -108,9 +99,10 @@ class BlockedRoomApi
                 ->createQuery("SELECT b FROM App\Entity\BlockedRooms b 
             JOIN b.room r
                 JOIN r.property p
-            WHERE p.uid = '".$propertyUid."'
-            and
-            WHERE b.toDate >= '".$datetime->format('Y-m-d')."' 
+            WHERE b.room = r.id
+            and p.id = r.property
+            and p.uid = '".$propertyUid."'
+            and b.toDate >= '".$datetime->format('Y-m-d')."' 
                     $roomFilter 
             order by b.fromDate asc ")
                 ->getResult();

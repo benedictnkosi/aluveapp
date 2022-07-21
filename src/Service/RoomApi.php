@@ -152,8 +152,6 @@ class RoomApi
                         'tv_name' => $room->getTv()->getName(),
                         'result_code' => 0
                     );
-
-                    $_SESSION['room_id'] = $room->GetId();
                 }
             }
 
@@ -289,7 +287,8 @@ class RoomApi
 
             $responseArray[] = array(
                 'result_message' => "Successfully linked image to the room",
-                'result_code' => 0
+                'result_code' => 0,
+                'image_id' => $roomImage->getId()
             );
         } catch (Exception $ex) {
             $responseArray[] = array(
@@ -403,7 +402,8 @@ class RoomApi
             $responseArray[] = array(
                 'result_message' => $successMessage,
                 'result_code' => 0,
-                'room_id' => $room->getId()
+                'room_id' => $room->getId(),
+                'room_name' => $room->getName()
             );
 
 
@@ -488,7 +488,7 @@ class RoomApi
                 $this->em->flush($roomImage);
 
                 $responseArray[] = array(
-                    'result_message' => "Successfully removed image",
+                    'result_message' => "Successfully marked image as default",
                     'result_code' => 0
                 );
             }

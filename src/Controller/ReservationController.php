@@ -76,6 +76,20 @@ class ReservationController extends AbstractController
     }
 
     /**
+     * @Route("api/reservations/{reservationId}")
+     */
+    public function getReservationById($reservationId, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $reservationApi->getReservationJson($reservationId);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+
+    }
+
+    /**
      * @Route("api/reservations/{reservationId}/update/{field}/{newValue}")
      */
     public function updateReservation($reservationId, $field, $newValue, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
