@@ -525,14 +525,26 @@ class ReservationApi
                         }
                     }
                 }
+                if(count($roomIdsArray) === 1){
+                    $responseArray[] = array(
+                        'result_code' => 0,
+                        'result_message' => "Successfully created reservation",
+                        'reservation_id' => $reservation->getId()
+                    );
+                }
+
                 $reservationIds[] = $reservation->getId();
             }
 
-            $responseArray[] = array(
-                'result_code' => 0,
-                'result_message' => "Successfully created reservation",
-                'reservation_id' => $reservationIds
-            );
+            if(count($roomIdsArray) > 1){
+                $responseArray[] = array(
+                    'result_code' => 0,
+                    'result_message' => "Successfully created reservation",
+                    'reservation_id' => $reservationIds
+                );
+            }
+
+
 
         } catch (Exception $ex) {
             $responseArray[] = array(
