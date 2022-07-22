@@ -415,7 +415,7 @@ class ReservationApi
         return $responseArray;
     }
 
-    public function createReservation($roomIds,$guestName,$phoneNumber,$email,$checkInDate,$checkOutDate, $uid = null, $isImport = false, $origin = "website"): array
+    public function createReservation($roomIds,$guestName,$phoneNumber,$email,$checkInDate,$checkOutDate, $uid = null, $isImport = false, $origin = "website", $originUrl = "website"): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $this->logger->info("room ids" . $roomIds);
@@ -433,7 +433,12 @@ class ReservationApi
                 $propertyUid = $roomApi->getRoom($roomIds)->getProperty()->getUid();
                 //get guest
                 $guestApi = new GuestApi($this->em, $this->logger);
-                $guest = $guestApi->getGuestByPhoneNumber($phoneNumber,$propertyUid);
+                if(strcmp($origin, "airbnb") === 0){
+                    $guest = $guestApi->getGuestByName("Airbnb Guest",$propertyUid);
+                }else{
+                    $guest = $guestApi->getGuestByPhoneNumber($phoneNumber,$propertyUid);
+                }
+
                 if ($guest == null) {
                     $this->logger->info("guest not found, creating a new guest");
                     //create guest
@@ -469,11 +474,11 @@ class ReservationApi
                 $reservation->setCheckOut(new DateTime($checkOutDate));
                 $reservation->setGuest($guest);
 
-                $reservation->setOrigin("website");
+                $reservation->setOrigin($origin);
                 $reservation->setReceivedOn(new DateTime());
                 $reservation->setUpdatedOn(new DateTime());
                 $reservation->setCheckedInTime(NULL);
-                $reservation->setOriginUrl($origin);
+                $reservation->setOriginUrl($originUrl);
 
                 if($isImport){
                     $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));

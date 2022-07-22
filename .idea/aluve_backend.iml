@@ -136,6 +136,12 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/version" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/type" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/resource-operations" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/kigkonsult/icalcreator" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/sabre/uri" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/sabre/xml" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/sabre/vobject" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-imap/php-imap" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/secit-pl/imap-bundle" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

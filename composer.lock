@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3a7209365b533d89af716525a4f4fe55",
+    "content-hash": "42010262196e0cd6b37ab2b44b991905",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1526,6 +1526,101 @@
             "time": "2022-05-05T09:31:05+00:00"
         },
         {
+            "name": "kigkonsult/icalcreator",
+            "version": "v2.41.49",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/iCalcreator/iCalcreator.git",
+                "reference": "26debddfd4bff06c766a75057348852aeefad4e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/iCalcreator/iCalcreator/zipball/26debddfd4bff06c766a75057348852aeefad4e4",
+                "reference": "26debddfd4bff06c766a75057348852aeefad4e4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "ext-openssl": "*",
+                "ext-simplexml": "*",
+                "ext-zlib": "*",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "ext-xdebug": "*",
+                "phpcompatibility/php-compatibility": ">=9.3.5",
+                "phpstan/phpstan": ">=0.9.3",
+                "phpunit/phpunit": ">=6.5.13",
+                "squizlabs/php_codesniffer": ">=3.5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ],
+                "psr-4": {
+                    "Kigkonsult\\Icalcreator\\": [
+                        "src/",
+                        "src/Util/",
+                        "src/Traits/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Kjell-Inge Gustafsson",
+                    "email": "ical@kigkonsult.se"
+                }
+            ],
+            "description": "iCalcreator is the PHP implementation of rfc2445/rfc5545 and rfc updates, management of calendar information",
+            "keywords": [
+                "alarm",
+                "availability",
+                "calendar",
+                "daylight",
+                "event",
+                "location",
+                "management",
+                "participant",
+                "resource",
+                "rfc2445",
+                "rfc5545",
+                "rfc5870",
+                "rfc6321",
+                "rfc6868",
+                "rfc7529",
+                "rfc7808",
+                "rfc7953",
+                "rfc7986",
+                "rfc9073",
+                "rfc9074",
+                "standard",
+                "todo",
+                "vCalendar",
+                "valarm",
+                "vevent",
+                "vfreebusy",
+                "vjournal",
+                "vtimezone",
+                "vtodo"
+            ],
+            "support": {
+                "issues": "https://github.com/iCalcreator/iCalcreator/issues",
+                "source": "https://github.com/iCalcreator/iCalcreator/tree/v2.41.49"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/kigkonsult",
+                    "type": "other"
+                }
+            ],
+            "time": "2022-05-03T11:12:41+00:00"
+        },
+        {
             "name": "laminas/laminas-code",
             "version": "4.5.2",
             "source": {
@@ -1693,6 +1788,76 @@
                 }
             ],
             "time": "2022-06-09T09:09:00+00:00"
+        },
+        {
+            "name": "php-imap/php-imap",
+            "version": "5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barbushin/php-imap.git",
+                "reference": "13bdfa9a6f541798253e24e2d8f44332c8be098c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barbushin/php-imap/zipball/13bdfa9a6f541798253e24e2d8f44332c8be098c",
+                "reference": "13bdfa9a6f541798253e24e2d8f44332c8be098c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "ext-iconv": "*",
+                "ext-imap": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.4",
+                "maglnet/composer-require-checker": "^2.0|^3.2",
+                "nikic/php-parser": "^4.3,<4.7|^4.10",
+                "paragonie/hidden-string": "^1.0",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpunit/phpunit": "^8.5|^9.5",
+                "povils/phpmnd": "^2.2",
+                "psalm/plugin-phpunit": "^0.10.0|^0.15.1",
+                "roave/security-advisories": "dev-master",
+                "sebastian/phpcpd": "^4.1|^6.0"
+            },
+            "suggest": {
+                "ext-fileinfo": "To facilitate IncomingMailAttachment::getFileInfo() auto-detection"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpImap\\": "src/PhpImap"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sergey Barbushin",
+                    "email": "barbushin@gmail.com",
+                    "homepage": "http://linkedin.com/in/barbushin"
+                }
+            ],
+            "description": "Manage mailboxes, filter/get/delete emails in PHP (supports IMAP/POP3/NNTP)",
+            "homepage": "https://github.com/barbushin/php-imap",
+            "keywords": [
+                "imap",
+                "mail",
+                "mailbox",
+                "php",
+                "pop3",
+                "receive emails"
+            ],
+            "support": {
+                "issues": "https://github.com/barbushin/php-imap/issues",
+                "source": "https://github.com/barbushin/php-imap/tree/5.0.0"
+            },
+            "time": "2022-03-12T14:39:59+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -2156,6 +2321,291 @@
                 "source": "https://github.com/php-fig/log/tree/3.0.0"
             },
             "time": "2021-07-14T16:46:02+00:00"
+        },
+        {
+            "name": "sabre/uri",
+            "version": "2.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sabre-io/uri.git",
+                "reference": "7cb0f489578afad5006e85cd60f18ff33f2d440d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sabre-io/uri/zipball/7cb0f489578afad5006e85cd60f18ff33f2d440d",
+                "reference": "7cb0f489578afad5006e85cd60f18ff33f2d440d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.17.1",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/functions.php"
+                ],
+                "psr-4": {
+                    "Sabre\\Uri\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Functions for making sense out of URIs.",
+            "homepage": "http://sabre.io/uri/",
+            "keywords": [
+                "rfc3986",
+                "uri",
+                "url"
+            ],
+            "support": {
+                "forum": "https://groups.google.com/group/sabredav-discuss",
+                "issues": "https://github.com/sabre-io/uri/issues",
+                "source": "https://github.com/fruux/sabre-uri"
+            },
+            "time": "2021-11-04T09:29:58+00:00"
+        },
+        {
+            "name": "sabre/vobject",
+            "version": "4.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sabre-io/vobject.git",
+                "reference": "2a043b994fa8d8a655c3d50d73c1ad443d31d677"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/2a043b994fa8d8a655c3d50d73c1ad443d31d677",
+                "reference": "2a043b994fa8d8a655c3d50d73c1ad443d31d677",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": "^7.1 || ^8.0",
+                "sabre/xml": "^2.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.17.1",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/php-invoker": "^2.0 || ^3.1",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.0"
+            },
+            "suggest": {
+                "hoa/bench": "If you would like to run the benchmark scripts"
+            },
+            "bin": [
+                "bin/vobject",
+                "bin/generate_vcards"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sabre\\VObject\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Dominik Tobschall",
+                    "email": "dominik@fruux.com",
+                    "homepage": "http://tobschall.de/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net",
+                    "homepage": "http://mnt.io/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The VObject library for PHP allows you to easily parse and manipulate iCalendar and vCard objects",
+            "homepage": "http://sabre.io/vobject/",
+            "keywords": [
+                "availability",
+                "freebusy",
+                "iCalendar",
+                "ical",
+                "ics",
+                "jCal",
+                "jCard",
+                "recurrence",
+                "rfc2425",
+                "rfc2426",
+                "rfc2739",
+                "rfc4770",
+                "rfc5545",
+                "rfc5546",
+                "rfc6321",
+                "rfc6350",
+                "rfc6351",
+                "rfc6474",
+                "rfc6638",
+                "rfc6715",
+                "rfc6868",
+                "vCalendar",
+                "vCard",
+                "vcf",
+                "xCal",
+                "xCard"
+            ],
+            "support": {
+                "forum": "https://groups.google.com/group/sabredav-discuss",
+                "issues": "https://github.com/sabre-io/vobject/issues",
+                "source": "https://github.com/fruux/sabre-vobject"
+            },
+            "time": "2022-07-15T15:21:17+00:00"
+        },
+        {
+            "name": "sabre/xml",
+            "version": "2.2.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sabre-io/xml.git",
+                "reference": "a6af111850e7536d200d9637c34885cd3c77a86c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sabre-io/xml/zipball/a6af111850e7536d200d9637c34885cd3c77a86c",
+                "reference": "a6af111850e7536d200d9637c34885cd3c77a86c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-xmlreader": "*",
+                "ext-xmlwriter": "*",
+                "lib-libxml": ">=2.6.20",
+                "php": "^7.1 || ^8.0",
+                "sabre/uri": ">=1.0,<3.0.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.17.1",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/Deserializer/functions.php",
+                    "lib/Serializer/functions.php"
+                ],
+                "psr-4": {
+                    "Sabre\\Xml\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Markus Staab",
+                    "email": "markus.staab@redaxo.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "sabre/xml is an XML library that you may not hate.",
+            "homepage": "https://sabre.io/xml/",
+            "keywords": [
+                "XMLReader",
+                "XMLWriter",
+                "dom",
+                "xml"
+            ],
+            "support": {
+                "forum": "https://groups.google.com/group/sabredav-discuss",
+                "issues": "https://github.com/sabre-io/xml/issues",
+                "source": "https://github.com/fruux/sabre-xml"
+            },
+            "time": "2021-11-04T06:37:27+00:00"
+        },
+        {
+            "name": "secit-pl/imap-bundle",
+            "version": "1.5.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/secit-pl/imap-bundle.git",
+                "reference": "f939f01e06c6e4fb07568e6c2781de145b916596"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/secit-pl/imap-bundle/zipball/f939f01e06c6e4fb07568e6c2781de145b916596",
+                "reference": "f939f01e06c6e4fb07568e6c2781de145b916596",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "php-imap/php-imap": "~2.0|~3.0|~4.0|~5.0",
+                "symfony/dependency-injection": "~4.0|~5.0|~6.0",
+                "symfony/framework-bundle": "~4.0|~5.0|~6.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SecIT\\ImapBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tomasz Gemza",
+                    "email": "t.gemza@secit.pl"
+                }
+            ],
+            "description": "PHP-IMAP Symfony integration.",
+            "homepage": "http://secit.pl",
+            "keywords": [
+                "bundle",
+                "imap",
+                "php-imap",
+                "symfony"
+            ],
+            "support": {
+                "issues": "https://github.com/secit-pl/imap-bundle/issues",
+                "source": "https://github.com/secit-pl/imap-bundle/tree/1.5.2"
+            },
+            "time": "2022-03-24T11:46:13+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -9811,7 +10261,10 @@
     "platform": {
         "php": ">=8.1",
         "ext-ctype": "*",
-        "ext-iconv": "*"
+        "ext-curl": "*",
+        "ext-iconv": "*",
+        "ext-imap": "*",
+        "ext-mysqli": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

@@ -49,6 +49,18 @@
             "./tests/bootstrap.php"
         ]
     },
+    "secit-pl/imap-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "2303e00839856f36b1829d0b189e5d959153aefb"
+        },
+        "files": [
+            "./config/packages/imap.yaml"
+        ]
+    },
     "sensio/framework-extra-bundle": {
         "version": "6.2",
         "recipe": {

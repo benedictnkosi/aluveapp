@@ -83,6 +83,32 @@ class GuestApi
         return $responseArray;
     }
 
+    public function updateAirbnbGuestName($confirmationCode, $name): array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('originUrl' => $confirmationCode));
+            $guest = $reservation->getGuest();
+            $guest->setName($name);
+            $this->em->persist($guest);
+            $this->em->flush($guest);
+            $responseArray[] = array(
+                'result_code' => 0,
+                'result_message' => 'Successfully updated guest name'
+            );
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_code' => 1,
+                'result_message' => $ex->getMessage()
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
     public function updateGuestIdNumber($guestId, $IdNumber): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
@@ -200,6 +226,26 @@ class GuestApi
         return $guest;
     }
 
+    public function getGuestByName($name, $propertyUid)
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $guest = null;
+        $responseArray = array();
+        try {
+            $propertyApi = new PropertyApi($this->em, $this->logger);
+            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('name' => $name, 'property' => $propertyId));
+        } catch (Exception $exception) {
+            $responseArray[] = array(
+                'result_message' => $exception->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $guest;
+    }
     function startsWith($haystack, $needle): bool
     {
         $length = strlen($needle);

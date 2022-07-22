@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\ICalApi;
+use PhpImap\Mailbox;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,5 +41,4 @@ class ICalController extends AbstractController
         $response->setCallback($callback);
         return $response;
     }
-
 }
