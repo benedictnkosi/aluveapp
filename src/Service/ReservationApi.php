@@ -415,124 +415,124 @@ class ReservationApi
         return $responseArray;
     }
 
-    public function createReservation($roomId,$guestName,$phoneNumber,$email,$checkInDate,$checkOutDate, $uid = null, $isImport = false, $origin = "website"): array
+    public function createReservation($roomIds,$guestName,$phoneNumber,$email,$checkInDate,$checkOutDate, $uid = null, $isImport = false, $origin = "website"): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->info("room ids" . $roomIds);
         $responseArray = array();
         try {
             //get property Id
-            $roomApi = new RoomApi($this->em,$this->logger);
-            $propertyUid = $roomApi->getRoom($roomId)->getProperty()->getUid();
-            //get guest
-            $guestApi = new GuestApi($this->em, $this->logger);
-            $guest = $guestApi->getGuestByPhoneNumber($phoneNumber,$propertyUid);
-            if ($guest == null) {
-                $this->logger->info("guest not found, creating a new guest");
-                //create guest
-                $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $propertyUid);
-                if ($response[0]['result_code'] != 0) {
-                    $this->logger->info(print_r($response, true));
-                    return $response;
-                } else {
-                    $guest = $response[0]['guest'];
-                }
-            }
-            //get room
-            $roomApi = new RoomApi($this->em, $this->logger);
-            $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
-            $room = $roomApi->getRoom($roomId);
-
-            $paid = 0;
-            //check if room is available
-            $isRoomAvailable = $roomApi->isRoomAvailable($room->getId(), $checkInDate, $checkOutDate);
-
-            if (!$isRoomAvailable) {
-                $responseArray[] = array(
-                    'result_code' => 1,
-                    'result_message' => 'Room not available for selected dates'
-                );
-                return $responseArray;
-            }
-
-            $reservation = new Reservations();
-            $reservation->setRoom($room);
-            $reservation->setAdditionalInfo($phoneNumber);
-            $reservation->setCheckIn(new DateTime($checkInDate));
-            $reservation->setCheckOut(new DateTime($checkOutDate));
-            $reservation->setGuest($guest);
-
-            $reservation->setOrigin("website");
-            $reservation->setReceivedOn(new DateTime());
-            $reservation->setUpdatedOn(new DateTime());
-            $reservation->setCheckedInTime(NULL);
-            $reservation->setOriginUrl($origin);
-
-            if($isImport){
-                $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
-            }else{
-                $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'pending'));
-            }
-
-            $reservation->setStatus($status);
-
-            if($uid == null){
-                $reservation->setUid(uniqid()  . "@" . SERVER_NAME);
-            }else{
-                $reservation->setUid($uid);
-            }
-
-            $this->em->persist($reservation);
-            $this->em->flush($reservation);
-
-            //add Short stay 3 hour add-on if check out is same day
-            $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
-            $this->logger->info("Date diff is $totalDays");
-            if($totalDays === 0){
-                $this->logger->info("Short Stay");
-                $addOnsApi = new AddOnsApi($this->em, $this->logger);
-                $addon = $addOnsApi->getAddOn("Short Stay - 3 Hours", $propertyUid);
-                $addOnsApi->addAdOnToReservation($reservation->getId(), $addon->getId(), 1);
-            }else{
-                $this->logger->info("overnight Stay");
-            }
-
-            //block connected Room
-            $blockRoomApi->blockRoom($room->getLinkedRoom(), "Connected Room Booked", $checkInDate, $checkOutDate);
-
-            //Send SMS
-            if(!$isImport){
-                if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
-                    $SMSHelper = new SMSHelper($this->logger);
-                    $message = "Hi " . $guest->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://".SERVER_NAME."/invoice.html?reservation=" . $reservation->getId();
-                    $SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
-                    $responseArray[] = array(
-                        'result_code' => 0,
-                        'result_message' => "Successfully created reservation",
-                        'reservation_id' => $reservation->getId()
-                    );
-                }else{
-                    if (!empty($reservation->getGuest()->getEmail())) {
-                        $emailBody = file_get_contents(__DIR__ . '/../email_template/thank_you_for_payment.html');
-                        $emailBody = str_replace("guest_name",$reservation->getGuest()->getName(),$emailBody);
-                        $emailBody = str_replace("check_in",$reservation->getCheckIn()->format("d M Y"),$emailBody);
-                        $emailBody = str_replace("check_out",$reservation->getCheckOut()->format("d M Y"),$emailBody);
-                        $emailBody = str_replace("server_name",SERVER_NAME, $emailBody);
-                        $emailBody = str_replace("reservation_id",$reservation->getId(),$emailBody);
-                        mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
-                        $responseArray[] = array(
-                            'result_code' => 0,
-                            'result_message' => "Successfully created reservation but email or sms not sent",
-                            'reservation_id' => $reservation->getId()
-                        );
-                    }else{
-                        $responseArray[] = array(
-                            'result_code' => 0,
-                            'result_message' => "Successfully created reservation",
-                            'reservation_id' => $reservation->getId()
-                        );
+            $roomIds = str_replace('[',"",$roomIds);
+            $roomIds = str_replace(']',"",$roomIds);
+            $roomIds = str_replace('"',"",$roomIds);
+            $roomIdsArray = explode(",", $roomIds);
+            $reservationIds = array();
+            foreach ($roomIdsArray as $roomId){
+                $this->logger->info("room id " . $roomId);
+                $roomApi = new RoomApi($this->em,$this->logger);
+                $propertyUid = $roomApi->getRoom($roomIds)->getProperty()->getUid();
+                //get guest
+                $guestApi = new GuestApi($this->em, $this->logger);
+                $guest = $guestApi->getGuestByPhoneNumber($phoneNumber,$propertyUid);
+                if ($guest == null) {
+                    $this->logger->info("guest not found, creating a new guest");
+                    //create guest
+                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $propertyUid);
+                    if ($response[0]['result_code'] != 0) {
+                        $this->logger->info(print_r($response, true));
+                        return $response;
+                    } else {
+                        $guest = $response[0]['guest'];
                     }
                 }
+                //get room
+                $roomApi = new RoomApi($this->em, $this->logger);
+                $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
+                $room = $roomApi->getRoom($roomId);
+
+                $paid = 0;
+                //check if room is available
+                $isRoomAvailable = $roomApi->isRoomAvailable($room->getId(), $checkInDate, $checkOutDate);
+
+                if (!$isRoomAvailable) {
+                    $responseArray[] = array(
+                        'result_code' => 1,
+                        'result_message' => 'Room not available for selected dates'
+                    );
+                    return $responseArray;
+                }
+
+                $reservation = new Reservations();
+                $reservation->setRoom($room);
+                $reservation->setAdditionalInfo($phoneNumber);
+                $reservation->setCheckIn(new DateTime($checkInDate));
+                $reservation->setCheckOut(new DateTime($checkOutDate));
+                $reservation->setGuest($guest);
+
+                $reservation->setOrigin("website");
+                $reservation->setReceivedOn(new DateTime());
+                $reservation->setUpdatedOn(new DateTime());
+                $reservation->setCheckedInTime(NULL);
+                $reservation->setOriginUrl($origin);
+
+                if($isImport){
+                    $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+                }else{
+                    $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'pending'));
+                }
+
+                $reservation->setStatus($status);
+
+                if($uid == null){
+                    $reservation->setUid(uniqid()  . "@" . SERVER_NAME);
+                }else{
+                    $reservation->setUid($uid);
+                }
+
+                $this->em->persist($reservation);
+                $this->em->flush($reservation);
+
+                //add Short stay 3 hour add-on if check out is same day
+                $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
+                $this->logger->info("Date diff is $totalDays");
+                if($totalDays === 0){
+                    $this->logger->info("Short Stay");
+                    $addOnsApi = new AddOnsApi($this->em, $this->logger);
+                    $addon = $addOnsApi->getAddOn("Short Stay - 3 Hours", $propertyUid);
+                    $addOnsApi->addAdOnToReservation($reservation->getId(), $addon->getId(), 1);
+                }else{
+                    $this->logger->info("overnight Stay");
+                }
+
+                //block connected Room
+                $blockRoomApi->blockRoom($room->getLinkedRoom(), "Connected Room Booked", $checkInDate, $checkOutDate);
+
+                //Send SMS
+                if(!$isImport){
+                    if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
+                        $SMSHelper = new SMSHelper($this->logger);
+                        $message = "Hi " . $guest->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://".SERVER_NAME."/invoice.html?reservation=" . $reservation->getId();
+                        $SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
+                    }else{
+                        if (!empty($reservation->getGuest()->getEmail())) {
+                            $emailBody = file_get_contents(__DIR__ . '/../email_template/new_reservation.html');
+                            $emailBody = str_replace("guest_name",$reservation->getGuest()->getName(),$emailBody);
+                            $emailBody = str_replace("check_in",$reservation->getCheckIn()->format("d M Y"),$emailBody);
+                            $emailBody = str_replace("check_out",$reservation->getCheckOut()->format("d M Y"),$emailBody);
+                            $emailBody = str_replace("server_name",SERVER_NAME, $emailBody);
+                            $emailBody = str_replace("reservation_id",$reservation->getId(),$emailBody);
+                            mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
+                        }
+                    }
+                }
+                $reservationIds[] = $reservation->getId();
             }
+
+            $responseArray[] = array(
+                'result_code' => 0,
+                'result_message' => "Successfully created reservation",
+                'reservation_id' => $reservationIds
+            );
 
         } catch (Exception $ex) {
             $responseArray[] = array(

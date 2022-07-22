@@ -141,17 +141,21 @@ class GuestApi
             $propertyApi = new PropertyApi($this->em, $this->logger);
             $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
             if ($filterValue == 0) {
-                $guests = $this->em->getRepository(Guest::class)->findBy(array('property' => $propertyId));
+                $guest = $this->em->getRepository(Guest::class)->findBy(array('property' => $propertyId));
             } else {
                 if (strlen($filterValue) > 4) {
-                    $guests = $this->em->getRepository(Guest::class)->findBy(array('phoneNumber' => $filterValue, 'property' => $propertyId));
+                    $guest = $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => $filterValue, 'property' => $propertyId));
                 } else {
-                    $guests = $this->em->getRepository(Guest::class)->findBy(array('id' => $filterValue, 'property' => $propertyId));
+                    $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $filterValue, 'property' => $propertyId));
                 }
             }
             $responseArray = array();
 
-            foreach ($guests as $guest) {
+            if($guest === null){
+                $responseArray[] = array(
+                    'result_code' => 1
+                );
+            }else{
                 $responseArray[] = array(
                     'id' => $guest->getId(),
                     'name' => $guest->getName(),
