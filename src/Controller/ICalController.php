@@ -34,7 +34,6 @@ class ICalController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $ical = $iCalApi->exportIcalForRoom($roomId);
         $response = new Response($ical);
-        //$response->headers->remove('Content-Disposition');
         $response->headers->add(array('Content-type'=>'text/calendar; charset=utf-8',  'Content-Disposition' => 'inline; filename=aluve_'.$roomId.'.ics'));
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());

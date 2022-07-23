@@ -45,7 +45,7 @@ class ICalApi
                 $this->logger->info("events found  " . count($events));
                 $i = 0;
                 $origin = "";
-                foreach($events->VEVENT as $event) {
+                foreach ($events->VEVENT as $event) {
                     $i++;
                     $this->logger->info("event number $i");
 
@@ -89,22 +89,22 @@ class ICalApi
                         $this->logger->info("guest phone is  " . $guestPhoneNumber);
 
                         $pos = strpos($guestPhoneNumber, "Email");
-                        if($pos > -1){
+                        if ($pos > -1) {
                             $guestPhoneNumber = trim(substr($guestPhoneNumber, 0, $pos));
 
                             $email = trim(str_replace("ATTENDEE", "", $pieces[3]));
                             $this->logger->info("guest email is  " . $email);
                         }
-                    }else if(str_contains($url->getLink(), 'airbnb')){
-                        if(str_contains($summary, "Not available")){
+                    } else if (str_contains($url->getLink(), 'airbnb')) {
+                        if (str_contains($summary, "Not available")) {
                             $this->logger->info("Summary is not available for uid " . $uid);
                             continue;
                         }
-                        $detailsPosition =  strpos($description, 'details/');
+                        $detailsPosition = strpos($description, 'details/');
                         $this->logger->info("detailsPosition is  " . $detailsPosition);
                         $temp = substr($description, $detailsPosition + strlen('details/'));
                         $this->logger->info("temp is  " . $temp);
-                        $endOfConfirmationPosition =  strpos($temp, 'Phone');
+                        $endOfConfirmationPosition = strpos($temp, 'Phone');
                         $this->logger->info("endOfConfirmationPosition is  " . $endOfConfirmationPosition);
                         $originUrl = trim(substr($temp, 0, $endOfConfirmationPosition));
                         $this->logger->info("confirmation code is  " . $originUrl);
@@ -159,7 +159,6 @@ class ICalApi
             } catch (Exception $ex) {
                 $this->logger->info($ex->getTraceAsString());
             }
-
 
 
         }
@@ -260,25 +259,33 @@ class ICalApi
         $this->logger->info("Starting Method: " . __METHOD__);
         try {
             $reservationApi = new ReservationApi($this->em, $this->logger);
-            $reservations = $reservationApi->getReservationsByRoom($roomId);
+            $blockedRoomApi = new BlockedRoomApi($this->em, $this->logger);
+
             $roomApi = new RoomApi($this->em, $this->logger);
             $room = $roomApi->getRoom($roomId);
             if ($room === null) {
                 $this->logger->info("room not found for id - " . $roomId);
                 return "";
             }
+            $roomName = $room->getName();
+
+            $reservations = $reservationApi->getReservationsByRoom($roomId);
+            $blockedRooms = $blockedRoomApi->getBlockedRooms($room->getProperty()->getId(), $room->getId());
+            $now = new DateTime();
+
             if ($reservations !== null) {
                 $this->logger->info("found reservations - " . count($reservations));
                 // create the ical object
-                $roomName = $room->getName();
+
+
                 $icalString = 'BEGIN:VCALENDAR
-METHOD:PUBLISH
-PRODID:-//' . $room->getPropert()->getName() . '//Aluve-' . $roomName . '-1// EN
-CALSCALE:GREGORIAN
-VERSION:2.0';
+                METHOD:PUBLISH
+                PRODID:-//' . $room->getProperty()->getName() . '//Aluve-' . $roomName . '-1// EN
+                CALSCALE:GREGORIAN
+                VERSION:2.0';
+
                 foreach ($reservations as $reservation) {
                     $this->logger->info("looping reservations - " . $reservation->getId());
-                    $now = new DateTime();
                     $resId = $reservation->getId();
                     $event_start = $reservation->getCheckIn()->format('Ymd');
                     $event_end = $reservation->getCheckOut()->format('Ymd');
@@ -298,7 +305,7 @@ DTSTART;VALUE=DATE:' . $event_end . '
 DTSTAMP:' . $now->format('Ymd') . 'T100058Z
 UID:' . $uid . '
 DESCRIPTION:NAME: ' . $guestName . ' \nEMAIL: ' . $guestEmail . '
-SUMMARY:' . $room->getPropert()->getName() . ' - ' . $guestName . '  - Resa id: ' . $resId . '
+SUMMARY:' . $room->getProperty()->getName() . ' - ' . $guestName . '  - Resa id: ' . $resId . '
 STATUS:CONFIRMED
 CREATED:' . $reservation->getReceivedOn()->format('Ymd') . 'T222001Z
 END:VEVENT';
@@ -309,10 +316,50 @@ END:VEVENT';
 END:VCALENDAR';
                 $this->logger->info($icalString);
                 return $icalString;
-            } else {
-                $this->logger->info("No reservations found for room $roomId");
-                return "";
             }
+
+            if ($blockedRooms !== null) {
+                $this->logger->info("found blocked rooms - " . count($blockedRooms));
+                // create the ical object
+
+                $icalString = 'BEGIN:VCALENDAR
+                METHOD:PUBLISH
+                PRODID:-//' . $room->getProperty()->getName() . '//Aluve-' . $roomName . '-1// EN
+                CALSCALE:GREGORIAN
+                VERSION:2.0';
+
+                foreach ($blockedRooms as $blockedRoom) {
+                    $this->logger->info("looping blocked rooms - " . $blockedRoom->getId());
+
+                    $blockRoomId = $blockedRoom->getId();
+                    $event_start = $blockedRoom->setFromDate()->format('Ymd');
+                    $event_end = $blockedRoom->getToDate()->format('Ymd');
+
+                    $uid = $blockedRoom->getUid();
+                    // date/time is in SQL datetime format
+
+                    $this->logger->info("create the event within the ical object");
+                    // create the event within the ical object
+                    $icalString .= '
+BEGIN:VEVENT
+DTEND;VALUE=DATE:' . $event_start . '
+DTSTART;VALUE=DATE:' . $event_end . '
+DTSTAMP:' . $now->format('Ymd') . 'T100058Z
+UID:' . $uid . '
+DESCRIPTION:NAME: blocked room \nEMAIL: noemail@aluvegh.co.za
+SUMMARY:' . $room->getProperty()->getName() . ' - ' . $roomName . '  - Block id: ' . $blockRoomId . '
+STATUS:CONFIRMED
+CREATED:' . $blockedRoom->getCreatedDate()->format('Ymd') . 'T222001Z
+END:VEVENT';
+                    $this->logger->info("Done creating the event within the ical object");
+                }
+
+                $icalString .= '
+END:VCALENDAR';
+                $this->logger->info($icalString);
+                return $icalString;
+            }
+
         } catch (Exception $ex) {
             $this->logger->info($ex->getMessage());
             return "";

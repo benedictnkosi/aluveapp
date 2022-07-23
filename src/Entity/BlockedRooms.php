@@ -50,6 +50,20 @@ class BlockedRooms
     private $comment;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="uid", type="string", length=100, nullable=true)
+     */
+    private $uid;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="created_date", type="date", nullable=true, options={"default"="CURRENT_DATE"})
+     */
+    private $createdDate = 'CURRENT_DATE';
+
+    /**
      * @var Rooms
      *
      * @ORM\ManyToOne(targetEntity="Rooms")
@@ -137,6 +151,38 @@ class BlockedRooms
     public function setComment(?string $comment): void
     {
         $this->comment = $comment;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUid(): ?string
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param string|null $uid
+     */
+    public function setUid(?string $uid): void
+    {
+        $this->uid = $uid;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getCreatedDate(): \DateTime|string|null
+    {
+        return $this->createdDate;
+    }
+
+    /**
+     * @param \DateTime|null $createdDate
+     */
+    public function setCreatedDate(\DateTime|string|null $createdDate): void
+    {
+        $this->createdDate = $createdDate;
     }
 
     /**
