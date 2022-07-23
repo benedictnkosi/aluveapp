@@ -31,7 +31,7 @@ class PropertyApi
         $responseArray = array();
         try {
             $property = $this->em->getRepository(Property::class)->findOneBy(
-                array("id" => $propertyId));
+               array("id" => $propertyId));
             if ($property != null) {
                 $responseArray[] = array(
                     'id' => $property->getId(),
@@ -39,9 +39,10 @@ class PropertyApi
                     'address' => $property->getAddress(),
                     'phone_number' => $property->getPhoneNumber(),
                     'email' => $property->getEmailAddress(),
-                    'facebook' => $property->getFacebook(),
-                    'twitter' => $property->getTwitter(),
-                    'instagram' => $property->getInstagram(),
+                    'bank_name' => $property->getBankName(),
+                    'bank_account_type' => $property->getBankAccountType(),
+                    'bank_account_number' => $property->getBankAccountNumber(),
+                    'bank_branch_number' => $property->getBankBranchCode(),
                     'result_code' => 0
                 );
 

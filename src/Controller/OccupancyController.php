@@ -22,7 +22,6 @@ class OccupancyController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $occupancyApi->getOccupancy($days, $propertyUid);
-        //$response = $statsApi->getReservationCount("checkOut", "today");
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
