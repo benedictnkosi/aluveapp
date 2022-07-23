@@ -37,7 +37,13 @@ class SMSHelper
         ]);
 
         $output = array();
-        $output['server_response'] = curl_exec( $curl );
+
+        $whitelist = array( '127.0.0.1', '::1' );
+        // check if the server is in the array
+        if ( in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+            $output['server_response'] = curl_exec( $curl );
+        }
+
         $curl_info = curl_getinfo( $curl );
         $output['http_status'] = $curl_info[ 'http_code' ];
         $output['error'] = curl_error($curl);
