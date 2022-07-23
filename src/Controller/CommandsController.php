@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Filesystem\Filesystem;
 
 class CommandsController extends AbstractController
 {
@@ -21,6 +22,13 @@ class CommandsController extends AbstractController
     public function runCommand(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+
+        if(function_exists('exec')) {
+            echo "exec is enabled";
+        }else{
+            echo "exec is not enabled";
+        }
+
         $command = 'php ../bin/console doctrine:cache:clear-metadata';
         exec($command, $result);
         $responseArray[] = array(
@@ -92,6 +100,20 @@ class CommandsController extends AbstractController
         $responseArray[] = array(
             'command' =>  $command,
             'result_message_auto' => print_r($result, true),
+            'result_code' => 0
+        );
+
+        return new JsonResponse( $responseArray, 200, array());
+    }
+
+    /**
+     * @Route("api/phpinfo")
+     */
+    public function clearsymfony(LoggerInterface $logger): Response
+    {
+        $fs = new Filesystem();
+        $fs->remove($this->container->getParameter('kernel.cache_dir'));
+        $responseArray[] = array(
             'result_code' => 0
         );
 
