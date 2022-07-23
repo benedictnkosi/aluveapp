@@ -47,6 +47,10 @@ class RoomImagesHTML
         </span>';
             }
             $html .= '</div>';
+        }else{
+            $html .= '<div class="slide">
+                <img src="/assets/images/rooms/room_noimage.jpg">
+            </div>';
         }
         return $html;
     }

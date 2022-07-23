@@ -272,14 +272,15 @@ class ICalApi
             $roomName = $room->getName();
 
             $reservations = $reservationApi->getReservationsByRoom($roomId);
-            $blockedRooms = $blockedRoomApi->getBlockedRooms($room->getProperty()->getId(), $room->getId());
+            $blockedRooms = $blockedRoomApi->getBlockedRooms($room->getProperty()->getUid(), $room->getId());
             $now = new DateTime();
 
+            //do not fix formatting for this line
             $icalString = 'BEGIN:VCALENDAR
-                METHOD:PUBLISH
-                PRODID:-//' . $room->getProperty()->getName() . '//Aluve-' . $roomName . '-1// EN
-                CALSCALE:GREGORIAN
-                VERSION:2.0';
+METHOD:PUBLISH
+PRODID:-//' . $room->getProperty()->getName() . '//Aluve-' . $roomName . '-1// EN
+CALSCALE:GREGORIAN
+VERSION:2.0';
 
             if ($reservations !== null) {
                 $this->logger->info("found reservations - " . count($reservations));
@@ -326,7 +327,7 @@ END:VEVENT';
                     $this->logger->info("looping blocked rooms - " . $blockedRoom->getId());
 
                     $blockRoomId = $blockedRoom->getId();
-                    $event_start = $blockedRoom->setFromDate()->format('Ymd');
+                    $event_start = $blockedRoom->getFromDate()->format('Ymd');
                     $event_end = $blockedRoom->getToDate()->format('Ymd');
 
                     $uid = $blockedRoom->getUid();

@@ -14,6 +14,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+require_once(__DIR__ . '/../app/application.php');
 
 class RoomApi
 {
@@ -142,6 +143,7 @@ class RoomApi
                         'status' => $room->GetStatus()->getId(),
                         'sleeps' => $room->GetSleeps(),
                         'description' => $room->getDescription(),
+                        'description_html' => $this->replaceWithBold($room->getDescription()),
                         'bed' => $room->getBed()->getId(),
                         'bed_name' => $room->getBed()->getName(),
                         'stairs' => $stairs,
@@ -166,6 +168,11 @@ class RoomApi
 
         $this->logger->info("Ending Method before the return: " . __METHOD__);
         return $responseArray;
+    }
+
+    public function replaceWithBold($string){
+        $string= str_replace("{", "<b>", $string);
+        return str_replace("}", "</b>", $string);
     }
 
     public function getRoom($roomId)

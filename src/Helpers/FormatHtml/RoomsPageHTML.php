@@ -36,9 +36,7 @@ class RoomsPageHTML
             $roomPrice = $room->getPrice();
             $sleeps = $room->getSleeps();
             $size = $room->getSize();
-            $bed = $room->getBed()->getName();
-            $stairs = $room->getStairs();
-            $description = $room->getDescription();
+            $description = $roomApi->replaceWithBold($room->getDescription());
 
             $html.='<div class="maghny-gd-1 col-lg-4 col-md-6">
                 <div class="maghny-grid">

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\BlockedRooms;
+use DateInterval;
 use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -45,6 +46,7 @@ class BlockedRoomApi
             }
 
             //check if the dates are the same, if same increment the to date by one day
+            $date = new DateTime();
             $toDateDateTime = new DateTime($toDate);
             $fromDateDateTime = new DateTime($fromDate);
 
@@ -61,7 +63,7 @@ class BlockedRoomApi
             $blockRoom->setComment($comments);
             $blockRoom->setFromDate($fromDateDateTime);
             $blockRoom->setToDate($toDateDateTime);
-
+            $blockRoom->setCreatedDate($date);
             $this->em->persist($blockRoom);
             $this->em->flush($blockRoom);
 
@@ -89,11 +91,12 @@ class BlockedRoomApi
         $this->logger->info("Starting Method: " . __METHOD__ );
         $responseArray = array();
         try{
-            $datetime = new DateTime();
             $roomFilter = "";
             if($roomId != 0){
                 $roomFilter = " and b.room = $roomId ";
             }
+            $now = new DateTime('today midnight');
+            $maxPastDate = $now->sub(new DateInterval("P".ICAL_PAST_DAYS."D"));
 
             $blockedRooms = $this->em
                 ->createQuery("SELECT b FROM App\Entity\BlockedRooms b 
@@ -102,7 +105,7 @@ class BlockedRoomApi
             WHERE b.room = r.id
             and p.id = r.property
             and p.uid = '".$propertyUid."'
-            and b.toDate >= '".$datetime->format('Y-m-d')."' 
+            and b.toDate >= '".$maxPastDate->format('Y-m-d')."' 
                     $roomFilter 
             order by b.fromDate asc ")
                 ->getResult();
