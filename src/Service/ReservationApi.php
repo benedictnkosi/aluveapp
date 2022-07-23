@@ -433,7 +433,7 @@ class ReservationApi
                 $propertyUid = $roomApi->getRoom($roomIds)->getProperty()->getUid();
                 //get guest
                 $guestApi = new GuestApi($this->em, $this->logger);
-                if(strcmp($origin, "airbnb") === 0){
+                if(strcmp($origin, "airbnb.com") === 0){
                     $guest = $guestApi->getGuestByName("Airbnb Guest",$propertyUid);
                 }else{
                     $guest = $guestApi->getGuestByPhoneNumber($phoneNumber,$propertyUid);

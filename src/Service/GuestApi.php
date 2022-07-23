@@ -83,16 +83,25 @@ class GuestApi
         return $responseArray;
     }
 
-    public function updateAirbnbGuestName($confirmationCode, $name): array
+    public function createAirbnbGuest($confirmationCode, $name): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
+            //get property id
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('originUrl' => $confirmationCode));
-            $guest = $reservation->getGuest();
+            $property = $reservation->getRoom()->getProperty();
+            $guest = new Guest();
             $guest->setName($name);
+            $guest->setState('Active');
+            $guest->setProperty($property);
             $this->em->persist($guest);
             $this->em->flush($guest);
+
+            $reservation->setGuest($guest);
+
+            $this->em->persist($reservation);
+            $this->em->flush($reservation);
             $responseArray[] = array(
                 'result_code' => 0,
                 'result_message' => 'Successfully updated guest name'

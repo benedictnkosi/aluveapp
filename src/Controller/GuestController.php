@@ -72,10 +72,10 @@ class GuestController extends AbstractController
     /**
      * @Route("/api/guests/airbnbname/{confirmationCode}/{name}")
      */
-    public function updateAirBnbGuestName($confirmationCode, $name, LoggerInterface $logger,Request $request,GuestApi $guestApi): Response
+    public function createAirbnbGuest($confirmationCode, $name, LoggerInterface $logger,Request $request,GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $guestApi->updateAirbnbGuestName($confirmationCode, urldecode($name));
+        $response = $guestApi->createAirbnbGuest($confirmationCode, urldecode($name));
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
