@@ -33,7 +33,7 @@ class CommandsController extends AbstractController
         exec($command, $result);
         $responseArray[] = array(
             'command' =>  $command,
-            'result_message' => print_r($result[3], true),
+            'result_message' => print_r($result, true),
             'result_code' => 0
         );
 
@@ -41,7 +41,7 @@ class CommandsController extends AbstractController
         exec($command, $result);
         $responseArray[] = array(
             'command' =>  $command,
-            'result_message' => print_r($result[3], true),
+            'result_message' => print_r($result, true),
             'result_code' => 0
         );
 
@@ -49,7 +49,7 @@ class CommandsController extends AbstractController
         exec($command, $result);
         $responseArray[] = array(
             'command' =>  $command,
-            'result_message' => print_r($result[3], true),
+            'result_message' => print_r($result, true),
             'result_code' => 0
         );
         return new JsonResponse( $responseArray, 200, array());

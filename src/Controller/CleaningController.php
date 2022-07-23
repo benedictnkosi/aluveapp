@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Reservations;
-use App\Entity\ReservationStatus;
 use App\Service\CleaningApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
