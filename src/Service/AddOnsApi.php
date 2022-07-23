@@ -57,7 +57,7 @@ class AddOnsApi
         return $responseArray;
     }
 
-    public function getAddOns($propertyUid): array
+    public function getAddOns($propertyUid)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -74,7 +74,7 @@ class AddOnsApi
         }
 
         $this->logger->info("Ending Method before the return: " . __METHOD__);
-        return $responseArray;
+        return null;
     }
 
     public function getAddOnsJson($addOnId): array
