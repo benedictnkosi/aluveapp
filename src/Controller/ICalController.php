@@ -40,4 +40,14 @@ class ICalController extends AbstractController
         $response->setCallback($callback);
         return $response;
     }
+
+    /**
+     * @Route("api/airbnb/emailauth")
+     */
+    public function getAirbnbEmail(LoggerInterface $logger, ICalApi $iCalApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $iCalApi->getAirbnbEmailAndPassword();
+        return new JsonResponse($response , 200, array());
+    }
 }

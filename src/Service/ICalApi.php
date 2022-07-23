@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Config;
 use App\Entity\Ical;
 use App\Entity\ReservationStatus;
 use DateInterval;
@@ -258,6 +259,7 @@ class ICalApi
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         try {
+
             $reservationApi = new ReservationApi($this->em, $this->logger);
             $blockedRoomApi = new BlockedRoomApi($this->em, $this->logger);
 
@@ -273,16 +275,15 @@ class ICalApi
             $blockedRooms = $blockedRoomApi->getBlockedRooms($room->getProperty()->getId(), $room->getId());
             $now = new DateTime();
 
-            if ($reservations !== null) {
-                $this->logger->info("found reservations - " . count($reservations));
-                // create the ical object
-
-
-                $icalString = 'BEGIN:VCALENDAR
+            $icalString = 'BEGIN:VCALENDAR
                 METHOD:PUBLISH
                 PRODID:-//' . $room->getProperty()->getName() . '//Aluve-' . $roomName . '-1// EN
                 CALSCALE:GREGORIAN
                 VERSION:2.0';
+
+            if ($reservations !== null) {
+                $this->logger->info("found reservations - " . count($reservations));
+                // create the ical object
 
                 foreach ($reservations as $reservation) {
                     $this->logger->info("looping reservations - " . $reservation->getId());
@@ -312,21 +313,14 @@ END:VEVENT';
                     $this->logger->info("Done creating the event within the ical object");
                 }
 
-                $icalString .= '
-END:VCALENDAR';
+
                 $this->logger->info($icalString);
-                return $icalString;
+
             }
 
             if ($blockedRooms !== null) {
                 $this->logger->info("found blocked rooms - " . count($blockedRooms));
                 // create the ical object
-
-                $icalString = 'BEGIN:VCALENDAR
-                METHOD:PUBLISH
-                PRODID:-//' . $room->getProperty()->getName() . '//Aluve-' . $roomName . '-1// EN
-                CALSCALE:GREGORIAN
-                VERSION:2.0';
 
                 foreach ($blockedRooms as $blockedRoom) {
                     $this->logger->info("looping blocked rooms - " . $blockedRoom->getId());
@@ -354,17 +348,45 @@ END:VEVENT';
                     $this->logger->info("Done creating the event within the ical object");
                 }
 
-                $icalString .= '
-END:VCALENDAR';
                 $this->logger->info($icalString);
-                return $icalString;
+
             }
+
+            $icalString .= '
+END:VCALENDAR';
 
         } catch (Exception $ex) {
             $this->logger->info($ex->getMessage());
             return "";
         }
+        return $icalString;
     }
+
+    function getAirbnbEmailAndPassword(): array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $configs = $this->em->getRepository(Config::class)->findAll();
+            foreach ($configs as $config){
+                $responseArray[] = array(
+                    'email' => $config->getAirbnbEmail(),
+                    'password' => $config->getAirbnbEmailPassword(),
+                    'result_code' => 0
+                );
+            }
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
 }
 
 

@@ -91,12 +91,17 @@ class GuestApi
             //get property id
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('originUrl' => $confirmationCode));
             $property = $reservation->getRoom()->getProperty();
-            $guest = new Guest();
-            $guest->setName($name);
-            $guest->setState('Active');
-            $guest->setProperty($property);
-            $this->em->persist($guest);
-            $this->em->flush($guest);
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('name' => $name,
+                'property' => $property->getId(),
+                'comments' => 'airbnb'));
+            if($guest === null){
+                $guest = new Guest();
+                $guest->setName($name);
+                $guest->setComments('airbnb');
+                $guest->setProperty($property);
+                $this->em->persist($guest);
+                $this->em->flush($guest);
+            }
 
             $reservation->setGuest($guest);
 
@@ -255,6 +260,8 @@ class GuestApi
         $this->logger->info("Ending Method before the return: " . __METHOD__);
         return $guest;
     }
+
+
     function startsWith($haystack, $needle): bool
     {
         $length = strlen($needle);
