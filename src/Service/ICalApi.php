@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Config;
 use App\Entity\Ical;
 use App\Entity\ReservationStatus;
+use App\Entity\Rooms;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -374,6 +375,112 @@ END:VCALENDAR';
                     'email' => $config->getAirbnbEmail(),
                     'password' => $config->getAirbnbEmailPassword(),
                     'result_code' => 0
+                );
+            }
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+
+    function addNewChannel($roomId, $link): array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            //check that the limit for number of calenders per room is not reached
+            $iCalLinksForRoom = $this->em->getRepository(Ical::class)->findBy(array('room' => $roomId));
+            if(count($iCalLinksForRoom) > ICAL_LIMIT_PER_ROOM){
+                $responseArray[] = array(
+                    'result_message' => 'You have reached the limit of '.ICAL_LIMIT_PER_ROOM.' for channels per room',
+                    'result_code' => 1
+                );
+                return  $responseArray;
+            }
+             $iCalLink = $this->em->getRepository(Ical::class)->findOneBy(array('link' => $link));
+            $room = $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $roomId));
+             if($iCalLink !== null){
+                 $responseArray[] = array(
+                     'result_message' => 'Channel with the same link already added',
+                     'result_code' => 1
+                 );
+             }else{
+                 $ical = new Ical();
+                 $result = parse_url($link);
+                 if(!isset($result['host'])){
+                     $responseArray[] = array(
+                         'result_message' => 'Link not a url',
+                         'result_code' => 1
+                     );
+                 }else{
+                     $ical->setName($result['host']);
+                     $ical->setRoom($room);
+                     $ical->setLink($link);
+                     $this->em->persist($ical);
+                     $this->em->flush($ical);
+
+                     $responseArray[] = array(
+                         'result_message' => 'Successfully added channel',
+                         'result_code' => 0,
+                         'id'=> $ical->getId()
+                     );
+                 }
+
+             }
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+    function getIcalLinks($roomId): ?array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            return $this->em->getRepository(Ical::class)->findBy(array('room' => $roomId));
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return null;
+    }
+
+    function removeIcalLink($icalId): ?array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $ical =  $this->em->getRepository(Ical::class)->findOneBy(array('id' => $icalId));
+            if($ical !== null){
+                $this->em->remove($ical);
+                $this->em->flush($ical);
+                $responseArray[] = array(
+                    'result_message' => 'Successfully removed channel',
+                    'result_code' => 0
+                );
+            }else{
+                $responseArray[] = array(
+                    'result_message' => 'Channel not found, please refresh page',
+                    'result_code' => 1
                 );
             }
         } catch (Exception $ex) {

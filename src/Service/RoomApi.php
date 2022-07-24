@@ -9,6 +9,7 @@ use App\Entity\RoomImages;
 use App\Entity\Rooms;
 use App\Entity\RoomStatus;
 use App\Entity\RoomTv;
+use App\Helpers\FormatHtml\ConfigIcalLinksHTML;
 use App\Helpers\FormatHtml\RoomImagesHTML;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -136,6 +137,11 @@ class RoomApi
                     $roomImagesUploadHtml = new RoomImagesHTML($this->em, $this->logger);
                     $imagesHtml = $roomImagesUploadHtml->formatUpdateRoomHtml($roomImages);
 
+                    $iCalApi = new ICalApi($this->em, $this->logger);
+                    $icalLinks = $iCalApi->getIcalLinks($roomId);
+                    $configIcalHtml = new ConfigIcalLinksHTML($this->em, $this->logger);
+                    $icalFormattedHtml = $configIcalHtml->formatHtml($icalLinks);
+
                     $responseArray[] = array(
                         'id' => $room->GetId(),
                         'name' => $room->GetName(),
@@ -152,6 +158,7 @@ class RoomApi
                         'uploaded_images' => $imagesHtml,
                         'tv' => $room->getTv()->getId(),
                         'tv_name' => $room->getTv()->getName(),
+                        'ical_links' => $icalFormattedHtml,
                         'result_code' => 0
                     );
                 }
@@ -170,7 +177,8 @@ class RoomApi
         return $responseArray;
     }
 
-    public function replaceWithBold($string){
+    public function replaceWithBold($string): array|string
+    {
         $string= str_replace("{", "<b>", $string);
         return str_replace("}", "</b>", $string);
     }

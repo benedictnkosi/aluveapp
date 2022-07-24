@@ -99,6 +99,13 @@ class Property
     private $uid;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="terms", type="text", length=65535, nullable=true)
+     */
+    private $terms = '';
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -288,6 +295,22 @@ class Property
     public function setUid(?string $uid): void
     {
         $this->uid = $uid;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTerms(): ?string
+    {
+        return $this->terms;
+    }
+
+    /**
+     * @param string|null $terms
+     */
+    public function setTerms(?string $terms): void
+    {
+        $this->terms = $terms;
     }
 
 

@@ -56,8 +56,6 @@ class ReservationHtml
 									</div>';
 
 
-
-
         $guestApi = new GuestApi($this->em, $this->logger);
         $addOnsApi = new AddOnsApi($this->em, $this->logger);
         $paymentApi = new PaymentApi($this->em, $this->logger);
@@ -75,12 +73,12 @@ class ReservationHtml
 
             //output tomorrow
             if (strcasecmp($period, "future") === 0) {
-                if (!$todayHeadingWritten && (strcmp($reservation->getCheckIn()->format("Y-m-d"), $now->format("Y-m-d")) == 0)){
+                if (!$todayHeadingWritten && (strcmp($reservation->getCheckIn()->format("Y-m-d"), $now->format("Y-m-d")) == 0)) {
                     $htmlString .= '<div class="res-details reservation-date-divider">
 						<h4>Today - ' . $now->format("d M") . '</h4>
 					</div>';
 
-                $todayHeadingWritten = true;
+                    $todayHeadingWritten = true;
                 }
 
                 if ((strcmp($reservation->getCheckIn()->format("Y-m-d"), $tomorrow->format("Y-m-d")) == 0)
@@ -201,7 +199,7 @@ class ReservationHtml
             $results = $cleaningApi->isRoomCleanedForCheckOut($reservationId);
             if ($results[0]['cleaned']) {
                 $cleanedBy = $results[0]['cleaned_by'];
-                $htmlString .= '<p><span class="em1-right-margin glyphicon glyphicon-certificate" ></span>Room Cleaned By '.$cleanedBy.'</p>';
+                $htmlString .= '<p><span class="em1-right-margin glyphicon glyphicon-certificate" ></span>Room Cleaned By ' . $cleanedBy . '</p>';
             }
 
 
@@ -223,6 +221,31 @@ class ReservationHtml
                 $customerIdImage = "verified.png";
             }
 
+            //far left bottom
+
+            $htmlString .= '<p class="far-left">';
+            //for direct bookings only
+            $this->logger->info("HTML output - for direct bookings only " . $reservation->getId());
+            if (strcasecmp($reservation->getOrigin(), "website") == 0 && strcasecmp($period, "past") != 0) {
+
+                if (strcmp($reservation->getStatus()->getName(), "pending") != 0) {
+                    //cancel booking
+                    $this->logger->info(" HTML output - cancel booking " . $reservation->getId());
+                    $htmlString .= '<span title="Cancel booking" class="glyphicon glyphicon-remove changeBookingStatus clickable" aria-hidden="true" id="cancelBooking_' . $reservationId . '"></span>';
+                    /*                    //open close room
+                                        $this->logger->info(" HTML output - open close room " . $reservation->getId());
+                                        if (strcasecmp($reservation->getStatus()->getName(), "confirmed") == 0) {
+                                            $htmlString .= '<span title="Open\Close Room" class="glyphicon glyphicon-triangle-top changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservationId . '"></span>';
+                                        } else {
+                                            $htmlString .= '<span title="Open\Close Room" class="glyphicon glyphicon-triangle-bottom changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservationId . '"></span>';
+                                        }*/
+                }
+            }
+
+            //whatsapp guest
+            $this->logger->info(" HTML output - whatsapp guest " . $reservation->getId());
+            $htmlString .= '<a title="Whatsapp Guest" class="image_verified" target="_blank" href="https://api.whatsapp.com/send?phone=' . $guest->getPhoneNumber() . '&text=Hello)"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>';
+
             //guest id verified
             if (strcasecmp($reservation->getOrigin(), "website") === 0) {
                 $htmlString .= '<img title="Customer ID - ' . str_replace(".png", "", $customerIdImage) . '" src="images/' . $customerIdImage . '" class="image_verified clickable"/>';
@@ -241,39 +264,12 @@ class ReservationHtml
                 $htmlString .= '<img src="images/checked_out.png" title="Checked out" class="image_verified"/><p></p>';
             }
 
-
-            //far right bottom
-
-            $htmlString .= '<p class="far-left">';
-            //for direct bookings only
-            $this->logger->info("HTML output - for direct bookings only " . $reservation->getId());
-            if (strcasecmp($reservation->getOrigin(), "website") == 0 && strcasecmp($period, "past") != 0) {
-
-                if (strcmp($reservation->getStatus()->getName(), "pending") != 0) {
-                    //cancel booking
-                    $this->logger->info(" HTML output - cancel booking " . $reservation->getId());
-                    $htmlString .= '<span title="Cancel booking" class="glyphicon glyphicon-remove changeBookingStatus clickable" aria-hidden="true" id="cancelBooking_' . $reservationId . '"></span>';
-                    //open close room
-                    $this->logger->info(" HTML output - open close room " . $reservation->getId());
-                    if (strcasecmp($reservation->getStatus()->getName(), "confirmed") == 0) {
-                        $htmlString .= '<span title="Open\Close Room" class="glyphicon glyphicon-triangle-top changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservationId . '"></span>';
-                    } else {
-                        $htmlString .= '<span title="Open\Close Room" class="glyphicon glyphicon-triangle-bottom changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservationId . '"></span>';
-                    }
-                }
-            }
-
-            //whatsapp guest
-            $this->logger->info(" HTML output - whatsapp guest " . $reservation->getId());
-            $htmlString .= '<a title="Whatsapp Guest" target="_blank" href="https://api.whatsapp.com/send?phone=' . $guest->getPhoneNumber() . '&text=Hello)"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>';
-
             //booking created on
             $this->logger->info("HTML output - bottom right icons " . $reservation->getId());
             $htmlString .= '<p> Received on: ' . $reservation->getReceivedOn()->format('Y-m-d') . '</p>';
-            $htmlString .= '<p><a href="javascript:void(0)" class="reservations_actions_link" data-res-id="'.$reservation->getId().'">more...</a></p>';
+            $htmlString .= '<p><a href="javascript:void(0)" class="reservations_actions_link" data-res-id="' . $reservation->getId() . '">more...</a></p>';
             //close far right
             $htmlString .= '</p>';
-
 
 
             //close bottom icon section and other divs
@@ -339,9 +335,9 @@ class ReservationHtml
             //cleanings
             $this->logger->info("HTML output - Cleanings list " . $reservation->getId());
             $cleanings = $cleaningApi->getReservationCleanings($reservationId);
-            if(count($cleanings)){
+            if (count($cleanings)) {
                 $htmlString .= '<h5 class="text-align-left">Cleanings</h5>';
-                foreach($cleanings as $cleaning){
+                foreach ($cleanings as $cleaning) {
                     $htmlString .= '<p class="small-font-italic"> ' . $cleaning->getDate()->format("d-M") . ' - ' . $cleaning->getCleaner()->getName() . '</p>';
                 }
             }
@@ -353,7 +349,7 @@ class ReservationHtml
             //right div for input fields
             $this->logger->info(" HTML output - right div for input fields " . $reservation->getId());
 
-            $htmlString .= '<div class="right-div" id="right-div-'.$reservation->getId().'">';
+            $htmlString .= '<div class="right-div" id="right-div-' . $reservation->getId() . '">';
 
             // add Guest ID
             if ($guest->getIdNumber() == null) {
@@ -362,7 +358,7 @@ class ReservationHtml
                 $htmlString .= '
                 <div class="right-side-action-block">
                 <input id="guest_id_' . $reservationId . '" type="text"
-										 class="textbox  display-none block-display" placeholder="Passport\ID number"/><div id="add_guest_id_button_' . $reservationId . '" class="ClickableButton res_add_guest_id" data-resid="' . $reservationId . '" >Add ID\Passport</div></div>';
+										 class="textbox  display-none block-display reservation_input" placeholder="Passport\ID number"/><div id="add_guest_id_button_' . $reservationId . '" class="ClickableButton res_add_guest_id" data-resid="' . $reservationId . '" >Add ID\Passport</div></div>';
             }
 
             // add payment
@@ -371,27 +367,19 @@ class ReservationHtml
             $htmlString .= '
                 <div class="right-side-action-block">
                 <input id="amount_' . $reservationId . '" type="text"
-										 class="textbox  display-none block-display" placeholder="0.00"/><div id="add_payment_button_' . $reservationId . '" class="ClickableButton res_add_payment" data-resid="' . $reservationId . '" >Add Payment</div></div>';
+										 class="textbox  display-none block-display reservation_input" placeholder="0.00"/><div id="add_payment_button_' . $reservationId . '" class="ClickableButton res_add_payment" data-resid="' . $reservationId . '" >Add Payment</div></div>';
 
             // add notes
             $this->logger->info(" HTML output - add notes" . $reservation->getId());
             $htmlString .= '
                     <div class="right-side-action-block">
                     <textarea id="note_' . $reservationId . '"
-                        class="textbox  display-none block-display" placeholder="e.g. 12h00 early check in"/><div id="add_note_button_' . $reservationId . '" class="ClickableButton res_add_note" data-resid="' . $reservationId . '" >Add Note</div></div>';
-
-            // block guest
-            $this->logger->info(" HTML output - block guest" . $reservation->getId());
-            $htmlString .= '
-                    <div class="right-side-action-block">
-                    <textarea id="block_note_' . $reservationId . '"
-                        class="textbox  display-none block-display" placeholder="loud guest"/><div id="block_guest_button_' . $reservationId . '" class="ClickableButton res_block_guest" data-resid="' . $reservationId . '" >Block Guest</div></div>';
-
+                        class="textbox  display-none block-display reservation_input" placeholder="e.g. 12h00 early check in"/><div id="add_note_button_' . $reservationId . '" class="ClickableButton res_add_note" data-resid="' . $reservationId . '" >Add Note</div></div>';
 
             // add add-ons - only for confirmed booking
             if (strcmp($reservation->getStatus()->getName(), "pending") != 0) {
                 $this->logger->info(" HTML output - add add-ons" . $reservation->getId());
-                $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display" id="div_add_on_' . $reservationId . '" ><select id="select_add_on_' . $reservationId . '">';
+                $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_add_on_' . $reservationId . '" ><select id="select_add_on_' . $reservationId . '">';
                 $htmlString .= ' <option value="none">Select Add On</option>';
                 $addOnsList = $addOnsApi->getAddOns($propertyUid);
                 if (count($addOnsList) > 0) {
@@ -426,25 +414,22 @@ class ReservationHtml
 
             //Mark room as cleaned
             $this->logger->info("HTML output - Mark room as cleaned " . $reservation->getId());
-            $results = $cleaningApi->isRoomCleanedForCheckOut($reservationId);
-            if (!$results[0]['cleaned']) {
-
-                $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display" id="div_mark_cleaned_' . $reservationId . '" ><select id="select_employee_' . $reservationId . '">';
-                $htmlString .= ' <option value="none">Select Cleaner</option>';
-                $employeeApi = new EmployeeApi($this->em, $this->logger);
-                $employees = $employeeApi->getEmployees($propertyUid);
-                if (count($employees) > 0) {
-                    foreach ($employees as $employee) {
-                        $htmlString .= ' <option value="' . $employee->getId() . '">' . $employee->getName() . '</option>';
-                    }
+            $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_mark_cleaned_' . $reservationId . '" ><select id="select_employee_' . $reservationId . '">';
+            $htmlString .= ' <option value="none">Select Cleaner</option>';
+            $employeeApi = new EmployeeApi($this->em, $this->logger);
+            $employees = $employeeApi->getEmployees($propertyUid);
+            if (count($employees) > 0) {
+                foreach ($employees as $employee) {
+                    $htmlString .= ' <option value="' . $employee->getId() . '">' . $employee->getName() . '</option>';
                 }
+            }
 
-                $htmlString .= '</select> 
+            $htmlString .= '</select> 
             </div>';
 
-                $htmlString .= '
+            $htmlString .= '
                     <div id="mark_cleaned_button_' . $reservationId . '" class="ClickableButton res_mark_cleaned" data-resid="' . $reservationId . '" >Add Cleaning</div></div>';
-            }
+
 
             //cleaning score - if check out date is in the past and not direct booking
             $this->logger->info("HTML output - cleaning score " . $reservation->getId());

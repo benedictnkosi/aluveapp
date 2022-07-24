@@ -11,6 +11,7 @@ use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+
 require_once(__DIR__ . '/../app/application.php');
 
 class ReservationApi
@@ -22,7 +23,7 @@ class ReservationApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
-        if(session_id() === ''){
+        if (session_id() === '') {
             $logger->info("Session id is empty");
             session_start();
         }
@@ -50,14 +51,14 @@ class ReservationApi
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $reservation =  $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
-            if($reservation === null){
+            $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
+            if ($reservation === null) {
                 $responseArray[] = array(
                     'result_message' => "Reservation not found for id $resId",
                     'result_code' => 1
                 );
 
-            }else{
+            } else {
                 $responseArray[] = array(
                     'id' => $reservation->GetId(),
                     'check_in' => $reservation->getCheckIn()->format('Y-m-d'),
@@ -110,15 +111,15 @@ class ReservationApi
         $datetime = new DateTime('today');
         $datetime->sub(new DateInterval('P1D'));
 
-        $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'pending'));
+        $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'pending'));
 
         $reservations = $this->em
             ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '".$propertyUid."'
+            WHERE p.uid = '" . $propertyUid . "'
             and r.checkIn > '" . $datetime->format('Y-m-d') . "'
-            and r.status = '".$status->getId()."'
+            and r.status = '" . $status->getId() . "'
             order by r.checkIn asc")
             ->getResult();;
         $this->logger->info("Ending Method before the return: " . __METHOD__);
@@ -137,18 +138,18 @@ class ReservationApi
             $now = new DateTime();
             $datetime = new DateTime();
             $maxFutureDate = $datetime->add(new DateInterval('P180D'));
-            $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '".$propertyUid."'
-            and r.checkIn <= '".$maxFutureDate->format('Y-m-d')."'
-            and r.checkOut > '".$now->format('Y-m-d')."'
-            and r.checkIn >= '".$now->format('Y-m-d')."'
+            WHERE p.uid = '" . $propertyUid . "'
+            and r.checkIn <= '" . $maxFutureDate->format('Y-m-d') . "'
+            and r.checkOut > '" . $now->format('Y-m-d') . "'
+            and r.checkIn >= '" . $now->format('Y-m-d') . "'
                     $roomFilter 
-            and r.status = '".$status->getId()."'
+            and r.status = '" . $status->getId() . "'
             order by r.checkIn asc ")
                 ->getResult();
         } catch (Exception $ex) {
@@ -171,16 +172,16 @@ class ReservationApi
             $datetime = new DateTime();
             $now = new DateTime('today midnight');
             $maxPastDate = $now->sub(new DateInterval('P180D'));
-            $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '".$propertyUid."'
+            WHERE p.uid = '" . $propertyUid . "'
             and r.checkOut < '" . $datetime->format('Y-m-d') . "'
             and r.checkIn > '" . $maxPastDate->format('Y-m-d') . "'
-            and r.status = '".$status->getId()."'
+            and r.status = '" . $status->getId() . "'
             order by r.checkOut desc")
                 ->getResult();
         } catch (Exception $ex) {
@@ -203,15 +204,15 @@ class ReservationApi
         $reservations = "";
         try {
             $datetime = new DateTime();
-            $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '".$propertyUid."'
+            WHERE p.uid = '" . $propertyUid . "'
             and r.checkOut = '" . $datetime->format('Y-m-d') . "'
-            and r.status = '".$status->getId()."'
+            and r.status = '" . $status->getId() . "'
             order by r.checkOut desc")
                 ->getResult();
 
@@ -231,14 +232,14 @@ class ReservationApi
         $this->logger->info("Starting Method: " . __METHOD__);
         try {
             $now = new DateTime('today midnight');
-            $maxPastDate = $now->add(new DateInterval("P".$days."D"));
-            $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+            $maxPastDate = $now->add(new DateInterval("P" . $days . "D"));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
             return $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn = '" . $maxPastDate->format('Y-m-d') . "'
             and r.room = $roomId 
-            and r.status = ".$status->getId())
+            and r.status = " . $status->getId())
                 ->getResult();
         } catch (Exception) {
             return null;
@@ -251,14 +252,14 @@ class ReservationApi
         try {
             $now = new DateTime('today midnight');
             $yesterdayDate = $now->sub(new DateInterval("P1D"));
-            $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
             return $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn > '" . $yesterdayDate->format('Y-m-d') . "'
             and r.room = $roomId 
             and r.origin = $origin
-            and r.status = ".$status->getId())
+            and r.status = " . $status->getId())
                 ->getResult();
 
         } catch (Exception) {
@@ -271,14 +272,14 @@ class ReservationApi
         $this->logger->info("Starting Method: " . __METHOD__);
         try {
             $now = new DateTime('today midnight');
-            $maxPastDate = $now->sub(new DateInterval("P".ICAL_PAST_DAYS."D"));
-            $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+            $maxPastDate = $now->sub(new DateInterval("P" . ICAL_PAST_DAYS . "D"));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
             return $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn > '" . $maxPastDate->format('Y-m-d') . "'
             and r.room = $roomId 
-            and r.status = ".$status->getId())
+            and r.status = " . $status->getId())
                 ->getResult();
         } catch (Exception) {
             return null;
@@ -290,15 +291,15 @@ class ReservationApi
         $this->logger->info("Starting Method: " . __METHOD__);
         $reservations = "";
         try {
-            $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '".$propertyUid."'
+            WHERE p.uid = '" . $propertyUid . "'
             and r.checkIn < CURRENT_DATE() 
             And r.checkOut > CURRENT_DATE() 
-            and r.status = '".$status->getId()."'
+            and r.status = '" . $status->getId() . "'
             order by r.checkIn asc")
                 ->getResult();
         } catch (Exception $ex) {
@@ -346,13 +347,13 @@ class ReservationApi
         $responseArray = array();
         try {
             $roomApi = new RoomApi($this->em, $this->logger);
-            $isRoomAvailable = $roomApi->isRoomAvailable($reservation->getRoom()->getId(),$checkInDate, $checkOutDate,$reservation->getId());
-            if($isRoomAvailable){
+            $isRoomAvailable = $roomApi->isRoomAvailable($reservation->getRoom()->getId(), $checkInDate, $checkOutDate, $reservation->getId());
+            if ($isRoomAvailable) {
                 $reservation->setCheckIn(new DateTime($checkInDate));
                 $reservation->setCheckOut(new DateTime($checkOutDate));
                 $this->em->persist($reservation);
                 $this->em->flush($reservation);
-            }else{
+            } else {
                 $responseArray[] = array(
                     'result_code' => 1,
                     'result_message' => 'Selected dates not available'
@@ -384,13 +385,13 @@ class ReservationApi
         $responseArray = array();
         try {
             $roomApi = new RoomApi($this->em, $this->logger);
-            $isRoomAvailable = $roomApi->isRoomAvailable($roomId,$reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d"),$reservation->getId());
-            if($isRoomAvailable){
+            $isRoomAvailable = $roomApi->isRoomAvailable($roomId, $reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d"), $reservation->getId());
+            if ($isRoomAvailable) {
                 $room = $roomApi->getRoom($roomId);
                 $reservation->setRoom($room);
                 $this->em->persist($reservation);
                 $this->em->flush($reservation);
-            }else{
+            } else {
                 $responseArray[] = array(
                     'result_code' => 1,
                     'result_message' => 'Selected dates not available'
@@ -415,28 +416,28 @@ class ReservationApi
         return $responseArray;
     }
 
-    public function createReservation($roomIds,$guestName,$phoneNumber,$email,$checkInDate,$checkOutDate, $uid = null, $isImport = false, $origin = "website", $originUrl = "website"): array
+    public function createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $uid = null, $isImport = false, $origin = "website", $originUrl = "website"): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $this->logger->info("room ids" . $roomIds);
         $responseArray = array();
         try {
             //get property Id
-            $roomIds = str_replace('[',"",$roomIds);
-            $roomIds = str_replace(']',"",$roomIds);
-            $roomIds = str_replace('"',"",$roomIds);
+            $roomIds = str_replace('[', "", $roomIds);
+            $roomIds = str_replace(']', "", $roomIds);
+            $roomIds = str_replace('"', "", $roomIds);
             $roomIdsArray = explode(",", $roomIds);
             $reservationIds = array();
-            foreach ($roomIdsArray as $roomId){
+            foreach ($roomIdsArray as $roomId) {
                 $this->logger->info("room id " . $roomId);
-                $roomApi = new RoomApi($this->em,$this->logger);
+                $roomApi = new RoomApi($this->em, $this->logger);
                 $propertyUid = $roomApi->getRoom($roomIds)->getProperty()->getUid();
                 //get guest
                 $guestApi = new GuestApi($this->em, $this->logger);
-                if(strcmp($origin, "airbnb.com") === 0){
-                    $guest = $guestApi->getGuestByName("Airbnb Guest",$propertyUid);
-                }else{
-                    $guest = $guestApi->getGuestByPhoneNumber($phoneNumber,$propertyUid);
+                if (strcmp($origin, "airbnb.com") === 0) {
+                    $guest = $guestApi->getGuestByName("Airbnb Guest", $propertyUid);
+                } else {
+                    $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $propertyUid);
                 }
 
                 if ($guest == null) {
@@ -480,17 +481,17 @@ class ReservationApi
                 $reservation->setCheckedInTime(NULL);
                 $reservation->setOriginUrl($originUrl);
 
-                if($isImport){
-                    $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
-                }else{
-                    $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'pending'));
+                if ($isImport) {
+                    $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+                } else {
+                    $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'pending'));
                 }
 
                 $reservation->setStatus($status);
 
-                if($uid == null){
-                    $reservation->setUid(uniqid()  . "@" . SERVER_NAME);
-                }else{
+                if ($uid == null) {
+                    $reservation->setUid(uniqid() . "@" . SERVER_NAME);
+                } else {
                     $reservation->setUid($uid);
                 }
 
@@ -500,12 +501,12 @@ class ReservationApi
                 //add Short stay 3 hour add-on if check out is same day
                 $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
                 $this->logger->info("Date diff is $totalDays");
-                if($totalDays === 0){
+                if ($totalDays === 0) {
                     $this->logger->info("Short Stay");
                     $addOnsApi = new AddOnsApi($this->em, $this->logger);
                     $addon = $addOnsApi->getAddOn("Short Stay - 3 Hours", $propertyUid);
                     $addOnsApi->addAdOnToReservation($reservation->getId(), $addon->getId(), 1);
-                }else{
+                } else {
                     $this->logger->info("overnight Stay");
                 }
 
@@ -513,45 +514,50 @@ class ReservationApi
                 $blockRoomApi->blockRoom($room->getLinkedRoom(), "Connected Room Booked", $checkInDate, $checkOutDate);
 
                 //Send SMS
-                if(!$isImport){
+                if (!$isImport) {
                     if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
                         $SMSHelper = new SMSHelper($this->logger);
-                        $message = "Hi " . $guest->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://".SERVER_NAME."/invoice.html?reservation=" . $reservation->getId();
+                        $message = "Hi " . $guest->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://" . SERVER_NAME . "/invoice.html?reservation=" . $reservation->getId();
                         $SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
-                    }else{
+                    } else {
                         if (!empty($reservation->getGuest()->getEmail())) {
                             $emailBody = file_get_contents(__DIR__ . '/../email_template/new_reservation.html');
-                            $emailBody = str_replace("guest_name",$reservation->getGuest()->getName(),$emailBody);
-                            $emailBody = str_replace("check_in",$reservation->getCheckIn()->format("d M Y"),$emailBody);
-                            $emailBody = str_replace("check_out",$reservation->getCheckOut()->format("d M Y"),$emailBody);
-                            $emailBody = str_replace("server_name",SERVER_NAME, $emailBody);
-                            $emailBody = str_replace("reservation_id",$reservation->getId(),$emailBody);
-                            mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
+                            $emailBody = str_replace("guest_name", $reservation->getGuest()->getName(), $emailBody);
+                            $emailBody = str_replace("check_in", $reservation->getCheckIn()->format("d M Y"), $emailBody);
+                            $emailBody = str_replace("check_out", $reservation->getCheckOut()->format("d M Y"), $emailBody);
+                            $emailBody = str_replace("server_name", SERVER_NAME, $emailBody);
+                            $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
+                            $whitelist = array('127.0.0.1', '::1');
+                            // check if the server is in the array
+                            if (!in_array($_SERVER['REMOTE_ADDR'], $whitelist)) {
+                                mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
+                                $this->logger->info("Successfully sent email to guest");
+                            } else {
+                                $this->logger->info("email not sent on local server");
+                            }
                         }
                     }
+                    if (count($roomIdsArray) === 1) {
+                        $responseArray[] = array(
+                            'result_code' => 0,
+                            'result_message' => "Successfully created reservation",
+                            'reservation_id' => $reservation->getId()
+                        );
+                    }
+
+                    $reservationIds[] = $reservation->getId();
                 }
-                if(count($roomIdsArray) === 1){
+
+                if (count($roomIdsArray) > 1) {
                     $responseArray[] = array(
                         'result_code' => 0,
                         'result_message' => "Successfully created reservation",
-                        'reservation_id' => $reservation->getId()
+                        'reservation_id' => $reservationIds
                     );
                 }
-
-                $reservationIds[] = $reservation->getId();
             }
-
-            if(count($roomIdsArray) > 1){
-                $responseArray[] = array(
-                    'result_code' => 0,
-                    'result_message' => "Successfully created reservation",
-                    'reservation_id' => $reservationIds
-                );
-            }
-
-
-
-        } catch (Exception $ex) {
+        } catch
+        (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()

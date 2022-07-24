@@ -112,6 +112,69 @@ class PropertyApi
         return $propertyUid;
     }
 
+    public function getPropertyTerms($roomApi, $propertyUid, $request): array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            if(strcmp($propertyUid, "none") === 0 ){
+                $propertyUid = $this->getPropertyUidByHost($request);
+            }
+
+            $property = $this->em->getRepository(Property::class)->findOneBy(
+                array("uid" => $propertyUid));
+
+            $responseArray[] = array(
+                'terms' => $property->getTerms(),
+                'terms_html' => $roomApi->replaceWithBold($property->getTerms()),
+                'result_code' => 0,
+                'result_message' => "Successfully updated terms and conditions",
+            );
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+    public function updatePropertyTerms($propertyUid, $terms)
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        try {
+            $property = $this->em->getRepository(Property::class)->findOneBy(
+                array("uid" => $propertyUid));
+            if ($property != null) {
+                $property->setTerms($terms);
+                $this->em->persist($property);
+                $this->em->flush($property);
+                $responseArray[] = array(
+                    'result_message' => "Property terms updated",
+                    'result_code' => 0
+                );
+            } else {
+                $responseArray[] = array(
+                    'result_message' => "Property not found",
+                    'result_code' => 1
+                );
+
+            }
+
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
 
     public function contactUs($guestName, $email, $phoneNumber, $message, $request): array
     {
@@ -137,7 +200,15 @@ class PropertyApi
                 $headers = 'From:' . $property->getEmailAddress() . "\r\n" .
                     'Reply-To: ' . $email . "\r\n" .
                     'X-Mailer: PHP/' . phpversion();
-                mail($property->getEmailAddress(), "Website - Message from guest", $emailPrefix . $message, $headers);
+                $whitelist = array( '127.0.0.1', '::1' );
+                // check if the server is in the array
+                if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+                    mail($property->getEmailAddress(), "Website - Message from guest", $emailPrefix . $message, $headers);
+                    $this->logger->info("Successfully sent email to guest");
+                }else{
+                    $this->logger->info("local server email not sent");
+                }
+
                 $responseArray[] = array(
                     'result_message' => 'Successfully sent message. Thank you',
                     'result_code' => 1

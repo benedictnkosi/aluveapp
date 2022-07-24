@@ -235,8 +235,16 @@ class PaymentApi
             $emailBody = str_replace("server_name",SERVER_NAME, $emailBody);
             $emailBody = str_replace("reservation_id",$reservation->getId(),$emailBody);
 
-            mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
-            $this->logger->info("Successfully sent email to guest");
+            $whitelist = array( '127.0.0.1', '::1' );
+            // check if the server is in the array
+            if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+                mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
+                $this->logger->info("Successfully sent email to guest");
+            }else{
+                $this->logger->info("local server email not sent");
+            }
+
+
         }catch (Exception $ex){
             $this->logger->info(print_r($ex, true));
         }
