@@ -382,7 +382,7 @@ class ReservationHtml
                 $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_add_on_' . $reservationId . '" ><select id="select_add_on_' . $reservationId . '">';
                 $htmlString .= ' <option value="none">Select Add On</option>';
                 $addOnsList = $addOnsApi->getAddOns($propertyUid);
-                if (count($addOnsList) > 0) {
+                if ($addOnsList !== null) {
                     foreach ($addOnsList as $addOn) {
                         $htmlString .= ' <option value="' . $addOn->getId() . '">' . $addOn->getName() . '</option>';
                     }
