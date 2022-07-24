@@ -87,7 +87,6 @@ class ReservationController extends AbstractController
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
-
     }
 
     /**
@@ -192,6 +191,21 @@ class ReservationController extends AbstractController
 
         $reservation = $reservationApi->getReservation($reservationId);
         $response = $reservationApi->updateReservationRoom($reservation, $roomId);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response, 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
+     * @Route("api/reservations/{reservationId}/update_confirmation/{confirmationCode}")
+     */
+    public function updateReservationConfirmationCode($reservationId, $confirmationCode, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+
+        $reservation = $reservationApi->getReservation($reservationId);
+        $response = $reservationApi->updateReservationOriginUrl($reservation, $confirmationCode);
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);

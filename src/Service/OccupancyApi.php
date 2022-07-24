@@ -70,7 +70,7 @@ order by occupancy;";
                 $responseArray[] = array(
                     'occupancy' => round($avg) . '%',
                     'result_code' => 0,
-                    'result_description' => "success"
+                    'result_message' => "success"
                 );
             }
         } catch (Exception $ex) {

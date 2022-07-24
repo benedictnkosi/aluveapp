@@ -128,7 +128,6 @@ class PropertyApi
                 'terms' => $property->getTerms(),
                 'terms_html' => $roomApi->replaceWithBold($property->getTerms()),
                 'result_code' => 0,
-                'result_message' => "Successfully updated terms and conditions",
             );
         } catch (Exception $ex) {
             $responseArray[] = array(
@@ -153,7 +152,7 @@ class PropertyApi
                 $this->em->persist($property);
                 $this->em->flush($property);
                 $responseArray[] = array(
-                    'result_message' => "Property terms updated",
+                    'result_message' => "Successfully Updated Property terms",
                     'result_code' => 0
                 );
             } else {
@@ -211,7 +210,7 @@ class PropertyApi
 
                 $responseArray[] = array(
                     'result_message' => 'Successfully sent message. Thank you',
-                    'result_code' => 1
+                    'result_code' => 0
                 );
             } else {
                 $responseArray[] = array(

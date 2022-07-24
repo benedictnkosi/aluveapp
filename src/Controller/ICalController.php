@@ -30,6 +30,19 @@ class ICalController extends AbstractController
     }
 
     /**
+     * @Route("api/ical/importall")
+     */
+    public function importAllRoomsIcalReservations(LoggerInterface $logger, Request $request,ICalApi $iCalApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $iCalApi->importIcalForAllRooms();
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
          * @Route("api/ical/export/{roomId}")
      */
     public function exportIcalReservations($roomId, LoggerInterface $logger, Request $request,ICalApi $iCalApi): Response
@@ -44,7 +57,7 @@ class ICalController extends AbstractController
     /**
      * @Route("api/airbnb/emailauth")
      */
-    public function getAirbnbEmail(LoggerInterface $logger, ICalApi $iCalApi): Response
+    public function getAirbnbEmailPassword(LoggerInterface $logger, ICalApi $iCalApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $iCalApi->getAirbnbEmailAndPassword();

@@ -2,14 +2,17 @@
 
 namespace App\Service;
 
+use App\Entity\AddOns;
 use App\Entity\Config;
 use App\Entity\Ical;
+use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
 use App\Entity\Rooms;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use phpDocumentor\Reflection\Types\Array_;
 use Psr\Log\LoggerInterface;
 use Sabre\VObject;
 
@@ -30,20 +33,90 @@ class ICalApi
         }
     }
 
+    function importIcalForAllRooms()
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $rooms = $this->em->getRepository(Rooms::class)->findOneBy();
+            foreach ($rooms as $room) {
+                $this->importIcalForRoom($room->getId());
+            }
+            $responseArray[] = array(
+                'result_code' => 0,
+                'result_message' => 'Successfully imported all reservations'
+            );
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+        return $responseArray;
+    }
+
+
+    function checkForCancellations($events, $roomId, $url): void
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $reservationApi = new ReservationApi($this->em, $this->logger);
+        $result = parse_url($url->getLink());
+        $origin = $result['host'];
+        $reservations = $reservationApi->getReservationsByRoomAndOrigin($roomId, $origin);
+        if ($reservations !== null) {
+            foreach ($reservations as $reservation) {
+                $this->logger->info("Iterating the reservations " . $reservation->getId());
+                $res_uid = $reservation->getUid();
+                $isReservationOnEvents = false;
+                try{
+                    foreach ($events->VEVENT as $event) {
+                        $this->logger->info("Iterating the events " . $event->UID);
+                        $event_uid = $event->UID;
+                        if (strcmp($res_uid, $event_uid) === 0) {
+                            $this->logger->info("Reservation found on the events ");
+                            $isReservationOnEvents = true;
+                        }
+                    }
+                }catch (Exception $ex){
+                    $this->logger->info("Error looping events " . $ex->getMessage());
+                }
+
+
+
+                if (!$isReservationOnEvents) {
+                    $this->logger->info("Reservation not found on the events");
+                    //cancel reservation if not found on events
+                    $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'cancelled'));
+                    $reservation->setStatus($status);
+                    $this->em->persist($reservation);
+                    $this->em->flush($reservation);
+                    $this->logger->info("Reservation successfully cancelled");
+                }
+            }
+        }
+
+
+    }
+
     function importIcalForRoom($roomId): array
     {
+        $this->logger->info("Starting Method: " . __METHOD__);
         //get all ical Urls for room
         $urls = $this->getRoomIcalUrls($roomId);
-
         $responseArray = array();
+
         foreach ($urls as $url) {
             //read events
+            $this->logger->info("trying to get content for   " . $url->getLink());
 
             $events = VObject\Reader::read(
                 file_get_contents($url->getLink())
             );
 
             try {
+                $this->checkForCancellations($events, $roomId, $url);
+                $this->logger->info("back ");
                 $this->logger->info("events found  " . count($events));
                 $i = 0;
                 $origin = "";
@@ -112,6 +185,16 @@ class ICalApi
                         $this->logger->info("confirmation code is  " . $originUrl);
                         $origin = "airbnb.com";
                         $guestName = "Airbnb Guest";
+                    } else {
+                        //for testing only
+                        $result = parse_url($url->getLink());
+                        $origin = $result['host'];
+                        $originUrl = $origin;
+                        $this->logger->info("Link is from " . $url->getLink());
+                        $this->logger->info("Summary: " . $summary);
+                        $guestName = $this->getStringByBoundary($summary, 'Guesthouse - ', '  - Resa');
+                        $email = 'hello@aluve.com';
+                        $guestPhoneNumber = '0831234567';
                     }
                     //booking.com
 
@@ -139,26 +222,22 @@ class ICalApi
                         }
                         $this->logger->info(print_r($responseArray, true));
                     } else {
+                        $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
                         $reservation->setCheckIn(new DateTime($checkInDate));
                         $reservation->setCheckOut(new DateTime($checkOutDate));
-                        $response = $reservationApi->updateReservation($reservation);
-                        if ($response[0]['result_code'] != 0) {
-                            $responseArray[] = array(
-                                'result_code' => 0,
-                                'result_message' => $response[0]['result_message'] . $uid
-                            );
-                        } else {
-                            $responseArray[] = array(
-                                'result_code' => 0,
-                                'result_message' => 'Successfully updated reservation ' . $uid
-                            );
-                        }
+                        $reservation->setStatus($status);
+                        $this->em->persist($reservation);
+                        $this->em->flush($reservation);
+                        $responseArray[] = array(
+                            'result_code' => 0,
+                            'result_message' => 'Successfully updated reservation ' . $uid
+                        );
                     }
                     $this->logger->info(print_r($responseArray, true));
                 }
 
-                $this->cancelReservationsNotInIcal($events, $roomId, $origin);
             } catch (Exception $ex) {
+                $this->logger->info($ex->getMessage());
                 $this->logger->info($ex->getTraceAsString());
             }
 
@@ -167,45 +246,13 @@ class ICalApi
         return $responseArray;
     }
 
-    function cancelReservationsNotInIcal($events, $roomId, $origin): void
+    function getStringByBoundary($string, $leftBoundary, $rightBoundary)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
-        try {
-            // get all future reservations for origin
-            $reservationApi = new ReservationApi($this->em, $this->logger);
-            $reservations = $reservationApi->getReservationsByRoomAndOrigin($roomId, $origin);
-            if ($reservations === null) {
-                $this->logger->info("reservations for room $roomId and origin $origin not found");
-                return;
-            } else {
-                $this->logger->info("found reservations for room $roomId and origin $origin - " . count($reservations));
-            }
-
-            foreach ($reservations as $reservation) {
-                //check if reservation is still in the ical
-                $this->logger->info("looping reservations  - uid " . $reservation->getUid());
-                $isReservationInEvents = false;
-                foreach ($events as $event) {
-                    $this->logger->info("looping events - uid " . $event['UID']);
-                    if (strcmp($event['UID'], $reservation->getUid()) === 0) {
-                        $this->logger->info("event and reservation uid match found");
-                        $isReservationInEvents = true;
-                    }
-                }
-                //if reservation is not found in ical events then set the status to cancelled
-                if (!$isReservationInEvents) {
-                    $this->logger->info("updating status to cancelled for reservation not in events - " . $reservation->getUid());
-                    $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'cancelled'));
-                    $reservation->setStatus($status);
-                    $reservationApi->updateReservation($reservation);
-                    $this->logger->info("updating status to cancelled done- " . $reservation->getUid());
-                }
-            }
-        } catch (Exception $ex) {
-            $this->logger->error($ex->getMessage());
-        }
+        preg_match('~' . $leftBoundary . '([^?]*)' . $rightBoundary . '~i', $string, $match);
+        var_dump($match[1]); // string(9) "123456789"
+        return $match[1];
     }
-
 
     function iCalDecoder($file): array
     {
@@ -370,7 +417,7 @@ END:VCALENDAR';
         $responseArray = array();
         try {
             $configs = $this->em->getRepository(Config::class)->findAll();
-            foreach ($configs as $config){
+            foreach ($configs as $config) {
                 $responseArray[] = array(
                     'email' => $config->getAirbnbEmail(),
                     'password' => $config->getAirbnbEmailPassword(),
@@ -397,43 +444,43 @@ END:VCALENDAR';
         try {
             //check that the limit for number of calenders per room is not reached
             $iCalLinksForRoom = $this->em->getRepository(Ical::class)->findBy(array('room' => $roomId));
-            if(count($iCalLinksForRoom) > ICAL_LIMIT_PER_ROOM){
+            if (count($iCalLinksForRoom) > ICAL_LIMIT_PER_ROOM) {
                 $responseArray[] = array(
-                    'result_message' => 'You have reached the limit of '.ICAL_LIMIT_PER_ROOM.' for channels per room',
+                    'result_message' => 'You have reached the limit of ' . ICAL_LIMIT_PER_ROOM . ' for channels per room',
                     'result_code' => 1
                 );
-                return  $responseArray;
+                return $responseArray;
             }
-             $iCalLink = $this->em->getRepository(Ical::class)->findOneBy(array('link' => $link));
+            $iCalLink = $this->em->getRepository(Ical::class)->findOneBy(array('link' => $link));
             $room = $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $roomId));
-             if($iCalLink !== null){
-                 $responseArray[] = array(
-                     'result_message' => 'Channel with the same link already added',
-                     'result_code' => 1
-                 );
-             }else{
-                 $ical = new Ical();
-                 $result = parse_url($link);
-                 if(!isset($result['host'])){
-                     $responseArray[] = array(
-                         'result_message' => 'Link not a url',
-                         'result_code' => 1
-                     );
-                 }else{
-                     $ical->setName($result['host']);
-                     $ical->setRoom($room);
-                     $ical->setLink($link);
-                     $this->em->persist($ical);
-                     $this->em->flush($ical);
+            if ($iCalLink !== null) {
+                $responseArray[] = array(
+                    'result_message' => 'Channel with the same link already added',
+                    'result_code' => 1
+                );
+            } else {
+                $ical = new Ical();
+                $result = parse_url($link);
+                if (!isset($result['host'])) {
+                    $responseArray[] = array(
+                        'result_message' => 'Link not a url',
+                        'result_code' => 1
+                    );
+                } else {
+                    $ical->setName($result['host']);
+                    $ical->setRoom($room);
+                    $ical->setLink($link);
+                    $this->em->persist($ical);
+                    $this->em->flush($ical);
 
-                     $responseArray[] = array(
-                         'result_message' => 'Successfully added channel',
-                         'result_code' => 0,
-                         'id'=> $ical->getId()
-                     );
-                 }
+                    $responseArray[] = array(
+                        'result_message' => 'Successfully added channel',
+                        'result_code' => 0,
+                        'id' => $ical->getId()
+                    );
+                }
 
-             }
+            }
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
@@ -469,15 +516,15 @@ END:VCALENDAR';
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $ical =  $this->em->getRepository(Ical::class)->findOneBy(array('id' => $icalId));
-            if($ical !== null){
+            $ical = $this->em->getRepository(Ical::class)->findOneBy(array('id' => $icalId));
+            if ($ical !== null) {
                 $this->em->remove($ical);
                 $this->em->flush($ical);
                 $responseArray[] = array(
                     'result_message' => 'Successfully removed channel',
                     'result_code' => 0
                 );
-            }else{
+            } else {
                 $responseArray[] = array(
                     'result_message' => 'Channel not found, please refresh page',
                     'result_code' => 1

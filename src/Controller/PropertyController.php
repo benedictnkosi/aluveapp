@@ -17,24 +17,12 @@ class PropertyController extends AbstractController
 
 
     /**
-     * @Route("api/property/contact/{propertyId}/{guestName}/{email}/{phoneNumber}/{message}")
+     * @Route("api/property/contact/{guestName}/{email}/{phoneNumber}/{message}")
      */
-    public function contactProperty($propertyId, $guestName, $email, $phoneNumber, $message, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    public function contactProperty($guestName, $email, $phoneNumber, $message, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->contactUs($propertyId, $guestName, $email, $phoneNumber, $message,);
-        $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
-        $response->setCallback($callback);
-        return $response;
-    }
-    /**
-     * @Route("api/property/getuid")
-     */
-    public function getPropertyUidByServerName( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
-    {
-        $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->getPropertyUidByHost($request);
+        $response = $propertyApi->contactUs($guestName, $email, $phoneNumber, $message,$request);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

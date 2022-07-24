@@ -42,20 +42,6 @@ class GuestController extends AbstractController
     }
 
     /**
-     * @Route("/api/reservation/{resId}/blockguest/{reason}")
-     */
-    public function blockGuest($resId, $reason, LoggerInterface $logger, Request $request,GuestApi $guestApi, ReservationApi $reservationApi): Response
-    {
-        $logger->info("Starting Method: " . __METHOD__);
-        $reservation = $reservationApi->getReservation($resId);
-        $response = $guestApi->blockGuest($reservation->getGuest()->getId(), str_replace("+", "", $reason));
-        $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
-        $response->setCallback($callback);
-        return $response;
-    }
-
-    /**
      * @Route("/api/reservation/{resId}/idnumber/{idNumber}")
      */
     public function updateGuestIdNumber($resId, $idNumber, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
@@ -67,7 +53,6 @@ class GuestController extends AbstractController
         $response->setCallback($callback);
         return $response;
     }
-
 
     /**
      * @Route("/api/guests/airbnbname/{confirmationCode}/{name}")

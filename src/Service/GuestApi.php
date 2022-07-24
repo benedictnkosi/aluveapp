@@ -63,14 +63,22 @@ class GuestApi
         $responseArray = array();
         try {
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
-            $guest = $reservation->getGuest();
-            $guest->setIdNumber($phoneNumber);
-            $this->em->persist($guest);
-            $this->em->flush($guest);
-            $responseArray[] = array(
-                'result_code' => 0,
-                'result_message' => 'Successfully updated guest phone number'
-            );
+            if($reservation === null){
+                $responseArray[] = array(
+                    'result_code' => 1,
+                    'result_message' => 'Reservation not found for id ' . $resId
+                );
+            }else{
+                $guest = $reservation->getGuest();
+                $guest->setIdNumber($phoneNumber);
+                $this->em->persist($guest);
+                $this->em->flush($guest);
+                $responseArray[] = array(
+                    'result_code' => 0,
+                    'result_message' => 'Successfully updated guest phone number'
+                );
+            }
+
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
@@ -91,9 +99,11 @@ class GuestApi
             //get property id
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('originUrl' => $confirmationCode));
             $property = $reservation->getRoom()->getProperty();
+
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('name' => $name,
                 'property' => $property->getId(),
                 'comments' => 'airbnb'));
+
             if($guest === null){
                 $guest = new Guest();
                 $guest->setName($name);
@@ -109,7 +119,7 @@ class GuestApi
             $this->em->flush($reservation);
             $responseArray[] = array(
                 'result_code' => 0,
-                'result_message' => 'Successfully updated guest name'
+                'result_message' => 'Successfully updated reservation guest'
             );
         } catch (Exception $ex) {
             $responseArray[] = array(
@@ -204,6 +214,7 @@ class GuestApi
                     'email' => $guest->getEmail(),
                     'state' => $guest->getState(),
                     'comments' => $guest->getComments(),
+                    'id_number' => $guest->getIdNumber(),
                     'result_code' => 0
                 );
             }

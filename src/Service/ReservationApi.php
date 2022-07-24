@@ -59,18 +59,30 @@ class ReservationApi
                 );
 
             } else {
+                $paymentApi = new PaymentApi($this->em, $this->logger);
+                $payments = $paymentApi->getReservationPayments($reservation->GetId());
+                $paymentsHtml = "";
+                $totalPayment = 0;
+                foreach ($payments as $payment) {
+                    $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format("d-M") . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . '</p>';
+                    $totalPayment += (intVal($payment->getAmount()));
+                }
+
                 $responseArray[] = array(
                     'id' => $reservation->GetId(),
                     'check_in' => $reservation->getCheckIn()->format('Y-m-d'),
                     'check_out' => $reservation->getCheckOut()->format('Y-m-d'),
                     'status' => $reservation->getStatus()->getId(),
-                    'guest_name' => $reservation->getGuest()->getId(),
+                    'guest_name' => $reservation->getGuest()->getName(),
+                    'guest_id' => $reservation->getGuest()->getId(),
                     'check_in_status' => $reservation->getCheckInStatus(),
                     'check_in_time' => $reservation->getCheckInTime(),
                     'check_out_time' => $reservation->getCheckOutTime(),
                     'checked_in_time' => $reservation->getCheckedInTime(),
                     'room_id' => $reservation->getRoom()->getId(),
                     'room_name' => $reservation->getRoom()->getName(),
+                    'total_paid' => $totalPayment,
+                    'guest_phone_number' => $reservation->getGuest()->getPhoneNumber(),
                     'result_code' => 0
                 );
             }
@@ -87,6 +99,7 @@ class ReservationApi
         $this->logger->info("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
+
 
     public function getReservationByUID($uid)
     {
@@ -254,15 +267,19 @@ class ReservationApi
             $yesterdayDate = $now->sub(new DateInterval("P1D"));
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            return $this->em
+            $this->logger->info("query " . $roomId . " " . $origin);
+
+            $reservations =  $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn > '" . $yesterdayDate->format('Y-m-d') . "'
             and r.room = $roomId 
-            and r.origin = $origin
+            and r.origin = '" . $origin ."'
             and r.status = " . $status->getId())
                 ->getResult();
 
-        } catch (Exception) {
+            return $reservations;
+        } catch (Exception $ex) {
+            $this->logger->info( $ex->getMessage() . " " . $ex->getTraceAsString());
             return null;
         }
     }
@@ -299,7 +316,7 @@ class ReservationApi
             WHERE p.uid = '" . $propertyUid . "'
             and r.checkIn < CURRENT_DATE() 
             And r.checkOut > CURRENT_DATE() 
-            and r.status = '" . $status->getId() . "'
+            and r.status = " . $status->getId() . "
             order by r.checkIn asc")
                 ->getResult();
         } catch (Exception $ex) {
@@ -398,6 +415,34 @@ class ReservationApi
                 );
                 return $responseArray;
             }
+
+            $responseArray[] = array(
+                'result_code' => 0,
+                'result_message' => 'Successfully updated reservation'
+            );
+
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_code' => 1,
+                'result_message' => $ex->getMessage()
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+
+    public function updateReservationOriginUrl($reservation, $confirmationCode): array
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+
+        $responseArray = array();
+        try {
+            $reservation->setOriginUrl($confirmationCode);
+            $this->em->persist($reservation);
+            $this->em->flush($reservation);
 
             $responseArray[] = array(
                 'result_code' => 0,

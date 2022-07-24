@@ -50,6 +50,7 @@ delete FROM `reservations` where id > 0;
 delete FROM `guest` where id > 0;
 delete from room_images where id > 0;
 delete from blocked_rooms where id > 0;
+delete from ical where id > 0;
 delete from rooms where id > 0;
 delete from add_ons where id > 0;
 delete from employee where id > 0;

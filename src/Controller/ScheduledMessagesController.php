@@ -144,7 +144,6 @@ class ScheduledMessagesController extends AbstractController
         return $response;
     }
 
-
     /**
      * @Route("/api/schedulemessages/template/{templateId}")
      */
