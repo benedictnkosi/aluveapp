@@ -119,7 +119,6 @@ class ICalApi
                 $this->logger->info("back ");
                 $this->logger->info("events found  " . count($events));
                 $i = 0;
-                $origin = "";
                 foreach ($events->VEVENT as $event) {
                     $i++;
                     $this->logger->info("event number $i");
@@ -182,6 +181,7 @@ class ICalApi
                     //if booking not imported
                     if ($reservation === null) {
                         $this->logger->info("booking has not been imported");
+                        $this->logger->info("booking has not been imported");
 
                         //create reservation
                         $response = $reservationApi->createReservation($roomId, $guestName, $guestPhoneNumber, $email, $checkInDate, $checkOutDate, $uid, true, $origin, $originUrl);
@@ -226,7 +226,6 @@ class ICalApi
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         preg_match('~' . $leftBoundary . '([^?]*)' . $rightBoundary . '~i', $string, $match);
-        var_dump($match[1]); // string(9) "123456789"
         return $match[1];
     }
 
