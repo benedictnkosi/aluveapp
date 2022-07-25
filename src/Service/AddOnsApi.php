@@ -313,7 +313,7 @@ class AddOnsApi
             $this->logger->info($html);
             return $html;
         } catch (Exception $ex) {
-            $this->logger->info($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return $html;
         }
     }
@@ -331,7 +331,7 @@ class AddOnsApi
             $this->logger->info($html);
             return $totalPriceForAllAdOns;
         } catch (Exception $ex) {
-            $this->logger->info($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return 0;
         }
     }

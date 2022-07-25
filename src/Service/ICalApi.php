@@ -145,32 +145,13 @@ class ICalApi
                     $guestPhoneNumber = "";
                     $uid = $event->UID;
                     $email = "";
-                    $origin = "";
                     $guestName = "";
-                    $originUrl = "";
 
-                    //Guesty
-                    if (str_contains($url->getLink(), 'guestyforhosts.com')) {
-                        $origin = "guestyforhosts.com";
-                        $originUrl = $origin;
-                        $this->logger->info("Link is from guesty " . $url->getLink());
-                        $this->logger->info("Summary: " . $summary);
-                        $pieces = explode("-", $summary);
-                        $guestName = $pieces[1];
-                        $this->logger->info("guest name is  " . $guestName);
-                        $this->logger->info("Description: " . $description);
-                        $pieces = explode(":", $description);
-                        $guestPhoneNumber = $pieces[2];
-                        $this->logger->info("guest phone is  " . $guestPhoneNumber);
+                    $result = parse_url($url->getLink());
+                    $origin = $result['host'];
 
-                        $pos = strpos($guestPhoneNumber, "Email");
-                        if ($pos > -1) {
-                            $guestPhoneNumber = trim(substr($guestPhoneNumber, 0, $pos));
-
-                            $email = trim(str_replace("ATTENDEE", "", $pieces[3]));
-                            $this->logger->info("guest email is  " . $email);
-                        }
-                    } else if (str_contains($url->getLink(), 'airbnb')) {
+                    //Airbnb
+                    if (str_contains($url->getLink(), 'airbnb')) {
                         if (str_contains($summary, "Not available")) {
                             $this->logger->info("Summary is not available for uid " . $uid);
                             continue;
@@ -183,20 +164,15 @@ class ICalApi
                         $this->logger->info("endOfConfirmationPosition is  " . $endOfConfirmationPosition);
                         $originUrl = trim(substr($temp, 0, $endOfConfirmationPosition));
                         $this->logger->info("confirmation code is  " . $originUrl);
-                        $origin = "airbnb.com";
-                        $guestName = "Airbnb Guest";
-                    } else {
-                        //for testing only
-                        $result = parse_url($url->getLink());
-                        $origin = $result['host'];
+                    } else if (str_contains($url->getLink(), 'booking.com')) {
                         $originUrl = $origin;
                         $this->logger->info("Link is from " . $url->getLink());
                         $this->logger->info("Summary: " . $summary);
-                        $guestName = $this->getStringByBoundary($summary, 'Guesthouse - ', '  - Resa');
-                        $email = 'hello@aluve.com';
-                        $guestPhoneNumber = '0831234567';
+                        $guestName = $this->getStringByBoundary($summary, 'CLOSED - ', '');
+                    } else {
+                        $this->logger->info( "Ical Link not mapped");
+                        continue;
                     }
-                    //booking.com
 
                     $this->logger->info($uid . " - " . $guestPhoneNumber);
                     //check if booking already imported
@@ -237,8 +213,8 @@ class ICalApi
                 }
 
             } catch (Exception $ex) {
-                $this->logger->info($ex->getMessage());
-                $this->logger->info($ex->getTraceAsString());
+                $this->logger->error($ex->getMessage());
+                $this->logger->error($ex->getTraceAsString());
             }
 
 
@@ -405,7 +381,7 @@ END:VEVENT';
 END:VCALENDAR';
 
         } catch (Exception $ex) {
-            $this->logger->info($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return "";
         }
         return $icalString;

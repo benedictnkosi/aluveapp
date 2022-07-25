@@ -129,7 +129,7 @@ class ScheduleMessageApi
             return $html;
         } catch (Exception $ex) {
 
-            $this->logger->info($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return $ex->getMessage();
         }
 
@@ -168,7 +168,7 @@ class ScheduleMessageApi
 
             $this->logger->info("Ending Method before the return: " . __METHOD__);
         } catch (Exception $ex) {
-            $this->logger->info($ex->getMessage());
+            $this->logger->error($ex->getMessage());
         }
 
         $this->logger->info("Ending Method before the return: " . __METHOD__);
@@ -306,7 +306,7 @@ class ScheduleMessageApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info($ex->getMessage());
+            $this->logger->error($ex->getMessage());
         }
 
         $this->logger->info("Ending Method before the return: " . __METHOD__);
@@ -369,7 +369,7 @@ class ScheduleMessageApi
             $this->logger->info("Ending Method before the return: " . __METHOD__);
             return $template->getMessage();
         } catch (Exception $ex) {
-            $this->logger->info($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return $ex->getMessage();
         }
     }

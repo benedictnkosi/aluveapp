@@ -67,7 +67,7 @@ class PaymentApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return $ex->getMessage();
         }
     }
@@ -261,7 +261,7 @@ class PaymentApi
             }
             return $totalPayment;
         } catch (Exception $ex) {
-            $this->logger->info($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return 0;
         }
     }

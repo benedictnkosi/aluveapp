@@ -479,16 +479,17 @@ class ReservationApi
                 $propertyUid = $roomApi->getRoom($roomIds)->getProperty()->getUid();
                 //get guest
                 $guestApi = new GuestApi($this->em, $this->logger);
+                $guest = null;
                 if (strcmp($origin, "airbnb.com") === 0) {
                     $guest = $guestApi->getGuestByName("Airbnb Guest", $propertyUid);
-                } else {
+                } elseif (strlen($phoneNumber)>1){
                     $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $propertyUid);
                 }
 
                 if ($guest == null) {
                     $this->logger->info("guest not found, creating a new guest");
                     //create guest
-                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $propertyUid);
+                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $propertyUid, $origin);
                     if ($response[0]['result_code'] != 0) {
                         $this->logger->info(print_r($response, true));
                         return $response;
@@ -515,7 +516,7 @@ class ReservationApi
 
                 $reservation = new Reservations();
                 $reservation->setRoom($room);
-                $reservation->setAdditionalInfo($phoneNumber);
+                $reservation->setAdditionalInfo("Guest Name is: " . $guest->getName());
                 $reservation->setCheckIn(new DateTime($checkInDate));
                 $reservation->setCheckOut(new DateTime($checkOutDate));
                 $reservation->setGuest($guest);
