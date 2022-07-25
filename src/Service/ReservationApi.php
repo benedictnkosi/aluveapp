@@ -557,6 +557,7 @@ class ReservationApi
                 }
 
                 //block connected Room
+                $this->logger->info("calling block room to block " . $room->getLinkedRoom() . " for room  " . $room->getName());
                 $blockRoomApi->blockRoom($room->getLinkedRoom(), "Connected Room Booked", $checkInDate, $checkOutDate);
 
                 //Send SMS
