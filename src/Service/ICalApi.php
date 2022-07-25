@@ -38,7 +38,7 @@ class ICalApi
         $this->logger->info("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $rooms = $this->em->getRepository(Rooms::class)->findOneBy();
+            $rooms = $this->em->getRepository(Rooms::class)->findAll();
             foreach ($rooms as $room) {
                 $this->importIcalForRoom($room->getId());
             }
