@@ -19,7 +19,7 @@ class AvailableRoomsDropDownHTML
 
     public function formatHtml($availableRooms): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlString = "";
         $roomsApi = new RoomApi($this->em, $this->logger);
         $numberOfRooms = 0;
@@ -44,7 +44,7 @@ class AvailableRoomsDropDownHTML
                                                 data-thumbnail="assets/images/rooms/noroom.jpg" data-price="0" data-roomId="0"  data-sleeps="0">No Rooms Available
                                         </option>';
         }
-        $this->logger->info("ending Method: " . __METHOD__);
+        $this->logger->debug("ending Method: " . __METHOD__);
         return $htmlString;
     }
 }

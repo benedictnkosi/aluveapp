@@ -24,7 +24,7 @@ class InvoiceHelper
 
     public function createInvoicePDF($guestName, $customerPhone, $resID, $checkin, $checkout, $price, $total, $resaNights, $rooName, $amountPaid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
 
         if (strcmp($amountPaid, "0") !== 0) {
@@ -127,11 +127,11 @@ Aluve Guesthouse\r\n
             fclose($fp);
 
         } catch (Exception $e) {
-            $this->logger->info($e->getMessage());
+            $this->logger->debug($e->getMessage());
             return false;
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
 
         return true;
     }

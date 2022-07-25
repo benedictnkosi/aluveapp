@@ -35,7 +35,7 @@ class ICalApi
 
     function importIcalForAllRooms()
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $rooms = $this->em->getRepository(Rooms::class)->findAll();
@@ -51,7 +51,7 @@ class ICalApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
         return $responseArray;
     }
@@ -59,39 +59,39 @@ class ICalApi
 
     function checkForCancellations($events, $roomId, $url): void
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $reservationApi = new ReservationApi($this->em, $this->logger);
         $result = parse_url($url->getLink());
         $origin = $result['host'];
         $reservations = $reservationApi->getReservationsByRoomAndOrigin($roomId, $origin);
         if ($reservations !== null) {
             foreach ($reservations as $reservation) {
-                $this->logger->info("Iterating the reservations " . $reservation->getId());
+                $this->logger->debug("Iterating the reservations " . $reservation->getId());
                 $res_uid = $reservation->getUid();
                 $isReservationOnEvents = false;
                 try{
                     foreach ($events->VEVENT as $event) {
-                        $this->logger->info("Iterating the events " . $event->UID);
+                        $this->logger->debug("Iterating the events " . $event->UID);
                         $event_uid = $event->UID;
                         if (strcmp($res_uid, $event_uid) === 0) {
-                            $this->logger->info("Reservation found on the events ");
+                            $this->logger->debug("Reservation found on the events ");
                             $isReservationOnEvents = true;
                         }
                     }
                 }catch (Exception $ex){
-                    $this->logger->info("Error looping events " . $ex->getMessage());
+                    $this->logger->debug("Error looping events " . $ex->getMessage());
                 }
 
 
 
                 if (!$isReservationOnEvents) {
-                    $this->logger->info("Reservation not found on the events");
+                    $this->logger->debug("Reservation not found on the events");
                     //cancel reservation if not found on events
                     $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'cancelled'));
                     $reservation->setStatus($status);
                     $this->em->persist($reservation);
                     $this->em->flush($reservation);
-                    $this->logger->info("Reservation successfully cancelled");
+                    $this->logger->debug("Reservation successfully cancelled");
                 }
             }
         }
@@ -101,14 +101,14 @@ class ICalApi
 
     function importIcalForRoom($roomId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         //get all ical Urls for room
         $urls = $this->getRoomIcalUrls($roomId);
         $responseArray = array();
 
         foreach ($urls as $url) {
             //read events
-            $this->logger->info("trying to get content for   " . $url->getLink());
+            $this->logger->debug("trying to get content for   " . $url->getLink());
 
             $events = VObject\Reader::read(
                 file_get_contents($url->getLink())
@@ -116,12 +116,12 @@ class ICalApi
 
             try {
                 $this->checkForCancellations($events, $roomId, $url);
-                $this->logger->info("back ");
-                $this->logger->info("events found  " . count($events));
+                $this->logger->debug("back ");
+                $this->logger->debug("events found  " . count($events));
                 $i = 0;
                 foreach ($events->VEVENT as $event) {
                     $i++;
-                    $this->logger->info("event number $i");
+                    $this->logger->debug("event number $i");
 
                     $today = date("d.m.Y");
                     $yesterday = new DateTime($today);
@@ -133,12 +133,12 @@ class ICalApi
                     $checkInDate = date('Y-m-d', strtotime($event->DTSTART));//user friendly date
 
                     if ($date_end_event < $today) {
-                        $this->logger->info($date_event->format('Y-m-d H:i:s') . " event in the past ");
+                        $this->logger->debug($date_event->format('Y-m-d H:i:s') . " event in the past ");
                         continue;
                     }
 
-                    $this->logger->info($date_event->format('Y-m-d H:i:s') . " event In future");
-                    $this->logger->info("url is " . $url->getLink());
+                    $this->logger->debug($date_event->format('Y-m-d H:i:s') . " event In future");
+                    $this->logger->debug("url is " . $url->getLink());
                     $checkOutDate = date('Y-m-d', strtotime($event->DTEND));//user friendly date
                     $summary = $event->SUMMARY;
                     $description = $event->DESCRIPTION;
@@ -153,36 +153,36 @@ class ICalApi
                     //Airbnb
                     if (str_contains($url->getLink(), 'airbnb')) {
                         if (str_contains($summary, "Not available")) {
-                            $this->logger->info("Summary is not available for uid " . $uid);
+                            $this->logger->debug("Summary is not available for uid " . $uid);
                             continue;
                         }
                         $detailsPosition = strpos($description, 'details/');
-                        $this->logger->info("detailsPosition is  " . $detailsPosition);
+                        $this->logger->debug("detailsPosition is  " . $detailsPosition);
                         $temp = substr($description, $detailsPosition + strlen('details/'));
-                        $this->logger->info("temp is  " . $temp);
+                        $this->logger->debug("temp is  " . $temp);
                         $endOfConfirmationPosition = strpos($temp, 'Phone');
-                        $this->logger->info("endOfConfirmationPosition is  " . $endOfConfirmationPosition);
+                        $this->logger->debug("endOfConfirmationPosition is  " . $endOfConfirmationPosition);
                         $originUrl = trim(substr($temp, 0, $endOfConfirmationPosition));
-                        $this->logger->info("confirmation code is  " . $originUrl);
+                        $this->logger->debug("confirmation code is  " . $originUrl);
                     } else if (str_contains($url->getLink(), 'booking.com')) {
                         $originUrl = $origin;
-                        $this->logger->info("Link is from " . $url->getLink());
-                        $this->logger->info("Summary: " . $summary);
+                        $this->logger->debug("Link is from " . $url->getLink());
+                        $this->logger->debug("Summary: " . $summary);
                         $guestName = $this->getStringByBoundary($summary, 'CLOSED - ', '');
                     } else {
-                        $this->logger->info( "Ical Link not mapped");
+                        $this->logger->debug( "Ical Link not mapped");
                         continue;
                     }
 
-                    $this->logger->info($uid . " - " . $guestPhoneNumber);
+                    $this->logger->debug($uid . " - " . $guestPhoneNumber);
                     //check if booking already imported
                     $reservationApi = new ReservationApi($this->em, $this->logger);
                     $reservation = $reservationApi->getReservationByUID($uid);
 
                     //if booking not imported
                     if ($reservation === null) {
-                        $this->logger->info("booking has not been imported");
-                        $this->logger->info("booking has not been imported");
+                        $this->logger->debug("booking has not been imported");
+                        $this->logger->debug("booking has not been imported");
 
                         //create reservation
                         $response = $reservationApi->createReservation($roomId, $guestName, $guestPhoneNumber, $email, $checkInDate, $checkOutDate, $uid, true, $origin, $originUrl);
@@ -197,7 +197,7 @@ class ICalApi
                                 'result_message' => 'Successfully imported reservation ' . $uid
                             );
                         }
-                        $this->logger->info(print_r($responseArray, true));
+                        $this->logger->debug(print_r($responseArray, true));
                     } else {
                         $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
                         $reservation->setCheckIn(new DateTime($checkInDate));
@@ -208,7 +208,7 @@ class ICalApi
 
                         //block connected Room
                         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
-                        $this->logger->info("calling block room to block " . $reservation->getRoom()->getLinkedRoom() . " for room  " . $reservation->getRoom()->getName());
+                        $this->logger->debug("calling block room to block " . $reservation->getRoom()->getLinkedRoom() . " for room  " . $reservation->getRoom()->getName());
                         $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked", $reservation->getId());
 
 
@@ -217,7 +217,7 @@ class ICalApi
                             'result_message' => 'Successfully updated reservation ' . $uid
                         );
                     }
-                    $this->logger->info(print_r($responseArray, true));
+                    $this->logger->debug(print_r($responseArray, true));
                 }
 
             } catch (Exception $ex) {
@@ -232,30 +232,30 @@ class ICalApi
 
     function getStringByBoundary($string, $leftBoundary, $rightBoundary)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         preg_match('~' . $leftBoundary . '([^?]*)' . $rightBoundary . '~i', $string, $match);
         return $match[1];
     }
 
     function iCalDecoder($file): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $ical = file_get_contents($file);
-        $this->logger->info("file is: " . $ical);
+        $this->logger->debug("file is: " . $ical);
         preg_match_all('/(BEGIN:VEVENT.*?END:VEVENT)/si', $ical, $result, PREG_PATTERN_ORDER);
         for ($i = 0; $i < count($result[0]); $i++) {
             $tmpbyline = explode("\r\n", $result[0][$i]);
 
             foreach ($tmpbyline as $item) {
-                $this->logger->info("calendar items " . print_r($item, true));
+                $this->logger->debug("calendar items " . print_r($item, true));
                 $tmpholderarray = explode(":", $item);
                 if (count($tmpholderarray) > 1) {
-                    $this->logger->info("temp holder array " . print_r($tmpholderarray, true));
+                    $this->logger->debug("temp holder array " . print_r($tmpholderarray, true));
                     $majorarray[$tmpholderarray[0]] = $tmpholderarray[1];
                 }
             }
 
-            $this->logger->info("calendar major array " . print_r($majorarray, true));
+            $this->logger->debug("calendar major array " . print_r($majorarray, true));
 
             if (preg_match('/DESCRIPTION:(.*)END:VEVENT/si', $result[0][$i], $regs)) {
                 $majorarray['DESCRIPTION'] = str_replace("  ", " ", str_replace("\r\n", "", $regs[1]));
@@ -264,13 +264,13 @@ class ICalApi
             unset($majorarray);
 
         }
-        $this->logger->info("Ending Method: " . __METHOD__);
+        $this->logger->debug("Ending Method: " . __METHOD__);
         return $icalarray;
     }
 
     function getRoomIcalUrls($roomId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             return $this->em->getRepository(Ical::class)->findBy(array('room' => $roomId));
@@ -279,16 +279,16 @@ class ICalApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     function exportIcalForRoom($roomId): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
 
             $reservationApi = new ReservationApi($this->em, $this->logger);
@@ -297,7 +297,7 @@ class ICalApi
             $roomApi = new RoomApi($this->em, $this->logger);
             $room = $roomApi->getRoom($roomId);
             if ($room === null) {
-                $this->logger->info("room not found for id - " . $roomId);
+                $this->logger->debug("room not found for id - " . $roomId);
                 return "";
             }
             $roomName = $room->getName();
@@ -314,11 +314,11 @@ CALSCALE:GREGORIAN
 VERSION:2.0';
 
             if ($reservations !== null) {
-                $this->logger->info("found reservations - " . count($reservations));
+                $this->logger->debug("found reservations - " . count($reservations));
                 // create the ical object
 
                 foreach ($reservations as $reservation) {
-                    $this->logger->info("looping reservations - " . $reservation->getId());
+                    $this->logger->debug("looping reservations - " . $reservation->getId());
                     $resId = $reservation->getId();
                     $event_start = $reservation->getCheckIn()->format('Ymd');
                     $event_end = $reservation->getCheckOut()->format('Ymd');
@@ -329,7 +329,7 @@ VERSION:2.0';
                     $uid = $reservation->getUid();
                     // date/time is in SQL datetime format
 
-                    $this->logger->info("create the event within the ical object");
+                    $this->logger->debug("create the event within the ical object");
                     // create the event within the ical object
                     $icalString .= '
 BEGIN:VEVENT
@@ -342,20 +342,20 @@ SUMMARY:' . $room->getProperty()->getName() . ' - ' . $guestName . '  - Resa id:
 STATUS:CONFIRMED
 CREATED:' . $reservation->getReceivedOn()->format('Ymd') . 'T222001Z
 END:VEVENT';
-                    $this->logger->info("Done creating the event within the ical object");
+                    $this->logger->debug("Done creating the event within the ical object");
                 }
 
 
-                $this->logger->info($icalString);
+                $this->logger->debug($icalString);
 
             }
 
             if ($blockedRooms !== null) {
-                $this->logger->info("found blocked rooms - " . count($blockedRooms));
+                $this->logger->debug("found blocked rooms - " . count($blockedRooms));
                 // create the ical object
 
                 foreach ($blockedRooms as $blockedRoom) {
-                    $this->logger->info("looping blocked rooms - " . $blockedRoom->getId());
+                    $this->logger->debug("looping blocked rooms - " . $blockedRoom->getId());
 
                     $blockRoomId = $blockedRoom->getId();
                     $event_start = $blockedRoom->getFromDate()->format('Ymd');
@@ -364,7 +364,7 @@ END:VEVENT';
                     $uid = $blockedRoom->getUid();
                     // date/time is in SQL datetime format
 
-                    $this->logger->info("create the event within the ical object");
+                    $this->logger->debug("create the event within the ical object");
                     // create the event within the ical object
                     $icalString .= '
 BEGIN:VEVENT
@@ -377,10 +377,10 @@ SUMMARY:' . $room->getProperty()->getName() . ' - ' . $roomName . '  - Block id:
 STATUS:CONFIRMED
 CREATED:' . $blockedRoom->getCreatedDate()->format('Ymd') . 'T222001Z
 END:VEVENT';
-                    $this->logger->info("Done creating the event within the ical object");
+                    $this->logger->debug("Done creating the event within the ical object");
                 }
 
-                $this->logger->info($icalString);
+                $this->logger->debug($icalString);
 
             }
 
@@ -396,7 +396,7 @@ END:VCALENDAR';
 
     function getAirbnbEmailAndPassword(): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $configs = $this->em->getRepository(Config::class)->findAll();
@@ -412,17 +412,17 @@ END:VCALENDAR';
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
 
     function addNewChannel($roomId, $link): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             //check that the limit for number of calenders per room is not reached
@@ -469,16 +469,16 @@ END:VCALENDAR';
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     function getIcalLinks($roomId): ?array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             return $this->em->getRepository(Ical::class)->findBy(array('room' => $roomId));
@@ -487,16 +487,16 @@ END:VCALENDAR';
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return null;
     }
 
     function removeIcalLink($icalId): ?array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $ical = $this->em->getRepository(Ical::class)->findOneBy(array('id' => $icalId));
@@ -518,10 +518,10 @@ END:VCALENDAR';
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 

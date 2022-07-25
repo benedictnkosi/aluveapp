@@ -31,7 +31,7 @@ class ReservationApi
 
     public function getReservation($resId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             return $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
@@ -40,15 +40,15 @@ class ReservationApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getReservationJson($resId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
@@ -94,16 +94,16 @@ class ReservationApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
 
     public function getReservationByUID($uid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             return $this->em->getRepository(Reservations::class)->findOneBy(array('uid' => $uid));
@@ -112,15 +112,15 @@ class ReservationApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return null;
     }
 
     public function getPendingReservations($propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $datetime = new DateTime('today');
         $datetime->sub(new DateInterval('P1D'));
 
@@ -135,13 +135,13 @@ class ReservationApi
             and r.status = '" . $status->getId() . "'
             order by r.checkIn asc")
             ->getResult();;
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $reservations;
     }
 
-    public function getUpComingReservations($propertyUid, $roomId = 0)
+    public function getUpComingReservations($propertyUid, $roomId = 0, $includeStayOvers = false)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $reservations = null;
         try {
             $roomFilter = "";
@@ -153,6 +153,11 @@ class ReservationApi
             $maxFutureDate = $datetime->add(new DateInterval('P180D'));
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
+            $excludeStayOverSql = "and r.checkIn >= '" . $now->format('Y-m-d') . "'";
+            if($includeStayOvers){
+                $excludeStayOverSql = "";
+            }
+
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
@@ -160,8 +165,8 @@ class ReservationApi
             WHERE p.uid = '" . $propertyUid . "'
             and r.checkIn <= '" . $maxFutureDate->format('Y-m-d') . "'
             and r.checkOut > '" . $now->format('Y-m-d') . "'
-            and r.checkIn >= '" . $now->format('Y-m-d') . "'
-                    $roomFilter 
+            $excludeStayOverSql 
+            $roomFilter  
             and r.status = '" . $status->getId() . "'
             order by r.checkIn asc ")
                 ->getResult();
@@ -170,16 +175,16 @@ class ReservationApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
 
         return $reservations;
     }
 
     public function getPastReservations($propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $reservations = "";
         try {
             $datetime = new DateTime();
@@ -202,18 +207,18 @@ class ReservationApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
 
         return $reservations;
     }
 
     public function getCheckOutReservation($propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $reservations = "";
         try {
             $datetime = new DateTime();
@@ -234,15 +239,15 @@ class ReservationApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $reservations;
     }
 
     public function getReservationsByRoomAndDaysToCheckIn($roomId, $days)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $now = new DateTime('today midnight');
             $maxPastDate = $now->add(new DateInterval("P" . $days . "D"));
@@ -261,13 +266,13 @@ class ReservationApi
 
     public function getReservationsByRoomAndOrigin($roomId, $origin)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $now = new DateTime('today midnight');
             $yesterdayDate = $now->sub(new DateInterval("P1D"));
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            $this->logger->info("query " . $roomId . " " . $origin);
+            $this->logger->debug("query " . $roomId . " " . $origin);
 
             $reservations =  $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
@@ -279,14 +284,14 @@ class ReservationApi
 
             return $reservations;
         } catch (Exception $ex) {
-            $this->logger->info( $ex->getMessage() . " " . $ex->getTraceAsString());
+            $this->logger->debug( $ex->getMessage() . " " . $ex->getTraceAsString());
             return null;
         }
     }
 
     public function getReservationsByRoom($roomId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $now = new DateTime('today midnight');
             $maxPastDate = $now->sub(new DateInterval("P" . ICAL_PAST_DAYS . "D"));
@@ -305,7 +310,7 @@ class ReservationApi
 
     public function getStayOversReservations($propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $reservations = "";
         try {
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
@@ -324,16 +329,16 @@ class ReservationApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $reservations;
     }
 
     public function updateReservation($reservation): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
         $responseArray = array();
         try {
@@ -350,16 +355,16 @@ class ReservationApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function updateReservationDate($reservation, $checkInDate, $checkOutDate): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
         $responseArray = array();
         try {
@@ -388,16 +393,16 @@ class ReservationApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function updateReservationRoom($reservation, $roomId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
         $responseArray = array();
         try {
@@ -426,17 +431,17 @@ class ReservationApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
 
     public function updateReservationOriginUrl($reservation, $confirmationCode): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
         $responseArray = array();
         try {
@@ -454,17 +459,17 @@ class ReservationApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $uid = null, $isImport = false, $origin = "website", $originUrl = "website"): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
-        $this->logger->info("room ids" . $roomIds);
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $this->logger->debug("room ids" . $roomIds);
         $responseArray = array();
         try {
             //get property Id
@@ -474,7 +479,7 @@ class ReservationApi
             $roomIdsArray = explode(",", $roomIds);
             $reservationIds = array();
             foreach ($roomIdsArray as $roomId) {
-                $this->logger->info("room id " . $roomId);
+                $this->logger->debug("room id " . $roomId);
                 $roomApi = new RoomApi($this->em, $this->logger);
                 $propertyUid = $roomApi->getRoom($roomIds)->getProperty()->getUid();
                 //get guest
@@ -487,11 +492,11 @@ class ReservationApi
                 }
 
                 if ($guest == null) {
-                    $this->logger->info("guest not found, creating a new guest");
+                    $this->logger->debug("guest not found, creating a new guest");
                     //create guest
                     $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $propertyUid, $origin);
                     if ($response[0]['result_code'] != 0) {
-                        $this->logger->info(print_r($response, true));
+                        $this->logger->debug(print_r($response, true));
                         return $response;
                     } else {
                         $guest = $response[0]['guest'];
@@ -545,20 +550,20 @@ class ReservationApi
                 $this->em->flush($reservation);
 
                 //block connected Room
-                $this->logger->info("calling block room to block " . $room->getLinkedRoom() . " for room  " . $room->getName());
+                $this->logger->debug("calling block room to block " . $room->getLinkedRoom() . " for room  " . $room->getName());
                 $blockRoomApi->blockRoom($room->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked", $reservation->getId());
 
 
                 //add Short stay 3 hour add-on if check out is same day
                 $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
-                $this->logger->info("Date diff is $totalDays");
+                $this->logger->debug("Date diff is $totalDays");
                 if ($totalDays === 0) {
-                    $this->logger->info("Short Stay");
+                    $this->logger->debug("Short Stay");
                     $addOnsApi = new AddOnsApi($this->em, $this->logger);
                     $addon = $addOnsApi->getAddOn("Short Stay - 3 Hours", $propertyUid);
                     $addOnsApi->addAdOnToReservation($reservation->getId(), $addon->getId(), 1);
                 } else {
-                    $this->logger->info("overnight Stay");
+                    $this->logger->debug("overnight Stay");
                 }
 
                 //Send SMS
@@ -579,9 +584,9 @@ class ReservationApi
                             // check if the server is in the array
                             if (!in_array($_SERVER['REMOTE_ADDR'], $whitelist)) {
                                 mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
-                                $this->logger->info("Successfully sent email to guest");
+                                $this->logger->debug("Successfully sent email to guest");
                             } else {
-                                $this->logger->info("email not sent on local server");
+                                $this->logger->debug("email not sent on local server");
                             }
                         }
                     }
@@ -610,17 +615,17 @@ class ReservationApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function isEligibleForCheckIn($reservation): bool
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $isEligible = true;
         if (strcasecmp($reservation->getGuest()->getIdImage(), "unverified.png") == 0 && strcasecmp($reservation->getOrigin(), "website") == 0) {
             $isEligible = false;
@@ -629,13 +634,13 @@ class ReservationApi
         if (strcasecmp($reservation->getGuest()->getPhoneNumber(), "not provided") == 0) {
             $isEligible = false;
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $isEligible;
     }
 
     public function getAmountDue($reservation)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
         $addOnsApi = new AddOnsApi($this->em, $this->logger);
         $paymentApi = new PaymentApi($this->em, $this->logger);
@@ -663,14 +668,14 @@ class ReservationApi
         }
 
         $due = $totalPrice - $totalPayment;
-        $this->logger->info("Total Add Ons: " . $totalPriceForAllAdOns);
-        $this->logger->info("Room Price: " . $roomPrice);
-        $this->logger->info("Total Days: " . $totalDays);
-        $this->logger->info("Total Price: " . $totalPrice);
-        $this->logger->info("Total Paid: " . $totalPayment);
-        $this->logger->info("due: " . $due);
+        $this->logger->debug("Total Add Ons: " . $totalPriceForAllAdOns);
+        $this->logger->debug("Room Price: " . $roomPrice);
+        $this->logger->debug("Total Days: " . $totalDays);
+        $this->logger->debug("Total Price: " . $totalPrice);
+        $this->logger->debug("Total Paid: " . $totalPayment);
+        $this->logger->debug("due: " . $due);
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $due;
     }
 

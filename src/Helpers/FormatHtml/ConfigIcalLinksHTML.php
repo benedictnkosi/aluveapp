@@ -18,7 +18,7 @@ class ConfigIcalLinksHTML
 
     public function formatHtml($icalLinks): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $html = '';
         if ($icalLinks != null) {
             foreach ($icalLinks as $icalLink) {

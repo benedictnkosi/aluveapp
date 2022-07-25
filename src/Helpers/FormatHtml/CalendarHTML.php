@@ -28,7 +28,7 @@ class CalendarHTML
 
     public function formatHtml($propertyUid): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlString = "";
 
         $roomsApi = new RoomApi($this->em, $this->logger);
@@ -61,7 +61,7 @@ class CalendarHTML
         $rooms = $roomsApi->getRoomsEntities($propertyUid);
         foreach ($rooms as $room) {
             $htmlString .= '<tr><th class="headcol">' . $room->getName() . '</th>';
-            $reservations = $reservationApi->getUpComingReservations($propertyUid, $room->getId());
+            $reservations = $reservationApi->getUpComingReservations($propertyUid, $room->getId(), true);
             $blockedRooms = $blockRoomApi->getBlockedRooms($propertyUid, $room->getId());
 
             if ($reservations === null && $blockedRooms === null) {
@@ -83,19 +83,19 @@ class CalendarHTML
                         $htmlString .= '<td class="new-month"></td>';
                     }
 
-                    $this->logger->info("outside foreach for reservations temp date is " . $todayDate->format("Y-m-d") . " x is $x");
+                    $this->logger->debug("outside foreach for reservations temp date is " . $todayDate->format("Y-m-d") . " x is $x");
 
                     foreach ($reservations as &$reservation) {
                         $isCheckInDay = false;
-                        $this->logger->info("Check if temp date " . $tempDate->format("Y-m-d") . " and res " . $reservation->getId() . " check in date is " . $reservation->getCheckIn()->format("Y-m-d") . "check out date " . $reservation->getCheckOut()->format("Y-m-d"));
+                        $this->logger->debug("Check if temp date " . $tempDate->format("Y-m-d") . " and res " . $reservation->getId() . " check in date is " . $reservation->getCheckIn()->format("Y-m-d") . "check out date " . $reservation->getCheckOut()->format("Y-m-d"));
                         if ($tempDate >= $reservation->getCheckIn() && $tempDate < $reservation->getCheckOut()) {
-                            $this->logger->info("check passed");
+                            $this->logger->debug("check passed");
                             if (strcasecmp($reservation->getStatus()->getName(), "confirmed") === 0) {
                                 $resID = $reservation->getId();
                                 $isDateBooked = true;
                                 $guestName = $reservation->getGuest()->getName();
                                 if (strcasecmp($tempDate->format("Y-m-d"), $reservation->getCheckIn()->format("Y-m-d")) === 0) {
-                                    $this->logger->info("Check in day is true because tempdate is " . $tempDate->format("Y-m-d") . " and res " . $reservation->getId() . " check in date is " . $reservation->getCheckIn()->format("Y-m-d"));
+                                    $this->logger->debug("Check in day is true because tempdate is " . $tempDate->format("Y-m-d") . " and res " . $reservation->getId() . " check in date is " . $reservation->getCheckIn()->format("Y-m-d"));
                                     $isCheckInDay = true;
                                 }
                                 break;
@@ -105,12 +105,12 @@ class CalendarHTML
                             }
 
                         } else {
-                            $this->logger->info("check failed");
+                            $this->logger->debug("check failed");
 
                         }
                     }
 
-                    $this->logger->info("blocked rooms");
+                    $this->logger->debug("blocked rooms");
                     if ($blockedRooms != null) {
 
                         foreach ($blockedRooms as $blockedRoom) {
@@ -125,7 +125,7 @@ class CalendarHTML
                         $this->logger->debug("blockedRooms array is not null");
                     }
 
-                    $this->logger->info("checking if date booked");
+                    $this->logger->debug("checking if date booked");
                     if ($isDateBooked) {
                         if ($isCheckInDay === true) {
                             $htmlString .= '<td  class="booked checkin" data-resid="' . $resID . '" title="' . $guestName . '"><img  src="images/' . $reservation->getOrigin() . '.png"  data-resid="' . $resID . '" alt="checkin" class="image_checkin"></td>';

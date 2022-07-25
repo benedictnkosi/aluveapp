@@ -29,7 +29,7 @@ class AddOnsApi
 
     public function getAddOn($addOnName, $propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $securityApi = new SecurityApi($this->em, $this->logger);
@@ -50,16 +50,16 @@ class AddOnsApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getAddOns($propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
@@ -70,16 +70,16 @@ class AddOnsApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return null;
     }
 
     public function getAddOnsJson($addOnId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $addOn = $this->em->getRepository(AddOns::class)->findOneBy(array('id' => $addOnId));
@@ -103,36 +103,36 @@ class AddOnsApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getReservationAddOns($resId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $addOns = $this->em->getRepository(ReservationAddOns::class)->findBy(array('reservation' => $resId));
-            $this->logger->info("no errors finding add ons for reservation $resId. add on count " . count($addOns));
+            $this->logger->debug("no errors finding add ons for reservation $resId. add on count " . count($addOns));
             return $addOns;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("failed to get add ons " . print_r($responseArray, true));
+            $this->logger->debug("failed to get add ons " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function addAdOnToReservation($resId, $adOnId, $quantity): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $addOn = $this->em->getRepository(AddOns::class)->findOneBy(array('id' => intval($adOnId)));
@@ -164,16 +164,16 @@ class AddOnsApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function updateAddOn($addOnId, $field, $newValue)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $addOn = $this->em->getRepository(AddOns::class)->findOneBy(array("id" => $addOnId));
@@ -182,7 +182,7 @@ class AddOnsApi
                     'result_message' => "Addon not found",
                     'result_code' => 1
                 );
-                $this->logger->info(print_r($responseArray, true));
+                $this->logger->debug(print_r($responseArray, true));
             } else {
                 switch ($field) {
                     case "price":
@@ -211,16 +211,16 @@ class AddOnsApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function deleteAddOn($addOnId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $addOn = $this->em->getRepository(AddOns::class)->findOneBy(array("id" => $addOnId));
@@ -229,7 +229,7 @@ class AddOnsApi
                     'result_message' => "Addon not found",
                     'result_code' => 1
                 );
-                $this->logger->info(print_r($responseArray, true));
+                $this->logger->debug(print_r($responseArray, true));
             } else {
                 $addOn->setStatus("deleted");
                 $this->em->persist($addOn);
@@ -244,22 +244,22 @@ class AddOnsApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function createAddOn($addOnName, $addOnPrice, $propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $this->logger->info("attempting to talk to db");
+            $this->logger->debug("attempting to talk to db");
             //check if add-on with the same name does not exist
             $existingAddOn = $this->em->getRepository(AddOns::class)->findBy(array('name' => $addOnName));
-            $this->logger->info("db connect done success");
+            $this->logger->debug("db connect done success");
             if ($existingAddOn != null) {
                 $responseArray[] = array(
                     'result_message' => "Add on with the same name already exists",
@@ -287,20 +287,20 @@ class AddOnsApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getAddOnsForInvoice($resId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $html = "";
         try {
             $addOns = $this->em->getRepository(ReservationAddOns::class)->findBy(array('reservation' => $resId));
-            $this->logger->info("number of add ons " . count($addOns));
+            $this->logger->debug("number of add ons " . count($addOns));
             foreach ($addOns as $addOn) {
                 $totalPriceForAllAdOns = (intVal($addOn->getAddOn()->getPrice()) * intval($addOn->getQuantity()));
                 $html .= '<tr class="item">
@@ -310,7 +310,7 @@ class AddOnsApi
 					<td>R' . number_format((float)$totalPriceForAllAdOns, 2, '.', '') . '</td>
 				</tr>';
             }
-            $this->logger->info($html);
+            $this->logger->debug($html);
             return $html;
         } catch (Exception $ex) {
             $this->logger->error($ex->getMessage());
@@ -320,7 +320,7 @@ class AddOnsApi
 
     public function getAddOnsTotal($resId): float|int
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $html = "";
         try {
             $addOns = $this->em->getRepository(ReservationAddOns::class)->findBy(array('reservation' => $resId));
@@ -328,7 +328,7 @@ class AddOnsApi
             foreach ($addOns as $addOn) {
                 $totalPriceForAllAdOns += (intVal($addOn->getAddOn()->getPrice()) * intval($addOn->getQuantity()));
             }
-            $this->logger->info($html);
+            $this->logger->debug($html);
             return $totalPriceForAllAdOns;
         } catch (Exception $ex) {
             $this->logger->error($ex->getMessage());

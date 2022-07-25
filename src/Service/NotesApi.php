@@ -26,7 +26,7 @@ class NotesApi
 
     public function addNote($resId, $note)
     {
-        $this->logger->info("Starting Method: " . __METHOD__ );
+        $this->logger->debug("Starting Method: " . __METHOD__ );
         $responseArray = array();
         try{
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id'=>$resId));
@@ -42,36 +42,36 @@ class NotesApi
                 'result_code' => 0,
                 'result_message' => 'Successfully added note'
             );
-            $this->logger->info("no errors adding note for reservation $resId. note $note");
+            $this->logger->debug("no errors adding note for reservation $resId. note $note");
         }catch(Exception $ex){
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code'=> 1
             );
-            $this->logger->info("failed to get payments " . print_r($responseArray, true));
+            $this->logger->debug("failed to get payments " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__ );
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
         return $responseArray;
     }
 
     public function getReservationNotes($resId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__ );
+        $this->logger->debug("Starting Method: " . __METHOD__ );
         $responseArray = array();
         try{
             $notes = $this->em->getRepository(ReservationNotes::class)->findBy(array('reservation'=>$resId));
-            $this->logger->info("no errors finding notes for reservation $resId. notes count " . count($notes));
+            $this->logger->debug("no errors finding notes for reservation $resId. notes count " . count($notes));
             return $notes;
         }catch(Exception $ex){
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code'=> 1
             );
-            $this->logger->info("failed to get notes " . print_r($responseArray, true));
+            $this->logger->debug("failed to get notes " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__ );
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
         return $responseArray;
     }
 }

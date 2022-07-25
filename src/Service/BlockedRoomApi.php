@@ -27,8 +27,8 @@ class BlockedRoomApi
 
     public function blockRoom($roomId, $fromDate,$toDate , $comments, $reservationId = null): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
-        $this->logger->info("blocking room: " . $roomId);
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $this->logger->debug("blocking room: " . $roomId);
 
 
         $responseArray = array();
@@ -41,10 +41,10 @@ class BlockedRoomApi
                     'result_code' => 1,
                     'result_message' => "Room not found for id $roomId"
                 );
-                $this->logger->info("Ending Method before the return: " . __METHOD__);
+                $this->logger->debug("Ending Method before the return: " . __METHOD__);
                 return $responseArray;
             }else{
-                $this->logger->info("Room is not null");
+                $this->logger->debug("Room is not null");
             }
 
             //check if the dates are the same, if same increment the to date by one day
@@ -77,23 +77,23 @@ class BlockedRoomApi
                 'result_message' => 'Successfully blocked room',
                 'block_id' => $blockRoom->getId()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getBlockedRooms($propertyUid, $roomId = 0)
     {
-        $this->logger->info("Starting Method: " . __METHOD__ );
+        $this->logger->debug("Starting Method: " . __METHOD__ );
         $responseArray = array();
         try{
             $roomFilter = "";
@@ -115,24 +115,24 @@ class BlockedRoomApi
             order by b.fromDate asc ")
                 ->getResult();
 
-            $this->logger->info("Ending Method before the return: " . __METHOD__ );
+            $this->logger->debug("Ending Method before the return: " . __METHOD__ );
             return $blockedRooms;
         }catch(Exception $exception){
             $responseArray[] = array(
                 'result_message' => $exception->getMessage(),
                 'result_code'=> 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__ );
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
         return null;
     }
 
 
     public function deleteBlockedRoom($blockedRoomId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__ );
+        $this->logger->debug("Starting Method: " . __METHOD__ );
         $responseArray = array();
         try{
             $blockedRoom = $this->em->getRepository(BlockedRooms::class)->findOneBy(array('id' => $blockedRoomId));
@@ -147,10 +147,10 @@ class BlockedRoomApi
                 'result_message' => $exception->getMessage(),
                 'result_code'=> 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__ );
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
         return $responseArray;
 
     }

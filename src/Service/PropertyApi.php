@@ -27,7 +27,7 @@ class PropertyApi
 
     public function getPropertyDetails($propertyId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $property = $this->em->getRepository(Property::class)->findOneBy(
@@ -59,16 +59,16 @@ class PropertyApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getPropertyIdByUid($propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $property = $this->em->getRepository(Property::class)->findOneBy(
                 array("uid" => $propertyUid));
@@ -84,37 +84,37 @@ class PropertyApi
 
     public function getPropertyUidByHost($request)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $propertyUid = null;
         try {
             $referer = $request->headers->get('referer');
             $host = parse_url($referer, PHP_URL_HOST);
-            $this->logger->info("referrer is " . $referer);
-            $this->logger->info("referrer host is " . $host);
+            $this->logger->debug("referrer is " . $referer);
+            $this->logger->debug("referrer host is " . $host);
 
             $property = $this->em->getRepository(Property::class)->findOneBy(
                 array("serverName" => $host));
             if ($property != null) {
                 $propertyUid = $property->getUid();
-                $this->logger->info("property uid found for host $propertyUid - " . $host);
+                $this->logger->debug("property uid found for host $propertyUid - " . $host);
             } else {
-                $this->logger->info("property uid NOT found for host " . $host);
+                $this->logger->debug("property uid NOT found for host " . $host);
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $propertyUid;
     }
 
     public function getPropertyTerms($roomApi, $propertyUid, $request): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             if(strcmp($propertyUid, "none") === 0 ){
@@ -134,16 +134,16 @@ class PropertyApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function updatePropertyTerms($propertyUid, $terms)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $property = $this->em->getRepository(Property::class)->findOneBy(
                 array("uid" => $propertyUid));
@@ -168,16 +168,16 @@ class PropertyApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function contactUs($guestName, $email, $phoneNumber, $message, $request): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
@@ -203,9 +203,9 @@ class PropertyApi
                 // check if the server is in the array
                 if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
                     mail($property->getEmailAddress(), "Website - Message from guest", $emailPrefix . $message, $headers);
-                    $this->logger->info("Successfully sent email to guest");
+                    $this->logger->debug("Successfully sent email to guest");
                 }else{
-                    $this->logger->info("local server email not sent");
+                    $this->logger->debug("local server email not sent");
                 }
 
                 $responseArray[] = array(
@@ -224,10 +224,10 @@ class PropertyApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 }

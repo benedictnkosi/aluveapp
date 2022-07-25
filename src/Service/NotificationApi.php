@@ -27,7 +27,7 @@ class NotificationApi
     }
 
     public function getLongStayCleaningNotifications($propertyUid){
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         //get active reservations where cleaning is more than 2 days
         $reservationApi = new ReservationApi($this->em, $this->logger);
         $reservations = $reservationApi->getStayOversReservations($propertyUid);
@@ -35,7 +35,7 @@ class NotificationApi
         $notificationsHtml = "";
 
         foreach ($reservations as $reservation){
-            $this->logger->info("found reservations " . $reservation->getId());
+            $this->logger->debug("found reservations " . $reservation->getId());
             $today = new DateTime();
             $checkInDate = $reservation->getCheckin();
             $lastCleaningDate = null;
@@ -43,22 +43,22 @@ class NotificationApi
             //get last cleaning date
             $cleanings = $CleaningApi->getReservationLastCleaning($reservation->getId());
             if(count($cleanings) > 0){
-                $this->logger->info("found cleanings " . count($cleanings));
+                $this->logger->debug("found cleanings " . count($cleanings));
                 $lastCleaningDate = $cleanings[0]->getDate();
             }else{
-                $this->logger->info("did not find cleanings");
+                $this->logger->debug("did not find cleanings");
             }
 
             //is check in more than 2 days ago
             $interval = $today->diff($checkInDate)->days;
-            $this->logger->info("check in date diff is " . $interval);
+            $this->logger->debug("check in date diff is " . $interval);
             if($interval>2){
 
                 //check if the room has been cleaned since check in
                 if($lastCleaningDate !== null){
                     //check if the cleaning is not older than 2 days
                     $interval = $today->diff($lastCleaningDate)->days;
-                    $this->logger->info("cleaning in date diff is " . $interval);
+                    $this->logger->debug("cleaning in date diff is " . $interval);
                     if($interval > 2){
                         $notificationsHtml .= '<h5 class="notification_message borderAndPading">' . $reservation->getRoom()->getName(). " not cleaned in $interval days. last cleaning was on " . $lastCleaningDate->format("d M") . '</h5>';
                     }
@@ -68,7 +68,7 @@ class NotificationApi
                 }
             }
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $notificationsHtml;
     }
 }

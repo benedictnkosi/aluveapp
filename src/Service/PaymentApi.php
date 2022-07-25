@@ -29,27 +29,27 @@ class PaymentApi
 
     public function getReservationPayments($resId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $payments = $this->em->getRepository(Payments::class)->findBy(array('reservation' => $resId));
-            $this->logger->info("no errors finding payments for reservation $resId. payment count " . count($payments));
+            $this->logger->debug("no errors finding payments for reservation $resId. payment count " . count($payments));
             return $payments;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("failed to get payments " . print_r($responseArray, true));
+            $this->logger->debug("failed to get payments " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getReservationPaymentsHtml($resId): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $payments = $this->em->getRepository(Payments::class)->findBy(array('reservation' => $resId));
             $html = "";
@@ -74,7 +74,7 @@ class PaymentApi
 
     public function addPayment($resId, $amount): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
 
@@ -86,7 +86,7 @@ class PaymentApi
             $payment->setAmount($amount);
             $payment->setDate($now);
 
-            $this->logger->info("reservation status is pending" . $reservation->getStatus()->getName());
+            $this->logger->debug("reservation status is pending" . $reservation->getStatus()->getName());
 
             //updated status to confirmed if it is pending
             if(strcmp($reservation->getStatus()->getName(), "pending") ===0) {
@@ -94,7 +94,7 @@ class PaymentApi
 
                 $isRoomAvailable = $roomApi->isRoomAvailable($reservation->getRoom()->getId(), $reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d"));
                 if ($isRoomAvailable) {
-                    $this->logger->info("room is available");
+                    $this->logger->debug("room is available");
                     $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => "confirmed"));
                     $reservation->setStatus($status);
                     //commit the reservation changes
@@ -126,7 +126,7 @@ class PaymentApi
                         }
                     }
 
-                    $this->logger->info("no errors adding payment for reservation $resId. amount $amount");
+                    $this->logger->debug("no errors adding payment for reservation $resId. amount $amount");
                 } else {
 
                     $responseArray[] = array(
@@ -150,16 +150,16 @@ class PaymentApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("failed to get payments " . print_r($responseArray, true));
+            $this->logger->debug("failed to get payments " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getTotalDue($resId): float|int|array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
@@ -173,7 +173,7 @@ class PaymentApi
             $addOnsApi = new AddOnsApi($this->em, $this->logger);
             $addOns = $addOnsApi->getReservationAddOns($resId);
 
-            $this->logger->info("looping add ons for reservation " . $resId . " add on count " . count($addOns));
+            $this->logger->debug("looping add ons for reservation " . $resId . " add on count " . count($addOns));
             $totalPriceForAllAdOns = 0;
             foreach ($addOns as $addOn) {
                 $totalPriceForAllAdOns += (intVal($addOn->getAddOn()->getPrice()) * intval($addOn->getQuantity()));
@@ -182,7 +182,7 @@ class PaymentApi
             $totalPrice += $totalPriceForAllAdOns;
 
             //payments
-            $this->logger->info("calculating payments " . $resId);
+            $this->logger->debug("calculating payments " . $resId);
             $payments = $this->getReservationPayments($resId);
             $totalPayment = 0;
             foreach ($payments as $payment) {
@@ -191,23 +191,23 @@ class PaymentApi
 
             $due = $totalPrice - $totalPayment;
 
-            $this->logger->info("Due amount is $due");
+            $this->logger->debug("Due amount is $due");
             return $due;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("failed to get payments " . print_r($responseArray, true));
+            $this->logger->debug("failed to get payments " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     function sendSMSToGuest( $reservation): void
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try{
 
             //send sms to guest
@@ -215,16 +215,16 @@ class PaymentApi
             $amountDue = $this->getTotalDue($reservation->getId());
             $messageBody = "Hi " . $reservation->getGuest()->getName() . ", Thank you for payment. Balance is R" . $amountDue . ". View your receipt http://".SERVER_NAME."/invoice.html?reservation=" . $reservation->getId();
             $smsHelper->sendMessage($reservation->getGuest()->getPhoneNumber(), $messageBody);
-            $this->logger->info("Successfully sent sms to guest");
+            $this->logger->debug("Successfully sent sms to guest");
         }catch (Exception $ex){
-            $this->logger->info(print_r($ex, true));
+            $this->logger->debug(print_r($ex, true));
         }
 
     }
 
     function sendEmailToGuest( $reservation, $amountPaid): void
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try{
             //send email to guest
             $amountDue = $this->getTotalDue($reservation->getId());
@@ -239,20 +239,20 @@ class PaymentApi
             // check if the server is in the array
             if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
                 mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
-                $this->logger->info("Successfully sent email to guest");
+                $this->logger->debug("Successfully sent email to guest");
             }else{
-                $this->logger->info("local server email not sent");
+                $this->logger->debug("local server email not sent");
             }
 
 
         }catch (Exception $ex){
-            $this->logger->info(print_r($ex, true));
+            $this->logger->debug(print_r($ex, true));
         }
     }
 
     public function getReservationPaymentsTotal($resId): int
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $payments = $this->em->getRepository(Payments::class)->findBy(array('reservation' => $resId));
             $totalPayment = 0;

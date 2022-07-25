@@ -24,7 +24,7 @@ class SecurityApi
 
     public function login($pin): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $property = $this->em->getRepository(Property::class)->findOneBy(array('secret' => $pin));
@@ -51,9 +51,9 @@ class SecurityApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
@@ -65,7 +65,7 @@ class SecurityApi
 
     public function isLoggedIn($propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
@@ -84,7 +84,7 @@ class SecurityApi
                 'logged_in' => false,
                 'exception' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
         return $responseArray;
     }

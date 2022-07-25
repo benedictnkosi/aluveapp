@@ -28,7 +28,7 @@ class OccupancyApi
 
     public function getOccupancy($days, $propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
 
         try {
@@ -56,7 +56,7 @@ order by occupancy;";
                     'result_message' => "No results found",
                     'result_code' => 1
                 );
-                $this->logger->info(print_r($responseArray, true));
+                $this->logger->debug(print_r($responseArray, true));
             } else {
                 $numberOfUnits = 0;
                 $sum = 0;
@@ -78,16 +78,16 @@ order by occupancy;";
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("failed to get occupancy " . print_r($responseArray, true));
+            $this->logger->debug("failed to get occupancy " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getOccupancyPerRoom($days, $propertyUid): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlString = "";
         $responseArray = array();
         $roomIdsArray = array();
@@ -106,7 +106,7 @@ and DATE(check_in) < DATE(NOW())
 and reservations.`status` = '".$confirmStatus->getId()."'
 group by room_id
 order by occupancy;";
-            $this->logger->info($sql);
+            $this->logger->debug($sql);
 
             $databaseHelper = new DatabaseHelper($this->logger);
             $result = $databaseHelper->queryDatabase($sql);
@@ -116,7 +116,7 @@ order by occupancy;";
                     'result_message' => "No results found",
                     'result_code' => 1
                 );
-                $this->logger->info(print_r($responseArray,true));
+                $this->logger->debug(print_r($responseArray,true));
             } else {
 
                 while ($results = $result->fetch_assoc()) {
@@ -136,12 +136,12 @@ order by occupancy;";
             $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
             $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $property->getId(), 'status'=> $roomConfirmStatus->getId()));
 
-            $this->logger->info("room Ids array is " . print_r($roomIdsArray, true));
+            $this->logger->debug("room Ids array is " . print_r($roomIdsArray, true));
 
             foreach($rooms as $room){
-                $this->logger->info("checking room " . $room->getName());
+                $this->logger->debug("checking room " . $room->getName());
                 if (!in_array($room->getId(), $roomIdsArray)) {
-                    $this->logger->info("not in array");
+                    $this->logger->debug("not in array");
                     $htmlString .= '<h6>
 								' . $room->getName() . ' <span> 0% </span>
 							</h6>
@@ -150,7 +150,7 @@ order by occupancy;";
 									style="width: 0%"></div>
 							</div>';
                 }else{
-                    $this->logger->info("in array");
+                    $this->logger->debug("in array");
                 }
             }
         } catch (Exception $ex) {
@@ -158,10 +158,10 @@ order by occupancy;";
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("failed to get occupancy " . print_r($responseArray, true));
+            $this->logger->debug("failed to get occupancy " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $htmlString;
     }
 }

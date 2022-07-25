@@ -26,7 +26,7 @@ class GuestApi
 
     public function createGuest($name, $phoneNumber, $email, $propertyUid, $origin): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
 
@@ -51,16 +51,16 @@ class GuestApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function updateGuestPhoneNumber($resId, $phoneNumber): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
@@ -85,16 +85,16 @@ class GuestApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function createAirbnbGuest($confirmationCode, $name): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             //get property id
@@ -127,16 +127,16 @@ class GuestApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function updateGuestIdNumber($guestId, $IdNumber): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId));
@@ -152,16 +152,16 @@ class GuestApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function blockGuest($guestId, $reason): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId));
@@ -178,16 +178,16 @@ class GuestApi
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getGuests($filterValue, $propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
             $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
@@ -224,16 +224,16 @@ class GuestApi
                 'result_message' => $exception->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getGuestByPhoneNumber($phoneNumber, $propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $guest = null;
         $responseArray = array();
         try {
@@ -245,16 +245,16 @@ class GuestApi
                 'result_message' => $exception->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $guest;
     }
 
     public function getGuestByName($name, $propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $guest = null;
         $responseArray = array();
         try {
@@ -266,10 +266,10 @@ class GuestApi
                 'result_message' => $exception->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $guest;
     }
 
@@ -282,7 +282,7 @@ class GuestApi
 
     public function getGuestStaysCount($guestId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $stays = $this->em->getRepository(Reservations::class)->findBy(array('guest' => $guestId,
@@ -296,15 +296,15 @@ class GuestApi
                 'result_message' => $exception->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getGuestPreviousRooms($guestId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
         $responseArray = array();
         try {
@@ -321,16 +321,16 @@ class GuestApi
                 'result_message' => $exception->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function hasGuestStayedInRoom($guestId, $roomId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
         $responseArray = array();
         try {
@@ -348,10 +348,10 @@ class GuestApi
                 'result_message' => $exception->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 

@@ -18,7 +18,7 @@ class BlockedRoomsHTML
 
     public function formatHtml($blockedRooms): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlString = "";
 
         //if no reservations found

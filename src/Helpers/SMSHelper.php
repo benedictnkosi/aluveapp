@@ -16,7 +16,7 @@ class SMSHelper
 
     function sendMessage ($phoneNumber, $message): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
         $curl = curl_init();
 
@@ -49,7 +49,7 @@ class SMSHelper
         $output['error'] = curl_error($curl);
 
         curl_close($curl);
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $output;
 
     }

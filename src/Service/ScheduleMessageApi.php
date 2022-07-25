@@ -29,7 +29,7 @@ class ScheduleMessageApi
 
     public function createScheduleMessage($messageId, $scheduleId, $rooms): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $messageTemplate = $this->em->getRepository(MessageTemplate::class)->findOneBy(array('id' => $messageId));
@@ -53,7 +53,7 @@ class ScheduleMessageApi
             $roomsArray = explode(" ", $rooms);
             foreach ($roomsArray as $roomId) {
                 //check if duplicate
-                $this->logger->info("sql for checking duplicate");
+                $this->logger->debug("sql for checking duplicate");
                 $scheduleMessage = $this->em->getRepository(ScheduleMessages::class)->findOneBy(
                     array('messageSchedule' => $scheduleId,
                         'messageTemplate' => $messageId,
@@ -87,36 +87,36 @@ class ScheduleMessageApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getScheduleTimes(): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $scheduleTimes = $this->em->getRepository(ScheduleTimes::class)->findAll();
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $scheduleTimes;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getScheduleTemplates($propertyUid): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $html = "";
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
@@ -125,7 +125,7 @@ class ScheduleMessageApi
             foreach ($messageTemplates as $messageTemplate) {
                 $html .= '<option value="' . $messageTemplate->getId() . '" class="template_option">' . $messageTemplate->getName() . '</option>';
             }
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $html;
         } catch (Exception $ex) {
 
@@ -137,7 +137,7 @@ class ScheduleMessageApi
 
     public function getScheduledMessages($propertyUid): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $html = '<table id="scheduled_messages_table">
                             <tr>
                                 <th>Template</th>
@@ -166,38 +166,38 @@ class ScheduleMessageApi
             $html .= '</table>';
 
 
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
         } catch (Exception $ex) {
             $this->logger->error($ex->getMessage());
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $html;
     }
 
     public function getMessageVariables(): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $messageVariables = $this->em->getRepository(MessageVariables::class)->findAll();
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $messageVariables;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function sendScheduledMessages($scheduleTimeName, $propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $scheduleTime = $this->em->getRepository(ScheduleTimes::class)->findOneBy(array('name' => $scheduleTimeName));
@@ -221,13 +221,13 @@ class ScheduleMessageApi
                                     if (!empty($email)) {
                                         $message = wordwrap($message, 70);
                                         mail('nkosi.benedict@gmail.com', 'Test Email', $message);
-                                        $this->logger->info("Sending email for " . $message);
+                                        $this->logger->debug("Sending email for " . $message);
                                         $responseArray[] = array(
                                             'result_message' => 'Successfully sent all scheduled messages for ' . $message,
                                             'result_code' => 0
                                         );
                                     } else {
-                                        $this->logger->info("Email not found for guest");
+                                        $this->logger->debug("Email not found for guest");
                                         $responseArray[] = array(
                                             'result_message' => 'Email not found for guest ' . $message,
                                             'result_code' => 1
@@ -252,16 +252,16 @@ class ScheduleMessageApi
 
                 }
 
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
@@ -280,7 +280,7 @@ class ScheduleMessageApi
 
     public function deleteScheduledMessages($scheduleMessageId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $scheduleMessage = $this->em->getRepository(ScheduleMessages::class)->findOneBy(array('id' => $scheduleMessageId));
@@ -300,7 +300,7 @@ class ScheduleMessageApi
             }
 
 
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
@@ -309,13 +309,13 @@ class ScheduleMessageApi
             $this->logger->error($ex->getMessage());
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function createMessageTemplate($name, $message, $propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $securityApi = new SecurityApi($this->em, $this->logger);
@@ -354,19 +354,19 @@ class ScheduleMessageApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getTemplateMessage($templateId): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $template = $this->em->getRepository(MessageTemplate::class)->findOneBy(array('id' => $templateId));
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $template->getMessage();
         } catch (Exception $ex) {
             $this->logger->error($ex->getMessage());

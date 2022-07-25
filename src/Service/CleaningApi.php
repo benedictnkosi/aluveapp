@@ -28,7 +28,7 @@ class CleaningApi
 
     public function addCleaningToReservation($resId, $employeeId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
@@ -47,22 +47,22 @@ class CleaningApi
                 'result_code' => 0,
                 'result_message' => 'Successfully added cleaning to reservation'
             );
-            $this->logger->info("no errors adding cleaning for reservation $resId. cleaner $employee->getId()");
+            $this->logger->debug("no errors adding cleaning for reservation $resId. cleaner $employee->getId()");
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("Error " . print_r($responseArray, true));
+            $this->logger->debug("Error " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function isRoomCleanedForCheckOut($resId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
@@ -90,16 +90,16 @@ class CleaningApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("Error " . print_r($responseArray, true));
+            $this->logger->debug("Error " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getReservationCleanings($resId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             return $this->em->getRepository(Cleaning::class)->findBy(array('reservation' => $resId));
@@ -108,16 +108,16 @@ class CleaningApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("Error " . print_r($responseArray, true));
+            $this->logger->debug("Error " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getReservationLastCleaning($resId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $cleanings = $this->em->getRepository(Cleaning::class)->findBy(array('reservation' => $resId),
@@ -129,16 +129,16 @@ class CleaningApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info("Error " . print_r($responseArray, true));
+            $this->logger->debug("Error " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getCleaningsByRoom($roomId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $htmlResponse = "";
@@ -165,10 +165,10 @@ class CleaningApi
 
         } catch (Exception $ex) {
             $htmlResponse = "Failed to get Cleaning for room";
-            $this->logger->info("Error " . print_r($responseArray, true));
+            $this->logger->debug("Error " . print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $htmlResponse;
     }
 

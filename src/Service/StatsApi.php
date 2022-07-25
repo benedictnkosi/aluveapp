@@ -31,7 +31,7 @@ class StatsApi
         if (strcasecmp($day, "tomorrow") == 0) {
             $datetime->add(new DateInterval('P1D'));
         }
-        $this->logger->info("Starting Method: " . __METHOD__ );
+        $this->logger->debug("Starting Method: " . __METHOD__ );
         $checkins = $this->em->getRepository(Reservations::class)->findBy(array($type => $datetime,
             'status'=>'confirmed'));
         $responseArray = array();
@@ -39,7 +39,7 @@ class StatsApi
             'count' => count($checkins),
             'result_code'=> 0
         );
-        $this->logger->info("Ending Method before the return: " . __METHOD__ );
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
         return $responseArray;
     }
 
@@ -49,7 +49,7 @@ class StatsApi
         if (strcasecmp($day, "tomorrow") == 0) {
             $datetime->add(new DateInterval('P1D'));
         }
-        $this->logger->info("Starting Method: " . __METHOD__ );
+        $this->logger->debug("Starting Method: " . __METHOD__ );
         $stayOvers = $this->em
             ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn < CURRENT_DATE() 
@@ -62,7 +62,7 @@ class StatsApi
             'count' => count($stayOvers),
             'result_code'=> 0
         );
-        $this->logger->info("Ending Method before the return: " . __METHOD__ );
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
         return $responseArray;
     }
 }

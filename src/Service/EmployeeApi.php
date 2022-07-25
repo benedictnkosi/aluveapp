@@ -25,7 +25,7 @@ class EmployeeApi
 
     public function getEmployees($propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
@@ -36,15 +36,15 @@ class EmployeeApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function updateEmployeeName($employeeId, $newValue)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $employee = $this->em->getRepository(Employee::class)->findOneBy(array("id" => $employeeId));
@@ -53,7 +53,7 @@ class EmployeeApi
                     'result_message' => "Employee not found",
                     'result_code' => 1
                 );
-                $this->logger->info(print_r($responseArray, true));
+                $this->logger->debug(print_r($responseArray, true));
             } else {
                 $employee->setName($newValue);
                 $this->em->persist($employee);
@@ -69,16 +69,16 @@ class EmployeeApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function deleteEmployee($employeeId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $employee = $this->em->getRepository(Employee::class)->findOneBy(array("id" => $employeeId));
@@ -87,7 +87,7 @@ class EmployeeApi
                     'result_message' => "employee not found",
                     'result_code' => 1
                 );
-                $this->logger->info(print_r($responseArray, true));
+                $this->logger->debug(print_r($responseArray, true));
             } else {
                 $this->em->remove($employee);
                 $this->em->flush();
@@ -97,16 +97,16 @@ class EmployeeApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function createEmployee($employeeName, $propertyUid)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             //check if employee with the same name does not exist
@@ -140,10 +140,10 @@ class EmployeeApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 

@@ -30,7 +30,7 @@ class ReservationHtml
 
     public function formatHtml($reservations, $period, $propertyUid): string
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlString = "";
         $now = new DateTime('today midnight');
         $tomorrow = new DateTime('tomorrow');
@@ -114,7 +114,7 @@ class ReservationHtml
 
 
             //reservation origin
-            $this->logger->info("HTML output - reservation origin " . $reservation->getId());
+            $this->logger->debug("HTML output - reservation origin " . $reservation->getId());
 
             $htmlString .= '<img title="' . $reservation->getOrigin() . '" src="images/' . $reservation->getOrigin() . '.png" class="icon-small-image"></img>';
 
@@ -184,7 +184,7 @@ class ReservationHtml
 <input data-res-id="' . $reservationId . '" type="text" name="check_out_time" class="input-as-text  time-picker check_out_time_input" value="' . $reservation->getCheckOutTime() . '" ' . $checkOutTimeDisabled . '></span>';
             //contact detailsh
 
-            $this->logger->info("HTML output - contact details " . $reservation->getId());
+            $this->logger->debug("HTML output - contact details " . $reservation->getId());
             if ($guest->getPhoneNumber() == Null) {
                 $htmlString .= '';
                 $htmlString .= '<p name="guest-contact"><span class="glyphicon glyphicon-earphone glyphicon-small-icon" ><input name="phone_number" type="text" customer_id="' . $guest->getId() . '"   
@@ -195,7 +195,7 @@ class ReservationHtml
             }
 
             // check if room cleaned for checkout reservations only
-            $this->logger->info("HTML output - check if room cleaned for checkout reservations only " . $reservation->getId());
+            $this->logger->debug("HTML output - check if room cleaned for checkout reservations only " . $reservation->getId());
             $results = $cleaningApi->isRoomCleanedForCheckOut($reservationId);
             if ($results[0]['cleaned']) {
                 $cleanedBy = $results[0]['cleaned_by'];
@@ -204,7 +204,7 @@ class ReservationHtml
 
 
             //notes
-            $this->logger->info("HTML output - notes " . $reservation->getId());
+            $this->logger->debug("HTML output - notes " . $reservation->getId());
             $notes = $notesApi->getReservationNotes($reservationId);
             if (count($notes) > 0) {
                 $htmlString .= '<h5 class="text-align-left">Notes</h5>';
@@ -214,7 +214,7 @@ class ReservationHtml
             }
 
             //customer image
-            $this->logger->info("HTML output - customer image" . $reservation->getId());
+            $this->logger->debug("HTML output - customer image" . $reservation->getId());
             if ($guest->getIdNumber() == null) {
                 $customerIdImage = "unverified.png";
             } else {
@@ -225,15 +225,15 @@ class ReservationHtml
 
             $htmlString .= '<p class="far-left">';
             //for direct bookings only
-            $this->logger->info("HTML output - for direct bookings only " . $reservation->getId());
+            $this->logger->debug("HTML output - for direct bookings only " . $reservation->getId());
             if (strcasecmp($reservation->getOrigin(), "website") == 0 && strcasecmp($period, "past") != 0) {
 
                 if (strcmp($reservation->getStatus()->getName(), "pending") != 0) {
                     //cancel booking
-                    $this->logger->info(" HTML output - cancel booking " . $reservation->getId());
+                    $this->logger->debug(" HTML output - cancel booking " . $reservation->getId());
                     $htmlString .= '<span title="Cancel booking" class="glyphicon glyphicon-remove changeBookingStatus clickable" aria-hidden="true" id="cancelBooking_' . $reservationId . '"></span>';
                     /*                    //open close room
-                                        $this->logger->info(" HTML output - open close room " . $reservation->getId());
+                                        $this->logger->debug(" HTML output - open close room " . $reservation->getId());
                                         if (strcasecmp($reservation->getStatus()->getName(), "confirmed") == 0) {
                                             $htmlString .= '<span title="Open\Close Room" class="glyphicon glyphicon-triangle-top changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservationId . '"></span>';
                                         } else {
@@ -243,7 +243,7 @@ class ReservationHtml
             }
 
             //whatsapp guest
-            $this->logger->info(" HTML output - whatsapp guest " . $reservation->getId());
+            $this->logger->debug(" HTML output - whatsapp guest " . $reservation->getId());
             $htmlString .= '<a title="Whatsapp Guest" class="image_verified" target="_blank" href="https://api.whatsapp.com/send?phone=' . $guest->getPhoneNumber() . '&text=Hello)"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>';
 
             //guest id verified
@@ -252,20 +252,20 @@ class ReservationHtml
             }
 
             // display if guest already checked in
-            $this->logger->info("HTML output - display if guest already checked in" . $reservation->getId());
+            $this->logger->debug("HTML output - display if guest already checked in" . $reservation->getId());
             if (strcasecmp($reservation->getCheckInStatus(), "checked_in") == 0) {
                 $htmlString .= '<img src="images/menu_stayover.png" title="Checked in" class="image_verified"/><p></p>';
             }
 
             //display if guest checked out
-            $this->logger->info("HTML output - display if guest already checked in" . $reservation->getId());
+            $this->logger->debug("HTML output - display if guest already checked in" . $reservation->getId());
             if (strcasecmp($reservation->getCheckInStatus(), "checked_out") == 0 &&
                 (strcmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d") == 0))) {
                 $htmlString .= '<img src="images/checked_out.png" title="Checked out" class="image_verified"/><p></p>';
             }
 
             //booking created on
-            $this->logger->info("HTML output - bottom right icons " . $reservation->getId());
+            $this->logger->debug("HTML output - bottom right icons " . $reservation->getId());
             $htmlString .= '<p> Received on: ' . $reservation->getReceivedOn()->format('Y-m-d') . '</p>';
             $htmlString .= '<p><a href="javascript:void(0)" class="reservations_actions_link" data-res-id="' . $reservation->getId() . '">more...</a></p>';
             //close far right
@@ -273,7 +273,7 @@ class ReservationHtml
 
 
             //close bottom icon section and other divs
-            $this->logger->info(" HTML output - close bottom icon section and other divs " . $reservation->getId());
+            $this->logger->debug(" HTML output - close bottom icon section and other divs " . $reservation->getId());
             $htmlString .= '</p>   
 
 						<div class="clearfix"><div></div></div></div>';
@@ -284,7 +284,7 @@ class ReservationHtml
 
 
             //Line Items (Room and add ons)
-            $this->logger->info("HTML output - Line Items " . $reservation->getId());
+            $this->logger->debug("HTML output - Line Items " . $reservation->getId());
             $roomPrice = 0;
             if (strcasecmp($reservation->getOrigin(), "website") == 0) {
                 $roomPrice = $room->getPrice();
@@ -292,9 +292,9 @@ class ReservationHtml
 
             $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
 
-            $this->logger->info("total days is " . $totalDays . $reservation->getCheckIn()->format("Y-m-d") . " - " . $reservation->getCheckOut()->format("Y-m-d"));
+            $this->logger->debug("total days is " . $totalDays . $reservation->getCheckIn()->format("Y-m-d") . " - " . $reservation->getCheckOut()->format("Y-m-d"));
 
-            $this->logger->info("looping add ons for reservation " . $reservationId . " add on count " . count($addOns));
+            $this->logger->debug("looping add ons for reservation " . $reservationId . " add on count " . count($addOns));
             $totalPriceForAllAdOns = 0;
             $addOnsHTml = "";
             foreach ($addOns as $addOn) {
@@ -305,7 +305,7 @@ class ReservationHtml
             $totalPrice += $totalPriceForAllAdOns;
 
             //payments
-            $this->logger->info("HTML output - payments " . $reservation->getId());
+            $this->logger->debug("HTML output - payments " . $reservation->getId());
             $payments = $paymentApi->getReservationPayments($reservationId);
             $paymentsHtml = "";
             $totalPayment = 0;
@@ -333,7 +333,7 @@ class ReservationHtml
             }
 
             //cleanings
-            $this->logger->info("HTML output - Cleanings list " . $reservation->getId());
+            $this->logger->debug("HTML output - Cleanings list " . $reservation->getId());
             $cleanings = $cleaningApi->getReservationCleanings($reservationId);
             if (count($cleanings)) {
                 $htmlString .= '<h5 class="text-align-left">Cleanings</h5>';
@@ -347,13 +347,13 @@ class ReservationHtml
             $htmlString .= '</div></div>';
 
             //right div for input fields
-            $this->logger->info(" HTML output - right div for input fields " . $reservation->getId());
+            $this->logger->debug(" HTML output - right div for input fields " . $reservation->getId());
 
             $htmlString .= '<div class="right-div" id="right-div-' . $reservation->getId() . '">';
 
             // add Guest ID
             if ($guest->getIdNumber() == null) {
-                $this->logger->info(" HTML output - add guest ID" . $reservation->getId());
+                $this->logger->debug(" HTML output - add guest ID" . $reservation->getId());
 
                 $htmlString .= '
                 <div class="right-side-action-block">
@@ -362,7 +362,7 @@ class ReservationHtml
             }
 
             // add payment
-            $this->logger->info(" HTML output - add payment" . $reservation->getId());
+            $this->logger->debug(" HTML output - add payment" . $reservation->getId());
 
             $htmlString .= '
                 <div class="right-side-action-block">
@@ -370,7 +370,7 @@ class ReservationHtml
 										 class="textbox  display-none block-display reservation_input" placeholder="0.00"/><div id="add_payment_button_' . $reservationId . '" class="ClickableButton res_add_payment" data-resid="' . $reservationId . '" >Add Payment</div></div>';
 
             // add notes
-            $this->logger->info(" HTML output - add notes" . $reservation->getId());
+            $this->logger->debug(" HTML output - add notes" . $reservation->getId());
             $htmlString .= '
                     <div class="right-side-action-block">
                     <textarea id="note_' . $reservationId . '"
@@ -378,7 +378,7 @@ class ReservationHtml
 
             // add add-ons - only for confirmed booking
             if (strcmp($reservation->getStatus()->getName(), "pending") != 0) {
-                $this->logger->info(" HTML output - add add-ons" . $reservation->getId());
+                $this->logger->debug(" HTML output - add add-ons" . $reservation->getId());
                 $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_add_on_' . $reservationId . '" ><select id="select_add_on_' . $reservationId . '">';
                 $htmlString .= ' <option value="none">Select Add On</option>';
                 $addOnsList = $addOnsApi->getAddOns($propertyUid);
@@ -398,22 +398,22 @@ class ReservationHtml
             }
 
             // check if guest eligible for check in 1. Guest ID provided 2. guest has phone number recorded
-            $this->logger->info("HTML output - check if guest eligible for check in" . $reservation->getId());
+            $this->logger->debug("HTML output - check if guest eligible for check in" . $reservation->getId());
 
             if (strcasecmp($reservation->getCheckInStatus(), "not_checked_in") === 0
                 && (strcasecmp($reservation->getCheckIn()->format("Y-m-d"), $now->format("Y-m-d")) == 0)) {
-                $this->logger->info("this user is checking in today");
+                $this->logger->debug("this user is checking in today");
                 $htmlString .= '<div class="right-side-action-block"><div class="NotCheckedIn" id="check_in_user_' . $reservationId . '"  reservation_id="' . $reservationId . '">Check In Guest</div></div>';
             }
 
             // guest checkout button
-            $this->logger->info("HTML output - check if guest eligible for check in" . $reservation->getId());
+            $this->logger->debug("HTML output - check if guest eligible for check in" . $reservation->getId());
             if (strcasecmp($reservation->getCheckInStatus(), "checked in") === 0 && (strcasecmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d")) == 0)) {
                 $htmlString .= '<div class="right-side-action-block"><div class="NotCheckedOut" id="check_out_user_' . $reservationId . '" reservation_id="' . $reservationId . '">Check Out Guest</div></div>';
             }
 
             //Mark room as cleaned
-            $this->logger->info("HTML output - Mark room as cleaned " . $reservation->getId());
+            $this->logger->debug("HTML output - Mark room as cleaned " . $reservation->getId());
             $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_mark_cleaned_' . $reservationId . '" ><select id="select_employee_' . $reservationId . '">';
             $htmlString .= ' <option value="none">Select Cleaner</option>';
             $employeeApi = new EmployeeApi($this->em, $this->logger);
@@ -432,7 +432,7 @@ class ReservationHtml
 
 
             //cleaning score - if check out date is in the past and not direct booking
-            $this->logger->info("HTML output - cleaning score " . $reservation->getId());
+            $this->logger->debug("HTML output - cleaning score " . $reservation->getId());
             if ($reservation->getCheckOut() < $now && strcasecmp($reservation->getOrigin(), "website") != 0) {
                 //check if cleanliness score is not captured
                 if (strcasecmp($reservation->getCleanlinessScore(), "0") == 0) {
@@ -446,7 +446,7 @@ class ReservationHtml
                 }
             }
 
-            $this->logger->info("Ending HTML output" . $reservation->getId());
+            $this->logger->debug("Ending HTML output" . $reservation->getId());
             $htmlString .= '</div>
 					</div>';
         }

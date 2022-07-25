@@ -36,7 +36,7 @@ class RoomApi
 
     public function getAvailableRooms($checkInDate, $checkOutDate, $propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
@@ -52,16 +52,16 @@ class RoomApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function isRoomAvailable($roomId, $checkInDate, $checkOutDate, $reservationToExclude = 0): bool|array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         $returnValue = false;
         try {
@@ -81,26 +81,26 @@ class RoomApi
 
             if (count($reservations) < 1) {
                 $returnValue = true;
-                $this->logger->info("No reservations found");
+                $this->logger->debug("No reservations found");
             } else {
-                $this->logger->info("reservations found");
+                $this->logger->debug("reservations found");
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
                 'result_message' => $ex->getMessage()
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
             return $responseArray;
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $returnValue;
     }
 
     public function getRooms($roomId, $propertyUid = null): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
 
@@ -119,7 +119,7 @@ class RoomApi
                     'result_message' => "Rooms not found for room id $roomId",
                     'result_code' => 1
                 );
-                $this->logger->info("No rooms found");
+                $this->logger->debug("No rooms found");
             } else {
                 foreach ($rooms as $room) {
                     $linkedRoom = $room->getLinkedRoom();
@@ -170,10 +170,10 @@ class RoomApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
@@ -185,7 +185,7 @@ class RoomApi
 
     public function getRoom($roomId)
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             return $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $roomId));
@@ -194,29 +194,29 @@ class RoomApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getRoomsEntities($propertyUid, $roomId = 0,): ?array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             if ($roomId === 0) {
                 $propertyApi = new PropertyApi($this->em, $this->logger);
                 $propertyId = $propertyApi->getPropertyIdByUid($propertyUid);
                 if (!isset($propertyUid)) {
-                    $this->logger->info("PROPERTY_ID not found in session. checking if the host has a property id" . __METHOD__);
+                    $this->logger->debug("PROPERTY_ID not found in session. checking if the host has a property id" . __METHOD__);
 
                     if ($propertyId === null) {
                         $responseArray[] = array(
                             'result_message' => 'Property ID not set, please logout and login again',
                             'result_code' => 1
                         );
-                        $this->logger->info(print_r($responseArray, true));
+                        $this->logger->debug(print_r($responseArray, true));
                         return null;
                     } else {
                         $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
@@ -228,27 +228,27 @@ class RoomApi
             } else {
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('id' => $roomId));
             }
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $rooms;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
             return null;
         }
     }
 
     public function getRoomImages($roomId): ?array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $room = $this->em->getRepository(Rooms::class)->findOneBy(
                 array('id' => $roomId));
             if ($room === null) {
-                $this->logger->info("room is null");
+                $this->logger->debug("room is null");
                 return null;
             }
 
@@ -257,24 +257,24 @@ class RoomApi
                 array('room' => $roomId,
                     'status' => array("active", "default")));
 
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $roomImages;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function addImageToRoom($imageName, $roomId)
     {
 
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
 
         try {
             $roomImage = new RoomImages();
@@ -310,75 +310,75 @@ class RoomApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getRoomStatuses(): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $roomStatuses = $this->em->getRepository(RoomStatus::class)->findAll();
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $roomStatuses;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getRoomBedSizes(): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $roomBedSizes = $this->em->getRepository(RoomBedSize::class)->findAll();
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $roomBedSizes;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function getRoomTvs(): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $roomTvs = $this->em->getRepository(RoomTv::class)->findAll();
-            $this->logger->info("Ending Method before the return: " . __METHOD__);
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $roomTvs;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $tv, $description, $propertyUid): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $room = $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $id));
@@ -427,16 +427,16 @@ class RoomApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function removeImage($imageId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             //get room images
@@ -469,16 +469,16 @@ class RoomApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
     public function markDefault($imageId): array
     {
-        $this->logger->info("Starting Method: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             //get room images
@@ -512,10 +512,10 @@ class RoomApi
                 'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
-            $this->logger->info(print_r($responseArray, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
 
-        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
 
