@@ -60,7 +60,7 @@ class CalendarHTML
 
         $rooms = $roomsApi->getRoomsEntities($propertyUid);
         foreach ($rooms as $room) {
-            $htmlString .= '<tr><th class="headcol">' . $room->getName() . '</th>';
+            $htmlString .= '<tr><th class="headcol">' . substr($room->getName(),0, 10) . '</th>';
             $reservations = $reservationApi->getUpComingReservations($propertyUid, $room->getId(), true);
             $blockedRooms = $blockRoomApi->getBlockedRooms($propertyUid, $room->getId());
 
