@@ -62,7 +62,7 @@ class CalendarHTML
         foreach ($rooms as $room) {
             $htmlString .= '<tr><th class="headcol">' . $room->getName() . '</th>';
             $reservations = $reservationApi->getUpComingReservations($propertyUid, $room->getId());
-            $blockedRooms = $blockRoomApi->getBlockedRooms($room->getId());
+            $blockedRooms = $blockRoomApi->getBlockedRooms($propertyUid, $room->getId());
 
             if ($reservations === null && $blockedRooms === null) {
                 $htmlString .= str_repeat('<td class="available"></td>', $numberOfDays + 1 + $numberOfFirstOfMonth);
@@ -77,6 +77,7 @@ class CalendarHTML
                     $resID = "";
                     $guestName = "";
                     $blockNote = "";
+                    $isCheckInDay = false;
 
                     if (strcmp($tempDate->format('d'), "01") == 0 ) {
                         $htmlString .= '<td class="new-month"></td>';
@@ -111,23 +112,27 @@ class CalendarHTML
 
                     $this->logger->info("blocked rooms");
                     if ($blockedRooms != null) {
+                        $this->logger->debug("blockedRooms array is not null");
                         foreach ($blockedRooms as $blockedRoom) {
                             if ($tempDate >= $blockedRoom->getFromDate() && $tempDate < $blockedRoom->getToDate()) {
+                                $this->logger->debug("date is blocked - " . $tempDate->format("Y-m-d") . " " . $blockedRoom->getFromDate()->format("Y-m-d") ). " " . $blockedRoom->getToDate()->format("Y-m-d");
                                 $isDateBlocked = true;
                                 $blockNote = $blockedRoom->getComment();
                                 break;
+                            }else{
+                                $this->logger->debug("date is not blocked - " . $tempDate->format("Y-m-d") . " " . $blockedRoom->getFromDate()->format("Y-m-d") ). " " . $blockedRoom->getToDate()->format("Y-m-d");
                             }
                         }
+                    }else{
+                        $this->logger->debug("blockedRooms array is not null");
                     }
 
                     $this->logger->info("checking if date booked");
-
-
                     if ($isDateBooked) {
                         if ($isCheckInDay === true) {
-                            $htmlString .= '<td  class="booked checkin" resid="' . $resID . '" title="' . $guestName . '"><img  src="images/' . $reservation->getOrigin() . '.png"  resid="' . $resID . '" alt="checkin" class="image_checkin"></td>';
+                            $htmlString .= '<td  class="booked checkin" data-resid="' . $resID . '" title="' . $guestName . '"><img  src="images/' . $reservation->getOrigin() . '.png"  data-resid="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                         } else {
-                            $htmlString .= '<td  class="booked" resid="' . $resID . '" title="' . $guestName . '"></td>';
+                            $htmlString .= '<td  class="booked" data-resid="' . $resID . '" title="' . $guestName . '"></td>';
                         }
                     } else if ($isDateBlocked) {
                         $htmlString .= '<td class="blocked" title="' . $blockNote . '"></td>';
