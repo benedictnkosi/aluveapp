@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\BlockedRooms;
+use App\Entity\Reservations;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -24,10 +25,11 @@ class BlockedRoomApi
         }
     }
 
-    public function blockRoom($roomId, $fromDate,$toDate , $comments): array
+    public function blockRoom($roomId, $fromDate,$toDate , $comments, $reservationId = null): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $this->logger->info("blocking room: " . $roomId);
+
 
         $responseArray = array();
         try {
@@ -57,13 +59,23 @@ class BlockedRoomApi
                 $toDateDateTime = $toDateDateTime->modify('+1 day');
             }
 
+            //check if there is a room blocked for reservation
+            if($reservationId !== null){
+                $blockRoom = $this->em->getRepository(BlockedRooms::class)->findOneBy(array('linkedResaId' => $reservationId));
+                if($blockRoom === null){
+                    $blockRoom = new BlockedRooms();
+                }
+            }else{
+                $blockRoom = new BlockedRooms();
+            }
 
-            $blockRoom = new BlockedRooms();
             $blockRoom->setRoom($room);
             $blockRoom->setComment($comments);
             $blockRoom->setFromDate($fromDateDateTime);
             $blockRoom->setToDate($toDateDateTime);
             $blockRoom->setCreatedDate($date);
+            $blockRoom->setLinkedResaId($reservationId);
+            $blockRoom->setUid(uniqid() . "@" . SERVER_NAME);
             $this->em->persist($blockRoom);
             $this->em->flush($blockRoom);
 

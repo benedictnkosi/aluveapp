@@ -544,6 +544,11 @@ class ReservationApi
                 $this->em->persist($reservation);
                 $this->em->flush($reservation);
 
+                //block connected Room
+                $this->logger->info("calling block room to block " . $room->getLinkedRoom() . " for room  " . $room->getName());
+                $blockRoomApi->blockRoom($room->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked", $reservation->getId());
+
+
                 //add Short stay 3 hour add-on if check out is same day
                 $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
                 $this->logger->info("Date diff is $totalDays");
@@ -555,10 +560,6 @@ class ReservationApi
                 } else {
                     $this->logger->info("overnight Stay");
                 }
-
-                //block connected Room
-                $this->logger->info("calling block room to block " . $room->getLinkedRoom() . " for room  " . $room->getName());
-                $blockRoomApi->blockRoom($room->getLinkedRoom(), "Connected Room Booked", $checkInDate, $checkOutDate);
 
                 //Send SMS
                 if (!$isImport) {

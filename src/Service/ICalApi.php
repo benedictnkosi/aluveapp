@@ -204,6 +204,13 @@ class ICalApi
                         $reservation->setStatus($status);
                         $this->em->persist($reservation);
                         $this->em->flush($reservation);
+
+                        //block connected Room
+                        $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
+                        $this->logger->info("calling block room to block " . $reservation->getRoom()->getLinkedRoom() . " for room  " . $reservation->getRoom()->getName());
+                        $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked", $reservation->getId());
+
+
                         $responseArray[] = array(
                             'result_code' => 0,
                             'result_message' => 'Successfully updated reservation ' . $uid
