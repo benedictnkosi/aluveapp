@@ -38,7 +38,7 @@ class SMSHelper
 
         $output = array();
 
-        $whitelist = array( 'aluveapp.co.za', '::1' );
+        $whitelist = array( 'aluveapp.co.za' );
         // check if the server is in the array
         if (in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
             $output['server_response'] = curl_exec( $curl );
