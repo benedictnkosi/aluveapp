@@ -79,7 +79,18 @@ class RoomApi
             And r.id != $reservationToExclude")
                 ->getResult();
 
-            if (count($reservations) < 1) {
+            $blockedRooms = $this->em
+                ->createQuery("SELECT b FROM App\Entity\BlockedRooms b 
+            WHERE 
+            (
+            (b.toDate > '" . $checkInDate . "' and b.fromDate <=  '" . $checkInDate . "') 
+            or
+            (b.fromDate < '" . $checkOutDate . "' and b.fromDate >  '" . $checkInDate . "') 
+            )
+            And b.room = $roomId")
+                ->getResult();
+
+            if (count($reservations) < 1 && count($blockedRooms) < 1) {
                 $returnValue = true;
                 $this->logger->debug("No reservations found");
             } else {
