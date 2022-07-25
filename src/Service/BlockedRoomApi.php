@@ -52,13 +52,6 @@ class BlockedRoomApi
             $toDateDateTime = new DateTime($toDate);
             $fromDateDateTime = new DateTime($fromDate);
 
-            if($fromDateDateTime === $toDateDateTime){
-                $toDateDateTime = new DateTime($toDate);
-            }else{
-                $toDateDateTime = new DateTime($toDate);
-                $toDateDateTime = $toDateDateTime->modify('+1 day');
-            }
-
             //check if there is a room blocked for reservation
             if($reservationId !== null){
                 $blockRoom = $this->em->getRepository(BlockedRooms::class)->findOneBy(array('linkedResaId' => $reservationId));

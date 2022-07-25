@@ -112,15 +112,13 @@ class CalendarHTML
 
                     $this->logger->info("blocked rooms");
                     if ($blockedRooms != null) {
-                        $this->logger->debug("blockedRooms array is not null");
+
                         foreach ($blockedRooms as $blockedRoom) {
                             if ($tempDate >= $blockedRoom->getFromDate() && $tempDate < $blockedRoom->getToDate()) {
-                                $this->logger->debug("date is blocked - " . $tempDate->format("Y-m-d") . " " . $blockedRoom->getFromDate()->format("Y-m-d") ). " " . $blockedRoom->getToDate()->format("Y-m-d");
+                                $this->logger->debug("date is blocked - temp " . $tempDate->format("Y-m-d") . " getFromDate " . $blockedRoom->getFromDate()->format("Y-m-d") . " getToDate " . $blockedRoom->getToDate()->format("Y-m-d"));
                                 $isDateBlocked = true;
                                 $blockNote = $blockedRoom->getComment();
                                 break;
-                            }else{
-                                $this->logger->debug("date is not blocked - " . $tempDate->format("Y-m-d") . " " . $blockedRoom->getFromDate()->format("Y-m-d") ). " " . $blockedRoom->getToDate()->format("Y-m-d");
                             }
                         }
                     }else{
