@@ -38,10 +38,12 @@ class SMSHelper
 
         $output = array();
 
-        $whitelist = array( '127.0.0.1', '::1' );
+        $whitelist = array( 'aluveapp.co.za', '::1' );
         // check if the server is in the array
-        if ( in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+        if (in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
             $output['server_response'] = curl_exec( $curl );
+        }else{
+            $this->logger->debug("Server not in white list " . $_SERVER['REMOTE_ADDR']);
         }
 
         $curl_info = curl_getinfo( $curl );
