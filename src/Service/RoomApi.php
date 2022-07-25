@@ -92,9 +92,9 @@ class RoomApi
 
             if (count($reservations) < 1 && count($blockedRooms) < 1) {
                 $returnValue = true;
-                $this->logger->debug("No reservations found");
+                $this->logger->debug("No reservations or blocked rooms found");
             } else {
-                $this->logger->debug("reservations found");
+                $this->logger->debug("reservations or blocked rooms found");
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
