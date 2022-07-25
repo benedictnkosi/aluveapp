@@ -129,9 +129,10 @@ class ICalApi
                     $yesterday->sub($interval);
 
                     $date_event = new DateTime($event->DTSTART);
+                    $date_end_event = new DateTime($event->DTSTART);
                     $checkInDate = date('Y-m-d', strtotime($event->DTSTART));//user friendly date
 
-                    if ($yesterday > $date_event) {
+                    if ($date_end_event < $today) {
                         $this->logger->info($date_event->format('Y-m-d H:i:s') . " event in the past ");
                         continue;
                     }
