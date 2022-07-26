@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 require_once(__DIR__ . '/../app/application.php');
 
@@ -15,46 +16,94 @@ class SMSHelper
         $this->logger = $logger;
     }
 
-    function sendMessage ($phoneNumber, $message): array
+    function sendMessage ($phoneNumber, $message): bool
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
 
-        $curl = curl_init();
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL => "https://rest.smsportal.com/v1/BulkMessages",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "{\"sendOptions\":{\"duplicateCheck\":\"none\",\"campaignName\":\"aluve\",\"testMode\":false},\"messages\":[{\"landingPageVariables\":{\"variables\":{},\"landingPageId\":\"1\"},\"content\":\"".$message."\",\"destination\":\"".$phoneNumber."\"}]}",
-            CURLOPT_HTTPHEADER => [
-                "Accept: application/json",
-                "Authorization: BASIC OTc1M2U4ZGYtNWUzYy00ZjY3LTlmMDUtM2I5MDBhNTRiZjkzOmdmNHdTb3gxMno3V2xVZ3FXZ0FPd3NyNWRHVit6Q3Iv",
-                "Content-Type: text/json"
-            ],
-        ]);
 
-        $output = array();
-
-        $whitelist = array( SERVER_NAME );
+        $whitelist = array( SERVER_NAME, 'localhost', '::1' );
         // check if the server is in the array
         if (in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
-            $output['server_response'] = curl_exec( $curl );
+
+            //Retrieve your API Credentials
+            $apiKey = '9753e8df-5e3c-4f67-9f05-3b900a54bf93';
+            $apiSecret = 'uuuKBQB1Ei9EXM3qK8opIiIeSEBga8yY';
+            $accountApiCredentials = $apiKey . ':' .$apiSecret;
+
+            // Convert to Base64 Encoding
+            $base64Credentials = base64_encode($accountApiCredentials);
+            $authHeader = 'Authorization: Basic ' . $base64Credentials;
+
+            // Generate an AuthToken
+            $authEndpoint = 'https://rest.smsportal.com/Authentication';
+
+            $authOptions = array(
+                'http' => array(
+                    'header'  => $authHeader,
+                    'method'  => 'GET',
+                    'ignore_errors' => true
+                )
+            );
+            $authContext  = stream_context_create($authOptions);
+
+            $result = file_get_contents($authEndpoint, false, $authContext);
+
+            $authResult = json_decode($result);
+
+
+            //Authentication Request
+            $status_line = $http_response_header[0];
+            preg_match('{HTTP\/\S*\s(\d{3})}', $status_line, $match);
+            $status = $match[1];
+
+            if ($status === '200') {
+                $authToken = $authResult->{'token'};
+            }
+            else {
+                $this->logger->debug("Failed: " . print_r($authResult, true));
+                return false;
+            }
+
+            // Send Request
+            $sendUrl = 'https://rest.smsportal.com/bulkmessages';
+
+            $authHeader = 'Authorization: Bearer ' . $authToken;
+
+            $sendData = '{ "messages" : [ { "content" : "'.$message.'", "destination" : "'.$phoneNumber.'" } ] }';
+
+            $options = array(
+                'http' => array(
+                    'header'  => array("Content-Type: application/json", $authHeader),
+                    'method'  => 'POST',
+                    'content' => $sendData,
+                    'ignore_errors' => true
+                )
+            );
+            $context  = stream_context_create($options);
+
+            $sendResult = file_get_contents($sendUrl, false, $context);
+
+            //Response Validation
+            $status_line = $http_response_header[0];
+
+            preg_match('{HTTP\/\S*\s(\d{3})}', $status_line, $match);
+            $status = $match[1];
+
+            if ($status === '200') {
+                $this->logger->debug("Success: " . print_r($sendResult, true));
+                return true;
+            }
+            else {
+                $this->logger->debug("Failed: " . print_r($sendResult, true));
+                return false;
+            }
+
         }else{
             $this->logger->debug("Server not in white list " . $_SERVER['REMOTE_ADDR']);
+            return true;
         }
-
-        $curl_info = curl_getinfo( $curl );
-        $output['http_status'] = $curl_info[ 'http_code' ];
-        $output['error'] = curl_error($curl);
-
-        curl_close($curl);
-        $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        return $output;
-
+        return false;
     }
 
 

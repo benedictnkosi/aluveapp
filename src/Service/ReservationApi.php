@@ -708,11 +708,18 @@ class ReservationApi
                     $messageBody = "Thank You " . $reservation->getGuest()->getName() . ". Please take a few seconds to give us a 5-star review on Google. ". $reservation->getRoom()->getProperty()->getGoogleReviewLink().". " . $reservation->getRoom()->getProperty()->getName();
                     $smsHelper = new SMSHelper($this->logger);
                     if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
-                        $smsHelper->sendMessage($reservation->getGuest()->getPhoneNumber(), $messageBody);
-                        $responseArray[] = array(
-                            'result_code' => 0,
-                            'result_message' => 'Successfully sent review sms for ' . $reservation->getGuest()->getName()
-                        );
+                        if($smsHelper->sendMessage($reservation->getGuest()->getPhoneNumber(), $messageBody)){
+                            $responseArray[] = array(
+                                'result_code' => 0,
+                                'result_message' => 'Successfully sent review sms for ' . $reservation->getGuest()->getName()
+                            );
+                        }else{
+                            $responseArray[] = array(
+                                'result_code' => 1,
+                                'result_message' => 'Failed to send review sms to ' . $reservation->getGuest()->getName()
+                            );
+                        }
+
                     }else{
                         $this->logger->debug("Guest number not south african number");
                         if (!empty($reservation->getGuest()->getEmail())) {
@@ -762,8 +769,6 @@ class ReservationApi
             }else{
                 $this->logger->debug("local server email not sent");
             }
-
-
         }catch (Exception $ex){
             $this->logger->debug(print_r($ex, true));
         }
