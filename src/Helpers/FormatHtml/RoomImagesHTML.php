@@ -62,12 +62,12 @@ class RoomImagesHTML
         //list of images
 
         if ($roomImages != null) {
-            $html .= '<h5>Uploaded Images</h5>';
+            $html .= '<h5>Uploaded Images (Click on image is to make it the default image)</h5>';
             foreach ($roomImages as $roomImage) {
                 //check if default image
 
                 if (is_array($roomImage)) {
-                    $html .= '<h5>No images found (Click on image is to make it the default image)</h5>';
+                    $html .= '<h5>No images found </h5>';
                     return $html;
                 }
                 $imageNotDefaultClass = "not_default_image";
