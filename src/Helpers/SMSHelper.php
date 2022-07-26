@@ -19,9 +19,6 @@ class SMSHelper
     function sendMessage ($phoneNumber, $message): bool
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-
-
-
         $whitelist = array('localhost', '::1' );
         // check if the server is in the array
         if (!in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {

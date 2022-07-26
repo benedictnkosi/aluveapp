@@ -163,7 +163,7 @@ class ReservationApi
                 JOIN a.property p
             WHERE p.uid = '" . $propertyUid . "'
             and r.checkIn <= '" . $maxFutureDate->format('Y-m-d') . "'
-            and r.checkOut > '" . $now->format('Y-m-d') . "'
+            and r.checkOut >= '" . $now->format('Y-m-d') . "'
             $excludeStayOverSql 
             $roomFilter  
             and r.status = '" . $status->getId() . "'
