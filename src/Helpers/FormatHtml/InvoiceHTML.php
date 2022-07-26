@@ -72,7 +72,7 @@ class InvoiceHTML
 								</td>
 								<td>
 									<b>Invoice To:</b><br />
-									'.$reservation->getGuest()->getName().'<br />
+									'.ucwords($reservation->getGuest()->getName()).'<br />
 									'.$reservation->getGuest()->getPhoneNumber().'<br />
 									'.$reservation->getGuest()->getEmail().'
 								</td>
@@ -159,4 +159,5 @@ class InvoiceHTML
 
         return $html;
     }
+
 }
