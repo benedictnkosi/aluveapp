@@ -95,6 +95,31 @@ class CommandsController extends AbstractController
     public function gitPull(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        $command = 'git config --global user.email nkosi.benedict@gmail.com';
+        exec($command, $result);
+        $responseArray[] = array(
+            'command' =>  $command,
+            'result_message_auto' => print_r($result, true),
+            'result_code' => 0
+        );
+
+        $command = 'git config --global user.name nkosibenedict';
+        exec($command, $result);
+        $responseArray[] = array(
+            'command' =>  $command,
+            'result_message_auto' => print_r($result, true),
+            'result_code' => 0
+        );
+
+
+        $command = 'git stash';
+        exec($command, $result);
+        $responseArray[] = array(
+            'command' =>  $command,
+            'result_message_auto' => print_r($result, true),
+            'result_code' => 0
+        );
+
         $command = 'git pull origin main --force';
         exec($command, $result);
         $responseArray[] = array(
@@ -102,6 +127,7 @@ class CommandsController extends AbstractController
             'result_message_auto' => print_r($result, true),
             'result_code' => 0
         );
+
 
         return new JsonResponse( $responseArray, 200, array());
     }
