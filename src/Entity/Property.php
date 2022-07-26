@@ -106,6 +106,13 @@ class Property
     private $terms = '';
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="google_review_link", type="string", length=100, nullable=true)
+     */
+    private $googleReviewLink;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -311,6 +318,22 @@ class Property
     public function setTerms(?string $terms): void
     {
         $this->terms = $terms;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getGoogleReviewLink(): ?string
+    {
+        return $this->googleReviewLink;
+    }
+
+    /**
+     * @param string|null $googleReviewLink
+     */
+    public function setGoogleReviewLink(?string $googleReviewLink): void
+    {
+        $this->googleReviewLink = $googleReviewLink;
     }
 
 

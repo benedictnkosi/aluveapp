@@ -232,12 +232,13 @@ class PaymentApi
             $emailBody = str_replace("guest_name",$reservation->getGuest()->getName(),$emailBody);
             $emailBody = str_replace("amount_paid",$amountPaid,$emailBody);
             $emailBody = str_replace("amount_balance",$amountDue,$emailBody);
-            $emailBody = str_replace("server_name",SERVER_NAME, $emailBody);
+            $emailBody = str_replace("server_name",$reservation->getRoom()->getProperty()->getServerName(), $emailBody);
             $emailBody = str_replace("reservation_id",$reservation->getId(),$emailBody);
+            $emailBody = str_replace("property_name",$reservation->getRoom()->getProperty()->getName(),$emailBody);
 
-            $whitelist = array( '127.0.0.1', '::1' );
+            $whitelist = array(SERVER_NAME);
             // check if the server is in the array
-            if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+            if ( in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
                 mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
                 $this->logger->debug("Successfully sent email to guest");
             }else{

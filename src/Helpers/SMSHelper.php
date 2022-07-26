@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Psr\Log\LoggerInterface;
+require_once(__DIR__ . '/../app/application.php');
 
 class SMSHelper
 {
@@ -38,7 +39,7 @@ class SMSHelper
 
         $output = array();
 
-        $whitelist = array( 'aluveapp.co.za' );
+        $whitelist = array( SERVER_NAME );
         // check if the server is in the array
         if (in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
             $output['server_response'] = curl_exec( $curl );

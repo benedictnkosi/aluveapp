@@ -2,12 +2,11 @@
 
 namespace App\Service;
 
-use App\Entity\AddOns;
 use App\Entity\Property;
-use App\Entity\Rooms;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
+require_once(__DIR__ . '/../app/application.php');
 
 class PropertyApi
 {
@@ -199,9 +198,9 @@ class PropertyApi
                 $headers = 'From:' . $property->getEmailAddress() . "\r\n" .
                     'Reply-To: ' . $email . "\r\n" .
                     'X-Mailer: PHP/' . phpversion();
-                $whitelist = array( '127.0.0.1', '::1' );
+                $whitelist = array( SERVER_NAME);
                 // check if the server is in the array
-                if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+                if ( in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
                     mail($property->getEmailAddress(), "Website - Message from guest", $emailPrefix . $message, $headers);
                     $this->logger->debug("Successfully sent email to guest");
                 }else{

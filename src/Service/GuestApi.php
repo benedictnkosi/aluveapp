@@ -76,7 +76,7 @@ class GuestApi
                 $this->em->flush($guest);
                 $responseArray[] = array(
                     'result_code' => 0,
-                    'result_message' => 'Successfully updated guest phone number'
+                    'result_message' => 'Successfully updated guest ID number'
                 );
             }
 

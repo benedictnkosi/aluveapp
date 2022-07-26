@@ -218,6 +218,7 @@ class ReservationController extends AbstractController
      */
     public function creatReservation($roomIds, $guestName, $phoneNumber, $checkInDate, $checkOutDate, $email, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
     {
+        $logger->info("Starting Method: " . __METHOD__);
         $response = $reservationApi->createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate);
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
@@ -231,13 +232,27 @@ class ReservationController extends AbstractController
      */
     public function getInvoiceDetails($reservationId, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
     {
+        $logger->info("Starting Method: " . __METHOD__);
         $reservation = $reservationApi->getReservation($reservationId);
-
         $invoiceHtml = new InvoiceHTML($entityManager, $logger);
         $html = $invoiceHtml->formatHtml($reservation);
         $response = array(
             'html' => $html,
         );
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response, 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
+     * @Route("api/reviews/send")
+     * @throws \Exception
+     */
+    public function sendReviewRequest(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $reservationApi->sendReviewRequest();
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);

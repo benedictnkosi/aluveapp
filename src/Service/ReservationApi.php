@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
-use App\Helpers\Invoice;
 use App\Helpers\SMSHelper;
 use DateInterval;
 use DateTime;
@@ -216,7 +215,7 @@ class ReservationApi
         return $reservations;
     }
 
-    public function getCheckOutReservation($propertyUid): array
+    public function getCheckOutReservation($propertyUid = null): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $reservations = "";
@@ -224,15 +223,26 @@ class ReservationApi
             $datetime = new DateTime();
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            $reservations = $this->em
-                ->createQuery("SELECT r FROM App\Entity\Reservations r 
+            if($propertyUid === null){
+                $reservations = $this->em
+                    ->createQuery("SELECT r FROM App\Entity\Reservations r 
+                JOIN r.room a
+            WHERE r.checkOut = '" . $datetime->format('Y-m-d') . "'
+            and r.status = '" . $status->getId() . "'
+            order by r.checkOut desc")
+                    ->getResult();
+            }else{
+                $reservations = $this->em
+                    ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
             WHERE p.uid = '" . $propertyUid . "'
             and r.checkOut = '" . $datetime->format('Y-m-d') . "'
             and r.status = '" . $status->getId() . "'
             order by r.checkOut desc")
-                ->getResult();
+                    ->getResult();
+            }
+
 
         } catch (Exception $ex) {
             $responseArray[] = array(
@@ -584,9 +594,9 @@ class ReservationApi
                             $emailBody = str_replace("check_out", $reservation->getCheckOut()->format("d M Y"), $emailBody);
                             $emailBody = str_replace("server_name", SERVER_NAME, $emailBody);
                             $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
-                            $whitelist = array('127.0.0.1', '::1');
+                            $whitelist = array( SERVER_NAME);
                             // check if the server is in the array
-                            if (!in_array($_SERVER['REMOTE_ADDR'], $whitelist)) {
+                            if (in_array($_SERVER['REMOTE_ADDR'], $whitelist)) {
                                 mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
                                 $this->logger->debug("Successfully sent email to guest");
                             } else {
@@ -683,6 +693,80 @@ class ReservationApi
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $due;
+    }
+
+
+    public function sendReviewRequest(): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+
+        $responseArray = array();
+        try {
+            $reservations = $this->getCheckOutReservation();
+            if($reservations != null){
+                foreach($reservations as $reservation){
+                    $messageBody = "Thank You " . $reservation->getGuest()->getName() . ". Please take a few seconds to give us a 5-star review on Google. ". $reservation->getRoom()->getProperty()->getGoogleReviewLink().". " . $reservation->getRoom()->getProperty()->getName();
+                    $smsHelper = new SMSHelper($this->logger);
+                    if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
+                        $smsHelper->sendMessage($reservation->getGuest()->getPhoneNumber(), $messageBody);
+                        $responseArray[] = array(
+                            'result_code' => 0,
+                            'result_message' => 'Successfully sent review sms for ' . $reservation->getGuest()->getName()
+                        );
+                    }else{
+                        $this->logger->debug("Guest number not south african number");
+                        if (!empty($reservation->getGuest()->getEmail())) {
+                            $this->sendReviewEmail($reservation);
+                            $responseArray[] = array(
+                                'result_code' => 0,
+                                'result_message' => 'Successfully sent review email for ' . $reservation->getGuest()->getName()
+                            );
+                        }else{
+                            $responseArray[] = array(
+                                'result_code' => 0,
+                                'result_message' => 'Review email not sent to guest ' . $reservation->getGuest()->getName()
+                            );
+                        }
+                    }
+                    $this->logger->debug(print_r($responseArray, true));
+                }
+            }
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_code' => 1,
+                'result_message' => $ex->getMessage()
+            );
+            $this->logger->debug(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+
+    function sendReviewEmail( $reservation): void
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        try{
+            //send email to guest
+            $emailBody = file_get_contents(__DIR__ . '/../email_template/review_request.html');
+            $emailBody = str_replace("guest_name",$reservation->getGuest()->getName(),$emailBody);
+            $emailBody = str_replace("google_review_link",$reservation->getRoom()->getProperty()->getGoogleReviewLink(),$emailBody);
+            $emailBody = str_replace("property_name",$reservation->getRoom()->getProperty()->getName(),$emailBody);
+
+            $whitelist = array( SERVER_NAME);
+            // check if the server is in the array
+            if ( in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+                mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
+                $this->logger->debug("Successfully sent email to guest");
+            }else{
+                $this->logger->debug("local server email not sent");
+            }
+
+
+        }catch (Exception $ex){
+            $this->logger->debug(print_r($ex, true));
+        }
     }
 
 }
