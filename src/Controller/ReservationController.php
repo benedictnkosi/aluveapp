@@ -7,6 +7,7 @@ use App\Entity\ReservationStatus;
 use App\Helpers\FormatHtml\CalendarHTML;
 use App\Helpers\FormatHtml\InvoiceHTML;
 use App\Helpers\FormatHtml\ReservationHtml;
+use App\Service\BlockedRoomApi;
 use App\Service\ReservationApi;
 use App\Service\RoomApi;
 use DateTime;
@@ -92,7 +93,7 @@ class ReservationController extends AbstractController
     /**
      * @Route("api/reservations/{reservationId}/update/{field}/{newValue}")
      */
-    public function updateReservation($reservationId, $field, $newValue, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function updateReservation($reservationId, $field, $newValue, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, BlockedRoomApi $blockedRoomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
@@ -105,8 +106,10 @@ class ReservationController extends AbstractController
                 }else{
                     $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('name' => $newValue));
                 }
-
                 $reservation->SetStatus($status);
+                if(strcmp($status->getName(), 'cancelled')){
+                    $blockedRoomApi->deleteBlockedRoomByReservation($reservation);
+                }
                 break;
             case "check_in_time":
                 $reservation->SetCheckInTime($newValue);

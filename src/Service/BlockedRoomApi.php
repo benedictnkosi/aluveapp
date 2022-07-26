@@ -129,7 +129,6 @@ class BlockedRoomApi
         return null;
     }
 
-
     public function deleteBlockedRoom($blockedRoomId): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__ );
@@ -152,7 +151,32 @@ class BlockedRoomApi
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__ );
         return $responseArray;
+    }
 
+    public function deleteBlockedRoomByReservation($reservationId): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__ );
+        $responseArray = array();
+        try{
+            $blockedRoom = $this->em->getRepository(BlockedRooms::class)->findOneBy(array('linkedResaId' => $reservationId));
+            if($blockedRoom != null){
+                $this->em->remove($blockedRoom);
+                $this->em->flush();
+                $responseArray[] = array(
+                    'result_message' => "Successfully deleted blocked room",
+                    'result_code'=> 0
+                );
+            }
+        }catch(Exception $exception){
+            $responseArray[] = array(
+                'result_message' => $exception->getMessage(),
+                'result_code'=> 1
+            );
+            $this->logger->debug(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
+        return $responseArray;
     }
 
 }
