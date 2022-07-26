@@ -65,19 +65,19 @@ class RoomImagesHTML
             $html .= '<h5>Uploaded Images</h5>';
             foreach ($roomImages as $roomImage) {
                 //check if default image
-                $star = "star_gray.png";
+
                 if (is_array($roomImage)) {
-                    $html .= '<h5>No images found</h5>';
+                    $html .= '<h5>No images found (Click on image is to make it the default image)</h5>';
                     return $html;
                 }
+                $imageNotDefaultClass = "not_default_image";
                 if (strcmp($roomImage->getStatus(), "default") === 0) {
-                    $star = "star_yellow.png";
+                    $imageNotDefaultClass = "";
                 }
 
                 $html .= '<div class="img-wrap image-thumbnail" id="image-thumbnail-' . $roomImage->getId() . '">
                             <span class="close" data-image-id="' . $roomImage->getId() . '">&times;</span>
-                            <span class="default_image_star_div" data-image-id="' . $roomImage->getId() . '"><img class="default_image_star" src="images/' . $star . '" data-image-id="' . $roomImage->getId() . '"></span>
-                            <img class="" src="/assets/images/rooms/thumb' . $roomImage->getName() . '">
+                            <img data-image-id="' . $roomImage->getId() . '" class="room_images '.$imageNotDefaultClass.'" src="/assets/images/rooms/thumb' . $roomImage->getName() . '">
                         </div>';
             }
         } else {
