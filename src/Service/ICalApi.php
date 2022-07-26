@@ -223,6 +223,7 @@ class ICalApi
             } catch (Exception $ex) {
                 $this->logger->error($ex->getMessage());
                 $this->logger->error($ex->getTraceAsString());
+                continue;
             }
 
 
