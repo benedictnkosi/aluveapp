@@ -100,7 +100,12 @@ class ReservationController extends AbstractController
         $responseArray[] = array();
         switch ($field) {
             case "status":
-                $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('id' => $newValue));
+                if(is_int($newValue)){
+                    $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('id' => $newValue));
+                }else{
+                    $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('name' => $newValue));
+                }
+
                 $reservation->SetStatus($status);
                 break;
             case "check_in_time":
