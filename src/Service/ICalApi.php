@@ -369,8 +369,8 @@ END:VEVENT';
                     // create the event within the ical object
                     $icalString .= '
 BEGIN:VEVENT
-DTEND;VALUE=DATE:' . $event_start . '
-DTSTART;VALUE=DATE:' . $event_end . '
+DTEND;VALUE=DATE:' . $event_end . '
+DTSTART;VALUE=DATE:' . $event_start . '
 DTSTAMP:' . $now->format('Ymd') . 'T100058Z
 UID:' . $uid . '
 DESCRIPTION:NAME: blocked room \nEMAIL: noemail@aluvegh.co.za
