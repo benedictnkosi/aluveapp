@@ -236,9 +236,9 @@ class PaymentApi
             $emailBody = str_replace("reservation_id",$reservation->getId(),$emailBody);
             $emailBody = str_replace("property_name",$reservation->getRoom()->getProperty()->getName(),$emailBody);
 
-            $whitelist = array(SERVER_NAME);
+            $whitelist = array('localhost', '::1' );
             // check if the server is in the array
-            if ( in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+            if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
                 mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
                 $this->logger->debug("Successfully sent email to guest");
             }else{

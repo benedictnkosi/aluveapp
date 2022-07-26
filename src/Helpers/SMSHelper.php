@@ -22,9 +22,9 @@ class SMSHelper
 
 
 
-        $whitelist = array( SERVER_NAME, 'localhost', '::1' );
+        $whitelist = array('localhost', '::1' );
         // check if the server is in the array
-        if (in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+        if (!in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
 
             //Retrieve your API Credentials
             $apiKey = '9753e8df-5e3c-4f67-9f05-3b900a54bf93';

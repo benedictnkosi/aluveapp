@@ -198,9 +198,9 @@ class PropertyApi
                 $headers = 'From:' . $property->getEmailAddress() . "\r\n" .
                     'Reply-To: ' . $email . "\r\n" .
                     'X-Mailer: PHP/' . phpversion();
-                $whitelist = array( SERVER_NAME);
+                $whitelist = array('localhost', '::1' );
                 // check if the server is in the array
-                if ( in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+                if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
                     mail($property->getEmailAddress(), "Website - Message from guest", $emailPrefix . $message, $headers);
                     $this->logger->debug("Successfully sent email to guest");
                 }else{

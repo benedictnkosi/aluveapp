@@ -594,9 +594,9 @@ class ReservationApi
                             $emailBody = str_replace("check_out", $reservation->getCheckOut()->format("d M Y"), $emailBody);
                             $emailBody = str_replace("server_name", SERVER_NAME, $emailBody);
                             $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
-                            $whitelist = array( SERVER_NAME);
+                            $whitelist = array('localhost', '::1' );
                             // check if the server is in the array
-                            if (in_array($_SERVER['REMOTE_ADDR'], $whitelist)) {
+                            if (!in_array($_SERVER['REMOTE_ADDR'], $whitelist)) {
                                 mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
                                 $this->logger->debug("Successfully sent email to guest");
                             } else {
@@ -721,7 +721,7 @@ class ReservationApi
                         }
 
                     }else{
-                        $this->logger->debug("Guest number not south african number");
+                        $this->logger->debug("Guest number not south african number " . $reservation->getGuest()->getPhoneNumber());
                         if (!empty($reservation->getGuest()->getEmail())) {
                             $this->sendReviewEmail($reservation);
                             $responseArray[] = array(
@@ -761,9 +761,9 @@ class ReservationApi
             $emailBody = str_replace("google_review_link",$reservation->getRoom()->getProperty()->getGoogleReviewLink(),$emailBody);
             $emailBody = str_replace("property_name",$reservation->getRoom()->getProperty()->getName(),$emailBody);
 
-            $whitelist = array( SERVER_NAME);
+            $whitelist = array('localhost', '::1' );
             // check if the server is in the array
-            if ( in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
+            if (!in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
                 mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
                 $this->logger->debug("Successfully sent email to guest");
             }else{
