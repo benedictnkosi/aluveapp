@@ -83,8 +83,6 @@ class CalendarHTML
                         $htmlString .= '<td class="new-month"></td>';
                     }
 
-                    $this->logger->debug("outside foreach for reservations temp date is " . $todayDate->format("Y-m-d") . " x is $x");
-
                     foreach ($reservations as &$reservation) {
                         $isCheckInDay = false;
                         $this->logger->debug("Check if temp date " . $tempDate->format("Y-m-d") . " and res " . $reservation->getId() . " check in date is " . $reservation->getCheckIn()->format("Y-m-d") . "check out date " . $reservation->getCheckOut()->format("Y-m-d"));
@@ -110,7 +108,7 @@ class CalendarHTML
                         }
                     }
 
-                    $this->logger->debug("blocked rooms");
+                   // $this->logger->debug("blocked rooms");
                     if ($blockedRooms != null) {
 
                         foreach ($blockedRooms as $blockedRoom) {
@@ -121,11 +119,9 @@ class CalendarHTML
                                 break;
                             }
                         }
-                    }else{
-                        $this->logger->debug("blockedRooms array is not null");
                     }
 
-                    $this->logger->debug("checking if date booked");
+                    //$this->logger->debug("checking if date booked");
                     if ($isDateBooked) {
                         if ($isCheckInDay === true) {
                             $htmlString .= '<td  class="booked checkin" data-resid="' . $resID . '" title="' . $guestName . '"><img  src="images/' . $reservation->getOrigin() . '.png"  data-resid="' . $resID . '" alt="checkin" class="image_checkin"></td>';

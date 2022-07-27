@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Service\EmailService;
 use App\Helpers\FormatHtml\BlockedRoomsHTML;
 use App\Helpers\FormatHtml\ConfigIcalLinksLogsHTML;
+use App\Service\GuestApi;
 use App\Service\ICalApi;
 use App\Service\RoomApi;
 use Doctrine\ORM\EntityManagerInterface;
@@ -106,5 +108,15 @@ class ICalController extends AbstractController
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
+    }
+
+    /**
+     * @Route("/api/updateairbnbguest")
+     */
+    public function updateairbnbguest(ICalApi $ICalApi, GuestApi $guestApi, LoggerInterface $logger)
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $emails = $ICalApi->updateAirbnbGuest($guestApi);
+        dd($emails);
     }
 }

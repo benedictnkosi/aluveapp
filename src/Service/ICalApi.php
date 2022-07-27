@@ -609,6 +609,68 @@ END:VCALENDAR';
         return $responseArray;
     }
 
+    function updateAirbnbGuest($guestApi)
+    {
+        $this->logger->debug("Starting Method before the return: " . __METHOD__);
+        $messages = array();
+        $url = "{mail.aluvegh.co.za:993/imap/ssl/novalidate-cert}INBOX";
+        $username = "info@aluvegh.co.za";
+        $password = "Nhlaka@02";
+        $mailbox = imap_open($url, $username, $password);
+
+        $date = date('d-M-Y');
+        $searchStr = 'ON ' . $date . ' SUBJECT "Reservation confirmed"';
+        $emails = imap_search($mailbox, $searchStr);
+        if ($emails) {
+            foreach ($emails as $emailID) {
+                $overview = imap_fetch_overview($mailbox, $emailID, 0);
+                $emailSubject = $overview[0]->subject;
+                $this->logger->debug("Email subject is " . $emailSubject);
+                try {
+                    $pos = strpos($emailSubject, 'Reservation confirmed');
+                    if ($pos !== false) {
+
+                        $emailMsgNumber = $overview[0]->msgno;
+
+                        $bodyText = imap_fetchbody($mailbox, $emailMsgNumber, 2);
+                        $messageThreadId = trim($this->getStringByBoundary($bodyText, 'hosting/thread/', '?'));
+                        $this->logger->debug("message thread is " . $messageThreadId);
+                        $bodyText = imap_fetchbody($mailbox, $emailMsgNumber, 1);
+                        if (! strlen($bodyText) > 0) {
+                            $this->logger->debug("message body is empty");
+                            $bodyText = imap_fetchbody($mailbox, $emailMsgNumber, 1);
+                        }
+                        $bodyText = quoted_printable_decode($bodyText);
+
+                        $guestName = trim($this->getStringByBoundary($emailSubject, 'Reservation confirmed - ', ' arrives '));
+                        $confirmationCode = trim($this->getStringByBoundary($bodyText, 'Confirmation code', 'View itinerary'));
+
+                        $result = $guestApi->createAirbnbGuest($confirmationCode, $guestName);
+                        $temporary1 = array(
+                            'result_code' => 0,
+                            'result_description' => $result
+                        );
+                        $this->logger->debug(print_r($temporary1, true));
+                    }
+                } catch (\Throwable $e) {
+                    $temporary1 = array(
+                        'result_code' => 1,
+                        'result_description' => $e->getMessage()
+                    );
+
+                    $this->logger->debug(print_r($temporary1, true));
+                }
+            }
+        } else {
+            $temporary1 = array(
+                'result_code' => 0,
+                'result_description' => "no emails found"
+            );
+
+            $this->logger->debug(print_r($temporary1, true));
+        }
+    }
+
 }
 
 
