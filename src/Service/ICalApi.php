@@ -188,7 +188,7 @@ class ICalApi
                         if (str_contains($summary, "Not available")) {
                             $this->logger->debug("Summary is not available for uid " . $uid);
                             $icalMessagesArray[] = array(
-                                "WARNING: Summary is not available for uid " . $uid
+                                "SUCCESS: Event ignored as it does not have any information for uid " . $uid
                             );
                             $this->updateIcalLogs($ical, $icalMessagesArray);
                             continue;
