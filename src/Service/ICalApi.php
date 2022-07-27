@@ -190,6 +190,7 @@ class ICalApi
                             $icalMessagesArray[] = array(
                                 "WARNING: Summary is not available for uid " . $uid
                             );
+                            $this->updateIcalLogs($ical, $icalMessagesArray);
                             continue;
                         }
                         $detailsPosition = strpos($description, 'details/');
