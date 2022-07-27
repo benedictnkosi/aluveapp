@@ -54,6 +54,7 @@ class BlockedRoomApi
 
             //check if there is a room blocked for reservation
             if($reservationId !== null){
+                $comments .= "reservation - $reservationId";
                 $blockRoom = $this->em->getRepository(BlockedRooms::class)->findOneBy(array('linkedResaId' => $reservationId));
                 if($blockRoom === null){
                     $blockRoom = new BlockedRooms();
