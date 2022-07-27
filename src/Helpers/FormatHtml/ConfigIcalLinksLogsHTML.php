@@ -32,6 +32,7 @@ class ConfigIcalLinksLogsHTML
                $html .= '<h5>'.$icalLink->getLink().'</h5>';
                $html .= '<pre>'.$icalLink->getLogs().'</pre>';
            }
+            $html .= '<hr>';
         }
 
         return $html;

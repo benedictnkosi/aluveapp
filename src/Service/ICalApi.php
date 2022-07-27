@@ -142,6 +142,15 @@ class ICalApi
                 $this->logger->debug("back ");
                 $this->logger->debug("events found  " . count($events));
                 $i = 0;
+
+                if($events->VEVENT === null){
+                    $icalMessagesArray[] = array(
+                        "Warning: No events found for link"
+                    );
+                    $this->updateIcalLogs($ical, $icalMessagesArray);
+                    $this->logger->debug("events is null");
+                    continue;
+                }
                 foreach ($events->VEVENT as $event) {
                     $i++;
                     $this->logger->debug("event number $i");
@@ -282,7 +291,13 @@ class ICalApi
         $now = new DateTime();
         foreach($icalMessagesArray as $icalMessage){
             $this->logger->debug("icalMessage: " . print_r($icalMessage, true));
-            $icalHtmlMessage .= '<p>' . $now->format('Y-m-d H:i:s') . ' - ' . print_r($icalMessage[0], true) . '</p>';
+            $class = "logs-success";
+            if(str_contains($icalMessage[0], "ERROR")){
+                $class = 'logs-error';
+            }elseif(str_contains($icalMessage[0], "WARNING")){
+                $class = 'logs-warning';
+            }
+            $icalHtmlMessage .= '<p class="'.$class.'">' . $now->format('Y-m-d H:i:s') . ' - ' . $icalMessage[0] . '</p>';
         }
 
         $ical->setLogs($icalHtmlMessage);
