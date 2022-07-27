@@ -145,7 +145,7 @@ class ICalApi
 
                 if($events->VEVENT === null){
                     $icalMessagesArray[] = array(
-                        "Warning: No events found for link"
+                        "WARNING: No events found for link"
                     );
                     $this->updateIcalLogs($ical, $icalMessagesArray);
                     $this->logger->debug("events is null");
