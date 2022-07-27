@@ -40,7 +40,7 @@ class RoomsPageHTML
 
             $html.='<div class="maghny-gd-1 col-lg-4 col-md-6">
                 <div class="maghny-grid">
-                    <figure class="effect-lily">
+                    <a href="/room.html?id='.$roomId.'"><figure class="effect-lily">
                         <img class="img-fluid" src="assets/images/rooms/thumb'.$roomDefaultImage. '" alt="">
                         <figcaption>
                             <div>
@@ -57,6 +57,7 @@ class RoomsPageHTML
                             </div>
                         </figcaption>
                     </figure>
+                    </a>
                     <div class="room-info">
                         <h3 class="room-title"><a href="/room.html?id='.$roomId.'">'.$roomName.'</a></h3>
                         <ul class="mb-3">

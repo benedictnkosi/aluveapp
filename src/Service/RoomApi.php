@@ -9,7 +9,7 @@ use App\Entity\RoomImages;
 use App\Entity\Rooms;
 use App\Entity\RoomStatus;
 use App\Entity\RoomTv;
-use App\Helpers\FormatHtml\ConfigIcalLinksHTML;
+use App\Helpers\FormatHtml\ConfigIcalLinksLogsHTML;
 use App\Helpers\FormatHtml\RoomImagesHTML;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -150,7 +150,7 @@ class RoomApi
 
                     $iCalApi = new ICalApi($this->em, $this->logger);
                     $icalLinks = $iCalApi->getIcalLinks($roomId);
-                    $configIcalHtml = new ConfigIcalLinksHTML($this->em, $this->logger);
+                    $configIcalHtml = new ConfigIcalLinksLogsHTML($this->em, $this->logger);
                     $icalFormattedHtml = $configIcalHtml->formatHtml($icalLinks);
 
                     $responseArray[] = array(
@@ -170,6 +170,7 @@ class RoomApi
                         'tv' => $room->getTv()->getId(),
                         'tv_name' => $room->getTv()->getName(),
                         'ical_links' => $icalFormattedHtml,
+                        'export_link' => "https://" . SERVER_NAME . "/api/export/" . $room->GetId(),
                         'result_code' => 0
                     );
                 }

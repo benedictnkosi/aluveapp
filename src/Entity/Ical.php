@@ -36,6 +36,13 @@ class Ical
     private $link;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="logs", type="string", length=1000, nullable=true)
+     */
+    private $logs;
+
+    /**
      * @var Rooms
      *
      * @ORM\ManyToOne(targetEntity="Rooms")
@@ -91,6 +98,22 @@ class Ical
     public function setLink(string $link): void
     {
         $this->link = $link;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLogs(): ?string
+    {
+        return $this->logs;
+    }
+
+    /**
+     * @param string|null $logs
+     */
+    public function setLogs(?string $logs): void
+    {
+        $this->logs = $logs;
     }
 
     /**

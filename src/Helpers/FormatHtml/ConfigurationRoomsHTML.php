@@ -27,7 +27,7 @@ class ConfigurationRoomsHTML
         }
 
         $htmlString .='<a href="javascript:void(0)"
-                           class="ClickableButton roomsMenu" data-roomId="0">Add New Room
+                           class="ClickableButton roomsMenu" id="add_new_room_button" data-roomId="0">Add New Room
                            
     </a>';
 
