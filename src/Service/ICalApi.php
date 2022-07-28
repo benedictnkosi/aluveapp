@@ -608,16 +608,26 @@ END:VCALENDAR';
 
     function updateAirbnbGuest($guestApi): array
     {
-        $this->logger->debug("Starting Method before the return: " . __METHOD__);
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $url = "{".MAIL_SERVER."/imap/ssl/novalidate-cert}INBOX";
-        $mailbox = imap_open($url, AIRBNB_EMAIL, AIRBNB_EMAIL_PASSWORD);
+        $responseArray = array();
+        try{
+            $mailbox = imap_open($url, AIRBNB_EMAIL, AIRBNB_EMAIL_PASSWORD);
+        }catch (Exception $ex){
+            $responseArray = array(
+                'result_code' => 1,
+                'result_description' => $ex->getMessage()
+            );
+            $this->logger->debug(print_r($responseArray, true));
+        }
+
 
         $today = date('d-M-Y');
         $yesterday = date('d-M-Y',strtotime("-1 days"));
 
         $searchStr = 'ON ' . $today . ' SUBJECT "Reservation confirmed"';
         $emails = imap_search($mailbox, $searchStr);
-        $responseArray = array();
+
 
         if ($emails) {
             foreach ($emails as $emailID) {
