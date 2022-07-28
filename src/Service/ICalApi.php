@@ -723,6 +723,7 @@ END:VCALENDAR';
         catch(Exception $e) {
             // TODO(developer) - handle error appropriately
             $this->logger->debug($e->getMessage());
+            $this->logger->debug(print_r($e->getTraceAsString(), true));
         }
         return array();
     }
