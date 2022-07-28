@@ -103,21 +103,10 @@ class ICalController extends AbstractController
     /**
      * @Route("/api/updateairbnbguest")
      */
-    public function updateairbnbguest(ICalApi $ICalApi, GuestApi $guestApi, LoggerInterface $logger)
+    public function updateAirbnbGuest(ICalApi $ICalApi, GuestApi $guestApi, LoggerInterface $logger): JsonResponse
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $ICalApi->updateAirbnbGuestUsingGmail($guestApi);
-        return new JsonResponse($response, 200, array());
-    }
-
-    /**
-     * @Route("/api/gmailservice")
-     * @throws \Google\Exception
-     */
-    public function gmailservice(ICalApi $ICalApi, LoggerInterface $logger)
-    {
-        $logger->info("Starting Method: " . __METHOD__);
-        $response = $ICalApi->getEmails();
         return new JsonResponse($response, 200, array());
     }
 

@@ -85,9 +85,7 @@ class CalendarHTML
 
                     foreach ($reservations as &$reservation) {
                         $isCheckInDay = false;
-                        $this->logger->debug("Check if temp date " . $tempDate->format("Y-m-d") . " and res " . $reservation->getId() . " check in date is " . $reservation->getCheckIn()->format("Y-m-d") . "check out date " . $reservation->getCheckOut()->format("Y-m-d"));
                         if ($tempDate >= $reservation->getCheckIn() && $tempDate < $reservation->getCheckOut()) {
-                            $this->logger->debug("check passed");
                             if (strcasecmp($reservation->getStatus()->getName(), "confirmed") === 0) {
                                 $resID = $reservation->getId();
                                 $isDateBooked = true;
@@ -101,9 +99,6 @@ class CalendarHTML
                                 $isDateBookedButOpen = true;
                                 break;
                             }
-
-                        } else {
-                            $this->logger->debug("check failed");
 
                         }
                     }
