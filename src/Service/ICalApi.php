@@ -628,7 +628,6 @@ END:VCALENDAR';
 
         if ($emails) {
             foreach ($emails as $email) {
-                $this->logger->debug("looping emails: " . print_r($email, true));
                 $emailSubject = $email['subject'];
                 echo "found emails";
 
