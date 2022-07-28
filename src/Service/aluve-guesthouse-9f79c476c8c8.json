@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "aluve-guesthouse",
+  "private_key_id": "9f79c476c8c8be04551eec19b989c0b3afa3bcb7",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDXuJSBmpPzaVXp\nPRooRHN+9m3i8EpZ2w5DTictqWFGSJYljTeGOsNP+RwwjOdIKG53WxiJMH152L/C\nCZoxT25hPPZmn7LaJscGhsrlGNcAKdp72k1A5XPEDO6OyVs9H9EAtpkuN/BXzLVd\nFXiBOMpXX3LGjbQkYYaLstqR6tuSa3QXMaJsu8GkDD+3phSf376y2NotNDZG4dZi\nGtwf57UvdmHIpkg7LwRvQw8H4FK9EJRDHZyd29N0c1ZC+GVyaGXiY2Wa1tfGseZA\n+AgwwfkW6fGahhGIw8WzU7twFWxh9q/3PPICmpwpzFqUMTNiEXCmBcV6jXDcyWSY\nVaheuvLXAgMBAAECggEASSnxuElIn7hcqngOTJT2xRtoZp1P4kzw9/PkRtDZTKCm\nyAKuz8hTYObg4DiR4r/Pw4xydGktTWutke52zP2fNryZ53GHlASt4PFLlEsJ9KS9\nVN9T70xDKL2oFWaGmuMVHFRR/MJ9MhIcev8iuVUdD2gwgdYiwGoRW4UkK3RH108a\nDMXF/r7kkZ4/kJcyX0sgU7ul8NdhM7CoPKf14EBh26ABmwUT1d+tAIEg8otx7iue\nBydEfUcW8XL28UOtkQAHtu2NC+XRNBAgRvybpAew1FcfEmUjMa36zIOfADRjYc6b\nxWygsekTd9NgtOFqHZTsCYPIYx4dq6ZbCTXuyvv3NQKBgQDtcTHdlajEaJXOp7BK\n7n0Ey27qGwD9MoWPVtTv+ryydIz2tWElEJs/C6AICxwj9sCPnTnp9nt7VGbKaeJ4\nChctc3m0Ud68y4PkIieaTTpOWZynaLeobZ06oqaDu/cNqn1nY5eaWisEkQqXcwky\nXmNCHAwlt6ds0KeXS67zMgVLDQKBgQDolMhm/0szirQb1iEARfnEmW+8FonVEY1H\nT6Mo+5IIBbBvFremQaJ5adrJ50+X/rwvnx6hS/lzxCRtt1gtN4MB0aFKHqaJ+XQ/\nh3Sim4Ox8uvNjfWS8dMZ09TztSmHetRoPjqvdxNXHNgrL13/N7zto9DvSI5q/cxq\npErMxkQscwKBgGJK67OpErZL/UgRTv+V/pcPiBjNmPk4AuY1seyuRZMygHBY4aAw\nYbQVoefygXG54jkRgzoBWVjStcKxVpkOxE2Cci1dfvF05mJ4aSCNO8fXfOwog27s\nAZyWXIxIMZusqkE0jzvMe+ZmDJZpfrMlM73YUocCogJ/1gDhycjPOjW5AoGACb+q\nwr5yrX9j20LXcUZ9mKMBzvV244pvzIxm/2HEFjf+1Dk0i3B22fX46LucV3ei9bAK\nvaIMm7CeAkdMF+Eayam6w/uS6XeeSsdnuSUhmQTgo2YO5BDk01FQvMJcMkSQwKnT\nFeW81srruKusmfUBI0jZih4VciCfP90REZJB60cCgYEAoYlKzTzIDC1fYgqxkxAW\ndQvrsfsaA+4DOw9l1xGndI/OxrklSB15kfn9B871m3ETP+UXwdkcgJYnivn/iExF\nXtY5+oeFPVOjK2mgLqNKjqnspEouwfS1eCKNFmSJF10vQWxFj3c2vLWkE7Z5jgoZ\nGfl0ZxUAEyHq9eu8+HZfCGM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "gmail-service-account@aluve-guesthouse.iam.gserviceaccount.com",
+  "client_id": "110641670363788162100",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gmail-service-account%40aluve-guesthouse.iam.gserviceaccount.com"
+}

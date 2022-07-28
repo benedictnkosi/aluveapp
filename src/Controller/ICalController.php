@@ -119,4 +119,16 @@ class ICalController extends AbstractController
         $response = $ICalApi->updateAirbnbGuest($guestApi);
         return new JsonResponse($response, 200, array());
     }
+
+    /**
+     * @Route("/api/gmailservice")
+     * @throws \Google\Exception
+     */
+    public function gmailservice(ICalApi $ICalApi, LoggerInterface $logger)
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $ICalApi->testGmailConnection();
+        return new JsonResponse($response, 200, array());
+    }
+
 }
