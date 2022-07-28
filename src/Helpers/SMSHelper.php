@@ -24,8 +24,8 @@ class SMSHelper
         if (!in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
 
             //Retrieve your API Credentials
-            $apiKey = '9753e8df-5e3c-4f67-9f05-3b900a54bf93';
-            $apiSecret = 'uuuKBQB1Ei9EXM3qK8opIiIeSEBga8yY';
+            $apiKey = SMS_API_KEY;
+            $apiSecret = SMS_API_SECRET;
             $accountApiCredentials = $apiKey . ':' .$apiSecret;
 
             // Convert to Base64 Encoding
