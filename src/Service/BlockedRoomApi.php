@@ -154,7 +154,7 @@ class BlockedRoomApi
         return $responseArray;
     }
 
-    public function deleteBlockedRoomByReservation($reservationId): array
+    public function deleteBlockedRoomByReservation($reservationId, $checkInDate, $checkOutDate): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__ );
         $responseArray = array();
@@ -176,6 +176,45 @@ class BlockedRoomApi
             $this->logger->debug(print_r($responseArray, true));
         }
 
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
+        return $responseArray;
+    }
+
+    public function updateBlockedRoomByReservation($reservationId, $fromDate,$toDate)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__ );
+        $responseArray = array();
+        try{
+            $blockedRoom = $this->em->getRepository(BlockedRooms::class)->findOneBy(array('linkedResaId' => $reservationId));
+            if($blockedRoom != null){
+                $toDateDateTime = new DateTime($toDate);
+                $fromDateDateTime = new DateTime($fromDate);
+                $blockedRoom->setFromDate($fromDateDateTime);
+                $blockedRoom->setToDate($toDateDateTime);
+
+                $this->em->persist($blockedRoom);
+                $this->em->flush($blockedRoom);
+
+                $responseArray[] = array(
+                    'result_code' => 0,
+                    'result_message' => 'Successfully updated blocked room',
+                    'block_id' => $blockedRoom->getId()
+                );
+                $this->logger->debug(print_r($responseArray, true));
+            }else{
+                $responseArray[] = array(
+                    'result_message' => "No blocked room found for reservation",
+                    'result_code'=> 1
+                );
+                $this->logger->debug("No blocked room found for reservation");
+            }
+        }catch(Exception $exception){
+            $responseArray[] = array(
+                'result_message' => $exception->getMessage(),
+                'result_code'=> 1
+            );
+            $this->logger->debug(print_r($responseArray, true));
+        }
         $this->logger->debug("Ending Method before the return: " . __METHOD__ );
         return $responseArray;
     }

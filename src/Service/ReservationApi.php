@@ -372,7 +372,7 @@ class ReservationApi
         return $responseArray;
     }
 
-    public function updateReservationDate($reservation, $checkInDate, $checkOutDate): array
+    public function updateReservationDate($reservation, $checkInDate, $checkOutDate, $blockedRoomApi): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
 
@@ -385,6 +385,9 @@ class ReservationApi
                 $reservation->setCheckOut(new DateTime($checkOutDate));
                 $this->em->persist($reservation);
                 $this->em->flush($reservation);
+
+                //update blocked room
+                $blockedRoomApi->updateBlockedRoomByReservation($reservation->getId(), $checkInDate, $checkOutDate);
             } else {
                 $responseArray[] = array(
                     'result_code' => 1,

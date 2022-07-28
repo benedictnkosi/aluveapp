@@ -181,8 +181,11 @@ class ScheduleMessageApi
         $responseArray = array();
         try {
             $messageVariables = $this->em->getRepository(MessageVariables::class)->findAll();
+            foreach ($messageVariables as $messageVariable){
+                $responseArray[] = array("name"=>$messageVariable->getName());
+            }
             $this->logger->debug("Ending Method before the return: " . __METHOD__);
-            return $messageVariables;
+            return $responseArray;
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),

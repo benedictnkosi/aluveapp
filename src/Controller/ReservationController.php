@@ -178,12 +178,12 @@ class ReservationController extends AbstractController
     /**
      * @Route("api/reservations/{reservationId}/update/dates/{checkInDate}/{checkOutDate}")
      */
-    public function updateReservationDates($reservationId, $checkInDate, $checkOutDate, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function updateReservationDates($reservationId, $checkInDate, $checkOutDate, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, BlockedRoomApi $blockedRoomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
         $reservation = $reservationApi->getReservation($reservationId);
-        $response = $reservationApi->updateReservationDate($reservation, $checkInDate, $checkOutDate);
+        $response = $reservationApi->updateReservationDate($reservation, $checkInDate, $checkOutDate, $blockedRoomApi);
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);

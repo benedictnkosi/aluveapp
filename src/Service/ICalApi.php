@@ -2,17 +2,14 @@
 
 namespace App\Service;
 
-use App\Entity\AddOns;
 use App\Entity\Config;
 use App\Entity\Ical;
-use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
 use App\Entity\Rooms;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use phpDocumentor\Reflection\Types\Array_;
 use Psr\Log\LoggerInterface;
 use Sabre\VObject;
 
@@ -612,11 +609,8 @@ END:VCALENDAR';
     function updateAirbnbGuest($guestApi)
     {
         $this->logger->debug("Starting Method before the return: " . __METHOD__);
-        $messages = array();
-        $url = "{mail.aluvegh.co.za:993/imap/ssl/novalidate-cert}INBOX";
-        $username = "info@aluvegh.co.za";
-        $password = "Nhlaka@02";
-        $mailbox = imap_open($url, $username, $password);
+        $url = "{".MAIL_SERVER."/imap/ssl/novalidate-cert}INBOX";
+        $mailbox = imap_open($url, AIRBNB_EMAIL, AIRBNB_EMAIL_PASSWORD);
 
         $date = date('d-M-Y');
         $searchStr = 'ON ' . $date . ' SUBJECT "Reservation confirmed"';

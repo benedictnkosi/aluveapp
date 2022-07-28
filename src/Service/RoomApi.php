@@ -9,6 +9,7 @@ use App\Entity\RoomImages;
 use App\Entity\Rooms;
 use App\Entity\RoomStatus;
 use App\Entity\RoomTv;
+use App\Helpers\FormatHtml\ConfigIcalLinksHTML;
 use App\Helpers\FormatHtml\ConfigIcalLinksLogsHTML;
 use App\Helpers\FormatHtml\RoomImagesHTML;
 use Exception;
@@ -150,7 +151,7 @@ class RoomApi
 
                     $iCalApi = new ICalApi($this->em, $this->logger);
                     $icalLinks = $iCalApi->getIcalLinks($roomId);
-                    $configIcalHtml = new ConfigIcalLinksLogsHTML($this->em, $this->logger);
+                    $configIcalHtml = new ConfigIcalLinksHTML($this->em, $this->logger);
                     $icalFormattedHtml = $configIcalHtml->formatHtml($icalLinks);
 
                     $responseArray[] = array(
