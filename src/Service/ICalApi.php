@@ -606,19 +606,25 @@ END:VCALENDAR';
         return $responseArray;
     }
 
-    function updateAirbnbGuest($guestApi)
+    function updateAirbnbGuest($guestApi): array
     {
         $this->logger->debug("Starting Method before the return: " . __METHOD__);
         $url = "{".MAIL_SERVER."/imap/ssl/novalidate-cert}INBOX";
         $mailbox = imap_open($url, AIRBNB_EMAIL, AIRBNB_EMAIL_PASSWORD);
 
-        $date = date('d-M-Y');
-        $searchStr = 'ON ' . $date . ' SUBJECT "Reservation confirmed"';
+        $today = date('d-M-Y');
+        $yesterday = date('d-M-Y',strtotime("-1 days"));
+
+        $searchStr = 'ON ' . $today . ' SUBJECT "Reservation confirmed"';
         $emails = imap_search($mailbox, $searchStr);
+        $responseArray = array();
+
         if ($emails) {
             foreach ($emails as $emailID) {
                 $overview = imap_fetch_overview($mailbox, $emailID, 0);
                 $emailSubject = $overview[0]->subject;
+                echo "found emails";
+
                 $this->logger->debug("Email subject is " . $emailSubject);
                 try {
                     $pos = strpos($emailSubject, 'Reservation confirmed');
@@ -640,29 +646,31 @@ END:VCALENDAR';
                         $confirmationCode = trim($this->getStringByBoundary($bodyText, 'Confirmation code', 'View itinerary'));
 
                         $result = $guestApi->createAirbnbGuest($confirmationCode, $guestName);
-                        $temporary1 = array(
+                        $responseArray = array(
                             'result_code' => 0,
                             'result_description' => $result
                         );
-                        $this->logger->debug(print_r($temporary1, true));
+                        $this->logger->debug(print_r($responseArray, true));
                     }
                 } catch (\Throwable $e) {
-                    $temporary1 = array(
+                    $responseArray = array(
                         'result_code' => 1,
                         'result_description' => $e->getMessage()
                     );
 
-                    $this->logger->debug(print_r($temporary1, true));
+                    $this->logger->debug(print_r($responseArray, true));
                 }
             }
         } else {
-            $temporary1 = array(
+            $responseArray = array(
                 'result_code' => 0,
                 'result_description' => "no emails found"
             );
 
-            $this->logger->debug(print_r($temporary1, true));
+            $this->logger->debug(print_r($responseArray, true));
         }
+
+        return $responseArray;
     }
 
 }

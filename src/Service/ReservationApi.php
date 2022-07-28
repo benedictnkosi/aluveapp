@@ -585,7 +585,7 @@ class ReservationApi
                     if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
                         $this->logger->debug("this is a south african number " . $reservation->getGuest()->getPhoneNumber());
                         $SMSHelper = new SMSHelper($this->logger);
-                        $message = "Hi " . $guest->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://" . SERVER_NAME . "/invoice.html?reservation=" . $reservation->getId();
+                        $message = "Hi " . $guest->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://" . $reservation->getRoom()->getProperty()->getServerName() . "/invoice.html?reservation=" . $reservation->getId();
                         $SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
                     } else {
                         $this->logger->debug("this is not a south african number " . $reservation->getGuest()->getPhoneNumber());
@@ -595,7 +595,7 @@ class ReservationApi
                             $emailBody = str_replace("guest_name", $reservation->getGuest()->getName(), $emailBody);
                             $emailBody = str_replace("check_in", $reservation->getCheckIn()->format("d M Y"), $emailBody);
                             $emailBody = str_replace("check_out", $reservation->getCheckOut()->format("d M Y"), $emailBody);
-                            $emailBody = str_replace("server_name", SERVER_NAME, $emailBody);
+                            $emailBody = str_replace("server_name", $reservation->getRoom()->getProperty()->getServerName(), $emailBody);
                             $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
                             $whitelist = array('localhost', '::1' );
                             // check if the server is in the array

@@ -116,7 +116,7 @@ class ICalController extends AbstractController
     public function updateairbnbguest(ICalApi $ICalApi, GuestApi $guestApi, LoggerInterface $logger)
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $emails = $ICalApi->updateAirbnbGuest($guestApi);
-        dd($emails);
+        $response = $ICalApi->updateAirbnbGuest($guestApi);
+        return new JsonResponse($response, 200, array());
     }
 }

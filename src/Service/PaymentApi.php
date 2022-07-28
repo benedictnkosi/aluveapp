@@ -213,7 +213,7 @@ class PaymentApi
             //send sms to guest
             $smsHelper = new SMSHelper($this->logger);
             $amountDue = $this->getTotalDue($reservation->getId());
-            $messageBody = "Hi " . $reservation->getGuest()->getName() . ", Thank you for payment. Balance is R" . $amountDue . ". View your receipt http://".SERVER_NAME."/invoice.html?reservation=" . $reservation->getId();
+            $messageBody = "Hi " . $reservation->getGuest()->getName() . ", Thank you for payment. Balance is R" . $amountDue . ". View your receipt https://".$reservation->getRoom()->getProperty()->getServerName()."/invoice.html?reservation=" . $reservation->getId();
             $smsHelper->sendMessage($reservation->getGuest()->getPhoneNumber(), $messageBody);
             $this->logger->debug("Successfully sent sms to guest");
         }catch (Exception $ex){
