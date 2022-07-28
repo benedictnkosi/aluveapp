@@ -184,6 +184,7 @@ class ReservationController extends AbstractController
 
         $reservation = $reservationApi->getReservation($reservationId);
         $response = $reservationApi->updateReservationDate($reservation, $checkInDate, $checkOutDate, $blockedRoomApi);
+
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);

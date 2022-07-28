@@ -383,6 +383,9 @@ class ReservationApi
             if ($isRoomAvailable) {
                 $reservation->setCheckIn(new DateTime($checkInDate));
                 $reservation->setCheckOut(new DateTime($checkOutDate));
+                $reservation->setCheckOut(new DateTime($checkOutDate));
+                $reservation->setUid(uniqid() . "@" . SERVER_NAME);
+
                 $this->em->persist($reservation);
                 $this->em->flush($reservation);
 

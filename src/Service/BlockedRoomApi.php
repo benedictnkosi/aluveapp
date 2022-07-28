@@ -191,6 +191,7 @@ class BlockedRoomApi
                 $fromDateDateTime = new DateTime($fromDate);
                 $blockedRoom->setFromDate($fromDateDateTime);
                 $blockedRoom->setToDate($toDateDateTime);
+                $blockedRoom->setUid(uniqid() . "@" . SERVER_NAME);
 
                 $this->em->persist($blockedRoom);
                 $this->em->flush($blockedRoom);

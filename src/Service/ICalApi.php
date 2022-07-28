@@ -704,10 +704,9 @@ END:VCALENDAR';
         $client = new Google_Client();
         $client->setApplicationName("Hello Analytics Reporting");
         $client->setAuthConfig($KEY_FILE_LOCATION);
-        $client->setScopes(['https://www.googleapis.com/auth/gmail.addons.current.message.readonly']);
+        $client->setScopes(['https://mail.google.com/']);
         $service = new Gmail($client);
         try{
-
             // Print the labels in the user's account.
             $user = 'me';
             $results = $service->users_labels->listUsersLabels($user);
