@@ -8,6 +8,7 @@ use App\Entity\ReservationStatus;
 use App\Entity\Rooms;
 use DateInterval;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Google_Client;
@@ -312,7 +313,10 @@ class ICalApi
     function getStringByBoundary($string, $leftBoundary, $rightBoundary)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
+        $this->logger->debug("Searching for $leftBoundary and $rightBoundary");
+        $this->logger->debug($string);
         preg_match('~' . $leftBoundary . '([^?]*)' . $rightBoundary . '~i', $string, $match);
+        $this->logger->debug("match is " . $match[1]);
         return $match[1];
     }
 
@@ -610,33 +614,22 @@ END:VCALENDAR';
         return $responseArray;
     }
 
-    function updateAirbnbGuest($guestApi): array
+
+    /**
+     * @throws \Google\Exception
+     */
+    function updateAirbnbGuestUsingGmail($guestApi): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $url = "{".MAIL_SERVER."/imap/ssl/novalidate-cert}INBOX";
         $responseArray = array();
-        try{
-            $mailbox = imap_open($url, AIRBNB_EMAIL, AIRBNB_EMAIL_PASSWORD);
-        }catch (Exception $ex){
-            $responseArray = array(
-                'result_code' => 1,
-                'result_description' => $ex->getMessage()
-            );
-            $this->logger->debug(print_r($responseArray, true));
-        }
 
-
-        $today = date('d-M-Y');
-        $yesterday = date('d-M-Y',strtotime("-1 days"));
-
-        $searchStr = 'ON ' . $today . ' SUBJECT "Reservation confirmed"';
-        $emails = imap_search($mailbox, $searchStr);
-
+        $emails = $this->getEmails();
 
         if ($emails) {
-            foreach ($emails as $emailID) {
-                $overview = imap_fetch_overview($mailbox, $emailID, 0);
-                $emailSubject = $overview[0]->subject;
+            foreach ($emails as $email) {
+                $this->logger->debug("looping emails: " . print_r($email, true));
+                $emailSubject = $email['subject'];
                 echo "found emails";
 
                 $this->logger->debug("Email subject is " . $emailSubject);
@@ -644,21 +637,14 @@ END:VCALENDAR';
                     $pos = strpos($emailSubject, 'Reservation confirmed');
                     if ($pos !== false) {
 
-                        $emailMsgNumber = $overview[0]->msgno;
+                        $emailMsgNumber = $email['id'];
 
-                        $bodyText = imap_fetchbody($mailbox, $emailMsgNumber, 2);
+                        $bodyText = $email['body'];
                         $messageThreadId = trim($this->getStringByBoundary($bodyText, 'hosting/thread/', '?'));
                         $this->logger->debug("message thread is " . $messageThreadId);
-                        $bodyText = imap_fetchbody($mailbox, $emailMsgNumber, 1);
-                        if (! strlen($bodyText) > 0) {
-                            $this->logger->debug("message body is empty");
-                            $bodyText = imap_fetchbody($mailbox, $emailMsgNumber, 1);
-                        }
-                        $bodyText = quoted_printable_decode($bodyText);
-
+                        //$bodyText = quoted_printable_decode($bodyText);
                         $guestName = trim($this->getStringByBoundary($emailSubject, 'Reservation confirmed - ', ' arrives '));
-                        $confirmationCode = trim($this->getStringByBoundary($bodyText, 'Confirmation code', 'View itinerary'));
-
+                        $confirmationCode = trim($this->getStringByBoundary($bodyText, 'reservations/details/', '?'));
                         $result = $guestApi->createAirbnbGuest($confirmationCode, $guestName);
                         $responseArray = array(
                             'result_code' => 0,
@@ -690,7 +676,7 @@ END:VCALENDAR';
     /**
      * @throws \Google\Exception
      */
-    public function testGmailConnection(): array
+    public function getEmails(): ?array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         // Creates and returns the Analytics Reporting service object.
@@ -705,31 +691,71 @@ END:VCALENDAR';
         $client->setApplicationName("Hello Analytics Reporting");
         $client->setAuthConfig($KEY_FILE_LOCATION);
         $client->setScopes(['https://mail.google.com/']);
-        $service = new Gmail($client);
-        try{
-            // Print the labels in the user's account.
-            $user = 'me';
-            $results = $service->users_labels->listUsersLabels($user);
+        $client->setSubject("admin@aluveapp.co.za");
 
-            if (count($results->getLabels()) == 0) {
-                $this->logger->debug("No labels found.\n");
-            } else {
-                print "Labels:\n";
-                foreach ($results->getLabels() as $label) {
-                    $this->logger->debug("Label " . $label->getName());
+        $service = new \Google_Service_Gmail($client);
+        $responseArray = array();
+        try{
+
+            // Print the labels in the user's account.
+            $pageToken = null;
+            $messages = array();
+            $opt_param = array();
+
+            do{
+                if($pageToken){
+                    $opt_param['pageToken'] = $pageToken;
                 }
+                $midnight = new DateTimeImmutable('today midnight');
+                $timestampOfMidnight = $midnight->getTimestamp();
+                $opt_param['q'] = 'subject:Reservation confirmed after:' . $timestampOfMidnight;
+                $messagesResponse = $service->users_messages->listUsersMessages("me", $opt_param);
+                if($messagesResponse->getMessages()){
+                    $messages = array_merge($messages, $messagesResponse->getMessages() );
+                    $pageToken = $messagesResponse->getNextPageToken();
+                }
+            }while ($pageToken);
+
+            foreach ($messages as $message){
+                $msg = $service->users_messages->get("admin@aluveapp.co.za",$message->getId());
+                $headers = $msg->getPayload()->getHeaders();
+                $subject = "";
+                foreach ($headers as $header){
+                    if(strcmp($header->getName(), "Subject") === 0){
+                        $subject = $header->getValue();
+                    }
+
+                   // $this->logger->debug("results from google is " .$header->getName() . " - " . $header->getValue());
+                }
+                $msgData = $msg->getPayload()->getParts()[1]->getBody()->data;
+
+                $out = str_replace("-", "+", $msgData);
+                $out = str_replace("_", "/", $out);
+                $cleanedMessage = base64_decode($out);
+                $responseArray[] = array(
+                    'id' => $message->getId(),
+                    'subject' =>$subject,
+                    'body' =>$cleanedMessage
+                );
             }
+            //$this->logger->debug("results from google is " .print_r($responseArray));
         }
         catch(Exception $e) {
             // TODO(developer) - handle error appropriately
             $this->logger->debug($e->getMessage());
             $this->logger->debug(print_r($e->getTraceAsString(), true));
+            return null;
         }
-        return array();
+        return $responseArray;
     }
 
-    function getClient()
+    /**
+     * @throws \Google\Exception
+     * @throws Exception
+     */
+    function getClient(): Client
     {
+        $this->logger->debug("Starting Method: " . __METHOD__);
         $client = new Client();
         $client->setApplicationName('Gmail API PHP Quickstart');
         $client->setScopes('https://www.googleapis.com/auth/gmail.addons.current.message.readonly');

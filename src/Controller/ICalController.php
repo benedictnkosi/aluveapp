@@ -58,16 +58,6 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("api/airbnb/emailauth")
-     */
-    public function getAirbnbEmailPassword(LoggerInterface $logger, ICalApi $iCalApi): Response
-    {
-        $logger->info("Starting Method: " . __METHOD__);
-        $response = $iCalApi->getAirbnbEmailAndPassword();
-        return new JsonResponse($response, 200, array());
-    }
-
-    /**
      * @Route("api/ical/links/{roomId}/{link}")
      */
     public function addNewChannel($roomId, $link, LoggerInterface $logger, Request $request, ICalApi $iCalApi): Response
@@ -116,7 +106,7 @@ class ICalController extends AbstractController
     public function updateairbnbguest(ICalApi $ICalApi, GuestApi $guestApi, LoggerInterface $logger)
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $ICalApi->updateAirbnbGuest($guestApi);
+        $response = $ICalApi->updateAirbnbGuestUsingGmail($guestApi);
         return new JsonResponse($response, 200, array());
     }
 
@@ -127,7 +117,7 @@ class ICalController extends AbstractController
     public function gmailservice(ICalApi $ICalApi, LoggerInterface $logger)
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $ICalApi->testGmailConnection();
+        $response = $ICalApi->getEmails();
         return new JsonResponse($response, 200, array());
     }
 

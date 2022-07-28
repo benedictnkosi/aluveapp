@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Property;
 use App\Entity\Reservations;
 use Exception;
+use phpDocumentor\Reflection\Types\Void_;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Guest;
@@ -92,13 +93,18 @@ class GuestApi
         return $responseArray;
     }
 
-    public function createAirbnbGuest($confirmationCode, $name): array
+    public function createAirbnbGuest($confirmationCode, $name): ?array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             //get property id
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('originUrl' => $confirmationCode));
+            if($reservation === null){
+                $this->logger->debug("Reservation not found");
+                return null;
+            }
+
             $property = $reservation->getRoom()->getProperty();
 
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('name' => $name,
