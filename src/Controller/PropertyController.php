@@ -55,4 +55,17 @@ class PropertyController extends AbstractController
         return $response;
     }
 
+    /**
+     * @Route("api/property/severname")
+     */
+    public function getPropertyServerName( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $propertyApi->getPropertyServerName();
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
 }

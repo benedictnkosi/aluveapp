@@ -28,12 +28,6 @@ class ReservationController extends AbstractController
     public function getCalendar( LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $logger->info("Session: " . print_r($_SESSION, true));
-        $logger->info("user roles: " . print_r($this->getUser()->getRoles(), true));
-        $logger->info("property name is: " . $this->getUser()->getProperty()->getId());
-        $_SESSION["PROPERTY_ID"] = $this->getUser()->getProperty()->getId();
-        $logger->info("new session: " . print_r($_SESSION, true));
-
         $calendarHtml = new CalendarHTML($entityManager, $logger);
         $html = $calendarHtml->formatHtml();
         $response = array(
@@ -273,4 +267,21 @@ class ReservationController extends AbstractController
         $response->setCallback($callback);
         return $response;
     }
+
+    /**
+     * @Route("public/payfast_notify")
+     * @throws \Exception
+     */
+    public function payfast_notify(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $logger->info("request: " . print_r($request->getQueryString()));
+        $logger->info("request: " . print_r($request->getRequestUri()));
+        $response = array();
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response, 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
 }

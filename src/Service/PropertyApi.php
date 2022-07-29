@@ -65,35 +65,6 @@ class PropertyApi
         return $responseArray;
     }
 
-    public function getPropertyUidByHost($request)
-    {
-        $this->logger->debug("Starting Method: " . __METHOD__);
-        $propertyUid = null;
-        try {
-            $referer = $request->headers->get('referer');
-            $host = parse_url($referer, PHP_URL_HOST);
-            $this->logger->debug("referrer is " . $referer);
-            $this->logger->debug("referrer host is " . $host);
-
-            $property = $this->em->getRepository(Property::class)->findOneBy(
-                array("serverName" => $host));
-            if ($property != null) {
-                $propertyUid = $property->getUid();
-                $this->logger->debug("property uid found for host $propertyUid - " . $host);
-            } else {
-                $this->logger->debug("property uid NOT found for host " . $host);
-            }
-        } catch (Exception $ex) {
-            $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
-                'result_code' => 1
-            );
-            $this->logger->debug(print_r($responseArray, true));
-        }
-
-        $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        return $propertyUid;
-    }
 
     public function getPropertyTerms($roomApi,  $request): array
     {
@@ -112,6 +83,32 @@ class PropertyApi
             $responseArray[] = array(
                 'terms' => $property->getTerms(),
                 'terms_html' => $roomApi->replaceWithBold($property->getTerms()),
+                'result_code' => 0,
+            );
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->debug(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+    public function getPropertyServerName(): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $propertyId = $_SESSION['PROPERTY_ID'];
+
+            $property = $this->em->getRepository(Property::class)->findOneBy(
+                array("id" =>$propertyId));
+
+            $responseArray[] = array(
+                'server_name' => $property->getServerName(),
                 'result_code' => 0,
             );
         } catch (Exception $ex) {

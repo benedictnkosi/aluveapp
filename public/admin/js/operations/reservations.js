@@ -12,6 +12,7 @@ function loadReservationsPageData(){
 }
 
 function refreshReservations() {
+    getServerName();
     getReservationsByPeriod("future");
     getReservationsByPeriod("stayover");
     getReservationsByPeriod("checkout");
@@ -558,6 +559,28 @@ function getRooms(id) {
                 return;
             }
             getRooms();
+        }
+    });
+}
+
+function getServerName() {
+    let url = "/api/property/severname";
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $('#new_reservation_button').attr("href", "http://" + data[0].server_name + "/booking.html");
+        },
+        error: function (xhr) {
+            console.log("request for getRooms is " + xhr.status);
+            if (!isRetry("getServerName")) {
+                return;
+            }
+            getServerName();
         }
     });
 }
