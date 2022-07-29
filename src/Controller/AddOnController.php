@@ -29,12 +29,12 @@ class AddOnController extends AbstractController
     }
 
     /**
-     * @Route("api/addon/configaddons/{propertyUid}")
+     * @Route("api/addons/")
      */
-    public function getConfigAddOns($propertyUid, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
+    public function getConfigAddOns(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $addOns = $addOnsApi->getAddOns($propertyUid);
+        $addOns = $addOnsApi->getAddOns();
         $configAddonsHTML = new ConfigAddonsHTML( $entityManager, $logger);
         $formattedHtml = $configAddonsHTML->formatHtml($addOns);
         $callback = $request->get('callback');
@@ -57,14 +57,14 @@ class AddOnController extends AbstractController
     }
 
     /**
-     * @Route("api/createaddon/{addOnName}/{addOnPrice}/{propertyUid}")
+     * @Route("api/createaddon/{addOnName}/{addOnPrice}")
      */
-    public function createAddon($addOnName, $addOnPrice,$propertyUid, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
+    public function createAddon($addOnName, $addOnPrice, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
 
-        $response = $addOnsApi->createAddOn($addOnName, $addOnPrice, $propertyUid);
+        $response = $addOnsApi->createAddOn($addOnName, $addOnPrice);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

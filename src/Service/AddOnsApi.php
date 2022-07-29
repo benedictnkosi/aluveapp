@@ -27,20 +27,20 @@ class AddOnsApi
         }
     }
 
-    public function getAddOn($addOnName, $propertyUid)
+    public function getAddOn($addOnName)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $securityApi = new SecurityApi($this->em, $this->logger);
-            if (!$securityApi->isLoggedInBoolean($propertyUid)) {
+            if (!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
                     'result_message' => "Session expired, please logout and login again",
                     'result_code' => 1
                 );
             } else {
                 $propertyApi = new PropertyApi($this->em, $this->logger);
-                $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+                $propertyId =   $_SESSION['PROPERTY_ID'];
                 return $this->em->getRepository(AddOns::class)->findOneBy(
                     array("name" => $addOnName,
                         'property' => $propertyId));
@@ -57,13 +57,12 @@ class AddOnsApi
         return $responseArray;
     }
 
-    public function getAddOns($propertyUid)
+    public function getAddOns()
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $propertyId =   $_SESSION['PROPERTY_ID'];
             return $this->em->getRepository(AddOns::class)->findBy(array('property' => $propertyId, 'status'=> 'live'));
         } catch (Exception $ex) {
             $responseArray[] = array(
@@ -251,14 +250,14 @@ class AddOnsApi
         return $responseArray;
     }
 
-    public function createAddOn($addOnName, $addOnPrice, $propertyUid)
+    public function createAddOn($addOnName, $addOnPrice)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $this->logger->debug("attempting to talk to db");
             //check if add-on with the same name does not exist
-            $existingAddOn = $this->em->getRepository(AddOns::class)->findBy(array('name' => $addOnName));
+            $existingAddOn = $this->em->getRepository(AddOns::class)->findBy(array('name' => $addOnName, 'status'=>'live'));
             $this->logger->debug("db connect done success");
             if ($existingAddOn != null) {
                 $responseArray[] = array(
@@ -266,7 +265,7 @@ class AddOnsApi
                     'result_code' => 1
                 );
             } else {
-                $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+                $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_SESSION['PROPERTY_ID']));
                 $addOn = new AddOns();
                 $addOn->setPrice($addOnPrice);
                 $addOn->setName($addOnName);

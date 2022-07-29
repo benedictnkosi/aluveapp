@@ -25,13 +25,13 @@ class GuestApi
         }
     }
 
-    public function createGuest($name, $phoneNumber, $email, $propertyUid, $origin): array
+    public function createGuest($name, $phoneNumber, $email,  $origin): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
 
-            $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+            $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_SESSION['PROPERTY_ID']));
             $guest = new Guest();
             $guest->setName($name);
             $guest->setPhoneNumber($phoneNumber);
@@ -191,12 +191,12 @@ class GuestApi
         return $responseArray;
     }
 
-    public function getGuests($filterValue, $propertyUid): array
+    public function getGuests($filterValue): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $propertyId =   $_SESSION['PROPERTY_ID'];
             if ($filterValue == 0) {
                 $guest = $this->em->getRepository(Guest::class)->findBy(array('property' => $propertyId));
             } else {
@@ -237,14 +237,14 @@ class GuestApi
         return $responseArray;
     }
 
-    public function getGuestByPhoneNumber($phoneNumber, $propertyUid)
+    public function getGuestByPhoneNumber($phoneNumber)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $guest = null;
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $propertyId =   $_SESSION['PROPERTY_ID'];
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => $phoneNumber, 'property' => $propertyId));
         } catch (Exception $exception) {
             $responseArray[] = array(
@@ -258,14 +258,14 @@ class GuestApi
         return $guest;
     }
 
-    public function getGuestByName($name, $propertyUid)
+    public function getGuestByName($name)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $guest = null;
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $propertyId =   $_SESSION['PROPERTY_ID'];
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('name' => $name, 'property' => $propertyId));
         } catch (Exception $exception) {
             $responseArray[] = array(

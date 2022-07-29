@@ -57,18 +57,18 @@ class SecurityApi
         return $responseArray;
     }
 
-    public function isLoggedInBoolean($propertyUid): bool
+    public function isLoggedInBoolean(): bool
     {
-        $result = $this->isLoggedIn($propertyUid);
+        $result = $this->isLoggedIn();
         return $result[0]['logged_in'];
     }
 
-    public function isLoggedIn($propertyUid): array
+    public function isLoggedIn(): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+            $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_SESSION['PROPERTY_ID']));
             if ($property != null) {
                 $responseArray[] = array(
                     'logged_in' => true

@@ -92,7 +92,7 @@ class BlockedRoomApi
         return $responseArray;
     }
 
-    public function getBlockedRooms($propertyUid, $roomId = 0)
+    public function getBlockedRooms( $roomId = 0)
     {
         $this->logger->debug("Starting Method: " . __METHOD__ );
         $responseArray = array();
@@ -110,7 +110,7 @@ class BlockedRoomApi
                 JOIN r.property p
             WHERE b.room = r.id
             and p.id = r.property
-            and p.uid = '".$propertyUid."'
+            and p.id = ".$_SESSION['PROPERTY_ID']."
             and b.toDate >= '".$maxPastDate->format('Y-m-d')."' 
                     $roomFilter 
             order by b.fromDate asc ")

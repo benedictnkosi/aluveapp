@@ -23,13 +23,19 @@ class ReservationController extends AbstractController
 {
 
     /**
-     * @Route("api/calendar/{propertyUid}")
+     * @Route("api/calendar")
      */
-    public function getCalendar($propertyUid, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function getCalendar( LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        $logger->info("Session: " . print_r($_SESSION, true));
+        $logger->info("user roles: " . print_r($this->getUser()->getRoles(), true));
+        $logger->info("property name is: " . $this->getUser()->getProperty()->getId());
+        $_SESSION["PROPERTY_ID"] = $this->getUser()->getProperty()->getId();
+        $logger->info("new session: " . print_r($_SESSION, true));
+
         $calendarHtml = new CalendarHTML($entityManager, $logger);
-        $html = $calendarHtml->formatHtml($propertyUid);
+        $html = $calendarHtml->formatHtml();
         $response = array(
             'html' => $html,
         );
@@ -40,33 +46,33 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("api/reservations/{period}/{propertyUid}")
+     * @Route("api/reservations/{period}")
      */
-    public function getReservations($period, $propertyUid, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function getReservations($period,  LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $reservations = "";
         switch ($period) {
             case "future":
-                $reservations = $reservationApi->getUpComingReservations($propertyUid);
+                $reservations = $reservationApi->getUpComingReservations();
                 break;
             case "past":
-                $reservations = $reservationApi->getPastReservations($propertyUid);
+                $reservations = $reservationApi->getPastReservations();
                 break;
             case "checkout":
-                $reservations = $reservationApi->getCheckOutReservation($propertyUid);
+                $reservations = $reservationApi->getCheckOutReservation();
                 break;
             case "stayover":
-                $reservations = $reservationApi->getStayOversReservations($propertyUid);
+                $reservations = $reservationApi->getStayOversReservations();
                 break;
             case "pending":
-                $reservations = $reservationApi->getPendingReservations($propertyUid);
+                $reservations = $reservationApi->getPendingReservations();
                 break;
             default:
         }
 
         $reservationHtml = new ReservationHtml($entityManager, $logger);
-        $html = $reservationHtml->formatHtml($reservations, $period, $propertyUid);
+        $html = $reservationHtml->formatHtml($reservations, $period);
         $response = array(
             'html' => $html,
         );
@@ -222,7 +228,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("api/reservations/create/{roomIds}/{guestName}/{phoneNumber}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
+     * @Route("public/reservations/create/{roomIds}/{guestName}/{phoneNumber}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
      * @throws \Exception
      */
     public function creatReservation($roomIds, $guestName, $phoneNumber, $checkInDate, $checkOutDate, $email, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
@@ -236,7 +242,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("api/invoice/{reservationId}")
+     * @Route("public/invoice/{reservationId}")
      * @throws \Exception
      */
     public function getInvoiceDetails($reservationId, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
@@ -255,7 +261,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("api/reviews/send")
+     * @Route("public/reviews/send")
      * @throws \Exception
      */
     public function sendReviewRequest(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response

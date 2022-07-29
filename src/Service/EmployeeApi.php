@@ -23,13 +23,13 @@ class EmployeeApi
         }
     }
 
-    public function getEmployees($propertyUid): array
+    public function getEmployees(): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $propertyId =   $_SESSION['PROPERTY_ID'];
             return $this->em->getRepository(Employee::class)->findBy(array('property' => $propertyId));
         } catch (Exception $ex) {
             $responseArray[] = array(
@@ -104,15 +104,15 @@ class EmployeeApi
         return $responseArray;
     }
 
-    public function createEmployee($employeeName, $propertyUid)
+    public function createEmployee($employeeName)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             //check if employee with the same name does not exist
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
-            $existingEmployees = $this->em->getRepository(Employee::class)->findBy(array('name' => $employeeName, 'property'=>$propertyId));
+            $propertyId =   $_SESSION['PROPERTY_ID'];
+            $existingEmployees = $this->em->getRepository(Employee::class)->findBy(array('name' => $employeeName, 'property'=>$_SESSION['PROPERTY_ID']));
 
             if ($existingEmployees != null) {
                 $responseArray[] = array(
@@ -120,7 +120,7 @@ class EmployeeApi
                     'result_code' => 1
                 );
             } else {
-                $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+                $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_SESSION['PROPERTY_ID']));
                 $employee = new Employee();
                 $employee->setName($employeeName);
                 $employee->setProperty($property);

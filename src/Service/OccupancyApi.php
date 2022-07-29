@@ -26,7 +26,7 @@ class OccupancyApi
         }
     }
 
-    public function getOccupancy($days, $propertyUid)
+    public function getOccupancy($days)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -40,7 +40,7 @@ class OccupancyApi
          AS occupancy FROM reservations, rooms, property
 WHERE rooms.Id =reservations.room_id
 and rooms.property =property.id
-and property.uid = '" .$propertyUid . "'
+and property.id = ".$_SESSION['PROPERTY_ID']."
 and (DATE(check_in) >= DATE(NOW()) - INTERVAL " . $days . " DAY or DATE(check_out) >= DATE(NOW()) - INTERVAL " . $days . " DAY)
 and DATE(check_in) < DATE(NOW())
 and reservations.`status` = '".$confirmStatus->getId()."'
@@ -85,7 +85,7 @@ order by occupancy;";
         return $responseArray;
     }
 
-    public function getOccupancyPerRoom($days, $propertyUid): string
+    public function getOccupancyPerRoom($days): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlString = "";
@@ -100,7 +100,7 @@ order by occupancy;";
          AS occupancy FROM reservations, rooms, property
 WHERE rooms.Id =reservations.room_id
 and rooms.property =property.id
-and property.uid = '" .$propertyUid . "'
+and property.id = ".$_SESSION['PROPERTY_ID']."
 and (DATE(check_in) >= DATE(NOW()) - INTERVAL " . $days . " DAY or DATE(check_out) >= DATE(NOW()) - INTERVAL " . $days . " DAY)
 and DATE(check_in) < DATE(NOW())
 and reservations.`status` = '".$confirmStatus->getId()."'
@@ -133,7 +133,7 @@ order by occupancy;";
 
             //output all rooms without reservations for the period as zero
             $roomConfirmStatus = $this->em->getRepository(RoomStatus::class)->findOneBy(array('name' => 'live'));
-            $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+            $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_SESSION['PROPERTY_ID']));
             $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $property->getId(), 'status'=> $roomConfirmStatus->getId()));
 
             $this->logger->debug("room Ids array is " . print_r($roomIdsArray, true));

@@ -1,0 +1,826 @@
+﻿<!--A Design by W3layouts
+Author: W3layout
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Aluve Hotel Manager</title>
+    <link rel="shortcut icon" href="/admin/images/website.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content="Aluve Property Management"/>
+    <script type="application/x-javascript">
+
+
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+
+
+    </script>
+    <!-- css -->
+    <link href="/admin/css/bootstrap.css" rel="stylesheet" type="text/css"
+          media="all"/>
+    <link rel="stylesheet" href="/admin/css/style.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="/admin/css/calendar.css" type="text/css"
+          media="all"/>
+
+    <link rel="stylesheet" href="/admin/css/font-awesome.min.css" type="text/css"
+          media="all">
+    <!--// css -->
+    <!-- font -->
+    <link
+            href='//fonts.googleapis.com/css?family=Josefin+Sans:400,100,100italic,300,300italic,400italic,600,600italic,700,700italic'
+            rel='stylesheet' type='text/css'>
+    <link
+            href='//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic'
+            rel='stylesheet' type='text/css'>
+    <link rel="stylesheet"
+          href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- //font -->
+    <link rel="stylesheet" href="/admin/css/jquery.timepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <link rel="stylesheet" href="/admin/css/ssi-uploader.css"/>
+    <link rel="stylesheet" href="/admin/css/mobile-menu.css"/>
+
+    <style>
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-top: 1px solid grey;
+        }
+
+        td,
+        th {
+            margin: 0;
+            border: 1px solid grey;
+            white-space: nowrap;
+            border-top-width: 0px;
+        }
+
+        calendar-table-div {
+            width: 500px;
+            overflow-x: scroll;
+            margin-left: 5em;
+            overflow-y: visible;
+            padding: 0;
+        }
+
+        .headcol {
+            position: absolute;
+            /* width: 5em; */
+            /* left: 0; */
+            top: auto;
+            border-top-width: 1px;
+            margin-top: -1px;
+            border: none;
+        }
+
+    </style>
+    <script src="/admin/js/jquery-1.11.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/admin/js/bootstrap.js"></script>
+    <script src="/admin/js/jquery.validate.js" type="text/javascript"></script>
+    <script src="/admin/js/ssi-uploader.js"></script>
+    <!--  player js -->
+    <script defer src="/admin/js/Chart.min.js"></script>
+    <script defer src="/admin/js/pretty-doughtnut.js"></script>
+    <script defer src="/admin/js/easyResponsiveTabs.js" type="text/javascript"></script>
+    <script defer src="/admin/js/skycons.js"></script>
+    <script defer src="/admin/js/underscore-min.js" type="text/javascript"></script>
+
+    <script src="/admin/js/operations/calendar.js" type="text/javascript"></script>
+<!--    <script defer src="/admin/js/operations/notifications.js" type="text/javascript"></script>-->
+    <script defer src="/admin/js/operations/common.js" type="text/javascript"></script>
+    <script defer src="/admin/js/operations/stats.js" type="text/javascript"></script>
+    <script defer src="/admin/js/operations/reservations.js" type="text/javascript"></script>
+    <script defer src="/admin/js/operations/cleaning_checklist.js"
+            type="text/javascript"></script>
+    <script defer src="/admin/js/operations/configuration.js" type="text/javascript"></script>
+    <script defer src="/admin/js/operations/blocked_rooms.js" type="text/javascript"></script>
+    <script defer src="/admin/js/operations/menu.js" type="text/javascript"></script>
+    <script defer src="/admin/js/operations/whatapp.js" type="text/javascript"></script>
+</head>
+<body>
+<nav class="navbar">
+    <!-- LOGO -->
+    <div class="logo">Aluve Guesthouse Manager</div>
+    <!-- NAVIGATION MENU -->
+    <ul class="nav-links">
+        <!-- USING CHECKBOX HACK -->
+        <input type="checkbox" id="checkbox_toggle"/>
+        <label for="checkbox_toggle" class="hamburger">&#9776;</label>
+        <!-- NAVIGATION MENUS -->
+        <div class="menu">
+            <li><a href="javascript:void(0)" onclick="updateView('calendar');"
+                   class="active menuICons mobileMenuIcon" title="calendar">
+                <i style="display: inline;" class="desktopOnlyMenu">Calendar</i>
+
+            </a></li>
+            <!--<li><a href="javascript:void(0)" onclick="updateView('notifications');"
+                   class="active menuICons mobileMenuIcon notification" title="Notifications">
+                <i style="display: inline;" class="desktopOnlyMenu">Notifications</i>
+                <span class="badge" id="notification_count"></span>
+            </a></li>-->
+            <li><a href="javascript:void(0)"
+                   onclick="updateView('upcoming-reservations');"
+                   class="active menuICons mobileMenuIcon" title="Bookings">
+                <i style="display: inline;" class="desktopOnlyMenu">Reservations</i>
+            </a></li>
+            <li><a href="javascript:void(0)"
+                   onclick="updateView('configuration');"
+                   class="active menuICons mobileMenuIcon" title="Configuration">
+                <i style="display: inline;" class="desktopOnlyMenu">Configuration</i>
+            </a></li>
+            <li><a href="javascript:void(0)" onclick="updateView('other-tabs');"
+                   class="active menuICons mobileMenuIcon" title="Other">
+                <i style="display: inline;" class="desktopOnlyMenu">More...</i>
+            </a></li>
+            <li><a href="javascript:void(0)" onclick="logout();"
+                   class="active menuICons mobileMenuIcon" title="signout">
+                <i style="display: inline;" class="desktopOnlyMenu">Sign Out</i>
+            </a></li>
+        </div>
+    </ul>
+</nav>
+
+<!-- Top Navigation Menu -->
+
+<div class="main-w3">
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" class="hidden uploadImageInput" accept="image/*"
+               name="image"> <input type="text" class="hidden"
+                                    name="customer_id" id="customer_image_id">
+    </form>
+
+    <div class="clearfix"></div>
+    <div class="col-md-4 left-w3l">
+        <div class="profile-w3layouts dashboard-div toggleable display-none"
+             id="div-calendar">
+
+
+            <div class="profile-top">
+                <div class="col-md-7 profile-top-right">
+                    <h5>Calendar</h5>
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="profile-ser scrollable calendar-table-div">
+                <table id="calendar-table" style="width: 100%">
+                </table>
+
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-12 middle-w3l">
+        <div class="profile-w3layouts toggleable display-none"
+             id="div-upcoming-reservations">
+
+            <div class="profile-top">
+                <div class="col-md-7 profile-top-right">
+                    <h5 id="reservations-heading">Upcoming Reservations</h5>
+                    <a href="/booking.html" class="new-reservation-link" target="_blank"><img class="menu_icon_image"
+                                                                                              src="/admin/images/add.png">New
+                        Reservation</img><i
+                                class="desktopOnlyMenu"></i></a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="profile-ser">
+                <div class="profile-ser-grids-20 filter-reservations clickable"
+                     id="reservations_all">
+                    <img class="menu_icon_image" src="/admin/images/menu_bookings.png" title="Up Coming"></img>
+                    <i class="desktopOnlyMenu">Up Coming</i>
+                </div>
+                <div class="profile-ser-grids-20 filter-reservations clickable"
+                     id="reservations_checkouts">
+                    <img class="menu_icon_image" src="/admin/images/menu_checkout.png" title="Checkouts"></img><i
+                        class="desktopOnlyMenu">Checkouts</i>
+                </div>
+                <div
+                        class="profile-ser-grids-20 agileinfo  filter-reservations clickable"
+                        id="reservations_stay_overs">
+                    <img class="menu_icon_image" src="/admin/images/menu_stayover.png" title="Stay Overs"></img><i
+                        class="desktopOnlyMenu">Stay
+                    Overs</i>
+                </div>
+                <div
+                        class="profile-ser-grids-20 agileinfo  filter-reservations clickable"
+                        id="reservations_past_reservations">
+                    <img class="menu_icon_image" src="/admin/images/history.png" title="History"></img><i
+                        class="desktopOnlyMenu">History
+                </i>
+                </div>
+                <div class="profile-ser-grids-20 agileinfo  filter-reservations clickable"
+                     id="reservations_pending_reservations">
+                    <img class="menu_icon_image" src="/admin/images/pending.png" title="Pending"></img><i
+                        class="desktopOnlyMenu">Pending</i>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+            <div class="flexible">
+                <div class="flex-bottom">
+                    <div id="reservation_success_message_div"
+                         class="flex1 display-none">
+                        <h5 id="reservation_success_message"></h5>
+                    </div>
+                    <div id="reservation_error_message_div" class="flex2 display-none">
+                        <h5 id="reservation_error_message"></h5>
+                    </div>
+                </div>
+            </div>
+            <div id="future-list" class='reservations_tabs'></div>
+            <div id="checkout-list" class='reservations_tabs display-none'></div>
+            <div id="stayover-list" class='reservations_tabs display-none'></div>
+            <div id="past-list" class='reservations_tabs display-none'></div>
+            <div id="pending-list" class='reservations_tabs display-none'></div>
+        </div>
+
+
+        <div class="profile-w3layouts toggleable display-none"
+             id="div-configuration">
+
+
+            <div class="profile-top">
+                <div class="col-md-7 profile-top-right">
+                    <h5 id="configuration-heading">Rooms</h5>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="profile-ser">
+                <div class="profile-ser-grids-15 filter-configuration clickable"
+                     id="configuration_rooms">
+                    <img class="menu_icon_image" src="/admin/images/menu_rooms.png" title="Rooms"></img>
+                    <i class="desktopOnlyMenu">Rooms</i>
+                </div>
+                <div class="profile-ser-grids-15 filter-configuration clickable"
+                     id="configuration_add_ons">
+                    <img class="menu_icon_image" src="/admin/images/menu_add_ons.png" title="Add-Ons"></img><i
+                        class="desktopOnlyMenu">Add
+                    Ons</i>
+                </div>
+                <div
+                        class="profile-ser-grids-15 agileinfo  filter-configuration clickable"
+                        id="configuration_employees">
+                    <img class="menu_icon_image" src="/admin/images/employee.png" title="Employees"></img><i
+                        class="desktopOnlyMenu">Employees</i>
+                </div>
+                <div
+                        class="profile-ser-grids-15 agileinfo  filter-configuration clickable"
+                        id="configuration_messages">
+                    <img class="menu_icon_image" src="/admin/images/messages.jpg" title="Messages"></img><i
+                        class="desktopOnlyMenu">Messages</i>
+                </div>
+                <div
+                        class="profile-ser-grids-15 agileinfo  filter-configuration clickable"
+                        id="configuration_terms">
+                    <img class="menu_icon_image" src="/admin/images/terms.png" title="Terms & Conditions"></img><i
+                        class="desktopOnlyMenu">Terms & Conditions</i>
+                </div>
+                <div
+                        class="profile-ser-grids-15 agileinfo  filter-configuration clickable"
+                        id="configuration_synch_logs">
+                    <img class="menu_icon_image" src="/admin/images/logs.jpg" title="Channel Logs"></img><i
+                        class="desktopOnlyMenu">Channel Logs</i>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="flexible">
+                <div class="flex-bottom">
+                    <div id="configuration_success_message_div"
+                         class="flex1 display-none">
+                        <h5 id="configuration_success_message"></h5>
+                    </div>
+                    <div id="configuration_error_message_div" class="flex2 display-none">
+                        <h5 id="configuration_error_message"></h5>
+                    </div>
+                </div>
+            </div>
+            <div id="configuration-rooms-list" class='configuration_tabs display-none'>
+                <div class="configuration-left-div">
+                    <div id="config_rooms_list">
+                    </div>
+
+                </div>
+                <div class="configuration-right-div">
+
+                    <form class="contact-form" id="config_room_form">
+                        <h3 id="manage_room_h3">Create A New Room</h3>
+                        <label>Room Name</label>
+                        <div>
+                            <input type="text" name="room_id" id="room_id" class="display-none" value="0"/>
+                            <input type="text" name="room_name" id="room_name"
+                                   required/>
+                        </div>
+
+                        <label>Description (use {} around the words you want bold e.g {WIFI}</label>
+                        <div>
+                        <textarea type="text" name="room_description" id="room_description" rows="20"
+                                  required></textarea>
+                        </div>
+
+                        <label>Price</label>
+
+                        <div>
+                            <input type="text" name="room_price" id="room_price"
+                                   required/>
+                        </div>
+
+                        <label>Sleeps</label>
+                        <div>
+                            <input type="number" value="2" id="room_sleeps">
+                        </div>
+
+                        <label>Status</label>
+                        <div>
+                            <select id="select_room_status">
+
+                            </select>
+                        </div>
+
+
+                        <label>Linked Room</label>
+                        <div>
+                            <select id="select_linked_room">
+
+                            </select>
+                        </div>
+
+                        <label>Room Size</label>
+                        <div>
+                            <input type="text" name="room_size" id="room_size"
+                                   required/>
+                        </div>
+
+                        <label>Bed</label>
+                        <div>
+                            <select id="select_bed">
+
+                            </select>
+                        </div>
+
+                        <label>TV</label>
+                        <div>
+                            <select id="select_tv">
+                            </select>
+                        </div>
+
+                        <label>Stairs</label>
+                        <div>
+                            <select id="select_Stairs">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <span><input type="submit" value="Submit" id="config_room_submit"></span>
+                        </div>
+                    </form>
+
+                    <div id="icalDiv" class="display-none">
+                        <h3>Manage Calendar Sync</h3>
+
+                        <h5 id="room_export_link"></h5>
+
+                        <div id="links_div"></div>
+
+                        <form class="contact-form" id="ical_form">
+                            <h5>Add A New Channel</h5>
+
+                            <label>Channel Ical Link</label>
+                            <div>
+                                <input type="text" name="icalLink" id="icalLink"
+                                       required/>
+                            </div>
+
+                            <div>
+                                <span><input type="submit" value="Add Channel" id="ical_submit"></span>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="imageUploaderDiv" class="display-none">
+                        <h3>Manage Room Images</h3>
+
+                        <div id="uploaded_images_div"></div>
+
+                        <h5>Upload New Images (5mb max)</h5>
+                        <p>Landscape images recommended</p>
+                        <input type="file" multiple id="ssi-upload"/>
+                    </div>
+                </div>
+
+
+            </div>
+            <div id="configuration-add_on-list" class='configuration_tabs display-none'>
+                <form class="contact-form" id="config_addOn_form">
+                    <h3>Manage Add-ons</h3>
+
+                    <div id="add_ons_div"></div>
+
+                    <hr>
+                    <h3>Create New Add-ons</h3>
+                    <div class="addon-left-div">
+                        <label>Name</label>
+                        <input type="text" id="addon_name" name="addon_name" placeholder="e.g. laundry"
+                               required/>
+                    </div>
+                    <div class="addon-right-div">
+                        <label>Price</label>
+                        <input type="text" id="addon_price" name="addon_price" placeholder="e.g. 180"
+                               required/>
+                    </div>
+
+                    <div>
+                        <span><input type="submit" value="Submit" id="config_addon_submit"></span>
+                    </div>
+                </form>
+            </div>
+            <div id="configuration-employees-list" class='configuration_tabs display-none'>
+                <form class="contact-form" id="config_employee_form">
+                    <h3>Manage Employee</h3>
+
+                    <div id="employee_div"></div>
+
+                    <hr>
+                    <h3>Create New Employee</h3>
+                    <div class="addon-left-div">
+                        <label>Name</label>
+                        <input type="text" id="employee_name" name="employee_name" placeholder="e.g. Benedict"
+                               required/>
+                    </div>
+                    <div>
+                        <span><input type="submit" value="Submit" id="config_employee_submit"></span>
+                    </div>
+                </form>
+
+            </div>
+            <div id="configuration-messages" class='configuration_tabs display-none'>
+
+                <h3>Scheduled Messages</h3>
+
+                <div id="messages_div">
+
+                </div>
+
+                <hr>
+                <form class="contact-form" id="config_createMessageTemplate_form">
+                    <h3>Create a new template</h3>
+                    <p id="message_variables"></p>
+
+                    <label>Template Name</label>
+
+                    <input type="text" id="template_name_input" placeholder="e.g. Load shedding">
+
+                    <label>Message</label>
+                    <textarea id="template_message" name="template_message">Hi guest_name, ....
+                    </textarea>
+                    <div>
+                        <span><input type="submit" value="Create Template" id="create_template_submit"></span>
+                    </div>
+                </form>
+                <hr>
+                <form class="contact-form" id="config_createScheduleMessage_form">
+                    <h3>Schedule a new message</h3>
+
+                    <label>Template</label>
+                    <select id="template_name_select" name="template_name_select" class="template_option">
+                    </select>
+
+                    <pre id="template_message_text"></pre>
+
+                    <label>Schedule</label>
+                    <select id="schedule_name" name="schedule_name">
+                    </select>
+
+                    <div id="checkbox_rooms">
+
+                    </div>
+
+                    <div>
+                        <span><input type="submit" value="Schedule Message" id="messages_submit"></span>
+                    </div>
+                </form>
+            </div>
+            <div id="configuration-terms" class='configuration_tabs display-none'>
+
+                <h3>Terms & Conditions</h3>
+                <form class="contact-form" id="terms_form">
+                    <label>Terms (use {} around the words you want bold e.g {WIFI}</label>
+                    <textarea id="terms_text" name="terms_text">
+                    </textarea>
+                    <div>
+                        <span><input type="submit" value="Save" id="terms_submit"></span>
+                    </div>
+                </form>
+
+            </div>
+            <div id="configuration-synch_logs" class='configuration_tabs display-none'>
+
+                <h3>Channel Sync Logs</h3>
+                <div id="synch_logs_div"></div>
+
+            </div>
+        </div>
+
+
+        <div class="profile-w3layouts toggleable display-none"
+             id="div-other-tabs">
+            <div class="profile-top">
+                <div class="col-md-7 profile-top-right">
+                    <h5>More Features</h5>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+
+            <div class="profile-ser">
+                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                     id="view_blocked_rooms_tab">
+                    <img class="menu_icon_image" src="/admin/images/menu_blocked.png" title="Block Room"></img>
+                    <i class="desktopOnlyMenu">Blocked Rooms</i>
+                </div>
+                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                     id="block_a_room_tab">
+                    <img class="menu_icon_image" src="/admin/images/menu_block_room.png" title="Block A room"></img><i
+                        class="desktopOnlyMenu">Block A Room</i>
+                </div>
+                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                     id="cleaning_tab">
+                    <img class="menu_icon_image" src="/admin/images/menu_cleaning.png" title="Cleaning"></img><i
+                        class="desktopOnlyMenu">Cleaning</i>
+                </div>
+                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                     id="whatsapp_tab">
+                    <img class="menu_icon_image" src="/admin/images/whatsapp.png" title="Whatsapp"></img><i
+                        class="desktopOnlyMenu">Whatsapp</i>
+                </div>
+                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                     id="occupancy_tab">
+                    <img class="menu_icon_image" src="/admin/images/menu_stats.png" title="Occupancy"></img><i
+                        class="desktopOnlyMenu">Occupancy</i>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+
+
+            <div class="flexible">
+                <div class="flex-bottom">
+                    <div id="block_success_message_div"
+                         class="flex1 display-none">
+                        <h5 id="block_success_message"></h5>
+                    </div>
+                    <div id="block_error_message_div" class="flex2 display-none">
+                        <h5 id="block_error_message"></h5>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="profile-ser other_feature_tab display-none" id="div-occupancy">
+
+                <div class="profile-ser-grids-50 agileinfo">
+                    <a href="javascript:void(0)">
+                    <h5>Last <input name="occupancy_days"
+                                    id="occupancy_days" class="input-as-text" value="30">
+                    </input> Days</h5>
+                    <h2 id="overall-30-occupancy"></h2>
+                    </a>
+                </div>
+                <div class="profile-ser-grids-50 agileinfo">
+                    <a href="javascript:void(0)"
+                       onclick="getOccupancyPerRoomForMonth();">
+                        <h5>This Month</h5>
+                        <h2 id="overall-month-occupancy"></h2>
+                    </a>
+                </div>
+                <div class="clearfix"></div>
+
+                <div class=" bar-grids">
+                    <div class="skills-top">
+                        <h5>Per Room</h5>
+                    </div>
+                    <div class="skills-btm" id="occupancy-div"></div>
+                </div>
+
+            </div>
+
+            <div id="block-list" class="other_feature_tab display-none"></div>
+
+            <div class="profile-w3layouts other_feature_tab display-none"
+                 id="div-block-room">
+                <div class="resp-tabs-container">
+
+                    <div class="tab-4">
+                        <div class="facts">
+                            <div class="contact-form">
+                                <form action="#" autocomplete="off"
+                                      id="block-form">
+
+                                    <div class="tab-1">
+                                        <div class="facts">
+                                            <h5>Block Room</h5>
+                                        </div>
+                                    </div>
+
+                                    <div>
+
+                                        <select name="block_rooms_select" id="block_rooms_select" required>
+                                        </select>
+
+                                    </div>
+
+                                    <div>
+                                        <input type="text" autocomplete="off" name="block_date"
+                                               id="block_date" placeholder="Select Date"
+                                               class="datepicker" required>
+                                    </div>
+
+                                    Notes
+                                    <div>
+											<textarea name="block_notes" id="block_notes" rows="2"
+                                                      required> </textarea>
+                                    </div>
+
+                                    <div>
+                                        <span><input type="submit" value="Submit"> </span>
+                                    </div>
+                                </form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-ser other_feature_tab display-none" id="div-cleaning">
+                <div class="em1-margin em1-top-padding">
+                    Select room to get cleanings
+                    <select class="block-display em1-margin" id="cleaning_rooms_select">
+                    </select>
+                </div>
+                <div class="clearfix"></div>
+
+                <div id="cleaning-list"></div>
+
+            </div>
+
+            <div class="profile-w3layouts other_feature_tab display-none"
+                 id="div-whatapp-chat">
+                <div class="profile-top">
+                    <div class="col-md-7 profile-top-right">
+                        <h5>
+                            New Whatsapp Chat</i>
+                        </h5>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="profile-ser ">
+                    <form class="contact-form" action="#" autocomplete="off"
+                          method="post" id="formStartChat">
+                        <input name="whatapp_chat" type="text" id="whatapp_chat"
+                               placeholder="Phone Number" class="textbox">
+
+                        <div>
+                            <span>
+                                <input type="submit" value="Start Chat"
+                                       id="cmdStartChat">
+                            </span>
+
+                        </div>
+                    </form>
+
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!--<div class="profile-w3layouts toggleable display-none"
+             id="div-notifications">
+            <div class="profile-top">
+                <div class="col-md-7 profile-top-right">
+                    <h5>Notifications</h5>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="profile-ser">
+
+                <div class="clearfix"></div>
+
+                <div id="notifications-list"></div>
+
+            </div>
+
+        </div>-->
+
+    </div>
+
+    <div class="col-md-4 right-w3l">
+        <div class="profile-w3layouts toggleable display-none"
+             id="div-information">
+            <div class="profile-top">
+                <div class="col-md-7 profile-top-right">
+                    <h5>
+                        Information
+                    </h5>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="profile-ser ">
+                <div id="err"></div>
+
+                <form class="contact-form" action="#" autocomplete="off"
+                      method="post" id="formInformation">
+                    <h3 class="information-h3">Aluve Rooms</h3>
+                    <p class="information-p">
+                        <b>Budget</b> <input type="text" class="info-input-box"
+                                             value="https://aluvegh.co.za/rooms/budget-bedroom/">
+                    <p class="information-p">
+                        <b>Double</b> <input type="text" class="info-input-box"
+                                             value="https://aluvegh.co.za/rooms/double-room/">
+                    <p class="information-p">
+                        <b>Upstairs</b> <input type="text" class="info-input-box"
+                                               value="https://aluvegh.co.za/rooms/beautiful-upstairs-room/">
+                    <p class="information-p">
+                        <b>Upstairs Family</b> <input type="text" class="info-input-box"
+                                                      value="https://aluvegh.co.za/rooms/upstairs/">
+                    <p class="information-p">
+                        <b>1 Bedroom</b> <input type="text" class="info-input-box"
+                                                value="https://aluvegh.co.za/rooms/1-bedroom-cottage/">
+                    <p class="information-p">
+                        <b>2 Bedroom</b> <input type="text" class="info-input-box"
+                                                value="https://aluvegh.co.za/rooms/family-cottage/">
+                    <p class="information-p">
+                        <b>Bachelor</b> <input type="text" class="info-input-box"
+                                               value="https://aluvegh.co.za/rooms/bachelor/">
+                    <h3 class="information-h3">Airbnb & Booking.com link</h3>
+                    <p class="information-p">
+                        <b>Airbnb</b> <input type="text" class="info-input-box"
+                                             value="www.airbnb.co.za/p/aluve">
+                    <p class="information-p">
+                        <b>Booking.com</b> <input type="text" class="info-input-box"
+                                                  value="http://www.booking.com/Share-nhTriA">
+                    <h3 class="information-h3">Banking Details</h3>
+                    <p class="information-p">
+							<textarea type="text" class="info-input-box" rows="5">FNB
+Name: Sixty-five group
+Account: 62788863241
+branch: 250 655
+Ref: Name or invoice Number</textarea>
+                </form>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="clearfix"></div>
+    <div class="footer-agileits-w3layouts">
+        <p class="agileinfo">
+            &copy; 2017 Simple UI kit . All Rights Reserved | Design by <a
+                href="http://w3layouts.com">W3layouts</a>
+        </p>
+    </div>
+</div>
+<!--  player js -->
+
+<div class="overlay"></div>
+<div class="startup-overlay"></div>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>
+    google.load("jquery", "1.7.1");
+    google.load("jqueryui", "1.8.16");
+</script>
+
+
+<script src="/admin/js/script.js"></script>
+
+
+</body>
+</html>

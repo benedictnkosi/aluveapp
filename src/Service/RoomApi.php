@@ -35,13 +35,13 @@ class RoomApi
         }
     }
 
-    public function getAvailableRooms($checkInDate, $checkOutDate, $propertyUid): array
+    public function getAvailableRooms($checkInDate, $checkOutDate): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId = $propertyApi->getPropertyIdByUid($propertyUid);
+            $propertyId = $_SESSION['PROPERTY_ID'];
             $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
             foreach ($rooms as $room) {
                 if ($this->isRoomAvailable($room->getId(), $checkInDate, $checkOutDate)) {
@@ -119,7 +119,7 @@ class RoomApi
             if (strcmp($roomId, "all") === 0) {
                 //check if the PROPERTY_ID if not get it from the host
                 $propertyApi = new PropertyApi($this->em, $this->logger);
-                $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+                $propertyId =   $_SESSION['PROPERTY_ID'];
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
             } else {
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('id' => $roomId));
@@ -214,14 +214,13 @@ class RoomApi
         return $responseArray;
     }
 
-    public function getRoomsEntities($propertyUid, $roomId = 0,): ?array
+    public function getRoomsEntities( $roomId = 0): ?array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             if ($roomId === 0) {
-                $propertyApi = new PropertyApi($this->em, $this->logger);
-                $propertyId = $propertyApi->getPropertyIdByUid($propertyUid);
-                if (!isset($propertyUid)) {
+                $propertyId = $_SESSION['PROPERTY_ID'];
+                if (!isset($propertyId)) {
                     $this->logger->debug("PROPERTY_ID not found in session. checking if the host has a property id" . __METHOD__);
 
                     if ($propertyId === null) {
@@ -389,7 +388,7 @@ class RoomApi
         return $responseArray;
     }
 
-    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $tv, $description, $propertyUid): array
+    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $tv, $description): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -409,7 +408,7 @@ class RoomApi
                 $room->setLinkedRoom($linkedRoom);
             }
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId = $propertyApi->getPropertyIdByUid($propertyUid);
+            $propertyId = $_SESSION['PROPERTY_ID'];
             $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $propertyId));
 
             $room->setName($name);

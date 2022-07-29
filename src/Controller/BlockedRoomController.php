@@ -30,12 +30,12 @@ class BlockedRoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/blockedroom/get/{propertyUid}")
+     * @Route("/api/blockedroom/get")
      */
-    public function getBlockedRooms($propertyUid, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, BlockedRoomApi $blockedRoomApi): Response
+    public function getBlockedRooms( LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, BlockedRoomApi $blockedRoomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $blockedRooms = $blockedRoomApi->getBlockedRooms($propertyUid);
+        $blockedRooms = $blockedRoomApi->getBlockedRooms();
         $blockedRoomsHTML = new BlockedRoomsHTML($entityManager, $logger);
         $formattedHtml = $blockedRoomsHTML->formatHtml($blockedRooms);
         $response = array(

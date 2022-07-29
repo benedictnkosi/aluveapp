@@ -29,12 +29,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/rooms/{roomId}/{propertyUid}", defaults={"roomId": "all", "propertyUid": "none"})
+     * @Route("/public/rooms/{roomId}", defaults={"roomId": "all", "propertyUid": "none"})
      */
-    public function getRooms($roomId, $propertyUid, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
+    public function getRooms($roomId, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->getRooms($roomId, $propertyUid);
+        $response = $roomApi->getRooms($roomId);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -42,12 +42,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/allrooms/{propertyUid}", defaults={"roomId": "all"})
+     * @Route("/public/allrooms", defaults={"roomId": "all"})
      */
-    public function getAllRooms($propertyUid, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
+    public function getAllRooms( LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->getRooms("all", $propertyUid);
+        $response = $roomApi->getRooms("all");
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -55,13 +55,13 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/availablerooms/{checkInDate}/{checkOutDate}")
+     * @Route("/public/availablerooms/{checkInDate}/{checkOutDate}")
      */
     public function getAvailableRooms($checkInDate, $checkOutDate,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $propertyUid = $propertyApi->getPropertyUidByHost($request);
-        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate, $propertyUid);
+        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate);
         $availableRoomsDropDownHTML = new AvailableRoomsDropDownHTML($entityManager, $logger);
         $html = $availableRoomsDropDownHTML->formatHtml($rooms);
         $response = array(
@@ -80,7 +80,7 @@ class RoomController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $propertyUid =   $propertyApi->getPropertyUidByHost($request);
-        $rooms = $roomApi->getRoomsEntities($propertyUid);
+        $rooms = $roomApi->getRoomsEntities();
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatHtml($rooms, $roomApi);
         $response = array(
@@ -93,12 +93,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/configurationrooms/{propertyUid}")
+     * @Route("/api/configurationrooms")
      */
-    public function getConfigurationRooms($propertyUid, LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function getConfigurationRooms( LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getRoomsEntities($propertyUid);
+        $rooms = $roomApi->getRoomsEntities();
         $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatLeftDivRoomsHtml($rooms);
         $response = array(
@@ -111,12 +111,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/combolistrooms/{propertyUid}")
+     * @Route("/api/combolistrooms")
      */
-    public function getComboListRooms($propertyUid, LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function getComboListRooms( LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getRoomsEntities($propertyUid);
+        $rooms = $roomApi->getRoomsEntities();
         $roomsPageHTML = new ConfigurationRoomsHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatComboListHtml($rooms, true);
         $response = array(
@@ -182,14 +182,14 @@ class RoomController extends AbstractController
         return $response;
     }
     /**
-     * @Route("/api/roomspage/{checkin}/{checkout}")
+     * @Route("/public/roomspage/{checkin}/{checkout}")
      */
     public function getFilteredRoomsHtml($checkin, $checkout, LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $propertyUid =   $propertyApi->getPropertyUidByHost($request);
 
-        $rooms = $roomApi->getAvailableRooms($checkin, $checkout, $propertyUid);
+        $rooms = $roomApi->getAvailableRooms($checkin, $checkout);
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatHtml($rooms, $roomApi);
         $response = array(
@@ -202,12 +202,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{bed}/{stairs}/{tv}/{description}/{propertyUid}")
+     * @Route("/api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{bed}/{stairs}/{tv}/{description}")
      */
-    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $tv, $description,$propertyUid, Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $tv, $description, Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs,$tv, str_replace("###", "/", $description), $propertyUid);
+        $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs,$tv, str_replace("###", "/", $description));
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -215,7 +215,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/roomslide/{roomId}")
+     * @Route("/public/roomslide/{roomId}")
      */
     public function getRoomSlide($roomId,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
