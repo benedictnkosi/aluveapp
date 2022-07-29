@@ -117,28 +117,43 @@ class ReservationApi
         return null;
     }
 
-    public function getPendingReservations($propertyUid)
+    public function getPendingReservations()
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $datetime = new DateTime('today');
-        $datetime->sub(new DateInterval('P1D'));
+        $reservations = null;
+        try {
+            $datetime = new DateTime('today');
+            $datetime->sub(new DateInterval('P1D'));
 
-        $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'pending'));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'pending'));
 
-        $reservations = $this->em
-            ->createQuery("SELECT r FROM App\Entity\Reservations r 
+            $reservations = $this->em
+                ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '" . $propertyUid . "'
-            and r.checkIn > '" . $datetime->format('Y-m-d') . "'
+            WHERE p.id = ".$_SESSION['PROPERTY_ID']."
+            and r.checkIn >= '" . $datetime->format('Y-m-d') . "'
             and r.status = '" . $status->getId() . "'
             order by r.checkIn asc")
-            ->getResult();;
+                ->getResult();
+
+            $this->logger->debug("sreservations is: " . print_r($reservations, true));
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->debug(print_r($responseArray, true));
+        }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
+
+        if(empty($reservations)){
+            return null;
+        }
         return $reservations;
     }
 
-    public function getUpComingReservations($propertyUid, $roomId = 0, $includeStayOvers = false)
+    public function getUpComingReservations( $roomId = 0, $includeStayOvers = false)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $reservations = null;
@@ -161,7 +176,7 @@ class ReservationApi
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '" . $propertyUid . "'
+            WHERE p.id = ".$_SESSION["PROPERTY_ID"]."
             and r.checkIn <= '" . $maxFutureDate->format('Y-m-d') . "'
             and r.checkOut >= '" . $now->format('Y-m-d') . "'
             $excludeStayOverSql 
@@ -178,13 +193,16 @@ class ReservationApi
         }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
 
+        if(empty($reservations)){
+            return null;
+        }
         return $reservations;
     }
 
-    public function getPastReservations($propertyUid): array
+    public function getPastReservations()
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $reservations = "";
+        $reservations = null;
         try {
             $datetime = new DateTime();
             $now = new DateTime('today midnight');
@@ -195,7 +213,7 @@ class ReservationApi
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '" . $propertyUid . "'
+            WHERE p.id = ".$_SESSION['PROPERTY_ID']."
             and r.checkOut < '" . $datetime->format('Y-m-d') . "'
             and r.checkIn > '" . $maxPastDate->format('Y-m-d') . "'
             and r.status = '" . $status->getId() . "'
@@ -212,18 +230,22 @@ class ReservationApi
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
 
+        if(empty($reservations)){
+            return null;
+        }
+
         return $reservations;
     }
 
-    public function getCheckOutReservation($propertyUid = null): array
+    public function getCheckOutReservation()
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $reservations = "";
+        $reservations = null;
         try {
             $datetime = new DateTime();
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            if($propertyUid === null){
+            if(!isset($_SESSION['PROPERTY_ID'])){
                 $reservations = $this->em
                     ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
@@ -236,7 +258,7 @@ class ReservationApi
                     ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '" . $propertyUid . "'
+            and p.id = ".$_SESSION['PROPERTY_ID']."
             and r.checkOut = '" . $datetime->format('Y-m-d') . "'
             and r.status = '" . $status->getId() . "'
             order by r.checkOut desc")
@@ -252,6 +274,10 @@ class ReservationApi
             $this->logger->debug(print_r($responseArray, true));
         }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        if(empty($reservations)){
+            return null;
+        }
+
         return $reservations;
     }
 
@@ -263,12 +289,19 @@ class ReservationApi
             $maxPastDate = $now->add(new DateInterval("P" . $days . "D"));
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            return $this->em
+            $reservations =  $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn = '" . $maxPastDate->format('Y-m-d') . "'
             and r.room = $roomId 
             and r.status = " . $status->getId())
                 ->getResult();
+
+            if(empty($reservations)){
+                return null;
+            }
+
+            return $reservations;
+
         } catch (Exception) {
             return null;
         }
@@ -292,6 +325,10 @@ class ReservationApi
             and r.status = " . $status->getId())
                 ->getResult();
 
+            if(empty($reservations)){
+                return null;
+            }
+
             return $reservations;
         } catch (Exception $ex) {
             $this->logger->debug( $ex->getMessage() . " " . $ex->getTraceAsString());
@@ -307,33 +344,40 @@ class ReservationApi
             $maxPastDate = $now->sub(new DateInterval("P" . ICAL_PAST_DAYS . "D"));
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            return $this->em
+            $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn > '" . $maxPastDate->format('Y-m-d') . "'
             and r.room = $roomId 
             and r.status = " . $status->getId())
                 ->getResult();
+
+            if(empty($reservations)){
+                return null;
+            }
+
+            return $reservations;
         } catch (Exception) {
             return null;
         }
     }
 
-    public function getStayOversReservations($propertyUid): array
+    public function getStayOversReservations()
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $reservations = "";
+        $reservations = null;
         try {
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.uid = '" . $propertyUid . "'
+            and p.id = ".$_SESSION['PROPERTY_ID']."
             and r.checkIn < CURRENT_DATE() 
             And r.checkOut > CURRENT_DATE() 
             and r.status = " . $status->getId() . "
             order by r.checkIn asc")
                 ->getResult();
+
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
@@ -343,6 +387,10 @@ class ReservationApi
         }
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        if(empty($reservations)){
+            return null;
+        }
+
         return $reservations;
     }
 
@@ -502,15 +550,15 @@ class ReservationApi
                 $guestApi = new GuestApi($this->em, $this->logger);
                 $guest = null;
                 if (strcmp($origin, "airbnb.com") === 0) {
-                    $guest = $guestApi->getGuestByName("Airbnb Guest", $propertyUid);
+                    $guest = $guestApi->getGuestByName("Airbnb Guest");
                 } elseif (strlen($phoneNumber)>1){
-                    $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $propertyUid);
+                    $guest = $guestApi->getGuestByPhoneNumber($phoneNumber);
                 }
 
                 if ($guest == null) {
                     $this->logger->debug("guest not found, creating a new guest");
                     //create guest
-                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $propertyUid, $origin);
+                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email,  $origin);
                     if ($response[0]['result_code'] != 0) {
                         $this->logger->debug(print_r($response, true));
                         return $response;
@@ -576,7 +624,7 @@ class ReservationApi
                 if ($totalDays === 0) {
                     $this->logger->debug("Short Stay");
                     $addOnsApi = new AddOnsApi($this->em, $this->logger);
-                    $addon = $addOnsApi->getAddOn("Short Stay - 3 Hours", $propertyUid);
+                    $addon = $addOnsApi->getAddOn("Short Stay - 3 Hours");
                     $addOnsApi->addAdOnToReservation($reservation->getId(), $addon->getId(), 1);
                 } else {
                     $this->logger->debug("overnight Stay");

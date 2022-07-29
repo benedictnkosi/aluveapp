@@ -17,12 +17,12 @@ class EmployeeController extends AbstractController
 {
 
     /**
-     * @Route("api/config/employees/{propertyUid}")
+     * @Route("api/config/employees")
      */
-    public function getConfigEmployees($propertyUid, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, EmployeeApi $employeeApi): Response
+    public function getConfigEmployees( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, EmployeeApi $employeeApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $employees = $employeeApi->getEmployees($propertyUid);
+        $employees = $employeeApi->getEmployees();
         $configEmployeesHTML = new ConfigEmployeesHTML( $entityManager, $logger);
         $response = $configEmployeesHTML->formatHtml($employees);
         $callback = $request->get('callback');
@@ -32,12 +32,12 @@ class EmployeeController extends AbstractController
     }
 
     /**
-     * @Route("api/createemployee/{name}/{propertyUid}")
+     * @Route("api/createemployee/{name}")
      */
-    public function createEmployee($name, $propertyUid, LoggerInterface $logger, Request $request,EmployeeApi $employeeApi): Response
+    public function createEmployee($name,  LoggerInterface $logger, Request $request,EmployeeApi $employeeApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $employeeApi->createEmployee($name, $propertyUid);
+        $response = $employeeApi->createEmployee($name);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

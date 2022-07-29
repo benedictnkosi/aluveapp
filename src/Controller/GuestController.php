@@ -21,7 +21,7 @@ class GuestController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__ );
         $propertyUid =   $propertyApi->getPropertyUidByHost($request);
-        $response = $guestApi->getGuests($filterValue, $propertyUid);
+        $response = $guestApi->getGuests($filterValue);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

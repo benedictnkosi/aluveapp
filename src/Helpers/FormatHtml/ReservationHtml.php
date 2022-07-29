@@ -28,7 +28,7 @@ class ReservationHtml
         $this->logger = $logger;
     }
 
-    public function formatHtml($reservations, $period, $propertyUid): string
+    public function formatHtml($reservations, $period): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlString = "";
@@ -38,7 +38,8 @@ class ReservationHtml
         $tomorrowHeadingWritten = false;
         $todayHeadingWritten = false;
         //if no reservations found
-        if (count($reservations) < 1) {
+
+        if ($reservations === null) {
             return '<div class="res-details">
 						<h4 class="guest-name">No reservations found</h4>
 					</div>';
@@ -62,7 +63,7 @@ class ReservationHtml
         $notesApi = new NotesApi($this->em, $this->logger);
         $cleaningApi = new CleaningApi($this->em, $this->logger);
         $roomApi = new RoomApi($this->em, $this->logger);
-        $rooms = $roomApi->getRoomsEntities($propertyUid);
+        $rooms = $roomApi->getRoomsEntities();
 
         foreach ($reservations as $reservation) {
             //guest name and reservation ID
@@ -109,14 +110,14 @@ class ReservationHtml
 
             //is short stay?
             if (strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) == 0) {
-                $htmlString .= '<img src="images/clock.ico" class="icon-small-image" title="Short Stay"/>';
+                $htmlString .= '<img src="admin/images/clock.ico" class="icon-small-image" title="Short Stay"/>';
             }
 
 
             //reservation origin
             $this->logger->debug("HTML output - reservation origin " . $reservation->getId());
 
-            $htmlString .= '<img title="' . $reservation->getOrigin() . '" src="images/' . $reservation->getOrigin() . '.png" class="icon-small-image"></img>';
+            $htmlString .= '<img title="' . $reservation->getOrigin() . '" src="admin/images/' . $reservation->getOrigin() . '.png" class="icon-small-image"></img>';
 
             $htmlString .= '</h4>';
 
@@ -248,20 +249,20 @@ class ReservationHtml
 
             //guest id verified
             if (strcasecmp($reservation->getOrigin(), "website") === 0) {
-                $htmlString .= '<img title="Customer ID - ' . str_replace(".png", "", $customerIdImage) . '" src="images/' . $customerIdImage . '" class="image_verified clickable"/>';
+                $htmlString .= '<img title="Customer ID - ' . str_replace(".png", "", $customerIdImage) . '" src="admin/images/' . $customerIdImage . '" class="image_verified clickable"/>';
             }
 
             // display if guest already checked in
             $this->logger->debug("HTML output - display if guest already checked in" . $reservation->getId());
             if (strcasecmp($reservation->getCheckInStatus(), "checked_in") == 0) {
-                $htmlString .= '<img src="images/menu_stayover.png" title="Checked in" class="image_verified"/><p></p>';
+                $htmlString .= '<img src="admin/images/menu_stayover.png" title="Checked in" class="image_verified"/><p></p>';
             }
 
             //display if guest checked out
             $this->logger->debug("HTML output - display if guest already checked in" . $reservation->getId());
             if (strcasecmp($reservation->getCheckInStatus(), "checked_out") == 0 &&
                 (strcmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d") == 0))) {
-                $htmlString .= '<img src="images/checked_out.png" title="Checked out" class="image_verified"/><p></p>';
+                $htmlString .= '<img src="admin/images/checked_out.png" title="Checked out" class="image_verified"/><p></p>';
             }
 
             //booking created on
@@ -381,7 +382,7 @@ class ReservationHtml
                 $this->logger->debug(" HTML output - add add-ons" . $reservation->getId());
                 $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_add_on_' . $reservationId . '" ><select id="select_add_on_' . $reservationId . '">';
                 $htmlString .= ' <option value="none">Select Add On</option>';
-                $addOnsList = $addOnsApi->getAddOns($propertyUid);
+                $addOnsList = $addOnsApi->getAddOns();
                 if ($addOnsList !== null) {
                     foreach ($addOnsList as $addOn) {
                         $htmlString .= ' <option value="' . $addOn->getId() . '">' . $addOn->getName() . '</option>';
@@ -417,7 +418,7 @@ class ReservationHtml
             $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_mark_cleaned_' . $reservationId . '" ><select id="select_employee_' . $reservationId . '">';
             $htmlString .= ' <option value="none">Select Cleaner</option>';
             $employeeApi = new EmployeeApi($this->em, $this->logger);
-            $employees = $employeeApi->getEmployees($propertyUid);
+            $employees = $employeeApi->getEmployees();
             if (count($employees) > 0) {
                 foreach ($employees as $employee) {
                     $htmlString .= ' <option value="' . $employee->getId() . '">' . $employee->getName() . '</option>';

@@ -15,12 +15,12 @@ use Symfony\Component\HttpFoundation\Request;
 class ScheduledMessagesController extends AbstractController
 {
     /**
-     * @Route("/api/schedulemessages/today/{propertyUid}")
+     * @Route("/api/schedulemessages/today")
      */
-    public function sendScheduleMessagesDayOfCheckIn($propertyUid, LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function sendScheduleMessagesDayOfCheckIn( LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $scheduleMessageApi->sendScheduledMessages("Day of check-in", $propertyUid);
+        $response = $scheduleMessageApi->sendScheduledMessages("Day of check-in");
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -28,12 +28,12 @@ class ScheduledMessagesController extends AbstractController
     }
 
     /**
-     * @Route("/api/schedulemessages/tomorrow/{propertyUid}")
+     * @Route("/api/schedulemessages/tomorrow")
      */
-    public function sendScheduleMessagesDayBeforeCheckIn($propertyUid,LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function sendScheduleMessagesDayBeforeCheckIn(LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $scheduleMessageApi->sendScheduledMessages("Day before check-in", $propertyUid);
+        $response = $scheduleMessageApi->sendScheduledMessages("Day before check-in");
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -41,12 +41,12 @@ class ScheduledMessagesController extends AbstractController
     }
 
     /**
-     * @Route("/api/schedulemessages/week/{propertyUid}")
+     * @Route("/api/schedulemessages/week")
      */
-    public function sendScheduleMessagesWeekBeforeCheckIn($propertyUid, LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function sendScheduleMessagesWeekBeforeCheckIn( LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $scheduleMessageApi->sendScheduledMessages("Week before check-in", $propertyUid);
+        $response = $scheduleMessageApi->sendScheduledMessages("Week before check-in");
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -54,12 +54,12 @@ class ScheduledMessagesController extends AbstractController
     }
 
     /**
-     * @Route("/api/schedulemessages/templates/{propertyUid}")
+     * @Route("/api/schedulemessages/templates")
      */
-    public function getMessageTemplates($propertyUid,LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function getMessageTemplates(LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $scheduleMessageApi->getScheduleTemplates($propertyUid);
+        $response = $scheduleMessageApi->getScheduleTemplates();
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -106,12 +106,12 @@ class ScheduledMessagesController extends AbstractController
     }
 
     /**
-     * @Route("/api/schedulemessages/createtemplate/{name}/{message}/{propertyUid}")
+     * @Route("/api/schedulemessages/createtemplate/{name}/{message}")
      */
-    public function createMessageTemplate($propertyUid, $name, $message,Request $request,LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
+    public function createMessageTemplate( $name, $message,Request $request,LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $scheduleMessageApi->createMessageTemplate($name, $message, $propertyUid);
+        $response = $scheduleMessageApi->createMessageTemplate($name, $message);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -119,12 +119,12 @@ class ScheduledMessagesController extends AbstractController
     }
 
     /**
-     * @Route("/api/schedulemessages/{propertyUid}")
+     * @Route("/api/schedulemessages")
      */
-    public function getScheduledMessages($propertyUid, LoggerInterface $logger,Request $request, ScheduleMessageApi $scheduleMessageApi): Response
+    public function getScheduledMessages( LoggerInterface $logger,Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $scheduleMessageApi->getScheduledMessages($propertyUid);
+        $response = $scheduleMessageApi->getScheduledMessages();
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

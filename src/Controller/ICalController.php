@@ -84,13 +84,13 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("api/ical/logs/{propertyUid}")
+     * @Route("api/ical/logs")
      */
-    public function getIcalSynchLogs($propertyUid, LoggerInterface $logger, EntityManagerInterface $entityManager, Request $request, ICalApi $iCalApi, RoomApi $roomApi): Response
+    public function getIcalSynchLogs( LoggerInterface $logger, EntityManagerInterface $entityManager, Request $request, ICalApi $iCalApi, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $configIcalLinksLogsHTML = new ConfigIcalLinksLogsHTML($entityManager, $logger);
-        $html = $configIcalLinksLogsHTML->formatHtml($propertyUid, $roomApi, $iCalApi);
+        $html = $configIcalLinksLogsHTML->formatHtml( $roomApi, $iCalApi);
         $response = array(
             'html' => $html,
         );

@@ -65,22 +65,6 @@ class PropertyApi
         return $responseArray;
     }
 
-    public function getPropertyIdByUid($propertyUid)
-    {
-        $this->logger->debug("Starting Method: " . __METHOD__);
-        try {
-            $property = $this->em->getRepository(Property::class)->findOneBy(
-                array("uid" => $propertyUid));
-            if ($property != null) {
-                return $property->getId();
-            } else {
-                return null;
-            }
-        } catch (Exception) {
-            return null;
-        }
-    }
-
     public function getPropertyUidByHost($request)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
@@ -111,17 +95,19 @@ class PropertyApi
         return $propertyUid;
     }
 
-    public function getPropertyTerms($roomApi, $propertyUid, $request): array
+    public function getPropertyTerms($roomApi,  $request): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            if(strcmp($propertyUid, "none") === 0 ){
+            if(!isset($_SESSION['PROPERTY_ID'])){
                 $propertyUid = $this->getPropertyUidByHost($request);
+            }else{
+                $propertyUid = $_SESSION['PROPERTY_ID'];
             }
 
             $property = $this->em->getRepository(Property::class)->findOneBy(
-                array("uid" => $propertyUid));
+                array("id" =>$propertyUid));
 
             $responseArray[] = array(
                 'terms' => $property->getTerms(),
@@ -140,12 +126,12 @@ class PropertyApi
         return $responseArray;
     }
 
-    public function updatePropertyTerms($propertyUid, $terms)
+    public function updatePropertyTerms( $terms)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $property = $this->em->getRepository(Property::class)->findOneBy(
-                array("uid" => $propertyUid));
+                array("id" => $_SESSION['PROPERTY_ID']));
             if ($property != null) {
                 $property->setTerms($terms);
                 $this->em->persist($property);
@@ -159,7 +145,6 @@ class PropertyApi
                     'result_message' => "Property not found",
                     'result_code' => 1
                 );
-
             }
 
         } catch (Exception $ex) {
@@ -189,7 +174,7 @@ class PropertyApi
                 return $responseArray;
             } else {
                 $property = $this->em->getRepository(Property::class)->findOneBy(
-                    array("uid" => $propertyUid));
+                    array("id" => $_SESSION['PROPERTY_ID']));
             }
 
 

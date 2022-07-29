@@ -26,7 +26,7 @@ class CalendarHTML
         $this->logger = $logger;
     }
 
-    public function formatHtml($propertyUid): string
+    public function formatHtml(): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlString = "";
@@ -58,11 +58,11 @@ class CalendarHTML
         }
         $htmlString .= '</tr>';
 
-        $rooms = $roomsApi->getRoomsEntities($propertyUid);
+        $rooms = $roomsApi->getRoomsEntities();
         foreach ($rooms as $room) {
             $htmlString .= '<tr><th class="headcol">' . substr($room->getName(),0, 15) . '</th>';
-            $reservations = $reservationApi->getUpComingReservations($propertyUid, $room->getId(), true);
-            $blockedRooms = $blockRoomApi->getBlockedRooms($propertyUid, $room->getId());
+            $reservations = $reservationApi->getUpComingReservations( $room->getId(), true);
+            $blockedRooms = $blockRoomApi->getBlockedRooms( $room->getId());
 
             if ($reservations === null && $blockedRooms === null) {
                 $htmlString .= str_repeat('<td class="available"></td>', $numberOfDays + 1 + $numberOfFirstOfMonth);
@@ -119,7 +119,7 @@ class CalendarHTML
                     //$this->logger->debug("checking if date booked");
                     if ($isDateBooked) {
                         if ($isCheckInDay === true) {
-                            $htmlString .= '<td  class="booked checkin" data-resid="' . $resID . '" title="' . $guestName . '"><img  src="images/' . $reservation->getOrigin() . '.png"  data-resid="' . $resID . '" alt="checkin" class="image_checkin"></td>';
+                            $htmlString .= '<td  class="booked checkin" data-resid="' . $resID . '" title="' . $guestName . '"><img  src="admin/images/' . $reservation->getOrigin() . '.png"  data-resid="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                         } else {
                             $htmlString .= '<td  class="booked" data-resid="' . $resID . '" title="' . $guestName . '"></td>';
                         }

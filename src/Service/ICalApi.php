@@ -507,7 +507,7 @@ END:VCALENDAR';
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            if (!str_contains($link, "airbnb.com") && !str_contains($link, "booking.com")) {
+            if (!str_contains($link, "airbnb.com") && !str_contains($link, "booking.com") && !str_contains($link, "airbnb.co.za")) {
                 $responseArray[] = array(
                     'result_message' => 'Only booking.com and airbnb channels are allowed, Please contact admin to add new channel',
                     'result_code' => 1

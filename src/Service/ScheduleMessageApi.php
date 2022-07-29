@@ -114,13 +114,13 @@ class ScheduleMessageApi
         return $responseArray;
     }
 
-    public function getScheduleTemplates($propertyUid): string
+    public function getScheduleTemplates(): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $html = "";
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $propertyId =   $_SESSION['PROPERTY_ID'];
             $messageTemplates = $this->em->getRepository(MessageTemplate::class)->findBy(array('property' => $propertyId));
             foreach ($messageTemplates as $messageTemplate) {
                 $html .= '<option value="' . $messageTemplate->getId() . '" class="template_option">' . $messageTemplate->getName() . '</option>';
@@ -135,7 +135,7 @@ class ScheduleMessageApi
 
     }
 
-    public function getScheduledMessages($propertyUid): string
+    public function getScheduledMessages(): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $html = '<table id="scheduled_messages_table">
@@ -147,7 +147,7 @@ class ScheduleMessageApi
                             </tr>';
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+            $propertyId =   $_SESSION['PROPERTY_ID'];
             $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
             foreach ($rooms as $room) {
                 $scheduleMessages = $this->em->getRepository(ScheduleMessages::class)->findBy(array('room' => $room->getId()));
@@ -198,7 +198,7 @@ class ScheduleMessageApi
         return $responseArray;
     }
 
-    public function sendScheduledMessages($scheduleTimeName, $propertyUid): array
+    public function sendScheduledMessages($scheduleTimeName): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -209,7 +209,7 @@ class ScheduleMessageApi
 
                 //get all rooms
                 $roomsApi = new RoomApi($this->em, $this->logger);
-                $rooms = $roomsApi->getRooms('all', $propertyUid);
+                $rooms = $roomsApi->getRooms('all');
                 foreach ($rooms as $room) {
                     $scheduleMessages = $this->em->getRepository(ScheduleMessages::class)->findBy(array('messageSchedule' => $scheduleTime, 'room' => $room->getId()));
                     $reservationApi = new ReservationApi($this->em, $this->logger);
@@ -316,20 +316,20 @@ class ScheduleMessageApi
         return $responseArray;
     }
 
-    public function createMessageTemplate($name, $message, $propertyUid): array
+    public function createMessageTemplate($name, $message): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $securityApi = new SecurityApi($this->em, $this->logger);
-            if (!$securityApi->isLoggedInBoolean($propertyUid)) {
+            if (!$securityApi->isLoggedInBoolean()) {
                 $responseArray[] = array(
                     'result_message' => "Session expired, please logout and login again",
                     'result_code' => 1
                 );
             } else {
                 $propertyApi = new PropertyApi($this->em, $this->logger);
-                $propertyId =   $propertyApi->getPropertyIdByUid($propertyUid);
+                $propertyId =   $_SESSION['PROPERTY_ID'];
                 $messageTemplate = $this->em->getRepository(MessageTemplate::class)->findOneBy(array('name' => $name, 'property' => $propertyId));
 
                 if ($messageTemplate != null) {
@@ -339,7 +339,7 @@ class ScheduleMessageApi
                     );
                     return $responseArray;
                 }
-                $property = $this->em->getRepository(Property::class)->findOneBy(array('uid' => $propertyUid));
+                $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_SESSION['PROPERTY_ID']));
                 $messageTemplate = new MessageTemplate();
                 $messageTemplate->setName($name);
                 $messageTemplate->setMessage($message);

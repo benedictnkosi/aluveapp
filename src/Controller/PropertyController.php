@@ -30,12 +30,12 @@ class PropertyController extends AbstractController
     }
 
     /**
-     * @Route("api/property/terms/{propertyUid}" , defaults={"propertyUid": "none"})
+     * @Route("api/property/terms" , defaults={"propertyUid": "none"})
      */
-    public function getPropertyTerms($propertyUid, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi, RoomApi $roomApi): Response
+    public function getPropertyTerms( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->getPropertyTerms($roomApi, $propertyUid, $request);
+        $response = $propertyApi->getPropertyTerms($roomApi,  $request);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -43,12 +43,12 @@ class PropertyController extends AbstractController
     }
 
     /**
-     * @Route("api/property/terms/update/{propertyUid}/{terms}")
+     * @Route("api/property/terms/update/{terms}")
      */
-    public function updatePropertyTerms($propertyUid, $terms, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    public function updatePropertyTerms( $terms, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->updatePropertyTerms($propertyUid, $terms);
+        $response = $propertyApi->updatePropertyTerms( $terms);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

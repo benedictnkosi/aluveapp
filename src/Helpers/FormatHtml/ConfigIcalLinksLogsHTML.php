@@ -17,11 +17,11 @@ class ConfigIcalLinksLogsHTML
         $this->logger = $logger;
     }
 
-    public function formatHtml($propertyUid,$roomsApi, $icalApi): string
+    public function formatHtml($roomsApi, $icalApi): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $html = '';
-        $rooms = $roomsApi->getRoomsEntities($propertyUid);
+        $rooms = $roomsApi->getRoomsEntities();
 
         foreach($rooms as $room){
            $icalLinks =  $icalApi->getIcalLinks($room);
