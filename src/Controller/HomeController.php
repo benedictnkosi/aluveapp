@@ -4,8 +4,6 @@ namespace App\Controller;
 
 
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,18 +14,39 @@ class HomeController extends AbstractController
 {
 
     /**
-     * @Route("/", name="home")
+     * @Route("/admin/", name="app_admin")
      */
-    public function home(LoggerInterface $logger): Response
+    public function app_admin(): Response
     {
-        return $this->render("admin.html");
+        if($this->getUser()->getProperty()->getId()){
+            return $this->render('admin.html');
+        }else{
+            return $this->redirectToRoute("index");
+        }
     }
 
     /**
-     * @Route("/landing", name="landing")
+     * @Route("/index.html", name="index")
      */
-    public function landing(): Response
+    public function index(): Response
     {
         return $this->render("index.html");
     }
+
+    /**
+     * @Route("/", name="home")
+     */
+    public function home(): Response
+    {
+        return $this->render("index.html");
+    }
+
+    /**
+     * @Route("/signup", name="signup")
+     */
+    public function signup(): Response
+    {
+        return $this->render("signup.html");
+    }
+
 }

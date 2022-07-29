@@ -228,7 +228,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("api/reservations/create/{roomIds}/{guestName}/{phoneNumber}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
+     * @Route("public/reservations/create/{roomIds}/{guestName}/{phoneNumber}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
      * @throws \Exception
      */
     public function creatReservation($roomIds, $guestName, $phoneNumber, $checkInDate, $checkOutDate, $email, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
@@ -242,7 +242,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("api/invoice/{reservationId}")
+     * @Route("public/invoice/{reservationId}")
      * @throws \Exception
      */
     public function getInvoiceDetails($reservationId, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
@@ -261,7 +261,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("api/reviews/send")
+     * @Route("public/reviews/send")
      * @throws \Exception
      */
     public function sendReviewRequest(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response

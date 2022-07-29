@@ -29,7 +29,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/rooms/{roomId}", defaults={"roomId": "all", "propertyUid": "none"})
+     * @Route("/public/rooms/{roomId}", defaults={"roomId": "all", "propertyUid": "none"})
      */
     public function getRooms($roomId, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
@@ -42,7 +42,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/allrooms", defaults={"roomId": "all"})
+     * @Route("/public/allrooms", defaults={"roomId": "all"})
      */
     public function getAllRooms( LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
@@ -55,7 +55,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/availablerooms/{checkInDate}/{checkOutDate}")
+     * @Route("/public/availablerooms/{checkInDate}/{checkOutDate}")
      */
     public function getAvailableRooms($checkInDate, $checkOutDate,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
@@ -182,7 +182,7 @@ class RoomController extends AbstractController
         return $response;
     }
     /**
-     * @Route("/api/roomspage/{checkin}/{checkout}")
+     * @Route("/public/roomspage/{checkin}/{checkout}")
      */
     public function getFilteredRoomsHtml($checkin, $checkout, LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
@@ -215,7 +215,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/roomslide/{roomId}")
+     * @Route("/public/roomslide/{roomId}")
      */
     public function getRoomSlide($roomId,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {

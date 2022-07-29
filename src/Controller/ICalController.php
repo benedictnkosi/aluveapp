@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ICalController extends AbstractController
 {
     /**
-     * @Route("api/ical/import/{roomId}")
+     * @Route("public/ical/import/{roomId}")
      */
     public function importIcalReservations($roomId, LoggerInterface $logger, Request $request, ICalApi $iCalApi): Response
     {
@@ -33,7 +33,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("api/ical/importall")
+     * @Route("public/ical/importall")
      */
     public function importAllRoomsIcalReservations(LoggerInterface $logger, Request $request, ICalApi $iCalApi): Response
     {
@@ -46,7 +46,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("api/ical/export/{roomId}")
+     * @Route("public/ical/export/{roomId}")
      */
     public function exportIcalReservations($roomId, LoggerInterface $logger, Request $request, ICalApi $iCalApi): Response
     {
@@ -101,7 +101,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("/api/updateairbnbguest")
+     * @Route("/public/updateairbnbguest")
      */
     public function updateAirbnbGuest(ICalApi $ICalApi, GuestApi $guestApi, LoggerInterface $logger): JsonResponse
     {

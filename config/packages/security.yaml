@@ -20,15 +20,15 @@ security:
             form_login:
                 login_path: app_login
                 check_path: app_login
+                default_target_path: app_admin
             remember_me:
                 secret: '%kernel.secret%'
-                lifetime: 604800 # 1 week in seconds
+                lifetime: 2592000
                 path: /
-                secure: true
-                name: REMEMBERUSER
             logout:
-                path: security_logout
-                target: app_login
+                path: app_logout
+
+
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -41,10 +41,10 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/admin, roles: ROLE_USER }
-        - { path: ^/login, roles: PUBLIC_ACCESS } #change to your login route
-        - { path: ^/logout, roles: PUBLIC_ACCESS } #change to your login route
-        - { path: ^/, roles: PUBLIC_ACCESS } #change to your login route
+        - { path: ^/public, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: ROLE_USER }
+        - { path: ^/admin/, roles: ROLE_USER }
+        - { path: ^/, roles: PUBLIC_ACCESS  }
 
 when@test:
     security:

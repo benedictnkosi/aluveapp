@@ -110,14 +110,14 @@ class ReservationHtml
 
             //is short stay?
             if (strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) == 0) {
-                $htmlString .= '<img src="admin/images/clock.ico" class="icon-small-image" title="Short Stay"/>';
+                $htmlString .= '<img src="/admin/images/clock.ico" class="icon-small-image" title="Short Stay"/>';
             }
 
 
             //reservation origin
             $this->logger->debug("HTML output - reservation origin " . $reservation->getId());
 
-            $htmlString .= '<img title="' . $reservation->getOrigin() . '" src="admin/images/' . $reservation->getOrigin() . '.png" class="icon-small-image"></img>';
+            $htmlString .= '<img title="' . $reservation->getOrigin() . '" src="/admin/images/' . $reservation->getOrigin() . '.png" class="icon-small-image"></img>';
 
             $htmlString .= '</h4>';
 
@@ -249,20 +249,20 @@ class ReservationHtml
 
             //guest id verified
             if (strcasecmp($reservation->getOrigin(), "website") === 0) {
-                $htmlString .= '<img title="Customer ID - ' . str_replace(".png", "", $customerIdImage) . '" src="admin/images/' . $customerIdImage . '" class="image_verified clickable"/>';
+                $htmlString .= '<img title="Customer ID - ' . str_replace(".png", "", $customerIdImage) . '" src="/admin/images/' . $customerIdImage . '" class="image_verified clickable"/>';
             }
 
             // display if guest already checked in
             $this->logger->debug("HTML output - display if guest already checked in" . $reservation->getId());
             if (strcasecmp($reservation->getCheckInStatus(), "checked_in") == 0) {
-                $htmlString .= '<img src="admin/images/menu_stayover.png" title="Checked in" class="image_verified"/><p></p>';
+                $htmlString .= '<img src="/admin/images/menu_stayover.png" title="Checked in" class="image_verified"/><p></p>';
             }
 
             //display if guest checked out
             $this->logger->debug("HTML output - display if guest already checked in" . $reservation->getId());
             if (strcasecmp($reservation->getCheckInStatus(), "checked_out") == 0 &&
                 (strcmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d") == 0))) {
-                $htmlString .= '<img src="admin/images/checked_out.png" title="Checked out" class="image_verified"/><p></p>';
+                $htmlString .= '<img src="/admin/images/checked_out.png" title="Checked out" class="image_verified"/><p></p>';
             }
 
             //booking created on

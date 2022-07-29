@@ -527,7 +527,7 @@ function addNote(event) {
 }
 
 function getRooms(id) {
-    let url = "/api/rooms/all" + "/";
+    let url = "/public/rooms/all" + "/";
     $.ajax({
         type: "get",
         url: url,

@@ -378,7 +378,7 @@ function populateFormWithRoom(event) {
         $("#select_Stairs").val($("#select_Stairs option:first").val());
 
     } else {
-        let url = "/api/rooms/" + roomId;
+        let url = "/public/rooms/" + roomId;
         $("body").addClass("loading");
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
@@ -718,7 +718,7 @@ function getMessageVariables() {
 }
 
 function getRoomsForMessages() {
-    let url = "/api/rooms/all" + "/";
+    let url = "/public/rooms/all" + "/";
 
     $.ajax({
         type: "get",
@@ -870,7 +870,7 @@ function getTemplateMessage() {
 
 
 function getTerms() {
-    let url = "/api/property/terms/";
+    let url = "/public/property/terms/";
     $.ajax({
         type: "get",
         url: url,

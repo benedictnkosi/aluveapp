@@ -17,7 +17,7 @@ class PropertyController extends AbstractController
 
 
     /**
-     * @Route("api/property/contact/{guestName}/{email}/{phoneNumber}/{message}")
+     * @Route("public/property/contact/{guestName}/{email}/{phoneNumber}/{message}")
      */
     public function contactProperty($guestName, $email, $phoneNumber, $message, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
     {
@@ -30,7 +30,7 @@ class PropertyController extends AbstractController
     }
 
     /**
-     * @Route("api/property/terms" , defaults={"propertyUid": "none"})
+     * @Route("public/property/terms" , defaults={"propertyUid": "none"})
      */
     public function getPropertyTerms( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi, RoomApi $roomApi): Response
     {
