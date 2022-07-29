@@ -275,7 +275,7 @@ class ReservationController extends AbstractController
     public function payfast_notify(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $logger->info("request: " . print_r($request->getQueryString()));
+        $logger->info("request: " . print_r($request->request->all(), true));
         $logger->info("request: " . print_r($request->getRequestUri()));
         $response = array();
         $callback = $request->get('callback');
