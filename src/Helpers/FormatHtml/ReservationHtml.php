@@ -109,7 +109,7 @@ class ReservationHtml
                         <span class="listing-checkin-image listing-image"></span>
                         <span class="listing-image-origin listing-origin-' . str_replace('.', '', $todayCheckIn->getOrigin()) . '"></span>
                         <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getGuest()->getName() . ' is expected to check-in <span
-                                class="listing-room-name"> ' . $todayCheckIn->getRoom()->getName() . ' </span>
+                                class="listing-room-name" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getRoom()->getName() . ' </span>
                         </div>
                     </div>';
         }
@@ -120,8 +120,8 @@ class ReservationHtml
                 $htmlString .= '<div class="reservation-item" data-res-id="'.$todayCheckOut->getId().'">
                         <span class="listing-checkout-image listing-image"></span>
                         <span class="listing-image-origin listing-origin-' . str_replace('.', '', $todayCheckOut->getOrigin()) . '"></span>
-                        <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getGuest()->getName() . ' is expected to check-out of <span
-                                class="listing-room-name"> ' . $todayCheckOut->getRoom()->getName() . ' </span>
+                        <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getGuest()->getName() . ' is expected to check-out <span
+                                class="listing-room-name" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckOut->getRoom()->getName() . ' </span>
                         </div>
                     </div>';
             }
