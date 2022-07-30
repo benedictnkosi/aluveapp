@@ -71,7 +71,7 @@ class PropertyApi
         $responseArray = array();
         try {
             if(!isset($_SESSION['PROPERTY_ID'])){
-                $propertyUid = $this->getPropertyIdyHost($request);
+                $propertyUid = $this->getPropertyIdByHost($request);
             }else{
                 $propertyUid = $_SESSION['PROPERTY_ID'];
             }
@@ -122,7 +122,7 @@ class PropertyApi
         return $responseArray;
     }
 
-    public function getPropertyIdyHost($request)
+    public function getPropertyIdByHost($request)
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         $propertyId = null;
@@ -191,7 +191,7 @@ class PropertyApi
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyUid = $propertyApi->getPropertyIdyHost($request);
+            $propertyUid = $propertyApi->getPropertyIdByHost($request);
             if ($propertyUid === null) {
                 $responseArray[] = array(
                     'result_message' => 'Error finding property details',

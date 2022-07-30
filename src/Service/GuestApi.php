@@ -237,14 +237,14 @@ class GuestApi
         return $responseArray;
     }
 
-    public function getGuestByPhoneNumber($phoneNumber)
+    public function getGuestByPhoneNumber($phoneNumber, $request)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $guest = null;
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId =   $_SESSION['PROPERTY_ID'];
+            $propertyId = $propertyApi->getPropertyIdByHost($request);
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => $phoneNumber, 'property' => $propertyId));
         } catch (Exception $exception) {
             $responseArray[] = array(

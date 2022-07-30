@@ -530,7 +530,7 @@ class ReservationApi
         return $responseArray;
     }
 
-    public function createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $uid = null, $isImport = false, $origin = "website", $originUrl = "website"): array
+    public function createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $request = null, $uid = null, $isImport = false, $origin = "website", $originUrl = "website"): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $this->logger->debug("room ids" . $roomIds);
@@ -552,7 +552,7 @@ class ReservationApi
                 if (strcmp($origin, "airbnb.com") === 0) {
                     $guest = $guestApi->getGuestByName("Airbnb Guest");
                 } elseif (strlen($phoneNumber)>1){
-                    $guest = $guestApi->getGuestByPhoneNumber($phoneNumber);
+                    $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
                 }
 
                 if ($guest == null) {

@@ -17,7 +17,7 @@ class CommandsController extends AbstractController
 
 
     /**
-     * @Route("api/runcommand/clear")
+     * @Route("public/runcommand/clear")
      */
     public function runCommand(LoggerInterface $logger): Response
     {
@@ -56,7 +56,7 @@ class CommandsController extends AbstractController
     }
 
     /**
-     * @Route("api/runcommand/phpmemory")
+     * @Route("public/runcommand/phpmemory")
      */
     public function checkPHPMemory(LoggerInterface $logger): Response
     {
@@ -73,7 +73,7 @@ class CommandsController extends AbstractController
     }
 
     /**
-     * @Route("api/runcommand/gitversion")
+     * @Route("public/runcommand/gitversion")
      */
     public function gitVersion(LoggerInterface $logger): Response
     {
@@ -90,7 +90,7 @@ class CommandsController extends AbstractController
     }
 
     /**
-     * @Route("api/runcommand/gitpull")
+     * @Route("public/runcommand/gitpull")
      */
     public function gitPull(LoggerInterface $logger): Response
     {
@@ -133,7 +133,7 @@ class CommandsController extends AbstractController
     }
 
     /**
-     * @Route("api/phpinfo")
+     * @Route("public/phpinfo")
      */
     public function clearsymfony(LoggerInterface $logger): Response
     {

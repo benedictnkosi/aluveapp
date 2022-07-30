@@ -45,7 +45,7 @@ class RoomApi
             if(isset( $_SESSION['PROPERTY_ID'])){
                 $propertyId = $_SESSION['PROPERTY_ID'];
             }else{
-                $propertyId = $propertyApi->getPropertyIdyHost($request);
+                $propertyId = $propertyApi->getPropertyIdByHost($request);
             }
             $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
             foreach ($rooms as $room) {

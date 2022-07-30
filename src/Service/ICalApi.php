@@ -227,7 +227,7 @@ class ICalApi
                         $this->logger->debug("booking has not been imported");
 
                         //create reservation
-                        $response = $reservationApi->createReservation($roomId, $guestName, $guestPhoneNumber, $email, $checkInDate, $checkOutDate, $uid, true, $origin, $originUrl);
+                        $response = $reservationApi->createReservation($roomId, $guestName, $guestPhoneNumber, $email, $checkInDate, $checkOutDate, null, $uid, true, $origin, $originUrl);
                         if ($response[0]['result_code'] != 0) {
                             $responseArray[] = array(
                                 'result_code' => 0,

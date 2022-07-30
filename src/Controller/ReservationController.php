@@ -228,7 +228,7 @@ class ReservationController extends AbstractController
     public function creatReservation($roomIds, $guestName, $phoneNumber, $checkInDate, $checkOutDate, $email, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $reservationApi->createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate);
+        $response = $reservationApi->createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $request);
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
