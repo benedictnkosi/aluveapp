@@ -28,6 +28,9 @@ function bindConfigElements() {
         filterConfiguration(event);
     });
 
+    $("#config_room_form").submit(function (event) {
+        event.preventDefault();
+    });
     $("#config_room_form").validate({
         // Specify validation rules
         rules: {
@@ -49,6 +52,9 @@ function bindConfigElements() {
 
     });
 
+    $("#config_addOn_form").submit(function (event) {
+        event.preventDefault();
+    });
     $("#config_addOn_form").validate({
         // Specify validation rules
         rules: {
@@ -64,6 +70,9 @@ function bindConfigElements() {
 
     });
 
+    $("#config_employee_form").submit(function (event) {
+        event.preventDefault();
+    });
     $("#config_employee_form").validate({
         // Specify validation rules
         rules: {
@@ -112,6 +121,9 @@ function bindConfigElements() {
         }
     });
 
+    $("#config_createMessageTemplate_form").submit(function (event) {
+        event.preventDefault();
+    });
     $("#config_createMessageTemplate_form").validate({
         // Specify validation rules
         rules: {
