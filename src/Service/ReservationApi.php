@@ -245,25 +245,15 @@ class ReservationApi
             $datetime = new DateTime();
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            if(!isset($_SESSION['PROPERTY_ID'])){
-                $reservations = $this->em
-                    ->createQuery("SELECT r FROM App\Entity\Reservations r 
-                JOIN r.room a
-            WHERE r.checkOut = '" . $datetime->format('Y-m-d') . "'
-            and r.status = '" . $status->getId() . "'
-            order by r.checkOut desc")
-                    ->getResult();
-            }else{
-                $reservations = $this->em
-                    ->createQuery("SELECT r FROM App\Entity\Reservations r 
+            $reservations = $this->em
+                ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            and p.id = ".$_SESSION['PROPERTY_ID']."
+            where p.id = ".$_SESSION['PROPERTY_ID']."
             and r.checkOut = '" . $datetime->format('Y-m-d') . "'
             and r.status = '" . $status->getId() . "'
             order by r.checkOut desc")
-                    ->getResult();
-            }
+                ->getResult();
 
 
         } catch (Exception $ex) {
@@ -371,7 +361,7 @@ class ReservationApi
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            and p.id = ".$_SESSION['PROPERTY_ID']."
+            where p.id = ".$_SESSION['PROPERTY_ID']."
             and r.checkIn < CURRENT_DATE() 
             And r.checkOut > CURRENT_DATE() 
             and r.status = " . $status->getId() . "
