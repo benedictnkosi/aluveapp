@@ -16,7 +16,7 @@ class HealthCheckController extends AbstractController
 
 
     /**
-     * @Route("api/healthcheck")
+     * @Route("public/healthcheck")
      */
     public function checkSymfonyHealth(LoggerInterface $logger): Response
     {
