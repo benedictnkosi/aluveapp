@@ -71,13 +71,11 @@ background-image: url(../images/listing-checkout.png);
 	background-image: url(../images/admin.booking.com.png);
 }
 
-.listing-origin-airbnbcom{
+.listing-origin-airbnbcoza, .listing-origin-wwwairbnbcoza, .listing-origin-airbnbcom{
 	background-image: url(../images/airbnb.com.png);
 }
 
-.listing-origin-airbnbcoza{
-	background-image: url(../images/airbnb.com.png);
-}
+
 .listing-image{
 	width: 42px;
 	height: 42px;
