@@ -18,6 +18,7 @@ li {
     justify-content: space-between;
     background-color: #1B74DA;
     color: #fff;
+    text-transform: uppercase;
 }
 /* LOGO */
 .logo {

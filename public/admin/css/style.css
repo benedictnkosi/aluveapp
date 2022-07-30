@@ -119,6 +119,7 @@ cursor: pointer;
 
 .desktopOnlyMenu{
 font-style: normal !important;
+	text-transform: uppercase;
 }
 .guest-name{
 margin-top: auto;
