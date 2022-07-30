@@ -170,6 +170,7 @@ function setBindings() {
 }
 
 function getReservationById(reservation_id){
+    updateView('upcoming-reservations');
     $('.reservations_tabs').addClass("display-none");
     let url = "/api/reservation_html/" + reservation_id;
     $("body").addClass("loading");

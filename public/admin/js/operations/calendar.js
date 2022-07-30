@@ -19,8 +19,10 @@ function getCalendar() {
 		success: function (data) {
 			$("body").removeClass("loading");
 			$("#calendar-table").html(data.html);
-			$(".booked").click(function(event) {
-				jumpToBooking(event);
+			$('.open-reservation-details').unbind('click')
+			$(".open-reservation-details").click(function (event) {
+				event.stopImmediatePropagation();
+				getReservationById(event.target.getAttribute("data-res-id"));
 			});
 		},
 		error: function (xhr) {
@@ -33,17 +35,5 @@ function getCalendar() {
 		}
 	});
 }
-
-
-function jumpToBooking(event) {
-	let reservation_id = event.target.getAttribute("resid");
-	updateView("upcoming-reservations");
-	$([document.documentElement, document.body]).animate({
-        scrollTop: $("a:contains('" +$reservation_id +"')").offset().top
-    }, 2000);
-	$("a:contains('" +$reservation_id +"')").fadeOut(500).fadeIn(500).fadeOut(500).fadeIn(500).fadeOut(500).fadeIn(500).fadeOut(500).fadeIn(500).fadeOut(500).fadeIn(500);
-	
-}
-
 
 
