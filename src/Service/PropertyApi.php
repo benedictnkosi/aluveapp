@@ -65,14 +65,13 @@ class PropertyApi
         return $responseArray;
     }
 
-
     public function getPropertyTerms($roomApi,  $request): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             if(!isset($_SESSION['PROPERTY_ID'])){
-                $propertyUid = $this->getPropertyUidByHost($request);
+                $propertyUid = $this->getPropertyIdyHost($request);
             }else{
                 $propertyUid = $_SESSION['PROPERTY_ID'];
             }
@@ -123,6 +122,36 @@ class PropertyApi
         return $responseArray;
     }
 
+    public function getPropertyIdyHost($request)
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $propertyId = null;
+        try {
+            $referer = $request->headers->get('referer');
+            $host = parse_url($referer, PHP_URL_HOST);
+            $this->logger->info("referrer is " . $referer);
+            $this->logger->info("referrer host is " . $host);
+
+            $property = $this->em->getRepository(Property::class)->findOneBy(
+                array("serverName" => $host));
+            if ($property != null) {
+                $propertyId = $property->getId();
+                $this->logger->info("property uid found for host $propertyId - " . $host);
+            } else {
+                $this->logger->info("property uid NOT found for host " . $host);
+            }
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->info(print_r($responseArray, true));
+        }
+
+        $this->logger->info("Ending Method before the return: " . __METHOD__);
+        return $propertyId;
+    }
+
     public function updatePropertyTerms( $terms)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
@@ -162,7 +191,7 @@ class PropertyApi
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyUid = $propertyApi->getPropertyUidByHost($request);
+            $propertyUid = $propertyApi->getPropertyIdyHost($request);
             if ($propertyUid === null) {
                 $responseArray[] = array(
                     'result_message' => 'Error finding property details',

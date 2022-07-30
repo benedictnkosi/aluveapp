@@ -60,7 +60,7 @@ class RoomController extends AbstractController
     public function getAvailableRooms($checkInDate, $checkOutDate,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate);
+        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate, $request);
         $availableRoomsDropDownHTML = new AvailableRoomsDropDownHTML($entityManager, $logger);
         $html = $availableRoomsDropDownHTML->formatHtml($rooms);
         $response = array(

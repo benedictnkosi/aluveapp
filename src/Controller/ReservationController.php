@@ -268,20 +268,6 @@ class ReservationController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("public/payfast_notify")
-     * @throws \Exception
-     */
-    public function payfast_notify(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
-    {
-        $logger->info("Starting Method: " . __METHOD__);
-        $logger->info("reservation ID: " . $request->get('item_description'));
-        $logger->info("amount paid: " . $request->get('amount_gross'));
-        $response = array();
-        $callback = $request->get('callback');
-        $response = new JsonResponse($response, 200, array());
-        $response->setCallback($callback);
-        return $response;
-    }
+
 
 }
