@@ -122,3 +122,20 @@ function filterOtherTabs(event) {
         // code block
     }
 }
+
+
+function isRetry(functionName){
+    if (sessionStorage.getItem(functionName) === null) {
+        sessionStorage.setItem(functionName, "0");
+    }
+    let count = parseInt(sessionStorage.getItem(functionName));
+    count++;
+    console.log("calling the request retry -  " +functionName + " - "  + count);
+    sessionStorage.setItem(functionName, count.toString());
+    if (count > 5) {
+        sessionStorage.setItem(functionName, "0");
+        return false;
+    }
+
+    return true;
+}

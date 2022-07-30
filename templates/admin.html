@@ -97,7 +97,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <script defer src="/admin/js/underscore-min.js" type="text/javascript"></script>
 
     <script src="/admin/js/operations/calendar.js" type="text/javascript"></script>
-<!--    <script defer src="/admin/js/operations/notifications.js" type="text/javascript"></script>-->
+    <!--    <script defer src="/admin/js/operations/notifications.js" type="text/javascript"></script>-->
     <script defer src="/admin/js/operations/common.js" type="text/javascript"></script>
     <script defer src="/admin/js/operations/stats.js" type="text/javascript"></script>
     <script defer src="/admin/js/operations/reservations.js" type="text/javascript"></script>
@@ -192,8 +192,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             <div class="profile-top">
                 <div class="col-md-7 profile-top-right">
                     <h5 id="reservations-heading">Upcoming Reservations</h5>
-                    <a href="javascript:void(0)" class="new-reservation-link" id="new_reservation_button" target="_blank"><img class="menu_icon_image"
-                                                                                              src="/admin/images/add.png">New
+                    <a href="javascript:void(0)" class="new-reservation-link" id="new_reservation_button"
+                       target="_blank"><img class="menu_icon_image"
+                                            src="/admin/images/add.png">New
                         Reservation</img><i
                                 class="desktopOnlyMenu"></i></a>
                 </div>
@@ -201,31 +202,20 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </div>
 
             <div class="profile-ser">
-                <div class="profile-ser-grids-20 filter-reservations clickable"
+                <div class="profile-ser-grids filter-reservations clickable"
                      id="reservations_all">
                     <img class="menu_icon_image" src="/admin/images/menu_bookings.png" title="Up Coming"></img>
-                    <i class="desktopOnlyMenu">Up Coming</i>
+                    <i class="desktopOnlyMenu">Upcoming Reservations</i>
                 </div>
-                <div class="profile-ser-grids-20 filter-reservations clickable"
-                     id="reservations_checkouts">
-                    <img class="menu_icon_image" src="/admin/images/menu_checkout.png" title="Checkouts"></img><i
-                        class="desktopOnlyMenu">Checkouts</i>
-                </div>
+
                 <div
-                        class="profile-ser-grids-20 agileinfo  filter-reservations clickable"
-                        id="reservations_stay_overs">
-                    <img class="menu_icon_image" src="/admin/images/menu_stayover.png" title="Stay Overs"></img><i
-                        class="desktopOnlyMenu">Stay
-                    Overs</i>
-                </div>
-                <div
-                        class="profile-ser-grids-20 agileinfo  filter-reservations clickable"
+                        class="profile-ser-grids agileinfo  filter-reservations clickable"
                         id="reservations_past_reservations">
                     <img class="menu_icon_image" src="/admin/images/history.png" title="History"></img><i
                         class="desktopOnlyMenu">History
                 </i>
                 </div>
-                <div class="profile-ser-grids-20 agileinfo  filter-reservations clickable"
+                <div class="profile-ser-grids agileinfo  filter-reservations clickable"
                      id="reservations_pending_reservations">
                     <img class="menu_icon_image" src="/admin/images/pending.png" title="Pending"></img><i
                         class="desktopOnlyMenu">Pending</i>
@@ -244,11 +234,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     </div>
                 </div>
             </div>
-            <div id="future-list" class='reservations_tabs'></div>
-            <div id="checkout-list" class='reservations_tabs display-none'></div>
-            <div id="stayover-list" class='reservations_tabs display-none'></div>
-            <div id="past-list" class='reservations_tabs display-none'></div>
-            <div id="pending-list" class='reservations_tabs display-none'></div>
+            <div id="future-list" class='reservations_tabs reservations_div'>
+
+            </div>
+            <div id="past-list" class='reservations_tabs reservations_div display-none'></div>
+            <div id="pending-list" class='reservations_tabs reservations_div display-none'></div>
+            <div id="reservation-details" class='reservations_tabs display-none'></div>
         </div>
 
 
@@ -600,10 +591,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
                 <div class="profile-ser-grids-50 agileinfo">
                     <a href="javascript:void(0)">
-                    <h5>Last <input name="occupancy_days"
-                                    id="occupancy_days" class="input-as-text" value="30">
-                    </input> Days</h5>
-                    <h2 id="overall-30-occupancy"></h2>
+                        <h5>Last <input name="occupancy_days"
+                                        id="occupancy_days" class="input-as-text" value="30">
+                        </input> Days</h5>
+                        <h2 id="overall-30-occupancy"></h2>
                     </a>
                 </div>
                 <div class="profile-ser-grids-50 agileinfo">

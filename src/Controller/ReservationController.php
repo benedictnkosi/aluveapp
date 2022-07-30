@@ -7,6 +7,7 @@ use App\Entity\ReservationStatus;
 use App\Helpers\FormatHtml\CalendarHTML;
 use App\Helpers\FormatHtml\InvoiceHTML;
 use App\Helpers\FormatHtml\ReservationHtml;
+use App\Helpers\FormatHtml\SingleReservationHtml;
 use App\Service\BlockedRoomApi;
 use App\Service\ReservationApi;
 use App\Service\RoomApi;
@@ -76,6 +77,26 @@ class ReservationController extends AbstractController
         return $response;
 
     }
+
+    /**
+     * @Route("api/reservation_html/{reservationId}")
+     */
+    public function getReservationByIdHtml($reservationId,  LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $reservation = $reservationApi->getReservation($reservationId);
+        $reservationHtml = new SingleReservationHtml($entityManager, $logger);
+        $html = $reservationHtml->formatHtml($reservation);
+        $response = array(
+            'html' => $html,
+        );
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response, 200, array());
+        $response->setCallback($callback);
+        return $response;
+
+    }
+
 
     /**
      * @Route("api/reservations/{reservationId}")
