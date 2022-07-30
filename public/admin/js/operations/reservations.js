@@ -14,8 +14,6 @@ function loadReservationsPageData(){
 function refreshReservations() {
     getServerName();
     getReservationsByPeriod("future");
-    getReservationsByPeriod("stayover");
-    getReservationsByPeriod("checkout");
     getReservationsByPeriod("pending");
     getReservationsByPeriod("past");
 }
@@ -30,11 +28,15 @@ function getReservationsByPeriod(period) {
         dataType: "jsonp",
         contentType: "application/json; charset=UTF-8",
         success: function (data) {
+            $("body").removeClass("loading");
             $("#" + period + "-list").html(data.html);
-            setBindings();
+            $('.open-reservation-details').unbind('click')
+            $(".open-reservation-details").click(function (event) {
+                event.stopImmediatePropagation();
+                getReservationById(event.target.getAttribute("data-res-id"));
+            });
         },
         error: function (xhr) {
-            setBindings();
             console.log("request for "+period+" is " + xhr.status);
             if (!isRetry(""+period+"")) {
                 return;
@@ -165,9 +167,37 @@ function setBindings() {
         event.stopImmediatePropagation();
         showRightDivForMobile(event);
     });
-
 }
 
+function getReservationById(reservation_id){
+    $('.reservations_tabs').addClass("display-none");
+    let url = "/api/reservation_html/" + reservation_id;
+    $("body").addClass("loading");
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
+            $('#reservation-details')
+                .html(data.html);
+            $('#reservation-details')
+                .removeClass("display-none");
+            setBindings();
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            console.log("request for getRooms is " + xhr.status);
+            if (!isRetry("getReservationById")) {
+                return;
+            }
+            getReservationById();
+        }
+    });
+}
 function showRightDivForMobile(event) {
     let reservationID = event.target.getAttribute("data-res-id");
     $('.right-div').css("display", "none");
@@ -264,14 +294,6 @@ function filterReservations(event) {
         case "reservations_all":
             $('#future-list').removeClass("display-none");
             $('#reservations-heading').text("Upcoming Reservations");
-            break;
-        case "reservations_checkouts":
-            $('#checkout-list').removeClass("display-none");
-            $('#reservations-heading').text("Check Outs");
-            break;
-        case "reservations_stay_overs":
-            $('#stayover-list').removeClass("display-none");
-            $('#reservations-heading').text("Stay Overs");
             break;
         case "reservations_past_reservations":
             $('#past-list').removeClass("display-none");

@@ -1,4 +1,6 @@
 function showResErrorMessage(divName, message){
+    $("body").removeClass("loading");
+    $("body").removeClass("startup-loading");
     $("#"+divName+"_error_message_div").removeClass("display-none");
     $("#"+divName+"_error_message").text(message)
     $("#"+divName+"_success_message_div").addClass("display-none");
@@ -8,6 +10,8 @@ function showResErrorMessage(divName, message){
 }
 
 function showResSuccessMessage(divName,message){
+    $("body").removeClass("loading");
+    $("body").removeClass("startup-loading");
     $("#"+divName+"_error_message_div").addClass("display-none");
     $("#"+divName+"_success_message").text(message)
     $("#"+divName+"_success_message_div").removeClass("display-none");
