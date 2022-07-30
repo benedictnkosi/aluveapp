@@ -25,13 +25,20 @@ class GuestApi
         }
     }
 
-    public function createGuest($name, $phoneNumber, $email,  $origin): array
+    public function createGuest($name, $phoneNumber, $email,  $origin, $request): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
 
-            $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_SESSION['PROPERTY_ID']));
+            if(!isset($_SESSION['PROPERTY_ID'])){
+                $propertyApi = new PropertyApi($this->em, $this->logger);
+                $propertyId = $propertyApi->getPropertyIdByHost($request);
+            }else{
+                $propertyId = $_SESSION['PROPERTY_ID'];
+            }
+
+            $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $propertyId));
             $guest = new Guest();
             $guest->setName($name);
             $guest->setPhoneNumber($phoneNumber);
