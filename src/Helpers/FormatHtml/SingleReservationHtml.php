@@ -71,7 +71,7 @@ class SingleReservationHtml
         $htmlString .= '<div class="res-details"><div class="left-div"><div class="inner-left-div">
 
 
-						<h4 class="guest-name"><div class="stays-div">' . $guestApi->getGuestStaysCount($guest->getId())[0]["result_message"] . '</div><a target="_blank" href="/invoice.html?id=' . $reservationId . '">' . $guest->getName() . ' - ' . $reservationId . '</a>';
+						<h4 class="guest-name"><div class="stays-div">' . $guestApi->getGuestStaysCount($guest->getId())[0]["result_message"] . '</div><a target="_blank" href="http://'.$room->getProperty()->getServerNameL().'/invoice.html?id=' . $reservationId . '">' . $guest->getName() . ' - ' . $reservationId . '</a>';
 
         //is short stay?
         if (strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) == 0) {
