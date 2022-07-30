@@ -49,7 +49,7 @@ class ReservationController extends AbstractController
         $reservations = "";
         switch ($period) {
             case "future":
-                $reservations = $reservationApi->getUpComingReservations();
+                $reservations = $reservationApi->getUpComingReservations(0, true);
                 break;
             case "past":
                 $reservations = $reservationApi->getPastReservations();
