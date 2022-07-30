@@ -121,7 +121,7 @@ class ReservationHtml
                         <span class="listing-checkout-image listing-image"></span>
                         <span class="listing-image-origin listing-origin-' . str_replace('.', '', $todayCheckOut->getOrigin()) . '"></span>
                         <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getGuest()->getName() . ' is expected to check-out <span
-                                class="listing-room-name" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckOut->getRoom()->getName() . ' </span>
+                                class="listing-room-name" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getRoom()->getName() . ' </span>
                         </div>
                     </div>';
             }
