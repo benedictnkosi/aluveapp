@@ -6,9 +6,9 @@
 --*/
 
 .reservations_div{
-	width:600px;
+	width: 60%;
 	/* left: 50%; */
-	margin-left: 30%;
+	margin-left: 20%;
 	/* position: absolute; */
 	display: block;
 	margin-bottom: 3px;
@@ -51,7 +51,6 @@
 	border-style: solid;
 	border-color: #ddd;
 	background-color: #fff;
-	width: 600px;
 	padding: 15px;
 }
 

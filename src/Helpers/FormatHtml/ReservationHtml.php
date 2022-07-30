@@ -105,26 +105,24 @@ class ReservationHtml
         }
 
         foreach ($todayCheckIns as $todayCheckIn) {
-            $htmlString .= '<div class="reservation-item">
+            $htmlString .= '<div class="reservation-item" >
                         <span class="listing-checkin-image listing-image"></span>
                         <span class="listing-image-origin listing-origin-' . str_replace('.', '', $todayCheckIn->getOrigin()) . '"></span>
-                        <div class="listing-description"> ' . $todayCheckIn->getGuest()->getName() . ' is expected to check-in <span
+                        <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getGuest()->getName() . ' is expected to check-in <span
                                 class="listing-room-name"> ' . $todayCheckIn->getRoom()->getName() . ' </span>
                         </div>
-                        <i class="arrow-right clickable open-reservation-details" data-res-id="'.$todayCheckIn->getId().'"></i>
                     </div>';
         }
 
 
         if($outputCheckOuts){
             foreach ($todayCheckOuts as $todayCheckOut) {
-                $htmlString .= '<div class="reservation-item">
+                $htmlString .= '<div class="reservation-item" data-res-id="'.$todayCheckOut->getId().'">
                         <span class="listing-checkout-image listing-image"></span>
                         <span class="listing-image-origin listing-origin-' . str_replace('.', '', $todayCheckOut->getOrigin()) . '"></span>
-                        <div class="listing-description"> ' . $todayCheckOut->getGuest()->getName() . ' is expected to check-out of <span
+                        <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getGuest()->getName() . ' is expected to check-out of <span
                                 class="listing-room-name"> ' . $todayCheckOut->getRoom()->getName() . ' </span>
                         </div>
-                        <i class="arrow-right clickable open-reservation-details" data-res-id="'.$todayCheckOut->getId().'"></i>
                     </div>';
             }
         }
