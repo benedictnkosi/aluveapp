@@ -34,7 +34,7 @@ class RoomController extends AbstractController
     public function getRooms($roomId, LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->getRooms($roomId);
+        $response = $roomApi->getRooms($roomId, $request);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -42,12 +42,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/public/allrooms", defaults={"roomId": "all"})
+     * @Route("/public/allroomsjson")
      */
     public function getAllRooms( LoggerInterface $logger, Request $request,RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->getRooms("all");
+        $response = $roomApi->getRooms("all", $request);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -73,12 +73,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/allrooms/")
+     * @Route("/public/allrooms/")
      */
     public function getRoomsHtml(LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getRoomsEntities();
+        $rooms = $roomApi->getRoomsEntities(0, $request);
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatHtml($rooms, $roomApi);
         $response = array(
@@ -186,7 +186,7 @@ class RoomController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
 
-        $rooms = $roomApi->getAvailableRooms($checkin, $checkout);
+        $rooms = $roomApi->getAvailableRooms($checkin, $checkout, $request);
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
         $html = $roomsPageHTML->formatHtml($rooms, $roomApi);
         $response = array(

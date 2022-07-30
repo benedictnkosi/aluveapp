@@ -115,7 +115,7 @@ class RoomApi
         return $returnValue;
     }
 
-    public function getRooms($roomId, $propertyUid = null): array
+    public function getRooms($roomId, $request): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -124,7 +124,11 @@ class RoomApi
             if (strcmp($roomId, "all") === 0) {
                 //check if the PROPERTY_ID if not get it from the host
                 $propertyApi = new PropertyApi($this->em, $this->logger);
-                $propertyId =   $_SESSION['PROPERTY_ID'];
+                if(!isset($_SESSION['PROPERTY_ID'])){
+                    $propertyId = $propertyApi->getPropertyIdByHost($request);
+                }else{
+                    $propertyId = $_SESSION['PROPERTY_ID'];
+                }
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
             } else {
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('id' => $roomId));
@@ -150,12 +154,12 @@ class RoomApi
                         $stairs = 1;
                     }
 
-                    $roomImages = $this->getRoomImages($roomId);
+                    $roomImages = $this->getRoomImages($room->getId());
                     $roomImagesUploadHtml = new RoomImagesHTML($this->em, $this->logger);
                     $imagesHtml = $roomImagesUploadHtml->formatUpdateRoomHtml($roomImages);
 
                     $iCalApi = new ICalApi($this->em, $this->logger);
-                    $icalLinks = $iCalApi->getIcalLinks($roomId);
+                    $icalLinks = $iCalApi->getIcalLinks($room->getId());
                     $configIcalHtml = new ConfigIcalLinksHTML($this->em, $this->logger);
                     $icalFormattedHtml = $configIcalHtml->formatHtml($icalLinks);
 
@@ -219,29 +223,18 @@ class RoomApi
         return $responseArray;
     }
 
-    public function getRoomsEntities( $roomId = 0): ?array
+    public function getRoomsEntities($roomId = 0, $request = null): ?array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             if ($roomId === 0) {
-                $propertyId = $_SESSION['PROPERTY_ID'];
-                if (!isset($propertyId)) {
-                    $this->logger->debug("PROPERTY_ID not found in session. checking if the host has a property id" . __METHOD__);
-
-                    if ($propertyId === null) {
-                        $responseArray[] = array(
-                            'result_message' => 'Property ID not set, please logout and login again',
-                            'result_code' => 1
-                        );
-                        $this->logger->debug(print_r($responseArray, true));
-                        return null;
-                    } else {
-                        $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
-                    }
-                } else {
-                    $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
+                if(!isset($_SESSION['PROPERTY_ID'])){
+                    $propertyApi = new PropertyApi($this->em, $this->logger);
+                    $propertyId = $propertyApi->getPropertyIdByHost($request);
+                }else{
+                    $propertyId = $_SESSION['PROPERTY_ID'];
                 }
-
+                $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
             } else {
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('id' => $roomId));
             }
