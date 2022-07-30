@@ -63,7 +63,7 @@ class ReservationHtml
             }
         }else{
             $numberOfDays = 180;
-            for ($x = 0; $x <= $numberOfDays; $x++) {
+            for ($x = 1; $x <= $numberOfDays; $x++) {
                 $todayDate = new DateTime();
                 $todayDate->add(DateInterval::createFromDateString('yesterday'));
                 $tempDate = $todayDate->add(new DateInterval('P' . $x . 'D'));
