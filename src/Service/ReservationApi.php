@@ -137,7 +137,6 @@ class ReservationApi
             order by r.checkIn asc")
                 ->getResult();
 
-            $this->logger->debug("sreservations is: " . print_r($reservations, true));
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
