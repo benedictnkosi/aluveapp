@@ -37,8 +37,20 @@ class CommunicationController extends AbstractController
         $message.= "<br> from : $customerName
             <br> phone number: $phoneNumber";
         $response = $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, ALUVEAPP_SALES_EMAIL, $message, "Message from customer", $email);
+        $responseArray = array();
+        if ($response[0]['result_code'] === 0) {
+            $responseArray[] = array(
+                'result_message' => 'Thank you for your message. Our team will be in touch soon',
+                'result_code' => 0
+            );
+        } else {
+            $responseArray[] = array(
+                'result_message' => 'Oops, failed to send email to our team. Please try again later',
+                'result_code' => 1
+            );
+        }
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($responseArray , 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -54,8 +66,20 @@ class CommunicationController extends AbstractController
             <br> Hotel : $hotelName
             <br> email : $email";
         $response = $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, ALUVEAPP_SALES_EMAIL, $message, "Sales - New Trial", $email);
+        $responseArray = array();
+        if ($response[0]['result_code'] === 0) {
+            $responseArray[] = array(
+                'result_message' => 'Thank you for your interest in Aluve App. Our sales team will be in touch soon',
+                'result_code' => 0
+            );
+        } else {
+            $responseArray[] = array(
+                'result_message' => 'Oops, failed to send email to our sales team. Please try again later',
+                'result_code' => 1
+            );
+        }
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($responseArray , 200, array());
         $response->setCallback($callback);
         return $response;
     }

@@ -111,7 +111,7 @@ class CommunicationApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $message = $service->users_messages->send($userId, $message);
-            print 'Message with ID: ' . $message->getId() . ' sent.';
+            //print 'Message with ID: ' . $message->getId() . ' sent.';
             return $message;
         } catch (Exception $e) {
             $this->logger->debug($e->getMessage() . ' - ' . $e->getTraceAsString());
@@ -258,7 +258,7 @@ class CommunicationApi
                 // Request authorization from the user.
                 $authUrl = $client->createAuthUrl();
                 printf("Open the following link in your browser:\n%s\n", $authUrl);
-                print 'Enter verification code: ';
+                //print 'Enter verification code: ';
                 $authCode = trim(fgets(STDIN));
 
                 // Exchange authorization code for an access token.

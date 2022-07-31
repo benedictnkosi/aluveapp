@@ -14,6 +14,7 @@
     <!-- ==== WOW JS ==== -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/jquery.validate.js" type="text/javascript"></script>
     <script>
         new WOW().init();
     </script>
@@ -4601,6 +4602,18 @@
                         Send us a Message
                     </h3>
                     <form id="contact_us_form">
+                        <div class="flexible">
+                            <div class="flex-bottom">
+                                <div id="success_message_div"
+                                     class="flex1 display-none">
+                                    <h5 id="success_message"></h5>
+                                </div>
+                                <div id="error_message_div" class="flex2 display-none">
+                                    <h5 id="error_message"></h5>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mb-6">
                             <label for="fullName" class="block text-xs text-dark"
                             >Full Name*</label
