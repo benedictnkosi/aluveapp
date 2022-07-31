@@ -5,15 +5,10 @@
 	License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
 
-.reservations_div{
-	width: 60%;
-	/* left: 50%; */
-	margin-left: 20%;
-	/* position: absolute; */
-	display: block;
-	margin-bottom: 3px;
-	padding: 15px;
-	margin-top: auto !important;
+.listing-description-text {
+	position: absolute;
+	margin-left: 100px;
+	margin-top: -40px;
 }
 
 .reservation-floating-div{
@@ -25,11 +20,8 @@
 
 
 .listing-description {
-	width: 500px;
 	display: inline;
-	min-width: 500px;
 	margin-top: 16px;
-	margin-left: 100px;
 }
 
 .arrow-right {
@@ -54,31 +46,9 @@
 	padding: 15px;
 }
 
-.listing-checkout-image {
-background-image: url(../images/listing-checkout.png);
-}
-
-.listing-checkin-image {
-	background-image: url(../images/listing-checkin.png);
-}
-
-.listing-origin-website {
-	background-image: url(../images/website.png);
-}
-
-.listing-origin-adminbookingcom{
-	background-image: url(../images/admin.booking.com.png);
-}
-
-.listing-origin-airbnbcoza, .listing-origin-wwwairbnbcoza, .listing-origin-airbnbcom{
-	background-image: url(../images/airbnb.com.png);
-}
-
-
 .listing-image{
 	width: 42px;
 	height: 42px;
-	position: absolute;
 	margin-top: -9px;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -87,12 +57,10 @@ background-image: url(../images/listing-checkout.png);
 .listing-image-origin{
 	width: 42px;
 	height: 42px;
-	position: absolute;
 	margin-top: -9px;
 	background-size: cover;
 	background-repeat: no-repeat;
-	margin-left: 50px;
-
+	margin-right: 5px;
 }
 
 .logs-error{
@@ -260,6 +228,14 @@ hr {
 }
 
 @media (max-width: 768px) {
+	.reservations_div{
+		width: 100%;
+		display: block;
+		margin-bottom: 3px;
+		padding: 15px;
+		margin-top: auto !important;
+	}
+
 	.addon-left-div{
 		float: left;
 		width: 100%;
@@ -277,6 +253,15 @@ hr {
 }
 
 @media (min-width: 769px) {
+	.reservations_div{
+		width: 60%;
+		margin-left: 20%;
+		display: block;
+		margin-bottom: 3px;
+		padding: 15px;
+		margin-top: auto !important;
+	}
+
 	.addon-left-div{
 		float: left;
 		width: 50%;

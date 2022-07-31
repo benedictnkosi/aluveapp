@@ -106,10 +106,13 @@ class ReservationHtml
 
         foreach ($todayCheckIns as $todayCheckIn) {
             $htmlString .= '<div class="reservation-item" >
-                        <span class="listing-checkin-image listing-image"></span>
-                        <span class="listing-image-origin listing-origin-' . str_replace('.', '', $todayCheckIn->getOrigin()) . '"></span>
-                        <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getGuest()->getName() . ' is expected to check-in <span
-                                class="listing-room-name" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getRoom()->getName() . ' </span>
+                         <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckIn->getId().'">
+                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkin.png"></img>
+                        <img class="listing-image-origin" src="/admin/images/'.$todayCheckIn->getOrigin().'.png"></img>
+                        <div class="listing-description-text">'
+                . $todayCheckIn->getGuest()->getName() . ' is expected to check-in 
+                         <span class="listing-room-name" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getRoom()->getName() . ' </span>
+                        </div>
                         </div>
                     </div>';
         }
@@ -117,11 +120,14 @@ class ReservationHtml
 
         if($outputCheckOuts){
             foreach ($todayCheckOuts as $todayCheckOut) {
-                $htmlString .= '<div class="reservation-item" data-res-id="'.$todayCheckOut->getId().'">
-                        <span class="listing-checkout-image listing-image"></span>
-                        <span class="listing-image-origin listing-origin-' . str_replace('.', '', $todayCheckOut->getOrigin()) . '"></span>
-                        <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getGuest()->getName() . ' is expected to check-out <span
-                                class="listing-room-name" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getRoom()->getName() . ' </span>
+                $htmlString .= '<div class="reservation-item" >
+                         <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckOut->getId().'">
+                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkout.png"></img>
+                        <img class="listing-image-origin" src="/admin/images/'.$todayCheckOut->getOrigin().'.png"></img>
+                        <div class="listing-description-text">'
+                    . $todayCheckOut->getGuest()->getName() . ' is expected to check-out 
+                         <span class="listing-room-name" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getRoom()->getName() . ' </span>
+                        </div>
                         </div>
                     </div>';
             }
