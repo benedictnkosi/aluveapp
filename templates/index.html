@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="assets/css/tailwind.css"/>
 
     <!-- ==== WOW JS ==== -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="assets/js/wow.min.js"></script>
     <script>
         new WOW().init();
@@ -4599,12 +4600,12 @@
                     <h3 class="mb-8 text-2xl font-semibold md:text-[26px]">
                         Send us a Message
                     </h3>
-                    <form>
+                    <form id="contact_us_form">
                         <div class="mb-6">
                             <label for="fullName" class="block text-xs text-dark"
                             >Full Name*</label
                             >
-                            <input
+                            <input id="customerName"
                                     type="text"
                                     name="fullName"
                                     placeholder="Sibusiso Pretorius"
@@ -4616,6 +4617,7 @@
                             >Email*</label
                             >
                             <input
+                                    id="email"
                                     type="email"
                                     name="email"
                                     placeholder="example@yourmail.com"
@@ -4627,6 +4629,7 @@
                             >Phone*</label
                             >
                             <input
+                                    id="phoneNumber"
                                     type="text"
                                     name="phone"
                                     placeholder="0837917293"
@@ -4636,6 +4639,7 @@
                         <div class="mb-6">
                             <label for="message" class="block text-xs text-dark">Message*</label>
                             <textarea
+                                    id="message"
                                     name="message"
                                     rows="4"
                                     placeholder="type your message here"
@@ -4644,7 +4648,7 @@
                         </div>
                         <div class="mb-0">
                             <button
-                                    type="submit"
+                                    type="submit" id="send_message"
                                     class="inline-flex items-center justify-center rounded bg-primary py-4 px-6 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-dark"
                             >
                                 Send Message
@@ -4995,6 +4999,7 @@
 <!-- ====== All Scripts -->
 
 <script src="assets/js/main.js"></script>
+<script src="assets/js/contact.js"></script>
 <script>
     // ==== for menu scroll
     const pageLink = document.querySelectorAll(".ud-menu-scroll");

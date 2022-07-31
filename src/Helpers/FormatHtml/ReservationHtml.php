@@ -117,7 +117,6 @@ class ReservationHtml
                     </div>';
         }
 
-
         if($outputCheckOuts){
             foreach ($todayCheckOuts as $todayCheckOut) {
                 $htmlString .= '<div class="reservation-item" >
