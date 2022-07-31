@@ -198,7 +198,7 @@ class ScheduleMessageApi
         return $responseArray;
     }
 
-    public function sendScheduledMessages($scheduleTimeName): array
+    public function sendScheduledMessages($scheduleTimeName, $request): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -209,7 +209,7 @@ class ScheduleMessageApi
 
                 //get all rooms
                 $roomsApi = new RoomApi($this->em, $this->logger);
-                $rooms = $roomsApi->getRooms('all');
+                $rooms = $roomsApi->getRooms('all', $request);
                 foreach ($rooms as $room) {
                     $scheduleMessages = $this->em->getRepository(ScheduleMessages::class)->findBy(array('messageSchedule' => $scheduleTime, 'room' => $room->getId()));
                     $reservationApi = new ReservationApi($this->em, $this->logger);
@@ -223,7 +223,8 @@ class ScheduleMessageApi
                                     $email = $reservation->getGuest()->getEmail();
                                     if (!empty($email)) {
                                         $message = wordwrap($message, 70);
-                                        mail('nkosi.benedict@gmail.com', 'Test Email', $message);
+                                        $communicationApi = new CommunicationApi($this->em, $this->logger);
+                                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $email,  $message, "Website - Message from guest", $reservation->getRoom()->getProperty()->getEmailAddress());
                                         $this->logger->debug("Sending email for " . $message);
                                         $responseArray[] = array(
                                             'result_message' => 'Successfully sent all scheduled messages for ' . $message,

@@ -33,7 +33,7 @@ class ScheduledMessagesController extends AbstractController
     public function sendScheduleMessagesDayBeforeCheckIn(LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $scheduleMessageApi->sendScheduledMessages("Day before check-in");
+        $response = $scheduleMessageApi->sendScheduledMessages("Day before check-in", $request);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -46,7 +46,7 @@ class ScheduledMessagesController extends AbstractController
     public function sendScheduleMessagesWeekBeforeCheckIn( LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $scheduleMessageApi->sendScheduledMessages("Week before check-in");
+        $response = $scheduleMessageApi->sendScheduledMessages("Week before check-in", $request);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

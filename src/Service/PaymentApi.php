@@ -239,7 +239,8 @@ class PaymentApi
             $whitelist = array('localhost', '::1' );
             // check if the server is in the array
             if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
-                mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
+                $communicationApi = new CommunicationApi($this->em, $this->logger);
+                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(),  $emailBody, 'Thank you for payment');
                 $this->logger->debug("Successfully sent email to guest");
             }else{
                 $this->logger->debug("local server email not sent");

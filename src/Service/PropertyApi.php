@@ -212,7 +212,9 @@ class PropertyApi
                 $whitelist = array('localhost', '::1' );
                 // check if the server is in the array
                 if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
-                    mail($property->getEmailAddress(), "Website - Message from guest", $emailPrefix . $message, $headers);
+                    $communicationApi = new CommunicationApi($this->em, $this->logger);
+                    $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $property->getEmailAddress(),  $emailPrefix . $message, "Website - Message from guest");
+
                     $this->logger->debug("Successfully sent email to guest");
                 }else{
                     $this->logger->debug("local server email not sent");

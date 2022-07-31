@@ -8,15 +8,10 @@ use App\Entity\ReservationStatus;
 use App\Entity\Rooms;
 use DateInterval;
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Google_Client;
-use Google_Service_Analytics;
 use Psr\Log\LoggerInterface;
 use Sabre\VObject;
-use Google\Client;
-use Google\Service\Gmail;
 
 require_once(__DIR__ . '/../app/application.php');
 
@@ -621,10 +616,10 @@ END:VCALENDAR';
     function updateAirbnbGuestUsingGmail($guestApi): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $url = "{".MAIL_SERVER."/imap/ssl/novalidate-cert}INBOX";
         $responseArray = array();
 
-        $emails = $this->getEmails();
+        $communicationApi = new CommunicationApi($this->em, $this->logger);
+        $emails = $communicationApi->getAirbnbConfirmationEmails();
 
         if ($emails) {
             foreach ($emails as $email) {
@@ -635,9 +630,6 @@ END:VCALENDAR';
                 try {
                     $pos = strpos($emailSubject, 'Reservation confirmed');
                     if ($pos !== false) {
-
-                        $emailMsgNumber = $email['id'];
-
                         $bodyText = $email['body'];
                         $messageThreadId = trim($this->getStringByBoundary($bodyText, 'hosting/thread/', '?'));
                         $this->logger->debug("message thread is " . $messageThreadId);
@@ -671,137 +663,6 @@ END:VCALENDAR';
 
         return $responseArray;
     }
-
-    /**
-     * @throws \Google\Exception
-     */
-    public function getEmails(): ?array
-    {
-        $this->logger->debug("Starting Method: " . __METHOD__);
-        // Creates and returns the Analytics Reporting service object.
-
-        // Use the developers console and download your service account
-        // credentials in JSON format. Place them in this directory or
-        // change the key file location if necessary.
-        $KEY_FILE_LOCATION = __DIR__ . '/aluve-guesthouse-9f79c476c8c8.json';
-
-        // Create and configure a new client object.
-        $client = new Google_Client();
-        $client->setApplicationName("Hello Analytics Reporting");
-        $client->setAuthConfig($KEY_FILE_LOCATION);
-        $client->setScopes(['https://mail.google.com/']);
-        $client->setSubject("admin@aluveapp.co.za");
-
-        $service = new \Google_Service_Gmail($client);
-        $responseArray = array();
-        try{
-
-            // Print the labels in the user's account.
-            $pageToken = null;
-            $messages = array();
-            $opt_param = array();
-
-            do{
-                if($pageToken){
-                    $opt_param['pageToken'] = $pageToken;
-                }
-                $midnight = new DateTimeImmutable('today midnight');
-                $timestampOfMidnight = $midnight->getTimestamp();
-                $opt_param['q'] = 'subject:Reservation confirmed after:' . $timestampOfMidnight;
-                $messagesResponse = $service->users_messages->listUsersMessages("me", $opt_param);
-                if($messagesResponse->getMessages()){
-                    $messages = array_merge($messages, $messagesResponse->getMessages() );
-                    $pageToken = $messagesResponse->getNextPageToken();
-                }
-            }while ($pageToken);
-
-            foreach ($messages as $message){
-                $msg = $service->users_messages->get("admin@aluveapp.co.za",$message->getId());
-                $headers = $msg->getPayload()->getHeaders();
-                $subject = "";
-                foreach ($headers as $header){
-                    if(strcmp($header->getName(), "Subject") === 0){
-                        $subject = $header->getValue();
-                    }
-
-                   // $this->logger->debug("results from google is " .$header->getName() . " - " . $header->getValue());
-                }
-                $msgData = $msg->getPayload()->getParts()[1]->getBody()->data;
-
-                $out = str_replace("-", "+", $msgData);
-                $out = str_replace("_", "/", $out);
-                $cleanedMessage = base64_decode($out);
-                $responseArray[] = array(
-                    'id' => $message->getId(),
-                    'subject' =>$subject,
-                    'body' =>$cleanedMessage
-                );
-            }
-            //$this->logger->debug("results from google is " .print_r($responseArray));
-        }
-        catch(Exception $e) {
-            // TODO(developer) - handle error appropriately
-            $this->logger->debug($e->getMessage());
-            $this->logger->debug(print_r($e->getTraceAsString(), true));
-            return null;
-        }
-        return $responseArray;
-    }
-
-    /**
-     * @throws \Google\Exception
-     * @throws Exception
-     */
-    function getClient(): Client
-    {
-        $this->logger->debug("Starting Method: " . __METHOD__);
-        $client = new Client();
-        $client->setApplicationName('Gmail API PHP Quickstart');
-        $client->setScopes('https://www.googleapis.com/auth/gmail.addons.current.message.readonly');
-        $client->setAuthConfig('credentials.json');
-        $client->setAccessType('offline');
-        $client->setPrompt('select_account consent');
-
-        // Load previously authorized token from a file, if it exists.
-        // The file token.json stores the user's access and refresh tokens, and is
-        // created automatically when the authorization flow completes for the first
-        // time.
-        $tokenPath = 'token.json';
-        if (file_exists($tokenPath)) {
-            $accessToken = json_decode(file_get_contents($tokenPath), true);
-            $client->setAccessToken($accessToken);
-        }
-
-        // If there is no previous token or it's expired.
-        if ($client->isAccessTokenExpired()) {
-            // Refresh the token if possible, else fetch a new one.
-            if ($client->getRefreshToken()) {
-                $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-            } else {
-                // Request authorization from the user.
-                $authUrl = $client->createAuthUrl();
-                printf("Open the following link in your browser:\n%s\n", $authUrl);
-                print 'Enter verification code: ';
-                $authCode = trim(fgets(STDIN));
-
-                // Exchange authorization code for an access token.
-                $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-                $client->setAccessToken($accessToken);
-
-                // Check to see if there was an error.
-                if (array_key_exists('error', $accessToken)) {
-                    throw new Exception(join(', ', $accessToken));
-                }
-            }
-            // Save the token to a file.
-            if (!file_exists(dirname($tokenPath))) {
-                mkdir(dirname($tokenPath), 0700, true);
-            }
-            file_put_contents($tokenPath, json_encode($client->getAccessToken()));
-        }
-        return $client;
-    }
-
 }
 
 

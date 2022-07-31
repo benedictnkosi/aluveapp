@@ -14,21 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PropertyController extends AbstractController
 {
-
-
-    /**
-     * @Route("public/property/contact/{guestName}/{email}/{phoneNumber}/{message}")
-     */
-    public function contactProperty($guestName, $email, $phoneNumber, $message, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
-    {
-        $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->contactUs($guestName, $email, $phoneNumber, $message,$request);
-        $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
-        $response->setCallback($callback);
-        return $response;
-    }
-
     /**
      * @Route("public/property/terms" , defaults={"propertyUid": "none"})
      */
