@@ -416,7 +416,7 @@ DTSTART;VALUE=DATE:' . $event_start . '
 DTSTAMP:' . $now->format('Ymd') . 'T100058Z
 UID:' . $uid . '
 DESCRIPTION:NAME: ' . $guestName . '
-SUMMARY:' . $room->getProperty()->getName() . ' - ' . $guestName . '  - Resa id: ' . $resId . '
+SUMMARY:' . $guestName . '  - Resa id: ' . $resId . '
 STATUS:CONFIRMED
 CREATED:' . $reservation->getReceivedOn()->format('Ymd') . 'T222001Z
 END:VEVENT';
@@ -451,7 +451,7 @@ DTSTART;VALUE=DATE:' . $event_start . '
 DTSTAMP:' . $now->format('Ymd') . 'T100058Z
 UID:' . $uid . '
 DESCRIPTION:NAME: blocked room
-SUMMARY:' . $room->getProperty()->getName() . ' - ' . $roomName . '  - Block id: ' . $blockRoomId . '
+SUMMARY: Block id: ' . $blockRoomId . '
 STATUS:CONFIRMED
 CREATED:' . $blockedRoom->getCreatedDate()->format('Ymd') . 'T222001Z
 END:VEVENT';
@@ -469,11 +469,10 @@ END:VCALENDAR';
             $this->logger->error($ex->getMessage());
             return "";
         }
-        return $this->format_ical_string($icalString);
+        return $icalString;
     }
 
-    function format_ical_string( $s ): array|string|null
-    {
+    function format_ical_string( $s ) {
         $r = wordwrap(
             preg_replace(
                 array( '/,/', '/;/', '/[\r\n]/' ),
