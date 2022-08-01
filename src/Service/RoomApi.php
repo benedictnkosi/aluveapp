@@ -122,7 +122,7 @@ class RoomApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-
+            $_SESSION['ROOM_ID'] = $roomId;
             if (strcmp($roomId, "all") === 0) {
                 //check if the PROPERTY_ID if not get it from the host
                 $propertyApi = new PropertyApi($this->em, $this->logger);
@@ -283,11 +283,45 @@ class RoomApi
         return $responseArray;
     }
 
-    public function addImageToRoom($imageName, $roomId)
+    public function getRoomImagesJson($roomId): ?array
     {
-
         $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $room = $this->em->getRepository(Rooms::class)->findOneBy(
+                array('id' => $roomId));
+            if ($room === null) {
+                $this->logger->debug("room is null");
+                return null;
+            }
 
+            //get room images
+            $roomImages = $this->em->getRepository(RoomImages::class)->findBy(
+                array('room' => $roomId,
+                    'status' => array("active", "default")));
+
+            foreach ($roomImages as $roomImage){
+                $responseArray[] = array(
+                    'name' => $roomImage->getName(),
+                    'size' => "5mb"
+                );
+            }
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->debug(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+    public function addImageToRoom($imageName, $roomId): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $roomImage = new RoomImages();
             $room = $this->getRoom($roomId);
@@ -530,5 +564,6 @@ class RoomApi
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
+
 
 }

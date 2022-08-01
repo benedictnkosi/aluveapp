@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    Dropzone.autoDiscover = false;
 });
 
 function loadConfigurationPageData() {
@@ -34,19 +34,12 @@ function bindConfigElements() {
     $("#config_room_form").validate({
         // Specify validation rules
         rules: {
-            room_name: "required",
-            room_description: "required",
-            room_sleeps: "required",
-            room_price: {
-                required: true,
-                digits: true
-            },
-            room_size: {
-                required: true,
-                digits: true
+            room_name: "required", room_description: "required", room_sleeps: "required", room_price: {
+                required: true, digits: true
+            }, room_size: {
+                required: true, digits: true
             }
-        },
-        submitHandler: function () {
+        }, submitHandler: function () {
             createUpdateRoom();
         }
 
@@ -58,13 +51,10 @@ function bindConfigElements() {
     $("#config_addOn_form").validate({
         // Specify validation rules
         rules: {
-            addon_name: "required",
-            addon_price: {
-                required: true,
-                digits: true
+            addon_name: "required", addon_price: {
+                required: true, digits: true
             }
-        },
-        submitHandler: function () {
+        }, submitHandler: function () {
             createAddOn();
         }
 
@@ -77,8 +67,7 @@ function bindConfigElements() {
         // Specify validation rules
         rules: {
             employee_name: "required",
-        },
-        submitHandler: function () {
+        }, submitHandler: function () {
             createEmployee();
         }
     });
@@ -101,8 +90,7 @@ function bindConfigElements() {
         // Specify validation rules
         rules: {
             terms_text: "required"
-        },
-        submitHandler: function () {
+        }, submitHandler: function () {
             updateTerms();
         }
     });
@@ -115,8 +103,7 @@ function bindConfigElements() {
         // Specify validation rules
         rules: {
             icalLink: "required"
-        },
-        submitHandler: function () {
+        }, submitHandler: function () {
             addNewChannel();
         }
     });
@@ -127,31 +114,10 @@ function bindConfigElements() {
     $("#config_createMessageTemplate_form").validate({
         // Specify validation rules
         rules: {
-            template_name_input: "required",
-            template_message: "required"
-        },
-        submitHandler: function () {
+            template_name_input: "required", template_message: "required"
+        }, submitHandler: function () {
             createMessageTemplate();
         }
-    });
-
-    const uploader = $('#ssi-upload').ssi_uploader({
-        url: '/admin/UploadController.php',
-        allowed: ['jpg', 'jpeg', 'png', 'bmp', 'gif'],
-        maxNumberOfFiles: '10',
-        errorHandler: {
-            method: function (msg, type) {
-                showResErrorMessage("configuration", msg)
-                //ssi_modal.notify(type, {content: msg});
-            },
-            success: 'success',
-            error: 'error'
-        },
-        maxFileSize: 5,//mb,
-    });
-
-    uploader.on('onEachUpload.ssi-uploader', function () {
-        uploader.data('ssi_upload').uploadFiles();
     });
 }
 
@@ -390,6 +356,7 @@ function populateFormWithRoom(event) {
         $("#select_Stairs").val($("#select_Stairs option:first").val());
 
     } else {
+        initialiseImageUpload(roomId);
         let url = "/public/rooms/" + roomId;
         $("body").addClass("loading");
         $.getJSON(url + "?callback=?", null, function (response) {
@@ -687,8 +654,7 @@ function getMessageSchedules() {
 
             $.each(data, function (i, schedule) {
                 $('#schedule_name').append($('<option/>').attr({
-                    "value": schedule.id,
-                    "data-price": schedule.name
+                    "value": schedule.id, "data-price": schedule.name
                 }).text(schedule.name));
             });
         },
@@ -976,6 +942,120 @@ function removeChannel(event) {
             showResSuccessMessage("configuration", response[0].result_message);
         } else {
             showResErrorMessage("configuration", response[0].result_message);
+        }
+    });
+}
+
+function initialiseImageUpload(roomId) {
+    var myNewdDropzone = new Dropzone("#fileUpload_dropzone", {
+        dictDefaultMessage: "Drop files here or click to upload.",
+        clickable: true,
+        enqueueForUpload: true,
+        maxFilesize: 5,
+        addRemoveLinks: true,
+        uploadMultiple: false,
+        maxFiles: 10,
+
+        // on initialize get the images on the
+        // server for the partner
+        init: function () {
+            thisDropzone = this;
+            $
+                .get('/api/configuration/room/images/' + roomId, function (data) {
+                    $
+                        .each(data, function (key, value) {
+                            var mockFile = {
+                                name: value.name, size: value.size
+                            };
+                            thisDropzone.options.addedfile
+                                .call(thisDropzone, mockFile);
+                            thisDropzone.options.thumbnail
+                                .call(thisDropzone, mockFile, "/public/room/image/" + value.name);
+                            $(".dz-details")
+                                .remove();
+                            $(".dz-progress")
+                                .remove();
+                        });
+                });
+
+            // delete from server
+            this
+                .on("removedfile", function (file) {
+                    var isFileDeleted = false;
+
+                    // get the
+                    // mapped server
+                    // name for the
+                    // file the user
+                    // is trying to
+                    // delete and
+                    // send that to
+                    // the server
+                    $
+                        .get("api/configuration/removeimage/" + roomId, function (data, status) {
+                            if (data
+                                .indexOf("success") > -1) {
+                                return;
+                            } else {
+                                $('#lbl_message')
+                                    .text("Failed to delete image from server, please reload the page and try again.");
+                                $('#lbl_message')
+                                    .removeClass("display-none alert-success alert-warning")
+                                    .addClass("alert-danger");
+                                return;
+                            }
+                        });
+
+                    // if the file
+                    // was not found
+                    // on the
+                    // recently
+                    // uploaded
+                    // images and
+                    // its one of
+                    // the
+                    // previously
+                    // uploaded
+                    // images
+                    // call the
+                    // server with
+                    // the filename
+                    // as its
+                    // already
+                    // loaded from
+                    // the server
+                    if (!isFileDeleted) {
+                        $
+                            .get("api/configuration/removeimage/" + file.name, function (data, status) {
+                                if (data
+                                    .indexOf("success") > -1) {
+                                    return;
+                                } else {
+                                    $('#lbl_message')
+                                        .text("Failed to delete image from server, please reload the page and try again.");
+                                    $('#lbl_message')
+                                        .removeClass("display-none alert-success alert-warning")
+                                        .addClass("alert-danger");
+                                    return;
+                                }
+                            });
+                    }
+
+                });
+
+            // on successfull upload, add the
+            // server anme mappinging to the
+            // array and save in sessiopn
+            // storage
+            this
+                .on("success", function (file, responseText) {
+                    var mobileops_uploadedImages = JSON
+                        .parse(sessionStorage["mobileops_uploadedImages"]);
+                    mobileops_uploadedImages
+                        .push(responseText);
+                    sessionStorage["mobileops_uploadedImages"] = JSON
+                        .stringify(mobileops_uploadedImages);
+                });
         }
     });
 }

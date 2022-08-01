@@ -92,7 +92,7 @@ class BlockedRoomApi
         return $responseArray;
     }
 
-    public function getBlockedRooms( $roomId = 0)
+    public function getBlockedRooms($roomId = 0)
     {
         $this->logger->debug("Starting Method: " . __METHOD__ );
         $responseArray = array();
@@ -119,7 +119,7 @@ class BlockedRoomApi
             return $blockedRooms;
         }catch(Exception $exception){
             $responseArray[] = array(
-                'result_message' => $exception->getMessage(),
+                'result_message' => $exception->getMessage() . " - " . $exception->getTraceAsString(),
                 'result_code'=> 1
             );
             $this->logger->debug(print_r($responseArray, true));
