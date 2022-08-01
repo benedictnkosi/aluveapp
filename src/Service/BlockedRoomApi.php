@@ -102,7 +102,6 @@ class BlockedRoomApi
                 $roomFilter = " and b.room = $roomId ";
             }
             $now = new DateTime('today midnight');
-            $maxPastDate = $now->sub(new DateInterval("P".ICAL_PAST_DAYS."D"));
 
             $blockedRooms = $this->em
                 ->createQuery("SELECT b FROM App\Entity\BlockedRooms b 
