@@ -4,6 +4,7 @@ namespace App\Helpers\FormatHtml;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+require_once(__DIR__ . '/../app/application.php');
 
 class RoomsPageHTML
 {
