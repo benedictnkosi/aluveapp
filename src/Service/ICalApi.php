@@ -388,7 +388,7 @@ class ICalApi
             //do not fix formatting for this line
             $icalString = "BEGIN:VCALENDAR\r\n";
             $icalString .= "VERSION:2.0\r\n";
-            $icalString .= "PRODID:Example Event test\r\n";
+            $icalString .= "PRODID:Aluve APP Ical\r\n";
             $icalString .= "METHOD:PUBLISH\r\n";;
 
             if ($reservations !== null) {
@@ -445,17 +445,17 @@ class ICalApi
 
                     $this->logger->debug("create the event within the ical object");
                     // create the event within the ical object
-                    $icalString .= '
-BEGIN:VEVENT
-DTEND;VALUE=DATE:' . $event_end . '
-DTSTART;VALUE=DATE:' . $event_start . '
-DTSTAMP:' . $now->format('Ymd') . 'T100058Z
-UID:' . $uid . '
-DESCRIPTION:NAME: blocked room
-SUMMARY: Block id: ' . $blockRoomId . '
-STATUS:CONFIRMED
-CREATED:' . $blockedRoom->getCreatedDate()->format('Ymd') . 'T222001Z
-END:VEVENT';
+
+                    $icalString .= "BEGIN:VEVENT\r\n";
+                    $icalString .= "UID:". $uid . "\r\n";
+                    $icalString .= "DTSTAMP:" .  $now->format('Ymd') . 'T100058Z' . "\r\n";
+                    $icalString .= "DTSTART:" . $event_start . "\r\n";
+                    $icalString .= "DTEND:" . $event_end . "\r\n";
+                    $icalString .= "LOCATION:none\r\n";
+                    $icalString .= "SUMMARY:blockid" . $blockRoomId . "\r\n";
+                    $icalString .= "DESCRIPTION:blocked\r\n";
+                    $icalString .= "END:VEVENT\r\n";
+
                     $this->logger->debug("Done creating the event within the ical object");
                 }
 
