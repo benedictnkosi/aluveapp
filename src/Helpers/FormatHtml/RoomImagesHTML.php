@@ -5,6 +5,7 @@ namespace App\Helpers\FormatHtml;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpParser\Node\Expr\Isset_;
 use Psr\Log\LoggerInterface;
+require_once(__DIR__ . '/../app/application.php');
 
 class RoomImagesHTML
 {
@@ -25,7 +26,7 @@ class RoomImagesHTML
             $html .= '<div class="image-container">';
             foreach ($roomImages as $roomImage) {
                 $html .= '<div class="slide">
-                <img src="/assets/images/rooms/' . $roomImage->getName() . '">
+                <img src="https:/'.SERVER_NAME.'/public/room/image/' . $roomImage->getName() . '">
             </div>';
             }
 
@@ -49,7 +50,7 @@ class RoomImagesHTML
             $html .= '</div>';
         }else{
             $html .= '<div class="slide">
-                <img src="/assets/images/rooms/room_noimage.jpg">
+                <img src="https:/'.SERVER_NAME.'/public/room/image/room_noimage.jpg">
             </div>';
         }
         return $html;
@@ -77,7 +78,7 @@ class RoomImagesHTML
 
                 $html .= '<div class="img-wrap image-thumbnail" id="image-thumbnail-' . $roomImage->getId() . '">
                             <span class="close" data-image-id="' . $roomImage->getId() . '">&times;</span>
-                            <img data-image-id="' . $roomImage->getId() . '" class="room_images '.$imageNotDefaultClass.'" src="/assets/images/rooms/thumb' . $roomImage->getName() . '">
+                            <img data-image-id="' . $roomImage->getId() . '" class="room_images '.$imageNotDefaultClass.'" src="https:/'.SERVER_NAME.'/public/room/image/thumb' . $roomImage->getName() . '">
                         </div>';
             }
         } else {

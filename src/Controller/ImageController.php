@@ -7,6 +7,7 @@ use App\Service\RoomApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,12 +17,12 @@ class ImageController extends AbstractController
 {
 
     /**
-     * @Route("api/configuration/removeimage/{imageId}")
+     * @Route("api/configuration/removeimage/{imageName}")
      */
-    public function removeImage($imageId, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function removeImage($imageName, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->removeImage($imageId);
+        $response = $roomApi->removeImage($imageName);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -52,6 +53,15 @@ class ImageController extends AbstractController
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
+    }
+
+    /**
+     * @Route("public/room/image/{fileName}", name="signup")
+     */
+    public function getFile($fileName): Response
+    {
+        $uploadDir = __DIR__ . '/../../public/rooms_images/';
+        return new BinaryFileResponse($uploadDir . $fileName);
     }
 
     /**

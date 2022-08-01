@@ -55,14 +55,7 @@ class HomeController extends AbstractController
         return $this->render("signup.html");
     }
 
-    /**
-     * @Route("public/room/image/{fileName}", name="signup")
-     */
-    public function getFile($fileName): Response
-    {
-        $uploadDir = __DIR__ . '/../../public/rooms_images/';
-        return new BinaryFileResponse($uploadDir . $fileName);
-    }
+
 
 
 

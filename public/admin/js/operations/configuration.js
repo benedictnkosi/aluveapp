@@ -1,5 +1,3 @@
-let myNewdDropzone;
-
 $(document).ready(function () {
     Dropzone.autoDiscover = false;
 });
@@ -341,6 +339,7 @@ function populateFormWithRoom(event) {
 
     $('#room_id').val(roomId);
     setCookie("room_id", roomId);
+    let newUploadForm;
     if (roomId.localeCompare("0") === 0) {
 
         $('#manage_room_h3').html("Create A New Room");
@@ -358,10 +357,11 @@ function populateFormWithRoom(event) {
         $("#select_Stairs").val($("#select_Stairs option:first").val());
 
     } else {
-        initialiseImageUpload(roomId);
+
         let url = "/public/rooms/" + roomId;
         $("body").addClass("loading");
         $.getJSON(url + "?callback=?", null, function (response) {
+            initialiseImageUpload(roomId);
             $("body").removeClass("loading");
             if (response[0].result_code === 0) {
                 $('#manage_room_h3').html("Update " + response[0].name + " Details");
@@ -949,9 +949,19 @@ function removeChannel(event) {
 }
 
 function initialiseImageUpload(roomId) {
-    myNewdDropzone.destroy();
 
-    myNewdDropzone = new Dropzone("#fileUpload_dropzone", {
+    //create new upload element
+    $(".dropzone").remove();
+    newUploadForm = '<form action="/api/configuration/image/upload" class="dropzone" id="fileUpload_dropzone"></form>';
+    $("#imageUploaderDiv").append(newUploadForm);
+
+    sessionStorage.mobileops_servicesChanged = 1;
+    sessionStorage.mobileops_servicesFetched = 0;
+    var mobileops_uploadedImages = [];
+    sessionStorage["mobileops_uploadedImages"] = JSON
+        .stringify(mobileops_uploadedImages);
+
+    const myNewdDropzone = new Dropzone("#fileUpload_dropzone", {
         dictDefaultMessage: "Drop files here or click to upload.",
         clickable: true,
         enqueueForUpload: true,
@@ -985,66 +995,13 @@ function initialiseImageUpload(roomId) {
             // delete from server
             this
                 .on("removedfile", function (file) {
-                    var isFileDeleted = false;
-
-                    // get the
-                    // mapped server
-                    // name for the
-                    // file the user
-                    // is trying to
-                    // delete and
-                    // send that to
-                    // the server
                     $
-                        .get("api/configuration/removeimage/" + roomId, function (data, status) {
-                            if (data
-                                .indexOf("success") > -1) {
-                                return;
-                            } else {
-                                $('#lbl_message')
-                                    .text("Failed to delete image from server, please reload the page and try again.");
-                                $('#lbl_message')
-                                    .removeClass("display-none alert-success alert-warning")
-                                    .addClass("alert-danger");
-                                return;
+                        .get("/api/configuration/removeimage/" + file.name, function (data, status) {
+                            if (data[0].result_code !== 0) {
+                                showResErrorMessage("configuration", data[0].result_message);
+                                initialiseImageUpload(roomId);
                             }
                         });
-
-                    // if the file
-                    // was not found
-                    // on the
-                    // recently
-                    // uploaded
-                    // images and
-                    // its one of
-                    // the
-                    // previously
-                    // uploaded
-                    // images
-                    // call the
-                    // server with
-                    // the filename
-                    // as its
-                    // already
-                    // loaded from
-                    // the server
-                    if (!isFileDeleted) {
-                        $
-                            .get("api/configuration/removeimage/" + file.name, function (data, status) {
-                                if (data
-                                    .indexOf("success") > -1) {
-                                    return;
-                                } else {
-                                    $('#lbl_message')
-                                        .text("Failed to delete image from server, please reload the page and try again.");
-                                    $('#lbl_message')
-                                        .removeClass("display-none alert-success alert-warning")
-                                        .addClass("alert-danger");
-                                    return;
-                                }
-                            });
-                    }
-
                 });
 
             // on successfull upload, add the
@@ -1053,12 +1010,7 @@ function initialiseImageUpload(roomId) {
             // storage
             this
                 .on("success", function (file, responseText) {
-                    var mobileops_uploadedImages = JSON
-                        .parse(sessionStorage["mobileops_uploadedImages"]);
-                    mobileops_uploadedImages
-                        .push(responseText);
-                    sessionStorage["mobileops_uploadedImages"] = JSON
-                        .stringify(mobileops_uploadedImages);
+                    initialiseImageUpload(roomId);
                 });
         }
     });

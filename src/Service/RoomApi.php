@@ -486,7 +486,7 @@ class RoomApi
         $responseArray = array();
         try {
             //get room images
-            $roomImage = $this->em->getRepository(RoomImages::class)->findOneBy(array('id' => $imageId));
+            $roomImage = $this->em->getRepository(RoomImages::class)->findOneBy(array('name' => $imageId));
 
             if ($roomImage === null) {
                 $responseArray[] = array(

@@ -43,7 +43,7 @@ class AvailableRoomsDropDownHTML
 
         if($numberOfRooms === 0){
             $htmlString .='<option value="No Rooms Available for Selected Dates"
-                                                data-thumbnail="assets/images/rooms/noroom.jpg" data-price="0" data-roomId="0"  data-sleeps="0">No Rooms Available
+                                                data-thumbnail="https:/'.SERVER_NAME.'/public/room/image/noroom.jpg" data-price="0" data-roomId="0"  data-sleeps="0">No Rooms Available
                                         </option>';
         }
         $this->logger->debug("ending Method: " . __METHOD__);
