@@ -40,4 +40,26 @@ class ImageController extends AbstractController
         return $response;
     }
 
+    /**
+     * @Route("api/configuration/image/upload")
+     */
+    public function uploadImage(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $file = $request->files->get('myfile');
+        if (empty($file))
+        {
+            $logger->info("No file specified");
+            return new Response("No file specified",
+                Response::HTTP_UNPROCESSABLE_ENTITY, ['content-type' => 'text/plain']);
+        }
+
+        $filename = $file->getClientOriginalName();
+        $uploader->upload($uploadDir, $file, $filename);
+
+        return new Response("File uploaded",  Response::HTTP_OK,
+            ['content-type' => 'text/plain']);
+    }
+
+
 }
