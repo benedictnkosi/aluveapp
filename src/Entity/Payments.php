@@ -36,6 +36,13 @@ class Payments
     private $amount;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="channel", type="string", length=100, nullable=true)
+     */
+    private $channel;
+
+    /**
      * @var Reservations
      *
      * @ORM\ManyToOne(targetEntity="Reservations")
@@ -91,6 +98,22 @@ class Payments
     public function setAmount(float $amount): void
     {
         $this->amount = $amount;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getChannel(): ?string
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @param string|null $channel
+     */
+    public function setChannel(?string $channel): void
+    {
+        $this->channel = $channel;
     }
 
     /**

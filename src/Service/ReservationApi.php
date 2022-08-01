@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
-use App\Helpers\SMSHelper;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -131,7 +130,7 @@ class ReservationApi
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.id = ".$_SESSION['PROPERTY_ID']."
+            WHERE p.id = " . $_SESSION['PROPERTY_ID'] . "
             and r.checkIn >= '" . $datetime->format('Y-m-d') . "'
             and r.status = '" . $status->getId() . "'
             order by r.checkIn asc")
@@ -146,13 +145,13 @@ class ReservationApi
         }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
 
-        if(empty($reservations)){
+        if (empty($reservations)) {
             return null;
         }
         return $reservations;
     }
 
-    public function getUpComingReservations( $roomId = 0, $includeStayOvers = false)
+    public function getUpComingReservations($roomId = 0, $includeStayOvers = false)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $reservations = null;
@@ -167,7 +166,7 @@ class ReservationApi
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
             $excludeStayOverSql = "and r.checkIn >= '" . $now->format('Y-m-d') . "'";
-            if($includeStayOvers){
+            if ($includeStayOvers) {
                 $excludeStayOverSql = "";
             }
 
@@ -175,7 +174,7 @@ class ReservationApi
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.id = ".$_SESSION["PROPERTY_ID"]."
+            WHERE p.id = " . $_SESSION["PROPERTY_ID"] . "
             and r.checkIn <= '" . $maxFutureDate->format('Y-m-d') . "'
             and r.checkOut >= '" . $now->format('Y-m-d') . "'
             $excludeStayOverSql 
@@ -192,7 +191,7 @@ class ReservationApi
         }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
 
-        if(empty($reservations)){
+        if (empty($reservations)) {
             return null;
         }
         return $reservations;
@@ -212,7 +211,7 @@ class ReservationApi
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            WHERE p.id = ".$_SESSION['PROPERTY_ID']."
+            WHERE p.id = " . $_SESSION['PROPERTY_ID'] . "
             and r.checkOut < '" . $datetime->format('Y-m-d') . "'
             and r.checkIn > '" . $maxPastDate->format('Y-m-d') . "'
             and r.status = '" . $status->getId() . "'
@@ -229,7 +228,7 @@ class ReservationApi
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
 
-        if(empty($reservations)){
+        if (empty($reservations)) {
             return null;
         }
 
@@ -248,7 +247,7 @@ class ReservationApi
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            where p.id = ".$_SESSION['PROPERTY_ID']."
+            where p.id = " . $_SESSION['PROPERTY_ID'] . "
             and r.checkOut = '" . $datetime->format('Y-m-d') . "'
             and r.status = '" . $status->getId() . "'
             order by r.checkOut desc")
@@ -263,7 +262,7 @@ class ReservationApi
             $this->logger->debug(print_r($responseArray, true));
         }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        if(empty($reservations)){
+        if (empty($reservations)) {
             return null;
         }
 
@@ -278,14 +277,14 @@ class ReservationApi
             $maxPastDate = $now->add(new DateInterval("P" . $days . "D"));
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            $reservations =  $this->em
+            $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn = '" . $maxPastDate->format('Y-m-d') . "'
             and r.room = $roomId 
             and r.status = " . $status->getId())
                 ->getResult();
 
-            if(empty($reservations)){
+            if (empty($reservations)) {
                 return null;
             }
 
@@ -306,21 +305,21 @@ class ReservationApi
 
             $this->logger->debug("query " . $roomId . " " . $origin);
 
-            $reservations =  $this->em
+            $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn > '" . $yesterdayDate->format('Y-m-d') . "'
             and r.room = $roomId 
-            and r.origin = '" . $origin ."'
+            and r.origin = '" . $origin . "'
             and r.status = " . $status->getId())
                 ->getResult();
 
-            if(empty($reservations)){
+            if (empty($reservations)) {
                 return null;
             }
 
             return $reservations;
         } catch (Exception $ex) {
-            $this->logger->debug( $ex->getMessage() . " " . $ex->getTraceAsString());
+            $this->logger->debug($ex->getMessage() . " " . $ex->getTraceAsString());
             return null;
         }
     }
@@ -340,7 +339,7 @@ class ReservationApi
             and r.status = " . $status->getId())
                 ->getResult();
 
-            if(empty($reservations)){
+            if (empty($reservations)) {
                 return null;
             }
 
@@ -360,7 +359,7 @@ class ReservationApi
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            where p.id = ".$_SESSION['PROPERTY_ID']."
+            where p.id = " . $_SESSION['PROPERTY_ID'] . "
             and r.checkIn < CURRENT_DATE() 
             And r.checkOut > CURRENT_DATE() 
             and r.status = " . $status->getId() . "
@@ -376,7 +375,7 @@ class ReservationApi
         }
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        if(empty($reservations)){
+        if (empty($reservations)) {
             return null;
         }
 
@@ -540,14 +539,14 @@ class ReservationApi
                 $guest = null;
                 if (strcmp($origin, "airbnb.com") === 0) {
                     $guest = $guestApi->getGuestByName("Airbnb Guest");
-                } elseif (strlen($phoneNumber)>1){
+                } elseif (strlen($phoneNumber) > 1) {
                     $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
                 }
 
                 if ($guest == null) {
                     $this->logger->debug("guest not found, creating a new guest");
                     //create guest
-                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email,  $origin, $request);
+                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $origin, $request);
                     if ($response[0]['result_code'] != 0) {
                         $this->logger->debug(print_r($response, true));
                         return $response;
@@ -622,53 +621,28 @@ class ReservationApi
                 //Send SMS
                 if (!$isImport) {
                     $this->logger->debug("this reservation is not an import");
-                    if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
-                        $this->logger->debug("this is a south african number " . $reservation->getGuest()->getPhoneNumber());
-                        $SMSHelper = new SMSHelper($this->logger);
-                        $message = "Hi " . $guest->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://" . $reservation->getRoom()->getProperty()->getServerName() . "/invoice.html?reservation=" . $reservation->getId();
-                        $SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
+                    if (!empty($reservation->getGuest()->getEmail())) {
+                        $this->logger->debug("user email is not empty sending email" . $reservation->getGuest()->getEmail());
+                        $emailBody = file_get_contents(__DIR__ . '/../email_template/new_reservation.html');
+                        $emailBody = str_replace("guest_name", $reservation->getGuest()->getName(), $emailBody);
+                        $emailBody = str_replace("check_in", $reservation->getCheckIn()->format("d M Y"), $emailBody);
+                        $emailBody = str_replace("check_out", $reservation->getCheckOut()->format("d M Y"), $emailBody);
+                        $emailBody = str_replace("server_name", $reservation->getRoom()->getProperty()->getServerName(), $emailBody);
+                        $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
+                        $communicationApi = new CommunicationApi($this->em, $this->logger);
+                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(), $emailBody, $reservation->getRoom()->getProperty()->getName() . '- Thank you for payment');
+                        $this->logger->debug("Successfully sent email to guest");
                     } else {
-                        $this->logger->debug("this is not a south african number " . $reservation->getGuest()->getPhoneNumber());
-                        if (!empty($reservation->getGuest()->getEmail())) {
-                            $this->logger->debug("user email is not empty sending email" . $reservation->getGuest()->getEmail());
-                            $emailBody = file_get_contents(__DIR__ . '/../email_template/new_reservation.html');
-                            $emailBody = str_replace("guest_name", $reservation->getGuest()->getName(), $emailBody);
-                            $emailBody = str_replace("check_in", $reservation->getCheckIn()->format("d M Y"), $emailBody);
-                            $emailBody = str_replace("check_out", $reservation->getCheckOut()->format("d M Y"), $emailBody);
-                            $emailBody = str_replace("server_name", $reservation->getRoom()->getProperty()->getServerName(), $emailBody);
-                            $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
-                            $whitelist = array('localhost', '::1' );
-                            // check if the server is in the array
-                            if (!in_array($_SERVER['REMOTE_ADDR'], $whitelist)) {
-                                $communicationApi = new CommunicationApi($this->em, $this->logger);
-                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(),  $emailBody, 'Thank you for payment');
-                                $this->logger->debug("Successfully sent email to guest");
-                            } else {
-                                $this->logger->debug("email not sent on local server");
-                            }
-                        }else{
-                            $this->logger->debug("user email is empty not sending email" . $reservation->getGuest()->getEmail());
-                        }
+                        $this->logger->debug("user email is empty not sending email" . $reservation->getGuest()->getEmail());
                     }
-                    if (count($roomIdsArray) === 1) {
-                        $responseArray[] = array(
-                            'result_code' => 0,
-                            'result_message' => "Successfully created reservation",
-                            'reservation_id' => $reservation->getId()
-                        );
-                    }
-
                     $reservationIds[] = $reservation->getId();
                 }
-
-                if (count($roomIdsArray) > 1) {
-                    $responseArray[] = array(
-                        'result_code' => 0,
-                        'result_message' => "Successfully created reservation",
-                        'reservation_id' => $reservationIds
-                    );
-                }
             }
+            $responseArray[] = array(
+                'result_code' => 0,
+                'result_message' => "Successfully created reservation",
+                'reservation_id' => $reservationIds
+            );
         } catch
         (Exception $ex) {
             $responseArray[] = array(
@@ -747,46 +721,20 @@ class ReservationApi
         $responseArray = array();
         try {
             $reservations = $this->getCheckOutReservation();
-            if($reservations != null){
-                foreach($reservations as $reservation){
-                    $messageBody = "Thank You " . $reservation->getGuest()->getName() . ". Please take a few seconds to give us a 5-star review on Google. ". $reservation->getRoom()->getProperty()->getGoogleReviewLink().". " . $reservation->getRoom()->getProperty()->getName();
-                    $smsHelper = new SMSHelper($this->logger);
+            if ($reservations != null) {
+                foreach ($reservations as $reservation) {
                     //send email if provided
-                    if (!empty($reservation->getGuest()->getEmail())) {
-                        if($this->sendReviewEmail($reservation)){
-                            $responseArray[] = array(
-                                'result_code' => 0,
-                                'result_message' => 'Successfully sent review email for ' . $reservation->getGuest()->getName()
-                            );
-                        }else{
-                            $responseArray[] = array(
-                                'result_code' => 1,
-                                'result_message' => 'Failed to send review email for ' . $reservation->getGuest()->getName()
-                            );
-                        }
-                    }else{
-                        if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
-                            if($smsHelper->sendMessage($reservation->getGuest()->getPhoneNumber(), $messageBody)){
-                                $responseArray[] = array(
-                                    'result_code' => 0,
-                                    'result_message' => 'Successfully sent review sms for ' . $reservation->getGuest()->getName()
-                                );
-                            }else{
-                                $responseArray[] = array(
-                                    'result_code' => 1,
-                                    'result_message' => 'Failed to send review sms to ' . $reservation->getGuest()->getName()
-                                );
-                            }
-
-                        }else{
-                            $this->logger->debug("Guest number not south african number " . $reservation->getGuest()->getPhoneNumber());
-                            $responseArray[] = array(
-                                'result_code' => 1,
-                                'result_message' => 'Guest number not south african number ' . $reservation->getGuest()->getName()
-                            );
-                        }
+                    if ($this->sendReviewEmail($reservation)) {
+                        $responseArray[] = array(
+                            'result_code' => 0,
+                            'result_message' => 'Successfully sent review email for ' . $reservation->getGuest()->getName()
+                        );
+                    } else {
+                        $responseArray[] = array(
+                            'result_code' => 1,
+                            'result_message' => 'Failed to send review email for ' . $reservation->getGuest()->getName()
+                        );
                     }
-
                     $this->logger->debug(print_r($responseArray, true));
                 }
             }
@@ -803,26 +751,22 @@ class ReservationApi
     }
 
 
-    function sendReviewEmail( $reservation): bool
+    function sendReviewEmail($reservation): bool
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        try{
-            //send email to guest
-            $emailBody = file_get_contents(__DIR__ . '/../email_template/review_request.html');
-            $emailBody = str_replace("guest_name",$reservation->getGuest()->getName(),$emailBody);
-            $emailBody = str_replace("google_review_link",$reservation->getRoom()->getProperty()->getGoogleReviewLink(),$emailBody);
-            $emailBody = str_replace("property_name",$reservation->getRoom()->getProperty()->getName(),$emailBody);
+        try {
+            if($reservation->getRoom()->getProperty()->getGoogleReviewLink() != null){
+                //send email to guest
+                $emailBody = file_get_contents(__DIR__ . '/../email_template/review_request.html');
+                $emailBody = str_replace("guest_name", $reservation->getGuest()->getName(), $emailBody);
+                $emailBody = str_replace("google_review_link", $reservation->getRoom()->getProperty()->getGoogleReviewLink(), $emailBody);
+                $emailBody = str_replace("property_name", $reservation->getRoom()->getProperty()->getName(), $emailBody);
 
-            $whitelist = array('localhost', '::1' );
-            // check if the server is in the array
-            if (!in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
-                mail($reservation->getGuest()->getEmail(), 'Thank you for payment', $emailBody);
-                $this->logger->debug("Successfully sent email to guest");
-            }else{
-                $this->logger->debug("local server email not sent");
+                $communicationApi = new CommunicationApi($this->em, $this->logger);
+                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(),  $emailBody, $reservation->getRoom()->getProperty()->getName() . ' - Please review us');
             }
             return true;
-        }catch (Exception $ex){
+        } catch (Exception $ex) {
             $this->logger->debug(print_r($ex, true));
             return false;
         }

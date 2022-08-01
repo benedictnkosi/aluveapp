@@ -103,6 +103,4 @@ class SMSHelper
         return false;
     }
 
-
-
 }

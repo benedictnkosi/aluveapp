@@ -224,7 +224,7 @@ class ScheduleMessageApi
                                     if (!empty($email)) {
                                         $message = wordwrap($message, 70);
                                         $communicationApi = new CommunicationApi($this->em, $this->logger);
-                                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $email,  $message, "Website - Message from guest", $reservation->getRoom()->getProperty()->getEmailAddress());
+                                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $email,  $message, "Aluve App - Message from guest", $reservation->getRoom()->getProperty()->getEmailAddress());
                                         $this->logger->debug("Sending email for " . $message);
                                         $responseArray[] = array(
                                             'result_message' => 'Successfully sent all scheduled messages for ' . $message,

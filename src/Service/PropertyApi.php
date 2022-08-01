@@ -211,14 +211,10 @@ class PropertyApi
                     'X-Mailer: PHP/' . phpversion();
                 $whitelist = array('localhost', '::1' );
                 // check if the server is in the array
-                if ( !in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
-                    $communicationApi = new CommunicationApi($this->em, $this->logger);
-                    $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $property->getEmailAddress(),  $emailPrefix . $message, "Website - Message from guest");
+                $communicationApi = new CommunicationApi($this->em, $this->logger);
+                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $property->getEmailAddress(),  $emailPrefix . $message, "Aluve App - Message from guest");
 
-                    $this->logger->debug("Successfully sent email to guest");
-                }else{
-                    $this->logger->debug("local server email not sent");
-                }
+                $this->logger->debug("Successfully sent email to guest");
 
                 $responseArray[] = array(
                     'result_message' => 'Successfully sent message. Thank you',

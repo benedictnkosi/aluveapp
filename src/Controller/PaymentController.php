@@ -39,10 +39,28 @@ class PaymentController extends AbstractController
         $reservationId = $request->get('item_description');
         $amount = $request->get('amount_gross');
 
-        $response = $paymentApi->addPayment($reservationId, $amount);
+        $response = $paymentApi->addPayment($reservationId, $amount, "payfast");
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
+
+    /**
+     * @Route("public/payfast_notify_test")
+     * @throws \Exception
+     */
+    public function payfast_notify_test(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, PaymentApi $paymentApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $reservationId = "[74,75]";
+        $amount = "10.00";
+
+        $response = $paymentApi->addPayment($reservationId, $amount, "payfast");
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response, 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
 }

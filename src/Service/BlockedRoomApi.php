@@ -111,7 +111,7 @@ class BlockedRoomApi
             WHERE b.room = r.id
             and p.id = r.property
             and p.id = ".$_SESSION['PROPERTY_ID']."
-            and b.toDate >= '".$maxPastDate->format('Y-m-d')."' 
+            and b.toDate >= '".$now->format('Y-m-d')."' 
                     $roomFilter 
             order by b.fromDate asc ")
                 ->getResult();

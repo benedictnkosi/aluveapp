@@ -36,7 +36,7 @@ class CommunicationController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $message.= "<br> from : $customerName
             <br> phone number: $phoneNumber";
-        $response = $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, ALUVEAPP_SALES_EMAIL, $message, "Message from customer", $email);
+        $response = $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, ALUVEAPP_SALES_EMAIL, $message, "Aluve App - Message from customer", $email);
         $responseArray = array();
         if ($response[0]['result_code'] === 0) {
             $responseArray[] = array(
