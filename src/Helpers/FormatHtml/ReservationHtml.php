@@ -107,9 +107,9 @@ class ReservationHtml
         foreach ($todayCheckIns as $todayCheckIn) {
             $htmlString .= '<div class="reservation-item" >
                          <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckIn->getId().'">
-                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkin.png"></img>
-                        <img class="listing-image-origin" src="/admin/images/'.$todayCheckIn->getOrigin().'.png"></img>
-                        <div class="listing-description-text">'
+                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkin.png" data-res-id="'.$todayCheckIn->getId().'"></img>
+                        <img class="listing-image-origin" src="/admin/images/'.$todayCheckIn->getOrigin().'.png" data-res-id="'.$todayCheckIn->getId().'"></img>
+                        <div class="listing-description-text" data-res-id="'.$todayCheckIn->getId().'">'
                 . $todayCheckIn->getGuest()->getName() . ' is expected to check-in 
                          <span class="listing-room-name" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getRoom()->getName() . ' </span>
                         </div>
