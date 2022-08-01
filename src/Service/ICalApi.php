@@ -382,14 +382,14 @@ class ICalApi
 
             $reservations = $reservationApi->getReservationsByRoom($roomId);
             $blockedRooms = $blockedRoomApi->getBlockedRooms($room->getId());
+            $blockedRooms = null;
             $now = new DateTime();
 
             //do not fix formatting for this line
-            $icalString = 'BEGIN:VCALENDAR
-METHOD:PUBLISH
-PRODID:-//' . $room->getProperty()->getName() . '//Aluve-' . $roomName . '-1// EN
-CALSCALE:GREGORIAN
-VERSION:2.0';
+            $icalString = "BEGIN:VCALENDAR\r\n";
+            $icalString .= "VERSION:2.0\r\n";
+            $icalString .= "PRODID:Example Event test\r\n";
+            $icalString .= "METHOD:PUBLISH\r\n";;
 
             if ($reservations !== null) {
                 $this->logger->debug("found reservations - " . count($reservations));
@@ -409,17 +409,18 @@ VERSION:2.0';
 
                     $this->logger->debug("create the event within the ical object");
                     // create the event within the ical object
-                    $icalString .= '
-BEGIN:VEVENT
-DTEND;VALUE=DATE:' . $event_end . '
-DTSTART;VALUE=DATE:' . $event_start . '
-DTSTAMP:' . $now->format('Ymd') . 'T100058Z
-UID:' . $uid . '
-DESCRIPTION:NAME: ' . $guestName . '
-SUMMARY:' . $guestName . '  - Resa id: ' . $resId . '
-STATUS:CONFIRMED
-CREATED:' . $reservation->getReceivedOn()->format('Ymd') . 'T222001Z
-END:VEVENT';
+
+
+                    $icalString .= "BEGIN:VEVENT\r\n";
+                    $icalString .= "UID:". $uid . "\r\n";
+                    $icalString .= "DTSTAMP:" .  $now->format('Ymd') . 'T100058Z' . "\r\n";
+                    $icalString .= "DTSTART:" . $event_start . "\r\n";
+                    $icalString .= "DTEND:" . $event_end . "\r\n";
+                    $icalString .= "LOCATION:none\r\n";
+                    $icalString .= "SUMMARY:" . $room->getProperty()->getName() . "\r\n";
+                    $icalString .= "DESCRIPTION:" . $guestName . "\r\n";
+                    $icalString .= "END:VEVENT\r\n";
+
                     $this->logger->debug("Done creating the event within the ical object");
                 }
 
@@ -462,8 +463,7 @@ END:VEVENT';
 
             }
 
-            $icalString .= '
-END:VCALENDAR';
+            $icalString .= "END:VCALENDAR\r\n";
 
         } catch (Exception $ex) {
             $this->logger->error($ex->getMessage());
