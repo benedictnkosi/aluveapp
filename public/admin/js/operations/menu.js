@@ -66,7 +66,6 @@ function updateView(selectedDiv) {
 }
 
 function loadDataOnMenuClick(selectedDiv) {
-    isUserLoggedIn();
     switch (selectedDiv) {
         case 'calendar':
             loadCalendarPageData();
@@ -86,9 +85,7 @@ function loadDataOnMenuClick(selectedDiv) {
             loadConfigurationPageData();
             break;
         default:
-        // code block
     }
-    //}
 }
 
 

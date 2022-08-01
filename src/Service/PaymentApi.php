@@ -112,6 +112,10 @@ class PaymentApi
                         $this->em->persist($payment);
                         $this->em->flush($payment);
 
+                        //block connected Room
+                        $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
+                        $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom()->format("Y-m-d"), $reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut(), "Connected Room Booked ", $reservation->getId());
+
                         $this->sendEmailToGuest( $reservation, $amountPerReservation);
                         $responseArray[] = array(
                             'result_code' => 0,

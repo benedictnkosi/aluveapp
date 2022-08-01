@@ -533,7 +533,6 @@ class ReservationApi
             foreach ($roomIdsArray as $roomId) {
                 $this->logger->debug("room id " . $roomId);
                 $roomApi = new RoomApi($this->em, $this->logger);
-                $propertyUid = $roomApi->getRoom($roomIds)->getProperty()->getUid();
                 //get guest
                 $guestApi = new GuestApi($this->em, $this->logger);
                 $guest = null;
@@ -586,6 +585,9 @@ class ReservationApi
 
                 if ($isImport) {
                     $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+                    //block connected Room
+                    $this->logger->debug("calling block room to block " . $room->getLinkedRoom() . " for room  " . $room->getName());
+                    $blockRoomApi->blockRoom($room->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked ", $reservation->getId());
                 } else {
                     $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'pending'));
                 }
@@ -601,9 +603,6 @@ class ReservationApi
                 $this->em->persist($reservation);
                 $this->em->flush($reservation);
 
-                //block connected Room
-                $this->logger->debug("calling block room to block " . $room->getLinkedRoom() . " for room  " . $room->getName());
-                $blockRoomApi->blockRoom($room->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked", $reservation->getId());
 
 
                 //add Short stay 3 hour add-on if check out is same day

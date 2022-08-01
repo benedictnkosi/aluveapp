@@ -252,7 +252,7 @@ class ICalApi
                         //block connected Room
                         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
                         $this->logger->debug("calling block room to block " . $reservation->getRoom()->getLinkedRoom() . " for room  " . $reservation->getRoom()->getName());
-                        $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked", $reservation->getId());
+                        $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked ", $reservation->getId());
 
                         $responseArray[] = array(
                             'result_code' => 0,
