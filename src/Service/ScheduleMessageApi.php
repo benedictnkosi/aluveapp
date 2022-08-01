@@ -101,7 +101,13 @@ class ScheduleMessageApi
         try {
             $scheduleTimes = $this->em->getRepository(ScheduleTimes::class)->findAll();
             $this->logger->debug("Ending Method before the return: " . __METHOD__);
-            return $scheduleTimes;
+            foreach($scheduleTimes as $scheduleTime){
+                $responseArray[] = array(
+                    'name' => $scheduleTime->getName(),
+                    'id' => $scheduleTime->getId()
+                );
+            }
+
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
