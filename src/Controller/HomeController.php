@@ -50,9 +50,7 @@ class HomeController extends AbstractController
         return $this->render("index.html");
     }
 
-    /**
-     * @Route("/signup", name="signup")
-     */
+    #[Route('/signup', name: 'app_signup')]
     public function signup(): Response
     {
 
