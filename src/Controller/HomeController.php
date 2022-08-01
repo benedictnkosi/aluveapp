@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 
+use App\Service\GuestApi;
+use App\Service\PropertyApi;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,11 +55,26 @@ class HomeController extends AbstractController
      */
     public function signup(): Response
     {
-        return $this->render("signup.html");
+
+     return $this->render("signup.html");
     }
 
 
-
-
+    /**
+     * @Route("/public/userloggedin")
+     */
+    public function isUserLoggedIn(LoggerInterface $logger, Request $request, GuestApi $guestApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__ );
+        if(isset($_SESSION["PROPERTY_ID"])){
+            $response = array("logged_in" => "true");
+        }else{
+            $response = array("logged_in" => "false");
+        }
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
 
 }

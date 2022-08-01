@@ -66,8 +66,7 @@ function updateView(selectedDiv) {
 }
 
 function loadDataOnMenuClick(selectedDiv) {
-    //if(sessionStorage.getItem(selectedDiv) === null){
-    //sessionStorage.setItem(selectedDiv,"loaded");
+    isUserLoggedIn();
     switch (selectedDiv) {
         case 'calendar':
             loadCalendarPageData();
@@ -138,4 +137,23 @@ function isRetry(functionName){
     }
 
     return true;
+}
+
+
+
+function isUserLoggedIn() {
+    let url =  "/public/userloggedin/";
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            if(data.logged_in.localeCompare("false") === 0){
+                logout()
+            }
+        }
+    });
 }
