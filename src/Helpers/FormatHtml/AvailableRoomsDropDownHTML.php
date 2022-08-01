@@ -27,7 +27,7 @@ class AvailableRoomsDropDownHTML
         $numberOfRooms = 0;
         if($availableRooms === null){
             $htmlString .='<option value="No Rooms Available for Selected Dates"
-                                                data-thumbnail="https:/'.SERVER_NAME.'/public/room/image/noroom.jpg" data-price="0" data-roomId="0"  data-sleeps="0">No Rooms Available
+                                                data-thumbnail="'.PROTOCOL.':/'.SERVER_NAME.'/public/room/image/noroom.jpg" data-price="0" data-roomId="0"  data-sleeps="0">No Rooms Available
                                         </option>';
             return $htmlString;
         }
@@ -42,7 +42,7 @@ class AvailableRoomsDropDownHTML
             }
             $numberOfRooms++;
             $htmlString .= '<option value="' . $availableRoom->getName() . '"
-                                                data-thumbnail="https://'.SERVER_NAME.'/room/image/thumb' . $roomDefaultImage . '" data-sleeps="' . $availableRoom->getSleeps() . '" data-price="' . $availableRoom->getPrice() . '" data-roomId="' . $availableRoom->getId() . '">' . $availableRoom->getName() . '
+                                                data-thumbnail="'.PROTOCOL.'://'.SERVER_NAME.'/public/room/image/thumb' . $roomDefaultImage . '" data-sleeps="' . $availableRoom->getSleeps() . '" data-price="' . $availableRoom->getPrice() . '" data-roomId="' . $availableRoom->getId() . '">' . $availableRoom->getName() . '
                                         </option>';
 
         }
