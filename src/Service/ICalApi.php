@@ -382,7 +382,6 @@ class ICalApi
 
             $reservations = $reservationApi->getReservationsByRoom($roomId);
             $blockedRooms = $blockedRoomApi->getBlockedRooms($room->getId());
-            $blockedRooms = null;
             $now = new DateTime();
 
             //do not fix formatting for this line
