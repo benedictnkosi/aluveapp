@@ -469,7 +469,23 @@ END:VCALENDAR';
             $this->logger->error($ex->getMessage());
             return "";
         }
-        return $icalString;
+        return $this->format_ical_string($icalString);
+    }
+
+    function format_ical_string( $s ): array|string|null
+    {
+        $r = wordwrap(
+            preg_replace(
+                array( '/,/', '/;/', '/[\r\n]/' ),
+                array( '\,', '\;', '\n' ),
+                $s
+            ), 73, "\n", TRUE
+        );
+
+        // Indent all lines but first:
+        $r = preg_replace( '/\n/', "\n  ", $r );
+
+        return $r;
     }
 
     function getAirbnbEmailAndPassword(): array
