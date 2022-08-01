@@ -415,7 +415,7 @@ DTEND;VALUE=DATE:' . $event_end . '
 DTSTART;VALUE=DATE:' . $event_start . '
 DTSTAMP:' . $now->format('Ymd') . 'T100058Z
 UID:' . $uid . '
-DESCRIPTION:NAME: ' . $guestName . ' \nEMAIL: ' . $guestEmail . '
+DESCRIPTION:NAME: ' . $guestName . ' EMAIL: ' . $guestEmail . '
 SUMMARY:' . $room->getProperty()->getName() . ' - ' . $guestName . '  - Resa id: ' . $resId . '
 STATUS:CONFIRMED
 CREATED:' . $reservation->getReceivedOn()->format('Ymd') . 'T222001Z
@@ -450,7 +450,7 @@ DTEND;VALUE=DATE:' . $event_end . '
 DTSTART;VALUE=DATE:' . $event_start . '
 DTSTAMP:' . $now->format('Ymd') . 'T100058Z
 UID:' . $uid . '
-DESCRIPTION:NAME: blocked room \nEMAIL: noemail@aluvegh.co.za
+DESCRIPTION:NAME: blocked room EMAIL: noemail@aluvegh.co.za
 SUMMARY:' . $room->getProperty()->getName() . ' - ' . $roomName . '  - Block id: ' . $blockRoomId . '
 STATUS:CONFIRMED
 CREATED:' . $blockedRoom->getCreatedDate()->format('Ymd') . 'T222001Z

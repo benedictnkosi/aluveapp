@@ -1,3 +1,5 @@
+let myNewdDropzone;
+
 $(document).ready(function () {
     Dropzone.autoDiscover = false;
 });
@@ -947,7 +949,9 @@ function removeChannel(event) {
 }
 
 function initialiseImageUpload(roomId) {
-    var myNewdDropzone = new Dropzone("#fileUpload_dropzone", {
+    myNewdDropzone.destroy();
+
+    myNewdDropzone = new Dropzone("#fileUpload_dropzone", {
         dictDefaultMessage: "Drop files here or click to upload.",
         clickable: true,
         enqueueForUpload: true,
