@@ -5,6 +5,8 @@ namespace App\Helpers\FormatHtml;
 use App\Service\RoomApi;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+require_once(__DIR__ . '/../../app/application.php');
+
 
 class AvailableRoomsDropDownHTML
 {
@@ -34,7 +36,7 @@ class AvailableRoomsDropDownHTML
             }
             $numberOfRooms++;
             $htmlString .= '<option value="' . $availableRoom->getName() . '"
-                                                data-thumbnail="assets/images/rooms/thumb' . $roomDefaultImage . '" data-sleeps="' . $availableRoom->getSleeps() . '" data-price="' . $availableRoom->getPrice() . '" data-roomId="' . $availableRoom->getId() . '">' . $availableRoom->getName() . '
+                                                data-thumbnail="https://'.SERVER_NAME.'/rooms_images/thumb' . $roomDefaultImage . '" data-sleeps="' . $availableRoom->getSleeps() . '" data-price="' . $availableRoom->getPrice() . '" data-roomId="' . $availableRoom->getId() . '">' . $availableRoom->getName() . '
                                         </option>';
 
         }

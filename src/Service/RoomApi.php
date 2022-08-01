@@ -182,7 +182,7 @@ class RoomApi
                         'tv' => $room->getTv()->getId(),
                         'tv_name' => $room->getTv()->getName(),
                         'ical_links' => $icalFormattedHtml,
-                        'export_link' => "https://" . SERVER_NAME . "/api/export/" . $room->GetId(),
+                        'export_link' => "https://" . SERVER_NAME . "/public/export/" . $room->GetId(),
                         'result_code' => 0
                     );
                 }

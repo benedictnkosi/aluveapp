@@ -19,8 +19,8 @@ class RoomsPageHTML
     public function formatHtml($rooms, $roomApi): string
     {
         $html = "";
-        if($rooms === null){
-            return $html;
+        if ($rooms === null) {
+            return '<h5 class="rooms-not-available">No rooms available for the selected dates</h5>';
         }
         foreach ($rooms as $room){
             $roomImages = $roomApi->getRoomImages($room->getId());
