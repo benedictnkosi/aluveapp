@@ -103,7 +103,7 @@ function filterOtherTabs(event) {
 
     switch (id) {
         case "view_blocked_rooms_tab":
-            $('#block-list').removeClass("display-none");
+            $('#div-blocked-rooms').removeClass("display-none");
             break;
         case "block_a_room_tab":
             $('#div-block-room').removeClass("display-none");

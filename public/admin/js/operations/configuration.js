@@ -199,6 +199,7 @@ function getConfigRooms() {
         dataType: "jsonp",
         contentType: "application/json; charset=UTF-8",
         success: function (data) {
+            $("body").removeClass("loading");
             $("#config_rooms_list").html(data.html);
             $('.roomsMenu').unbind('click')
             $(".roomsMenu").click(function (event) {
@@ -207,6 +208,7 @@ function getConfigRooms() {
             });
         },
         error: function (xhr) {
+            $("body").removeClass("loading");
             console.log("request for getConfigRooms is " + xhr.status);
             if (!isRetry("getConfigRooms")) {
                 return;

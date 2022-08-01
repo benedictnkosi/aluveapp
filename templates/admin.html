@@ -589,94 +589,132 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </div>
 
 
-            <div class="profile-ser other_feature_tab display-none" id="div-occupancy">
-
-                <div class="profile-ser-grids-50 agileinfo">
-                    <a href="javascript:void(0)">
-                        <h5>Last <input name="occupancy_days"
-                                        id="occupancy_days" class="input-as-text" value="30">
-                        </input> Days</h5>
-                        <h2 id="overall-30-occupancy"></h2>
-                    </a>
-                </div>
-                <div class="profile-ser-grids-50 agileinfo">
-                    <a href="javascript:void(0)"
-                       onclick="getOccupancyPerRoomForMonth();">
-                        <h5>This Month</h5>
-                        <h2 id="overall-month-occupancy"></h2>
-                    </a>
-                </div>
-                <div class="clearfix"></div>
-
-                <div class=" bar-grids">
-                    <div class="skills-top">
-                        <h5>Per Room</h5>
+            <div class="profile-w3layouts other_feature_tab display-none"
+                 id="div-occupancy">
+                <div class="profile-top">
+                    <div class="col-md-7 profile-top-right">
+                        <h5>
+                            Ocupancy
+                        </h5>
                     </div>
-                    <div class="skills-btm" id="occupancy-div"></div>
+                    <div class="clearfix"></div>
                 </div>
 
+                <div class="profile-ser ">
+                    <div class="profile-ser-grids-50 agileinfo">
+                        <a href="javascript:void(0)">
+                            <h5>Last <input name="occupancy_days"
+                                            id="occupancy_days" class="input-as-text" value="30">
+                            </input> Days</h5>
+                            <h2 id="overall-30-occupancy"></h2>
+                        </a>
+                    </div>
+                    <div class="profile-ser-grids-50 agileinfo">
+                        <a href="javascript:void(0)"
+                           onclick="getOccupancyPerRoomForMonth();">
+                            <h5>This Month</h5>
+                            <h2 id="overall-month-occupancy"></h2>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class=" bar-grids">
+                        <div class="skills-top">
+                            <h5>Per Room</h5>
+                        </div>
+                        <div class="skills-btm" id="occupancy-div"></div>
+                    </div>
+                </div>
             </div>
 
-            <div id="block-list" class="other_feature_tab display-none"></div>
+
+
+            <div class="profile-w3layouts other_feature_tab display-none"
+                 id="div-blocked-rooms">
+                <div class="profile-top">
+                    <div class="col-md-7 profile-top-right">
+                        <h5>
+                            Blocked Room
+                        </h5>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="profile-ser ">
+                    <div id="block-list"></div>
+
+                    <div class="clearfix"></div>
+                </div>
+            </div>
 
             <div class="profile-w3layouts other_feature_tab display-none"
                  id="div-block-room">
-                <div class="resp-tabs-container">
+                <div class="profile-top">
+                    <div class="col-md-7 profile-top-right">
+                        <h5>
+                            Block Room
+                        </h5>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
 
-                    <div class="tab-4">
-                        <div class="facts">
-                            <div class="contact-form">
-                                <form action="#" autocomplete="off"
-                                      id="block-form">
+                <div class="profile-ser ">
+                    <div class="contact-form">
+                        <form action="#" autocomplete="off"
+                              id="block-form">
 
-                                    <div class="tab-1">
-                                        <div class="facts">
-                                            <h5>Block Room</h5>
-                                        </div>
-                                    </div>
 
-                                    <div>
+                            <div>
 
-                                        <select name="block_rooms_select" id="block_rooms_select" required>
-                                        </select>
-
-                                    </div>
-
-                                    <div>
-                                        <input type="text" autocomplete="off" name="block_date"
-                                               id="block_date" placeholder="Select Date"
-                                               class="datepicker" required>
-                                    </div>
-
-                                    Notes
-                                    <div>
-											<textarea name="block_notes" id="block_notes" rows="2"
-                                                      required> </textarea>
-                                    </div>
-
-                                    <div>
-                                        <span><input type="submit" value="Submit"> </span>
-                                    </div>
-                                </form>
-
+                                <select name="block_rooms_select" id="block_rooms_select" required>
+                                </select>
 
                             </div>
-                        </div>
+
+                            <div>
+                                <input type="text" autocomplete="off" name="block_date"
+                                       id="block_date" placeholder="Select Date"
+                                       class="datepicker" required>
+                            </div>
+
+                            Notes
+                            <div>
+											<textarea name="block_notes" id="block_notes" rows="2"
+                                                      required> </textarea>
+                            </div>
+
+                            <div>
+                                <span><input type="submit" value="Submit"> </span>
+                            </div>
+                        </form>
+
+
                     </div>
                 </div>
             </div>
 
-            <div class="profile-ser other_feature_tab display-none" id="div-cleaning">
-                <div class="em1-margin em1-top-padding">
-                    Select room to get cleanings
+
+            <div class="profile-w3layouts other_feature_tab display-none"
+                 id="div-cleaning">
+                <div class="profile-top">
+                    <div class="col-md-7 profile-top-right">
+                        <h5>
+                            Select room to get cleanings</i>
+                        </h5>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="profile-ser ">
                     <select class="block-display em1-margin" id="cleaning_rooms_select">
                     </select>
+
+                    <div class="clearfix"></div>
+
+                    <div id="cleaning-list"></div>
                 </div>
-                <div class="clearfix"></div>
-
-                <div id="cleaning-list"></div>
-
             </div>
+
 
             <div class="profile-w3layouts other_feature_tab display-none"
                  id="div-whatapp-chat">
