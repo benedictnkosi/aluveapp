@@ -384,33 +384,6 @@ function populateFormWithRoom(event) {
                 $('#imageUploaderDiv').removeClass("display-none");
                 $('#icalDiv').removeClass("display-none");
 
-                $('.close').unbind('click')
-                $(".close").click(function (event) {
-                    event.stopImmediatePropagation();
-                    const imageId = event.target.getAttribute("data-image-id");
-                    const roomId = event.target.getAttribute("data-room-id");
-                    let url = "/api/configuration/removeimage/" + imageId;
-                    $.getJSON(url + "?callback=?", null, function (response) {
-                        if (response[0].result_code === 0) {
-                            $('#image-thumbnail-' + imageId).remove();
-                        }
-                    });
-                });
-
-                $(".not_default_image").click(function (event) {
-                    event.stopImmediatePropagation();
-                    const imageId = event.target.getAttribute("data-image-id");
-                    let url = "/api/configuration/markdefault/" + imageId;
-
-                    $.getJSON(url + "?callback=?", null, function (response) {
-                        if (response[0].result_code === 0) {
-                            //remove the yellow start from previous default image
-                            $(".room_images").addClass("not_default_image");
-                            $(event.target).removeClass("not_default_image");
-                        }
-                    });
-                });
-
                 $(".remove_link_button").click(function (event) {
                     event.stopImmediatePropagation();
                     removeChannel(event);
@@ -976,8 +949,8 @@ function initialiseImageUpload(roomId) {
             thisDropzone = this;
             $
                 .get('/api/configuration/room/images/' + roomId, function (data) {
-                    $
-                        .each(data, function (key, value) {
+                    let defaultImageName = '';
+                    $.each(data, function (key, value) {
                             var mockFile = {
                                 name: value.name, size: value.size
                             };
@@ -989,7 +962,25 @@ function initialiseImageUpload(roomId) {
                                 .remove();
                             $(".dz-progress")
                                 .remove();
+                            if(value.status.localeCompare("default")=== 0){
+                                defaultImageName = value.name;
+                            }
+
                         });
+                    $('.dz-image').addClass('not_default_image');
+                    $( "img[src$='" + defaultImageName + "']" ).parent().removeClass("not_default_image")
+
+                    $(".dz-image > img").click(function (event) {
+                        event.stopImmediatePropagation();
+                        const imageName = event.target.getAttribute("alt");
+                        let url = "/api/configuration/markdefault/" + imageName;
+
+                        $.getJSON(url + "?callback=?", null, function (response) {
+                            if (response[0].result_code === 0) {
+                                initialiseImageUpload(roomId);
+                            }
+                        });
+                    });
                 });
 
             // delete from server

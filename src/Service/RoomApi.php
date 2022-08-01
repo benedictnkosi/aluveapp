@@ -303,7 +303,8 @@ class RoomApi
             foreach ($roomImages as $roomImage){
                 $responseArray[] = array(
                     'name' => $roomImage->getName(),
-                    'size' => "5mb"
+                    'size' => "5mb",
+                    'status' => $roomImage->getStatus()
                 );
             }
             $this->logger->debug("Ending Method before the return: " . __METHOD__);
@@ -522,13 +523,13 @@ class RoomApi
         return $responseArray;
     }
 
-    public function markDefault($imageId): array
+    public function markDefault($imageName): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             //get room images
-            $roomImage = $this->em->getRepository(RoomImages::class)->findOneBy(array('id' => $imageId));
+            $roomImage = $this->em->getRepository(RoomImages::class)->findOneBy(array('name' => $imageName));
 
             if ($roomImage === null) {
                 $responseArray[] = array(

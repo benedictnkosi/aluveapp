@@ -30,12 +30,12 @@ class ImageController extends AbstractController
     }
 
     /**
-     * @Route("api/configuration/markdefault/{imageId}")
+     * @Route("api/configuration/markdefault/{imageName}")
      */
-    public function markDefault($imageId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function markDefault($imageName, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->markDefault($imageId);
+        $response = $roomApi->markDefault($imageName);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
