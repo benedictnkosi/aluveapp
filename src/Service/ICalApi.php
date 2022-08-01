@@ -381,7 +381,7 @@ class ICalApi
             $roomName = $room->getName();
 
             $reservations = $reservationApi->getReservationsByRoom($roomId);
-            $blockedRooms = $blockedRoomApi->getBlockedRooms($room->getId());
+            $blockedRooms = $blockedRoomApi->getBlockedRoomsByRoomId($room->getId());
             $now = new DateTime();
 
             //do not fix formatting for this line
@@ -422,8 +422,6 @@ class ICalApi
 
                     $this->logger->debug("Done creating the event within the ical object");
                 }
-
-
                 $this->logger->debug($icalString);
 
             }

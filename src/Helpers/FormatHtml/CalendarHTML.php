@@ -62,7 +62,7 @@ class CalendarHTML
         foreach ($rooms as $room) {
             $htmlString .= '<tr><th class="headcol">' . substr($room->getName(),0, 15) . '</th>';
             $reservations = $reservationApi->getUpComingReservations( $room->getId(), true);
-            $blockedRooms = $blockRoomApi->getBlockedRooms( $room->getId());
+            $blockedRooms = $blockRoomApi->getBlockedRoomsByRoomId( $room->getId());
 
             if ($reservations === null && $blockedRooms === null) {
                 $htmlString .= str_repeat('<td class="available"></td>', $numberOfDays + 1 + $numberOfFirstOfMonth);

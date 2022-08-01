@@ -92,15 +92,41 @@ class BlockedRoomApi
         return $responseArray;
     }
 
-    public function getBlockedRooms($roomId = 0)
+    public function getBlockedRoomsByRoomId($roomId)
     {
         $this->logger->debug("Starting Method: " . __METHOD__ );
         $responseArray = array();
         try{
-            $roomFilter = "";
-            if($roomId != 0){
-                $roomFilter = " and b.room = $roomId ";
-            }
+            $now = new DateTime('today midnight');
+
+            $blockedRooms = $this->em
+                ->createQuery("SELECT b FROM App\Entity\BlockedRooms b 
+            JOIN b.room r
+            WHERE b.room = r.id
+            and b.toDate >= '".$now->format('Y-m-d')."' 
+            and b.room = $roomId 
+            order by b.fromDate asc ")
+                ->getResult();
+
+            $this->logger->debug("Ending Method before the return: " . __METHOD__ );
+            return $blockedRooms;
+        }catch(Exception $exception){
+            $responseArray[] = array(
+                'result_message' => $exception->getMessage() . " - " . $exception->getTraceAsString(),
+                'result_code'=> 1
+            );
+            $this->logger->debug(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
+        return null;
+    }
+
+    public function getBlockedRoomsByProperty()
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__ );
+        $responseArray = array();
+        try{
             $now = new DateTime('today midnight');
 
             $blockedRooms = $this->em
@@ -111,9 +137,9 @@ class BlockedRoomApi
             and p.id = r.property
             and p.id = ".$_SESSION['PROPERTY_ID']."
             and b.toDate >= '".$now->format('Y-m-d')."' 
-                    $roomFilter 
             order by b.fromDate asc ")
                 ->getResult();
+
 
             $this->logger->debug("Ending Method before the return: " . __METHOD__ );
             return $blockedRooms;

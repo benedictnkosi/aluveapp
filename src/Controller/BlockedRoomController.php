@@ -35,7 +35,7 @@ class BlockedRoomController extends AbstractController
     public function getBlockedRooms( LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, BlockedRoomApi $blockedRoomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $blockedRooms = $blockedRoomApi->getBlockedRooms();
+        $blockedRooms = $blockedRoomApi->getBlockedRoomsByProperty();
         $blockedRoomsHTML = new BlockedRoomsHTML($entityManager, $logger);
         $formattedHtml = $blockedRoomsHTML->formatHtml($blockedRooms);
         $response = array(
