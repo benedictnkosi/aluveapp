@@ -6,13 +6,13 @@ $(document).ready(function () {
 });
 
 function loadReservationsPageData(){
-    $("body").addClass("loading");
     refreshReservations();
     window.setTimeout(hideLoader, 5000);
 }
 
 function refreshReservations() {
     getServerName();
+    $("body").addClass("loading");
     getReservationsByPeriod("future");
     getReservationsByPeriod("pending");
     getReservationsByPeriod("past");

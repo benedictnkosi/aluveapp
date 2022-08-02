@@ -588,7 +588,7 @@ function deleteEmployee(event) {
 }
 
 function getMessageTemplates() {
-    $("body").addClass("loading");
+
     let url = "/api/schedulemessages/templates" + "/";
 
     $.ajax({

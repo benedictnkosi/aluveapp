@@ -156,7 +156,6 @@ function getOccupancyPerRoomForMonth() {
 
 function getOccupancyPerRoom(period) {
     let url = "/api/occupancy/perroom/" + period + "/";
-    $("body").addClass("loading");
     $.ajax({
         type: "GET",
         url: url,

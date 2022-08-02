@@ -1,7 +1,5 @@
 $(document).ready(function () {
 
-
-
 });
 
 function loadBlockedRoomsPageData() {
@@ -56,7 +54,6 @@ function bindBlockedRoomsEvents(){
 }
 
 function getBlockedRooms() {
-    $("body").addClass("loading");
     let url = "/api/blockedroom/get/";
     $.ajax({
         type: "get",

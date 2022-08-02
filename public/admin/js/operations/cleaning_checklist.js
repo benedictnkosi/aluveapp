@@ -10,7 +10,6 @@ function loadCleaningPageData(){
 
 function getCleaning(room) {
 	let url =  "/api/cleanings/"+room;
-	$("body").addClass("loading");
 	$.ajax({
 		type: "get",
 		url: url,
