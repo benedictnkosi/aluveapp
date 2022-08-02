@@ -14,8 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class HealthCheckController extends AbstractController
 {
-
-
     /**
      * @Route("public/healthcheck")
      */
@@ -34,7 +32,7 @@ class HealthCheckController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $now = new DateTime();
-        $responseArray = array("time" => print_r($now));
+        $responseArray = array("time" => $now);
         return new JsonResponse( $responseArray, 200, array());
     }
 }
