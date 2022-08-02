@@ -107,7 +107,7 @@ class RoomApi
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
-                'result_message' => $ex->getMessage()
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
             );
             $this->logger->debug(print_r($responseArray, true));
             return $responseArray;
