@@ -25,7 +25,7 @@ class GuestApi
         }
     }
 
-    public function createGuest($name, $phoneNumber, $email,  $origin,  $propertyId): array
+    public function createGuest($name, $phoneNumber, $email,  $origin, $propertyId): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
