@@ -54,7 +54,7 @@ function bindBlockedRoomsEvents(){
 }
 
 function getBlockedRooms() {
-    let url = "/api/blockedroom/get/";
+    let url = "/api/blockedroom/get";
     $.ajax({
         type: "get",
         url: url,

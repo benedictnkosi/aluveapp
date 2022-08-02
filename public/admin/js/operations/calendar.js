@@ -8,7 +8,7 @@ function loadCalendarPageData(){
 
 function getCalendar() {
 	$("body").addClass("loading");
-	let url =  "/api/calendar/";
+	let url =  "/api/calendar";
 	$.ajax({
 		type: "get",
 		url: url,

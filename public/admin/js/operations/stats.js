@@ -122,7 +122,7 @@ function getstayovers(period) {
 
 
 function getOverallOccupancy(period, elementId) {
-    let url = "/api/occupancy/" + period + "/";
+    let url = "/api/occupancy/" + period;
     $.ajax({
         type: "get",
         url: url,
@@ -155,7 +155,7 @@ function getOccupancyPerRoomForMonth() {
 
 
 function getOccupancyPerRoom(period) {
-    let url = "/api/occupancy/perroom/" + period + "/";
+    let url = "/api/occupancy/perroom/" + period;
     $.ajax({
         type: "GET",
         url: url,

@@ -8,7 +8,7 @@ function loadNotificationsPageData(){
 
 function getNotifications() {
 	$("body").addClass("loading");
-	let url =   "/api/notifications" + "/";
+	let url =   "/api/notifications";
 	$.ajax({
 		type: "get",
 		url: url,

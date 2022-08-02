@@ -140,7 +140,7 @@ function createUpdateRoom() {
 
     $("body").addClass("loading");
 
-    let url = "/api/createroom/" + room_id + "/" + room_name + "/" + room_price + "/" + room_sleeps + "/" + select_room_status + "/" + select_linked_room + "/" + room_size + "/" + select_bed + "/" + select_Stairs + "/" + select_tv + "/" + encodeURIComponent(room_description.replaceAll("/", "###")) + "/";
+    let url = "/api/createroom/" + room_id + "/" + room_name + "/" + room_price + "/" + room_sleeps + "/" + select_room_status + "/" + select_linked_room + "/" + room_size + "/" + select_bed + "/" + select_Stairs + "/" + select_tv + "/" + encodeURIComponent(room_description.replaceAll("/", "###")) ;
     $.ajax({
         type: "get",
         url: url,
@@ -194,7 +194,7 @@ function filterConfiguration(event) {
 }
 
 function getConfigRooms() {
-    let url = "/api/configurationrooms/";
+    let url = "/api/configurationrooms";
     $.ajax({
         type: "get",
         url: url,
@@ -223,7 +223,7 @@ function getConfigRooms() {
 }
 
 function getChannelSynchLogs() {
-    let url = "/api/ical/logs/";
+    let url = "/api/ical/logs";
     $.ajax({
         type: "get",
         url: url,
@@ -245,7 +245,7 @@ function getChannelSynchLogs() {
 }
 
 function getConfigRoomsDropDown() {
-    let url = "/api/combolistrooms/";
+    let url = "/api/combolistrooms";
 
     $.ajax({
         type: "get",
@@ -420,7 +420,7 @@ function setCookie(name, value) {
 }
 
 function getAddOns() {
-    let url = "/api/addons/";
+    let url = "/api/addons";
 
     $.ajax({
         type: "get",
@@ -459,7 +459,7 @@ function updateAddOn(event) {
     let fieldName = event.target.getAttribute("data-addon-field");
     $("body").addClass("loading");
 
-    let url = "/api/addon/update/" + addOnId + "/" + fieldName + "/";
+    let url = "/api/addon/update/" + addOnId + "/" + fieldName;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
         if (response[0].result_code === 0) {
@@ -475,7 +475,7 @@ function createAddOn() {
     const addon_price = $("#addon_price").val().trim();
     $("body").addClass("loading");
 
-    let url = "/api/createaddon/" + addon_name + "/" + addon_price + "/";
+    let url = "/api/createaddon/" + addon_name + "/" + addon_price;
     $.getJSON(url + "?callback=?", null, function (data) {
         $("body").removeClass("loading");
         const jsonObj = data[0];
@@ -506,7 +506,7 @@ function deleteAddOn(event) {
 
 function getEmployees() {
 
-    let url = "/api/config/employees" + "/";
+    let url = "/api/config/employees";
 
     $.ajax({
         type: "get",
@@ -589,7 +589,7 @@ function deleteEmployee(event) {
 
 function getMessageTemplates() {
 
-    let url = "/api/schedulemessages/templates" + "/";
+    let url = "/api/schedulemessages/templates";
 
     $.ajax({
         type: "get",
@@ -739,7 +739,7 @@ function createScheduleMessage() {
 
 function getScheduledMessages() {
 
-    let url = "/api/schedulemessages" + "/";
+    let url = "/api/schedulemessages";
     $.ajax({
         type: "get",
         url: url,
@@ -788,7 +788,7 @@ function createMessageTemplate() {
     const name = $("#template_name_input").val().trim();
     const message = $("#template_message").val().trim();
 
-    let url = "/api/schedulemessages/createtemplate/" + name + "/" + encodeURIComponent(message) + "/";
+    let url = "/api/schedulemessages/createtemplate/" + name + "/" + encodeURIComponent(message);
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
         var jsonObj = response[0];
