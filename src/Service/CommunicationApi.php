@@ -55,7 +55,7 @@ class CommunicationApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));

@@ -50,7 +50,7 @@ class CleaningApi
             $this->logger->debug("no errors adding cleaning for reservation $resId. cleaner $employee->getId()");
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug("Error " . print_r($responseArray, true));
@@ -87,7 +87,7 @@ class CleaningApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug("Error " . print_r($responseArray, true));
@@ -105,7 +105,7 @@ class CleaningApi
             return $this->em->getRepository(Cleaning::class)->findBy(array('reservation' => $resId));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug("Error " . print_r($responseArray, true));
@@ -126,7 +126,7 @@ class CleaningApi
             return $cleanings;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug("Error " . print_r($responseArray, true));

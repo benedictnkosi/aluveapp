@@ -5,6 +5,14 @@
 	License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
 
+.top-margin-1em{
+	margin-top: 1em;
+}
+.phone_number_input{
+	display: inline;
+	width: 80%;
+	margin-left: 1em;
+}
 .listing-description-text {
 	position: absolute;
 	margin-left: 100px;
@@ -215,12 +223,6 @@ input[type="checkbox"]{
 	overflow: hidden;
 }
 /* Large rounded green border */
-hr {
-	border: 1px solid #B8B6B6;
-	border-radius: 5px;
-	margin-top: 2em;
-	margin-bottom: 2em;
-}
 
 .addon_row{
 	width:100%;
@@ -1063,7 +1065,7 @@ body {
 	float: left;
 	width: 33.3%;
 	text-align: center;
-	border-right: 1px solid #000;
+	border-right: 1px solid lightgray;
 	padding: 10px 0;
 	transition: 0.5s all;
 	webkit-transition: 0.5s all;

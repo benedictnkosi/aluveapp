@@ -55,7 +55,7 @@ class PropertyApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -86,7 +86,7 @@ class PropertyApi
             );
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -112,7 +112,7 @@ class PropertyApi
             );
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -142,7 +142,7 @@ class PropertyApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->info(print_r($responseArray, true));
@@ -175,7 +175,7 @@ class PropertyApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -200,7 +200,7 @@ class PropertyApi
                 return $responseArray;
             } else {
                 $property = $this->em->getRepository(Property::class)->findOneBy(
-                    array("id" => $_SESSION['PROPERTY_ID']));
+                    array("id" => $propertyUid));
             }
 
 
@@ -225,7 +225,7 @@ class PropertyApi
             return $responseArray;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));

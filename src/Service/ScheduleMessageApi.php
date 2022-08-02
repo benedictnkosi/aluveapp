@@ -84,7 +84,7 @@ class ScheduleMessageApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -110,7 +110,7 @@ class ScheduleMessageApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -194,7 +194,7 @@ class ScheduleMessageApi
             return $responseArray;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -265,7 +265,7 @@ class ScheduleMessageApi
             $this->logger->debug("Ending Method before the return: " . __METHOD__);
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -313,7 +313,7 @@ class ScheduleMessageApi
             $this->logger->debug("Ending Method before the return: " . __METHOD__);
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error($ex->getMessage());
@@ -361,7 +361,7 @@ class ScheduleMessageApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));

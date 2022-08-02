@@ -51,7 +51,7 @@ class RoomApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -191,7 +191,7 @@ class RoomApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -215,7 +215,7 @@ class RoomApi
             return $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $roomId));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -244,7 +244,7 @@ class RoomApi
             return $rooms;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -273,7 +273,7 @@ class RoomApi
             return $roomImages;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -310,7 +310,7 @@ class RoomApi
             $this->logger->debug("Ending Method before the return: " . __METHOD__);
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -354,7 +354,7 @@ class RoomApi
             );
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -373,7 +373,7 @@ class RoomApi
             return $roomStatuses;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -393,7 +393,7 @@ class RoomApi
             return $roomBedSizes;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -413,7 +413,7 @@ class RoomApi
             return $roomTvs;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -471,7 +471,7 @@ class RoomApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -513,7 +513,7 @@ class RoomApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -556,7 +556,7 @@ class RoomApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));

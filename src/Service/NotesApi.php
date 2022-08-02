@@ -45,7 +45,7 @@ class NotesApi
             $this->logger->debug("no errors adding note for reservation $resId. note $note");
         }catch(Exception $ex){
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code'=> 1
             );
             $this->logger->debug("failed to get payments " . print_r($responseArray, true));
@@ -65,7 +65,7 @@ class NotesApi
             return $notes;
         }catch(Exception $ex){
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code'=> 1
             );
             $this->logger->debug("failed to get notes " . print_r($responseArray, true));

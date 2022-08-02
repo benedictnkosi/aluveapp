@@ -36,7 +36,7 @@ class ReservationApi
             return $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -90,7 +90,7 @@ class ReservationApi
             return $responseArray;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -108,7 +108,7 @@ class ReservationApi
             return $this->em->getRepository(Reservations::class)->findOneBy(array('uid' => $uid));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -139,7 +139,7 @@ class ReservationApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -185,7 +185,7 @@ class ReservationApi
                 ->getResult();
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -220,7 +220,7 @@ class ReservationApi
                 ->getResult();
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -263,7 +263,7 @@ class ReservationApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -375,7 +375,7 @@ class ReservationApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug(print_r($responseArray, true));
@@ -630,7 +630,7 @@ class ReservationApi
                         $this->logger->debug("this is a south african number " . $reservation->getGuest()->getPhoneNumber());
                         $SMSHelper = new SMSHelper($this->logger);
                         $message = "Hi " . $guest->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://" . $reservation->getRoom()->getProperty()->getServerName() . "/invoice.html?reservation=" . $reservation->getId();
-                        $SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
+                        //$SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
                     }
 
                     //Send email

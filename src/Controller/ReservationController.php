@@ -99,7 +99,7 @@ class ReservationController extends AbstractController
 
 
     /**
-     * @Route("api/reservations/{reservationId}")
+     * @Route("api/reservation/{reservationId}")
      */
     public function getReservationById($reservationId, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
@@ -122,7 +122,7 @@ class ReservationController extends AbstractController
         $responseArray[] = array();
         switch ($field) {
             case "status":
-                if(is_int($newValue)){
+                if(intval($newValue) !== 0){
                     $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('id' => $newValue));
                 }else{
                     $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('name' => $newValue));

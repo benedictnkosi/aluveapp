@@ -90,7 +90,7 @@ class SingleReservationHtml
 
         //room name
         $roomDisabled = "";
-        if ($reservation->getCheckIn() < $now){
+        if ($reservation->getCheckIn() < $now || (strcasecmp($reservation->getOrigin(), "website") !=0) ){
             $roomDisabled = "Disabled";
         }
 
@@ -108,7 +108,7 @@ class SingleReservationHtml
         //check in\out date
 
         $checkInDateDisabled = "";
-        if ($reservation->getCheckIn() < $now){
+        if ($reservation->getCheckIn() < $now || (strcasecmp($reservation->getOrigin(), "website") !=0)){
             $checkInDateDisabled = "Disabled";
         }
 
@@ -121,7 +121,7 @@ class SingleReservationHtml
         //disable check in time for some reservations
         $checkInTimeDisabled = "";
         $checkOutTimeDisabled = "";
-        if ($reservation->getCheckIn() < $now){
+        if ($reservation->getCheckIn() < $now || (strcasecmp($reservation->getOrigin(), "website") !=0) ){
             $checkInTimeDisabled = "Disabled";
             $checkOutTimeDisabled = "Disabled";
         }
@@ -186,6 +186,7 @@ class SingleReservationHtml
         $htmlString .= '<p class="far-left">';
         //for direct bookings only
         $this->logger->debug("HTML output - for direct bookings only " . $reservation->getId());
+
         if (strcasecmp($reservation->getOrigin(), "website") == 0 && ($reservation->getCheckIn() >= $now)) {
 
             if (strcmp($reservation->getStatus()->getName(), "pending") != 0) {
@@ -219,7 +220,13 @@ class SingleReservationHtml
 
         //booking created on
         $this->logger->debug("HTML output - bottom right icons " . $reservation->getId());
-        $htmlString .= '<p> Received on: ' . $reservation->getReceivedOn()->format('Y-m-d') . '</p>';
+        $htmlString .= '<p class="top-margin-1em"> Received on: ' . $reservation->getReceivedOn()->format('Y-m-d') . '</p>';
+        if($guest->getIdNumber() !== null){
+            $htmlString .= '<p class="top-margin-1em"> ID\Passport Number: ' . $guest->getIdNumber() . '</p>';
+        }
+
+        $htmlString .= '<hr>';
+
         //close far right
         $htmlString .= '</p>';
 

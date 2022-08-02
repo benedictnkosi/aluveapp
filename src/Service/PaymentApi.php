@@ -36,7 +36,7 @@ class PaymentApi
             return $payments;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug("failed to get payments " . print_r($responseArray, true));
@@ -63,7 +63,7 @@ class PaymentApi
             return $html;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error($ex->getMessage());
@@ -113,7 +113,7 @@ class PaymentApi
 
                         //block connected Room
                         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
-                        $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom()->format("Y-m-d"), $reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut(), "Connected Room Booked ", $reservation->getId());
+                        $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom(), $reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d"), "Connected Room Booked ", $reservation->getId());
 
                         $this->sendEmailToGuest( $reservation, $amountPerReservation);
                         $responseArray[] = array(
@@ -165,7 +165,7 @@ class PaymentApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug("failed to get payments " . print_r($responseArray, true));
@@ -213,7 +213,7 @@ class PaymentApi
             return $due;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage(),
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->debug("failed to get payments " . print_r($responseArray, true));
