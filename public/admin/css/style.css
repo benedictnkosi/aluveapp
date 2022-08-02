@@ -253,6 +253,17 @@ hr {
 }
 
 @media (min-width: 769px) {
+
+	.res-details {
+		overflow: auto;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #ddd;
+		background-color: #fff;
+		padding-left: 10em;
+		padding-right: 10em;
+	}
+
 	.reservations_div{
 		width: 60%;
 		margin-left: 20%;
@@ -401,13 +412,11 @@ select:focus, .focus {
 .input-as-text {
 	width: 5em;
 	border: none;
-	background: #ECECEC;
 }
 
 .date-picker, .reservation_room_input{
 	width: 15em;
 	border: none;
-	background: #ECECEC;
 }
 .reservation-date-divider{
 	background-color: #1B74DA !important;
@@ -875,14 +884,8 @@ padding:0.3em;
 	overflow-x: auto;
 }
 
-.res-details {
-	background: #ECECEC;
-	padding: 1em;
-	overflow: auto;
-}
-
 .block-room-details {
-	background: #ECECEC;
+	background: white;
 	padding: 1em;
 	overflow: auto;
 	border-bottom: 1px solid #000;
@@ -1051,8 +1054,9 @@ body {
 }
 
 .profile-ser {
-	background: #ECECEC;
+	background: white;
 	margin-bottom: 1em;
+	padding: 1em;
 }
 
 .profile-ser-grids {
@@ -2268,8 +2272,10 @@ a.mail:hover {
 	float: left;
 }
 
+
 .contact-form div {
 	margin: 10px 0;
+	padding:1px;
 }
 
 .contact-form label {
@@ -3349,6 +3355,15 @@ span.middle-text {
 }
 
 @media ( max-width :768px) {
+	.res-details {
+		overflow: auto;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #ddd;
+		background-color: #fff;
+		padding: 1px;
+	}
+
 	.time_slider {
 		width: 271px;
 	}

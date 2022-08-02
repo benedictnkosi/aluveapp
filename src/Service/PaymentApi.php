@@ -80,7 +80,6 @@ class PaymentApi
             $resId = str_replace("]", "",$resId);
             $reservationIdsArray = explode(",", $resId);
             $numberOfReservations = count($reservationIdsArray);
-            $communicationApi = new CommunicationApi($this->em, $this->logger);
 
             foreach ($reservationIdsArray as $resId){
                 $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
@@ -124,31 +123,34 @@ class PaymentApi
 
                         $this->logger->debug("no errors adding payment for reservation $resId. amount $amount");
                     } else {
-                        $communicationApi = new CommunicationApi($this->em, $this->logger);
+                        if(strcmp($channel, "payfast")){
+                            $communicationApi = new CommunicationApi($this->em, $this->logger);
 
-                        //send email to guest house
-                        $emailBody = file_get_contents(__DIR__ . '/../email_template/failed_payment_to_host.html');
-                        $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
-                        $emailBody = str_replace("amount_paid", $amount, $emailBody);
-                        $emailBody = str_replace("property_name", $reservation->getRoom()->getProperty()->getName(), $emailBody);
+                            //send email to guest house
+                            $emailBody = file_get_contents(__DIR__ . '/../email_template/failed_payment_to_host.html');
+                            $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
+                            $emailBody = str_replace("amount_paid", $amount, $emailBody);
+                            $emailBody = str_replace("property_name", $reservation->getRoom()->getProperty()->getName(), $emailBody);
 
-                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getRoom()->getProperty()->getEmailAddress(),  $emailBody, 'Aluve App - Adding payment failed');
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getRoom()->getProperty()->getEmailAddress(),  $emailBody, 'Aluve App - Adding payment failed');
 
-                        //send email to guest
-                        $emailBody = file_get_contents(__DIR__ . '/../email_template/failed_payment_to_guest.html');
-                        $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
-                        $emailBody = str_replace("amount_paid", $amount, $emailBody);
-                        $emailBody = str_replace("property_name", $reservation->getRoom()->getProperty()->getName(), $emailBody);
-                        $emailBody = str_replace("property_email", $reservation->getRoom()->getProperty()->getEmailAddress(), $emailBody);
-                        $emailBody = str_replace("property_number", $reservation->getRoom()->getProperty()->getPhoneNumber(), $emailBody);
-                        $emailBody = str_replace("guest_name", $reservation->getGuest()->getName(), $emailBody);
+                            //send email to guest
+                            $emailBody = file_get_contents(__DIR__ . '/../email_template/failed_payment_to_guest.html');
+                            $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
+                            $emailBody = str_replace("amount_paid", $amount, $emailBody);
+                            $emailBody = str_replace("property_name", $reservation->getRoom()->getProperty()->getName(), $emailBody);
+                            $emailBody = str_replace("property_email", $reservation->getRoom()->getProperty()->getEmailAddress(), $emailBody);
+                            $emailBody = str_replace("property_number", $reservation->getRoom()->getProperty()->getPhoneNumber(), $emailBody);
+                            $emailBody = str_replace("guest_name", $reservation->getGuest()->getName(), $emailBody);
 
-                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(),  $emailBody, 'Aluve App - Adding payment failed', $reservation->getRoom()->getProperty()->getEmailAddress());
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(),  $emailBody, 'Aluve App - Adding payment failed', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+                        }
 
                         $responseArray[] = array(
                             'result_code' => 1,
                             'result_message' => 'This room is not available anymore. payment not added'
                         );
+
                     }
                 }else{
                     //commit the payment changes
@@ -234,14 +236,11 @@ class PaymentApi
             $emailBody = str_replace("server_name",$reservation->getRoom()->getProperty()->getServerName(), $emailBody);
             $emailBody = str_replace("reservation_id",$reservation->getId(),$emailBody);
             $emailBody = str_replace("property_name",$reservation->getRoom()->getProperty()->getName(),$emailBody);
+            $emailBody = str_replace("room_name",$reservation->getRoom()->getName(),$emailBody);
 
-            $whitelist = array('localhost', '::1' );
-            // check if the server is in the array
             $communicationApi = new CommunicationApi($this->em, $this->logger);
-            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(),  $emailBody, $reservation->getRoom()->getProperty()->getName() . '- Thank you for payment');
+            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(),  $emailBody, $reservation->getRoom()->getProperty()->getName() . '- Thank you for payment', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
             $this->logger->debug("Successfully sent email to guest");
-
-
         }catch (Exception $ex){
             $this->logger->debug(print_r($ex, true));
         }

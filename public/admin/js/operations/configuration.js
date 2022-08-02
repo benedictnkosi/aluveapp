@@ -34,11 +34,14 @@ function bindConfigElements() {
     $("#config_room_form").validate({
         // Specify validation rules
         rules: {
-            room_name: "required", room_description: "required", room_sleeps: "required", room_price: {
+            room_name: "required",
+            room_description: "required",
+            room_sleeps: "required",
+            room_price: {
                 required: true, digits: true
             }, room_size: {
                 required: true, digits: true
-            }
+            },
         }, submitHandler: function () {
             createUpdateRoom();
         }
@@ -51,9 +54,10 @@ function bindConfigElements() {
     $("#config_addOn_form").validate({
         // Specify validation rules
         rules: {
-            addon_name: "required", addon_price: {
+            addon_name: "required",
+            addon_price: {
                 required: true, digits: true
-            }
+            },
         }, submitHandler: function () {
             createAddOn();
         }
@@ -553,7 +557,7 @@ function createEmployee() {
     const employee_name = $("#employee_name").val().trim();
     $("body").addClass("loading");
 
-    let url = "/api/createemployee/" + employee_name + "/";
+    let url = "/api/createemployee/" + employee_name;
 
     $.getJSON(url + "?callback=?", null, function (data) {
         $("body").removeClass("loading");
@@ -953,24 +957,24 @@ function initialiseImageUpload(roomId) {
                 .get('/api/configuration/room/images/' + roomId, function (data) {
                     let defaultImageName = '';
                     $.each(data, function (key, value) {
-                            var mockFile = {
-                                name: value.name, size: value.size
-                            };
-                            thisDropzone.options.addedfile
-                                .call(thisDropzone, mockFile);
-                            thisDropzone.options.thumbnail
-                                .call(thisDropzone, mockFile, "/public/room/image/" + value.name);
-                            $(".dz-details")
-                                .remove();
-                            $(".dz-progress")
-                                .remove();
-                            if(value.status.localeCompare("default")=== 0){
-                                defaultImageName = value.name;
-                            }
+                        var mockFile = {
+                            name: value.name, size: value.size
+                        };
+                        thisDropzone.options.addedfile
+                            .call(thisDropzone, mockFile);
+                        thisDropzone.options.thumbnail
+                            .call(thisDropzone, mockFile, "/public/room/image/" + value.name);
+                        $(".dz-details")
+                            .remove();
+                        $(".dz-progress")
+                            .remove();
+                        if (value.status.localeCompare("default") === 0) {
+                            defaultImageName = value.name;
+                        }
 
-                        });
+                    });
                     $('.dz-image').addClass('not_default_image');
-                    $( "img[src$='" + defaultImageName + "']" ).parent().removeClass("not_default_image")
+                    $("img[src$='" + defaultImageName + "']").parent().removeClass("not_default_image")
 
                     $(".dz-image > img").click(function (event) {
                         event.stopImmediatePropagation();

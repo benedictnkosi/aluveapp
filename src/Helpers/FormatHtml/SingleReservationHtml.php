@@ -36,12 +36,16 @@ class SingleReservationHtml
 
 
         if ($reservation === null) {
-            return '<div class="res-details">
-						<h4 class="guest-name">No reservation found</h4>
-					</div>';
+            return '<div class="reservation-date-divider">
+                            No reservations found
+                        </div>';
         }
 
-        $htmlString .= '<div class="flexible display-none" id="res_div_message_div" >
+        $htmlString .= '
+<div class="reservation-date-divider">
+                            Reservation Details
+                        </div>
+                        <div class="flexible display-none" id="res_div_message_div" >
 										<div class="flex-bottom">
 											<div class="flex1" id="res_div_success_message_div">
 												<h5 id="res_div_success_message"></h5>
@@ -68,9 +72,7 @@ class SingleReservationHtml
         $addOns = $addOnsApi->getReservationAddOns($reservationId);
 
         //guest name and reservation id and count of stays
-        $htmlString .= '<div class="res-details"><div class="left-div"><div class="inner-left-div">
-
-
+        $htmlString .= '<div class="res-details"><div><div>
 						<h4 class="guest-name"><div class="stays-div">' . $guestApi->getGuestStaysCount($guest->getId())[0]["result_message"] . '</div><a target="_blank" href="http://'.$room->getProperty()->getServerName().'/invoice.html?id=' . $reservationId . '">' . $guest->getName() . ' - ' . $reservationId . '</a>';
 
         //is short stay?
@@ -218,7 +220,6 @@ class SingleReservationHtml
         //booking created on
         $this->logger->debug("HTML output - bottom right icons " . $reservation->getId());
         $htmlString .= '<p> Received on: ' . $reservation->getReceivedOn()->format('Y-m-d') . '</p>';
-        $htmlString .= '<p><a href="javascript:void(0)" class="reservations_actions_link" data-res-id="' . $reservation->getId() . '">more...</a></p>';
         //close far right
         $htmlString .= '</p>';
 
@@ -231,7 +232,7 @@ class SingleReservationHtml
 
 
         //inner right div
-        $htmlString .= '<div class="inner-right-div">';
+        $htmlString .= '<div>';
 
 
         //Line Items (Room and add ons)
@@ -300,14 +301,14 @@ class SingleReservationHtml
         //right div for input fields
         $this->logger->debug(" HTML output - right div for input fields " . $reservation->getId());
 
-        $htmlString .= '<div class="right-div" id="right-div-' . $reservation->getId() . '">';
+        $htmlString .= '<div id="right-div-' . $reservation->getId() . '">';
 
         // add Guest ID
         if ($guest->getIdNumber() == null) {
             $this->logger->debug(" HTML output - add guest ID" . $reservation->getId());
 
             $htmlString .= '
-                <div class="right-side-action-block">
+                <div>
                 <input id="guest_id_' . $reservationId . '" type="text"
 										 class="textbox  display-none block-display reservation_input" placeholder="Passport\ID number"/><div id="add_guest_id_button_' . $reservationId . '" class="ClickableButton res_add_guest_id" data-resid="' . $reservationId . '" >Add ID\Passport</div></div>';
         }

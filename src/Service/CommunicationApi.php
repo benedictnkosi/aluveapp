@@ -30,21 +30,29 @@ class CommunicationApi
         }
     }
 
-    public function sendEmailViaGmail($emailFrom, $emailTo, $message, $subject, $replyTo = null): array
+    public function sendEmailViaGmail($emailFrom, $emailTo, $messageBody, $subject, $propertyName = "Aluve App", $replyTo = null): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $gmailService = $this->createGmailService();
-            $message = $this->createMessage($emailFrom, $emailTo, $subject, $message);
-            $this->createDraft($gmailService, $emailFrom, $message);
-            $this->sendGmailMessage($gmailService, $emailFrom, $message, $replyTo);
-            $responseArray[] = array(
-                'result_message' => 'Successfully sent message. Thank you',
-                'result_code' => 0
-            );
+            if(!empty($emailTo)){
+                $gmailService = $this->createGmailService();
+                $messageBody = $this->createMessage($emailFrom, $emailTo, $subject, $messageBody, $propertyName, $replyTo);
+                $this->createDraft($gmailService, $emailFrom, $messageBody);
+                $this->sendGmailMessage($gmailService, $emailFrom, $messageBody);
+                $responseArray[] = array(
+                    'result_message' => 'Successfully sent message. Thank you',
+                    'result_code' => 0
+                );
 
-            return $responseArray;
+                return $responseArray;
+            }else{
+                $responseArray[] = array(
+                    'result_message' => "email not provided",
+                    'result_code' => 1
+                );
+                $this->logger->debug(print_r($responseArray, true));
+            }
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage(),
@@ -64,10 +72,10 @@ class CommunicationApi
      * @param $messageText string email text
      * @return Google_Service_Gmail_Message
      */
-    function createMessage(string $sender, string $to, string $subject, string $messageText, $replyTo = null): Google_Service_Gmail_Message
+    function createMessage(string $sender, string $to, string $subject, string $messageText, $propertyName, $replyTo = null): Google_Service_Gmail_Message
     {
         $message = new Google_Service_Gmail_Message();
-        $rawMessageString = "From: <{$sender}>\r\n";
+        $rawMessageString = "From: $propertyName <{$sender}>\r\n";
         $rawMessageString .= "To: <{$to}>\r\n";
         if($replyTo != null){
             $rawMessageString .= "Reply-To: <{$replyTo}>\r\n";
@@ -110,9 +118,7 @@ class CommunicationApi
     function sendGmailMessage($service, $userId, $message) {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
-            $message = $service->users_messages->send($userId, $message);
-            //print 'Message with ID: ' . $message->getId() . ' sent.';
-            return $message;
+            return $service->users_messages->send($userId, $message);
         } catch (Exception $e) {
             $this->logger->debug($e->getMessage() . ' - ' . $e->getTraceAsString());
         }

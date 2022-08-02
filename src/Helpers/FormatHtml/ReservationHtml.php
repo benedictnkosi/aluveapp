@@ -111,7 +111,7 @@ class ReservationHtml
                         <img class="listing-image-origin" src="/admin/images/'.$todayCheckIn->getOrigin().'.png" data-res-id="'.$todayCheckIn->getId().'"></img>
                         <div class="listing-description-text" data-res-id="'.$todayCheckIn->getId().'">'
                 . $todayCheckIn->getGuest()->getName() . ' is expected to check-in 
-                         <span class="listing-room-name" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getRoom()->getName() . ' </span>
+                         <span class="listing-room-name" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getRoom()->getName() . ' #'.$todayCheckIn->getId().'</span>
                         </div>
                         </div>
                     </div>';
@@ -125,7 +125,7 @@ class ReservationHtml
                         <img class="listing-image-origin" src="/admin/images/'.$todayCheckOut->getOrigin().'.png"></img>
                         <div class="listing-description-text">'
                     . $todayCheckOut->getGuest()->getName() . ' is expected to check-out 
-                         <span class="listing-room-name" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getRoom()->getName() . ' </span>
+                         <span class="listing-room-name" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getRoom()->getName() . ' #'.$todayCheckOut->getId().' </span>
                         </div>
                         </div>
                     </div>';

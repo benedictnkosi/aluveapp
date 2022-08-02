@@ -24,7 +24,10 @@ class EmployeeController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $employees = $employeeApi->getEmployees();
         $configEmployeesHTML = new ConfigEmployeesHTML( $entityManager, $logger);
-        $response = $configEmployeesHTML->formatHtml($employees);
+        $html = $configEmployeesHTML->formatHtml($employees);
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

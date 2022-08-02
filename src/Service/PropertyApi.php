@@ -206,11 +206,7 @@ class PropertyApi
 
             if ($property != null) {
                 $emailPrefix = "Message from $guestName\r\n Phone: $phoneNumber \r\nEmail: $email";
-                $headers = 'From:' . $property->getEmailAddress() . "\r\n" .
-                    'Reply-To: ' . $email . "\r\n" .
-                    'X-Mailer: PHP/' . phpversion();
-                $whitelist = array('localhost', '::1' );
-                // check if the server is in the array
+
                 $communicationApi = new CommunicationApi($this->em, $this->logger);
                 $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $property->getEmailAddress(),  $emailPrefix . $message, "Aluve App - Message from guest");
 
