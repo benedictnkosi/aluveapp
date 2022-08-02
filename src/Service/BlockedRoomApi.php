@@ -30,7 +30,6 @@ class BlockedRoomApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $this->logger->debug("blocking room: " . $roomId);
 
-
         $responseArray = array();
         try {
             //get the room
@@ -47,7 +46,6 @@ class BlockedRoomApi
                 $this->logger->debug("Room is not null");
             }
 
-            //check if the dates are the same, if same increment the to date by one day
             $date = new DateTime();
             $toDateDateTime = new DateTime($toDate);
             $fromDateDateTime = new DateTime($fromDate);

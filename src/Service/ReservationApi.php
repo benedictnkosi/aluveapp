@@ -530,6 +530,8 @@ class ReservationApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $this->logger->debug("room ids" . $roomIds);
         $responseArray = array();
+        $roomApi = new RoomApi($this->em, $this->logger);
+        $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
         try {
             //get property Id
             $roomIds = str_replace('[', "", $roomIds);
@@ -549,10 +551,14 @@ class ReservationApi
                     $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
                 }
 
+                //get room
+
+                $room = $roomApi->getRoom($roomId);
+
                 if ($guest == null) {
                     $this->logger->debug("guest not found, creating a new guest");
                     //create guest
-                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $origin, $request);
+                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $origin, $request,$room->getProperty->getPropertyId());
                     if ($response[0]['result_code'] != 0) {
                         $this->logger->debug(print_r($response, true));
                         return $response;
@@ -560,10 +566,7 @@ class ReservationApi
                         $guest = $response[0]['guest'];
                     }
                 }
-                //get room
-                $roomApi = new RoomApi($this->em, $this->logger);
-                $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
-                $room = $roomApi->getRoom($roomId);
+
 
                 $paid = 0;
                 //check if room is available

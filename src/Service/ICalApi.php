@@ -209,6 +209,7 @@ class ICalApi
                         $icalMessagesArray[] = array(
                             "ERROR: Ical Link not mapped - $uid"
                         );
+                        $this->updateIcalLogs($ical, $icalMessagesArray);
                         continue;
                     }
 
@@ -219,7 +220,6 @@ class ICalApi
 
                     //if booking not imported
                     if ($reservation === null) {
-                        $this->logger->debug("booking has not been imported");
                         $this->logger->debug("booking has not been imported");
 
                         //create reservation
@@ -243,6 +243,7 @@ class ICalApi
                         }
                         $this->logger->debug(print_r($responseArray, true));
                     } else {
+                        $this->logger->debug("booking has been imported before");
                         $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
                         $reservation->setCheckIn(new DateTime($checkInDate));
                         $reservation->setCheckOut(new DateTime($checkOutDate));
