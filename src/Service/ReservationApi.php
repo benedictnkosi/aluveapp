@@ -558,7 +558,7 @@ class ReservationApi
                 if ($guest == null) {
                     $this->logger->debug("guest not found, creating a new guest");
                     //create guest
-                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $origin,$room->getProperty()->getPropertyId());
+                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $origin,$room->getProperty()->getId());
                     if ($response[0]['result_code'] != 0) {
                         $this->logger->debug(print_r($response, true));
                         return $response;
