@@ -864,6 +864,7 @@ padding:0.3em;
 .calendar-table-header {
 	min-width: 15em;
 	font-size: 0.8em;
+	border-bottom: solid gray;
 }
 
 .profile-ser table {
