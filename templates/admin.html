@@ -303,20 +303,20 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <label>Room Name</label>
                         <div>
                             <input type="text" name="room_id" id="room_id" class="display-none" value="0"/>
-                            <input type="text" name="room_name" id="room_name"
+                            <input type="text" name="room_name" id="room_name" maxlength="30"
                                    required/>
                         </div>
 
                         <label>Description (use {} around the words you want bold e.g {WIFI}</label>
                         <div>
-                        <textarea type="text" name="room_description" id="room_description" rows="20"
+                        <textarea type="text" name="room_description" id="room_description" rows="20" maxlength="1000"
                                   required></textarea>
                         </div>
 
                         <label>Price</label>
 
                         <div>
-                            <input type="text" name="room_price" id="room_price"
+                            <input type="text" name="room_price" id="room_price" maxlength="5"
                                    required/>
                         </div>
 
@@ -342,7 +342,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
                         <label>Room Size</label>
                         <div>
-                            <input type="text" name="room_size" id="room_size"
+                            <input type="text" name="room_size" id="room_size" maxlength="5"
                                    required/>
                         </div>
 
@@ -384,7 +384,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
                             <label>Channel Ical Link</label>
                             <div>
-                                <input type="text" name="icalLink" id="icalLink"
+                                <input type="text" name="icalLink" id="icalLink" maxlength="500"
                                        required/>
                             </div>
 
@@ -412,12 +412,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <h3>Create New Add-ons</h3>
                     <div class="addon-left-div">
                         <label>Name</label>
-                        <input type="text" id="addon_name" name="addon_name" placeholder="e.g. laundry"
+                        <input type="text" id="addon_name" name="addon_name" placeholder="e.g. laundry" maxlength="50"
                                required/>
                     </div>
                     <div class="addon-right-div">
                         <label>Price</label>
-                        <input type="text" id="addon_price" name="addon_price" placeholder="e.g. 180"
+                        <input type="text" id="addon_price" name="addon_price" placeholder="e.g. 180" maxlength="4"
                                required/>
                     </div>
 
@@ -436,7 +436,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <h3>Create New Employee</h3>
                     <div class="addon-left-div">
                         <label>Name</label>
-                        <input type="text" id="employee_name" name="employee_name" placeholder="e.g. Benedict"
+                        <input type="text" id="employee_name" name="employee_name" placeholder="e.g. Benedict" maxlength="50"
                                required/>
                     </div>
                     <div>
@@ -460,10 +460,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
                     <label>Template Name</label>
 
-                    <input type="text" id="template_name_input" placeholder="e.g. Load shedding">
+                    <input type="text" id="template_name_input" placeholder="e.g. Load shedding" maxlength="50">
 
                     <label>Message</label>
-                    <textarea id="template_message" name="template_message">Hi guest_name, ....
+                    <textarea id="template_message" name="template_message" maxlength="500">Hi guest_name, ....
                     </textarea>
                     <div>
                         <span><input type="submit" value="Create Template" id="create_template_submit"></span>
@@ -497,7 +497,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <h3>Terms & Conditions</h3>
                 <form class="contact-form" id="terms_form">
                     <label>Terms (use {} around the words you want bold e.g {WIFI}</label>
-                    <textarea id="terms_text" name="terms_text">
+                    <textarea id="terms_text" name="terms_text" maxlength="5000">
                     </textarea>
                     <div>
                         <span><input type="submit" value="Save" id="terms_submit"></span>
@@ -613,7 +613,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="profile-top">
                     <div class="col-md-7 profile-top-right">
                         <h5>
-                            Blocked Room
+                            Blocked Rooms
                         </h5>
                     </div>
                     <div class="clearfix"></div>
@@ -631,7 +631,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="profile-top">
                     <div class="col-md-7 profile-top-right">
                         <h5>
-                            Block Room
+                            Block A Room
                         </h5>
                     </div>
                     <div class="clearfix"></div>
@@ -654,7 +654,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
                             Notes
                             <div>
-											<textarea name="block_notes" id="block_notes" rows="2"
+											<textarea name="block_notes" id="block_notes" rows="2" maxlength="100"
                                                       required> </textarea>
                             </div>
 
@@ -706,7 +706,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <form class="contact-form" action="#" autocomplete="off"
                           method="post" id="formStartChat">
                         <input name="whatapp_chat" type="text" id="whatapp_chat"
-                               placeholder="Phone Number" class="textbox">
+                               placeholder="Phone Number" class="textbox" maxlength="50">
 
                         <div>
                             <span>
