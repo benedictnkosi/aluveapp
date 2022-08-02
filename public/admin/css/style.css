@@ -845,10 +845,11 @@ padding:0.3em;
 .profile-ser table, th, td {
 	border: 1px solid #e0e0e0;
 	text-align: center;
-	padding: 0.3em;
 	height: 30px;
 	font-size: 1em;
 	font-weight: 200;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
 }
 
 .profile-serth th {
@@ -857,6 +858,7 @@ padding:0.3em;
 
 .headcol {
 	font-size: 0.8em;
+
 }
 
 .calendar-table-header {
