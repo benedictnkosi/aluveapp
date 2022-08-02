@@ -575,7 +575,7 @@ class ReservationApi
                 if (!$isRoomAvailable) {
                     $responseArray[] = array(
                         'result_code' => 1,
-                        'result_message' => 'Room not available for selected dates'
+                        'result_message' => 'Room not available for selected dates ' . $checkInDate . " - " .  $checkOutDate
                     );
                     return $responseArray;
                 }
