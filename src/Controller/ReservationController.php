@@ -129,7 +129,7 @@ class ReservationController extends AbstractController
                 }
                 $reservation->SetStatus($status);
                 if(strcmp($status->getName(), 'cancelled')){
-                    $blockedRoomApi->deleteBlockedRoomByReservation($reservation);
+                    $blockedRoomApi->deleteBlockedRoomByReservation($reservation->getId());
                 }
                 break;
             case "check_in_time":
@@ -189,6 +189,25 @@ class ReservationController extends AbstractController
                 $logger->info(print_r($responseArray, true));
                 return $this->json($responseArray);
         }
+        $response = $reservationApi->updateReservation($reservation);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response, 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
+     * @Route("api/reservations/{reservationId}/update_checkin_time/{checkInTime}/{checkOutTime}")
+     */
+    public function updateReservationCheckInTime($reservationId, $checkInTime, $checkOutTime, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, BlockedRoomApi $blockedRoomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+
+        $reservation = $reservationApi->getReservation($reservationId);
+
+        $reservation->SetCheckInTime($checkInTime);
+        $reservation->SetCheckOutTime($checkOutTime);
+
         $response = $reservationApi->updateReservation($reservation);
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());

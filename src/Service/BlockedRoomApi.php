@@ -179,7 +179,7 @@ class BlockedRoomApi
         return $responseArray;
     }
 
-    public function deleteBlockedRoomByReservation($reservationId, $checkInDate, $checkOutDate): array
+    public function deleteBlockedRoomByReservation($reservationId): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__ );
         $responseArray = array();

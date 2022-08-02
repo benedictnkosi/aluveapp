@@ -27,7 +27,7 @@ class AvailableRoomsDropDownHTML
         $numberOfRooms = 0;
         if($availableRooms === null){
             $htmlString .='<option value="No Rooms Available for Selected Dates"
-                                                data-thumbnail="'.PROTOCOL.':/'.SERVER_NAME.'/public/room/image/noroom.jpg" data-price="0" data-roomId="0"  data-sleeps="0">No Rooms Available
+                                                data-thumbnail="'.PROTOCOL.'://'.SERVER_NAME.'/public/room/image/noroom.jpg" data-price="0" data-roomId="0"  data-sleeps="0">No Rooms Available
                                         </option>';
             return $htmlString;
         }

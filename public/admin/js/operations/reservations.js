@@ -58,10 +58,11 @@ function setBindings() {
 
     $.getScript("js/jquery.timepicker.min.js", function () {
         $('.time-picker').timepicker({
-            'minTime': '8:00',
-            'maxTime': '23:00',
             'showDuration': false,
-            'timeFormat': 'H:i'
+            'timeFormat': 'H:mm',
+            change: function(time) {
+                updateCheckInOutTime();
+            }
         });
     });
 
@@ -83,22 +84,8 @@ function setBindings() {
                     sessionStorage.setItem('original_check_in_date', picker.startDate.format('MM/DD/YYYY'));
                     sessionStorage.setItem('original_check_out_date', picker.endDate.format('MM/DD/YYYY'));
                 });
-
-
             });
         });
-    });
-
-    $('.check_in_time_input').unbind('change')
-    $(".check_in_time_input").change(function (event) {
-        event.stopImmediatePropagation();
-        updateCheckInOutTime(event, "check_in_time")
-    });
-
-    $('.check_out_time_input').unbind('change')
-    $(".check_out_time_input").change(function (event) {
-        event.stopImmediatePropagation();
-        updateCheckInOutTime(event, "check_out_time")
     });
 
     $('.reservation_room_input').unbind('change')
@@ -170,6 +157,7 @@ function setBindings() {
 }
 
 function getReservationById(reservation_id){
+    sessionStorage.setItem("reservation_id", reservation_id);
     updateView('upcoming-reservations');
     $('.reservations_tabs').addClass("display-none");
     let url = "/api/reservation_html/" + reservation_id;
@@ -349,12 +337,13 @@ function captureGuestPhoneNumber(event) {
     });
 }
 
-function updateCheckInOutTime(event, $field) {
-    let reservationID = event.target.getAttribute("data-res-id");
-    let checkinTime = event.target.value;
+function updateCheckInOutTime() {
+    let checkinTime = $('.check_in_time_input').val();
+    let checkOutTime = $('.check_out_time_input').val();
+
     $("body").addClass("loading");
 
-    let url = "/api/reservations/" + reservationID + "/update/" + $field + "/" + checkinTime;
+    let url = "/api/reservations/" + sessionStorage.getItem("reservation_id") + "/update_checkin_time/" + checkinTime + "/" + checkOutTime;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
         var jsonObj = response[0];

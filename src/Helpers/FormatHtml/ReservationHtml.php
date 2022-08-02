@@ -105,7 +105,7 @@ class ReservationHtml
         }
 
         foreach ($todayCheckIns as $todayCheckIn) {
-            $htmlString .= '<div class="reservation-item" >
+            $htmlString .= '<div class="reservation-item" data-res-id="'.$todayCheckIn->getId().'">
                          <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckIn->getId().'">
                           <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkin.png" data-res-id="'.$todayCheckIn->getId().'"></img>
                         <img class="listing-image-origin" src="/admin/images/'.$todayCheckIn->getOrigin().'.png" data-res-id="'.$todayCheckIn->getId().'"></img>
@@ -119,11 +119,11 @@ class ReservationHtml
 
         if($outputCheckOuts){
             foreach ($todayCheckOuts as $todayCheckOut) {
-                $htmlString .= '<div class="reservation-item" >
+                $htmlString .= '<div class="reservation-item" data-res-id="'.$todayCheckOut->getId().'">
                          <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckOut->getId().'">
-                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkout.png"></img>
-                        <img class="listing-image-origin" src="/admin/images/'.$todayCheckOut->getOrigin().'.png"></img>
-                        <div class="listing-description-text">'
+                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkout.png" data-res-id="'.$todayCheckOut->getId().'"></img>
+                        <img class="listing-image-origin" src="/admin/images/'.$todayCheckOut->getOrigin().'.png" data-res-id="'.$todayCheckOut->getId().'"></img>
+                        <div class="listing-description-text" data-res-id="'.$todayCheckOut->getId().'">'
                     . $todayCheckOut->getGuest()->getName() . ' is expected to check-out 
                          <span class="listing-room-name" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getRoom()->getName() . ' #'.$todayCheckOut->getId().' </span>
                         </div>
