@@ -151,7 +151,7 @@ function createUpdateRoom() {
     const select_tv = $('#select_tv').find(":selected").val();
 
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/createroom/" + room_id + "/" + room_name + "/" + room_price + "/" + room_sleeps + "/" + select_room_status + "/" + select_linked_room + "/" + room_size + "/" + select_bed + "/" + select_Stairs + "/" + select_tv + "/" + encodeURIComponent(room_description.replaceAll("/", "###")) ;
     $.ajax({
         type: "get",
@@ -206,6 +206,7 @@ function filterConfiguration(event) {
 }
 
 function getConfigRooms() {
+    isUserLoggedIn();
     let url = "/api/configurationrooms";
     $.ajax({
         type: "get",
@@ -235,6 +236,7 @@ function getConfigRooms() {
 }
 
 function getChannelSynchLogs() {
+    isUserLoggedIn();
     let url = "/api/ical/logs";
     $.ajax({
         type: "get",
@@ -259,6 +261,7 @@ function getChannelSynchLogs() {
 }
 
 function getConfigRoomsDropDown() {
+    isUserLoggedIn();
     let url = "/api/combolistrooms";
 
     $.ajax({
@@ -282,6 +285,7 @@ function getConfigRoomsDropDown() {
 }
 
 function getConfigRoomStatusesDropDown() {
+    isUserLoggedIn();
     let url = "/api/combolistroomstatuses";
 
     $.ajax({
@@ -304,6 +308,7 @@ function getConfigRoomStatusesDropDown() {
 }
 
 function getConfigRoomBedSizesDropDown() {
+    isUserLoggedIn();
     let url = "/api/combolistroombedsizes";
 
     $.ajax({
@@ -327,6 +332,7 @@ function getConfigRoomBedSizesDropDown() {
 }
 
 function getConfigRoomTvsDropDown() {
+    isUserLoggedIn();
     let url = "/api/combolistroomtvs";
 
     $.ajax({
@@ -436,6 +442,7 @@ function setCookie(name, value) {
 }
 
 function getAddOns() {
+    isUserLoggedIn();
     let url = "/api/addons";
 
     $.ajax({
@@ -474,7 +481,7 @@ function updateAddOn(event) {
     let addOnId = event.target.getAttribute("data-addon-id");
     let fieldName = event.target.getAttribute("data-addon-field");
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/addon/update/" + addOnId + "/" + fieldName;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -490,7 +497,7 @@ function createAddOn() {
     const addon_name = $("#addon_name").val().trim();
     const addon_price = $("#addon_price").val().trim();
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/createaddon/" + addon_name + "/" + addon_price;
     $.getJSON(url + "?callback=?", null, function (data) {
         $("body").removeClass("loading");
@@ -507,7 +514,7 @@ function createAddOn() {
 function deleteAddOn(event) {
     let addOnId = event.target.getAttribute("data-addon-id");
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/addon/delete/" + addOnId;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -521,7 +528,7 @@ function deleteAddOn(event) {
 }
 
 function getEmployees() {
-
+    isUserLoggedIn();
     let url = "/api/config/employees";
 
     $.ajax({
@@ -557,7 +564,7 @@ function getEmployees() {
 function updateEmployee(event) {
     let employeeId = event.target.getAttribute("data-employee-id");
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/employee/update/" + employeeId + "/" + event.target.value;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -572,7 +579,7 @@ function updateEmployee(event) {
 function createEmployee() {
     const employee_name = $("#employee_name").val().trim();
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/createemployee/" + employee_name;
 
     $.getJSON(url + "?callback=?", null, function (data) {
@@ -590,7 +597,7 @@ function createEmployee() {
 function deleteEmployee(event) {
     let employeeId = event.target.getAttribute("data-employee-id");
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/employee/delete/" + employeeId;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -604,7 +611,7 @@ function deleteEmployee(event) {
 }
 
 function getMessageTemplates() {
-
+    isUserLoggedIn();
     let url = "/api/schedulemessages/templates";
 
     $.ajax({
@@ -636,7 +643,7 @@ function getMessageTemplates() {
 
 function getMessageSchedules() {
     let url = "/api/schedulemessages/schedules";
-
+    isUserLoggedIn();
     $.ajax({
         type: "get",
         url: url,
@@ -667,7 +674,7 @@ function getMessageSchedules() {
 
 function getMessageVariables() {
     let url = "/api/schedulemessages/variables";
-
+    isUserLoggedIn();
     $.ajax({
         type: "get",
         url: url,
@@ -736,7 +743,7 @@ function createScheduleMessage() {
     });
     if (selected.length > 0) {
         $("body").addClass("loading");
-
+        isUserLoggedIn();
         let url = "/api/schedulemessages/create/" + template_name_select + "/" + schedule_name + "/" + selected.toString();
         $.getJSON(url + "?callback=?", null, function (data) {
             $("body").removeClass("loading");
@@ -754,7 +761,7 @@ function createScheduleMessage() {
 }
 
 function getScheduledMessages() {
-
+    isUserLoggedIn();
     let url = "/api/schedulemessages";
     $.ajax({
         type: "get",
@@ -784,7 +791,7 @@ function getScheduledMessages() {
 function deleteScheduledMessage(event) {
     let scheduleMessageId = event.target.getAttribute("data-id");
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/schedulemessages/delete/" + scheduleMessageId;
 
     $.getJSON(url + "?callback=?", null, function (response) {
@@ -803,7 +810,7 @@ function createMessageTemplate() {
     $("body").addClass("loading");
     const name = $("#template_name_input").val().trim();
     const message = $("#template_message").val().trim();
-
+    isUserLoggedIn();
     let url = "/api/schedulemessages/createtemplate/" + name + "/" + encodeURIComponent(message);
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -821,7 +828,7 @@ function getTemplateMessage() {
     const templateId = $('#template_name_select').find(":selected").val();
     if (templateId != null) {
         let url = "/api/schedulemessages/template/" + templateId;
-
+        isUserLoggedIn();
         $.ajax({
             type: "get",
             url: url,
@@ -871,7 +878,7 @@ function updateTerms() {
     const terms_text = $("#terms_text").val().trim();
 
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/property/terms/update/" + encodeURIComponent(terms_text.replaceAll("/", "###"));
     $.ajax({
         type: "get",
@@ -899,6 +906,7 @@ function updateTerms() {
 function addNewChannel() {
     const room_id = $("#room_id").val().trim();
     const link = $("#icalLink").val().trim();
+    isUserLoggedIn();
     let url = "/api/ical/links/" + room_id + "/" + encodeURIComponent(link.replaceAll("/", "###"));
     $("body").addClass("loading");
     $.ajax({
@@ -929,7 +937,7 @@ function addNewChannel() {
 function removeChannel(event) {
     let channelId = event.target.getAttribute("data-link-id");
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/ical/remove/" + channelId;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -946,7 +954,7 @@ function removeChannel(event) {
 
 function importCalendar(event) {
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/ical/import/" + sessionStorage.getItem("room_id");
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -1007,7 +1015,7 @@ function initialiseImageUpload(roomId) {
                         event.stopImmediatePropagation();
                         const imageName = event.target.getAttribute("alt");
                         let url = "/api/configuration/markdefault/" + imageName;
-
+                        isUserLoggedIn();
                         $.getJSON(url + "?callback=?", null, function (response) {
                             if (response[0].result_code === 0) {
                                 initialiseImageUpload(roomId);

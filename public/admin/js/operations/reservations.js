@@ -24,6 +24,7 @@ function refreshReservations() {
 }
 
 function getReservationsByPeriod(period) {
+    isUserLoggedIn();
     let url = "/api/reservations/" +period;
     $.ajax({
         type: "get",
@@ -165,6 +166,7 @@ function getReservationById(reservation_id){
     sessionStorage.setItem("reservation_id", reservation_id);
     updateView('upcoming-reservations');
     $('.reservations_tabs').addClass("display-none");
+    isUserLoggedIn();
     let url = "/api/reservation_html/" + reservation_id;
     $("body").addClass("loading");
     $.ajax({
@@ -239,6 +241,7 @@ function changeBookingStatus(event) {
 
 
     $("body").addClass("loading");
+    isUserLoggedIn();
     let url = "/api/reservations/" + data["reservation_id"] + "/update/status/" + data["new_value"];
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -264,6 +267,7 @@ function blockGuest(event) {
     } else {
         const note = $("#block_note_" + article.dataset.resid).val();
         $("body").addClass("loading");
+        isUserLoggedIn();
         let url = "/api/reservation/" + res_id + "/blockguest/" + note;
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
@@ -305,7 +309,7 @@ function filterReservations(event) {
 function markReservationAsCheckedInOut(event, status) {
     let reservationID = event.target.getAttribute("reservation_id");
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/reservations/" + reservationID + "/update/check_in_status/" + status;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -327,7 +331,7 @@ function captureGuestPhoneNumber(event) {
     if (phoneNumber.length < 10) {
         return;
     }
-
+    isUserLoggedIn();
     $("body").addClass("loading");
     let url = "/api/guests/" + guestID + "/phone/" + phoneNumber;
     $.getJSON(url + "?callback=?", null, function (response) {
@@ -347,7 +351,7 @@ function updateCheckInOutTime() {
     let checkOutTime = $('.check_out_time_input').val();
 
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/reservations/" + sessionStorage.getItem("reservation_id") + "/update_checkin_time/" + checkinTime + "/" + checkOutTime;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -364,7 +368,7 @@ function updateCheckInOutTime() {
 function updateCheckInDate(event, checkInDate, checkOutDate) {
     let reservationID = event.target.getAttribute("data-res-id");
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/reservations/" + reservationID + "/update/dates/" + checkInDate + "/" + checkOutDate;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -382,7 +386,7 @@ function updateCheckInDate(event, checkInDate, checkOutDate) {
 function updateReservationRoom(event, roomId) {
     let reservationID = event.target.getAttribute("data-res-id");
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/reservations/" + reservationID + "/update_room/" + roomId;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
@@ -410,7 +414,7 @@ function markAsCleaned(event) {
             showResErrorMessage("reservation", "Please select cleaner");
             return;
         }
-
+        isUserLoggedIn();
         $("body").addClass("loading");
         let url = "/api/cleaning/" + id + "/cleaner/" + employee_id;
         $.getJSON(url + "?callback=?", null, function (response) {
@@ -441,7 +445,7 @@ function addAddOn(event) {
             showResErrorMessage("reservation", "Please select an add on");
             return;
         }
-
+        isUserLoggedIn();
         $("body").addClass("loading");
         let url = "/api/addon/" + add_on_id + "/reservation/" + id + "/quantity/" + quantity;
         $.getJSON(url + "?callback=?", null, function (response) {
@@ -468,6 +472,7 @@ function addGuestID(event) {
     } else {
         const idNumber = $("#guest_id_" + article.dataset.resid).val();
         $("body").addClass("loading");
+        isUserLoggedIn();
         let url = "/api/reservation/" + id + "/idnumber/" + idNumber;
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
@@ -497,6 +502,7 @@ function addPayment(event) {
             showResErrorMessage(reservation, "Please provide numbers only for payment");
             return;
         }
+        isUserLoggedIn();
         $("body").addClass("loading");
         let url = "/api/payment/" + id + "/amount/" + amount;
         $.getJSON(url + "?callback=?", null, function (response) {
@@ -524,6 +530,7 @@ function addNote(event) {
     } else {
         const note = $("#note_" + article.dataset.resid).val();
         $("body").addClass("loading");
+        isUserLoggedIn();
         let url = "/api/note/" + id + "/text/" + note;
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
@@ -582,6 +589,7 @@ function getRooms(id) {
 }
 
 function getServerName() {
+    isUserLoggedIn();
     let url = "/api/property/severname";
     $.ajax({
         type: "get",

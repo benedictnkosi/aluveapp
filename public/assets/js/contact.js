@@ -38,7 +38,6 @@ $(document).ready(function () {
             newTrialMessage();
         }
     });
-
 });
 
 function sendMessage() {
@@ -46,7 +45,6 @@ function sendMessage() {
     const email = $('#email').val();
     const phoneNumber = $('#phoneNumber').val();
     const message = $('#message').val();
-
     let url = "/public/sales/contact/" + customerName + "/" + email + "/" + phoneNumber+ "/" + encodeURIComponent(message);
     $("#success_message_div").addClass("display-none");
     $("#error_message_div").addClass("display-none");
@@ -63,6 +61,7 @@ function sendMessage() {
 }
 
 function newTrialMessage() {
+
     const customerName = $('#customerName').val();
     const email = $('#email').val();
     const phoneNumber = $('#phoneNumber').val();

@@ -130,6 +130,7 @@ function bindBlockedRoomsEvents(){
 
 function getBlockedRooms() {
     let url = "/api/blockedroom/get";
+    isUserLoggedIn();
     $.ajax({
         type: "get",
         url: url,
@@ -159,6 +160,7 @@ function getBlockedRooms() {
 function deleteBlockRoom(event) {
     const id = event.target.id.replace("delete_blocked_", "");
     let url = "/api/blockedroom/delete/" + id;
+    isUserLoggedIn();
     $.ajax({
         type: "get",
         url: url,
@@ -213,7 +215,7 @@ function blockRoom() {
     }
 
     $("body").addClass("loading");
-
+    isUserLoggedIn();
     let url = "/api/blockroom/" + block_room + "/" + sessionStorage.getItem("blockStartDate") + "/" + sessionStorage.getItem("blockEndDate") + "/" + block_note;
     $.getJSON(url + "?callback=?", null, function (data) {
         $("body").removeClass("loading");
@@ -235,6 +237,7 @@ function getBlockRooms() {
 }
 
 function getCleaning(room) {
+    isUserLoggedIn();
     let url =  "/api/cleanings/"+room;
     $.ajax({
         type: "get",
@@ -261,6 +264,7 @@ function getCleaning(room) {
 
 function getOverallOccupancy(period, elementId) {
     let url = "/api/occupancy/" + period;
+    isUserLoggedIn();
     $.ajax({
         type: "get",
         url: url,
@@ -292,6 +296,7 @@ function getOccupancyPerRoomForMonth() {
 }
 
 function getOccupancyPerRoom(period) {
+    isUserLoggedIn();
     let url = "/api/occupancy/perroom/" + period;
     $.ajax({
         type: "GET",

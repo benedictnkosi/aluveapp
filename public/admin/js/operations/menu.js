@@ -105,18 +105,12 @@ function isRetry(functionName){
 
 
 function isUserLoggedIn() {
-    let url =  "/public/userloggedin/";
-    $.ajax({
-        type: "get",
-        url: url,
-        crossDomain: true,
-        cache: false,
-        dataType: "jsonp",
-        contentType: "application/json; charset=UTF-8",
-        success: function (data) {
-            if(data.logged_in.localeCompare("false") === 0){
-                logout()
-            }
+    let url =  "/public/me/";
+
+    $.get(url, function(data){
+        console.log(data[0].authenticated);
+        if (!data[0].authenticated) {
+            logout();
         }
     });
 }

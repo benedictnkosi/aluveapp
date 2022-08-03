@@ -10,6 +10,7 @@ function loadCalendarPageData(){
 }
 
 function getCalendar() {
+	isUserLoggedIn();
 	$("body").addClass("loading");
 	let url =  "/api/calendar";
 	$.ajax({
