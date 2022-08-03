@@ -453,6 +453,7 @@ function addAddOn(event) {
                 showResErrorMessage("reservation", response[0].result_message);
             }
         });
+
     }
 }
 
