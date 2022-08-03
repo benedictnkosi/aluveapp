@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Filesystem\Filesystem;
+require_once(__DIR__ . '/../app/application.php');
 
 class CommandsController extends AbstractController
 {
@@ -120,7 +121,12 @@ class CommandsController extends AbstractController
             'result_code' => 0
         );
 
-        $command = 'git pull origin main --force';
+        if(str_contains(SERVER_NAME,"qa")){
+            $command = 'git pull origin development --force';
+        }else{
+            $command = 'git pull origin main --force';
+        }
+
         exec($command, $result);
         $responseArray[] = array(
             'command' =>  $command,

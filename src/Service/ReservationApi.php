@@ -633,7 +633,7 @@ class ReservationApi
                         $this->logger->debug("this is a south african number " . $reservation->getGuest()->getPhoneNumber());
                         $SMSHelper = new SMSHelper($this->logger);
                         $message = "Hi " . $guest->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://" . $reservation->getRoom()->getProperty()->getServerName() . "/invoice.html?reservation=" . $reservation->getId();
-                        //$SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
+                        $SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
                     }
 
                     //Send email

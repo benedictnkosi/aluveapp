@@ -19,10 +19,7 @@ class SMSHelper
     function sendMessage ($phoneNumber, $message): bool
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $whitelist = array('localhost', '::1' );
-        // check if the server is in the array
-        if (!in_array( $_SERVER['REMOTE_ADDR'], $whitelist ) ) {
-
+        if (strcmp( $_SERVER['REMOTE_ADDR'], 'aluveapp.co.za' )===0 ) {
             //Retrieve your API Credentials
             $apiKey = SMS_API_KEY;
             $apiSecret = SMS_API_SECRET;
@@ -100,7 +97,6 @@ class SMSHelper
             $this->logger->debug("Server not in white list " . $_SERVER['REMOTE_ADDR']);
             return true;
         }
-        return false;
     }
 
 }
