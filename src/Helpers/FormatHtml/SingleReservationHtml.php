@@ -333,7 +333,7 @@ class SingleReservationHtml
         $htmlString .= '
                     <div class="right-side-action-block">
                     <textarea id="note_' . $reservationId . '"
-                        class="textbox  display-none block-display reservation_input" placeholder="e.g. 12h00 early check in"/><div id="add_note_button_' . $reservationId . '" class="ClickableButton res_add_note" data-resid="' . $reservationId . '" >Add Note</div></div>';
+                        class="textbox  display-none block-display reservation_input" placeholder="e.g. 12h00 early check in"></textarea><div id="add_note_button_' . $reservationId . '" class="ClickableButton res_add_note" data-resid="' . $reservationId . '" >Add Note</div></div>';
 
         // add add-ons - only for confirmed booking
         if (strcmp($reservation->getStatus()->getName(), "pending") != 0) {
