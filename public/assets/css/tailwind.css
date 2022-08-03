@@ -10,6 +10,12 @@
 */
 
 
+.youtube-iframe{
+  display: inline;
+  vertical-align: middle;
+  padding: 1em;
+}
+
 
 .flex2 {
   margin: 17px 0;
