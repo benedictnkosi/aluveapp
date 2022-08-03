@@ -70,9 +70,7 @@ function loadDataOnMenuClick(selectedDiv) {
             loadReservationsPageData();
             break;
         case 'other-tabs':
-            loadOccupancyPageData();
-            loadCleaningPageData();
-            loadBlockedRoomsPageData();
+            loadMoreTabPageData();
             break;
         case 'configuration':
             loadConfigurationPageData();

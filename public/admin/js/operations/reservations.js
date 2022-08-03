@@ -3,6 +3,11 @@ $(document).ready(function () {
     $(".filter-reservations").click(function (event) {
         filterReservations(event);
     });
+
+    $('#refresh_reservations_button').unbind('click')
+    $("#refresh_reservations_button").click(function (event) {
+        refreshReservations();
+    });
 });
 
 function loadReservationsPageData(){

@@ -1,5 +1,8 @@
 $(document).ready(function() {
-
+	$('#refresh_calendar_button').unbind('click')
+	$("#refresh_calendar_button").click(function (event) {
+		getCalendar();
+	});
 });
 
 function loadCalendarPageData(){

@@ -5,6 +5,11 @@
 	License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
 
+.refresh_items_link img {
+	width: 5em;
+	height: 4em;
+}
+
 .top-margin-1em{
 	margin-top: 1em;
 }
@@ -16,7 +21,8 @@
 .listing-description-text {
 	position: absolute;
 	margin-left: 100px;
-	margin-top: -40px;
+	margin-top: -3em;
+	margin-right:2em;
 }
 
 .reservation-floating-div{
@@ -51,7 +57,7 @@
 	border-style: solid;
 	border-color: #ddd;
 	background-color: #fff;
-	padding: 15px;
+	padding: 2em;
 }
 
 .listing-image{
@@ -230,6 +236,11 @@ input[type="checkbox"]{
 }
 
 @media (max-width: 768px) {
+
+	.reservation-item, .reservation-date-divider{
+		min-height: 10em;
+	}
+
 	.reservations_div{
 		width: 100%;
 		display: block;
@@ -377,6 +388,12 @@ input, select, textarea {
 .new-reservation-link{
 	color:white;
 }
+
+.refresh_items_link{
+	float: right;
+	margin-top: -3em;
+}
+
 
 .em1-top-padding {
 	padding-top: 1em;
@@ -588,6 +605,7 @@ padding:0.3em;
 		width: 1em;
 		height: 1em;
 	}
+
 
 	.inner-left-div {
 		float: left;

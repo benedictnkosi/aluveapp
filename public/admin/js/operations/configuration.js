@@ -1,8 +1,14 @@
 $(document).ready(function () {
     Dropzone.autoDiscover = false;
+
+    $('#refresh_configuration_button').unbind('click')
+    $("#refresh_configuration_button").click(function (event) {
+        loadConfigurationPageData();
+    });
 });
 
 function loadConfigurationPageData() {
+    $("body").addClass("loading");
     getConfigRooms();
     getConfigRoomsDropDown();
     getConfigRoomStatusesDropDown();
@@ -232,9 +238,11 @@ function getChannelSynchLogs() {
         dataType: "jsonp",
         contentType: "application/json; charset=UTF-8",
         success: function (data) {
+            $("body").removeClass("loading");
             $("#synch_logs_div").html(data.html);
         },
         error: function (xhr) {
+            $("body").removeClass("loading");
             console.log("request for getChannelSynchLogs is " + xhr.status);
             if (!isRetry("getChannelSynchLogs")) {
                 return;
