@@ -11,7 +11,34 @@ $(document).ready(function () {
     $("#refresh_ical_button").click(function (event) {
         importCalendar();
     });
+
+    createBedsTokenField("");
 });
+
+function createBedsTokenField(selectedRooms){
+    $('#beds_tokenfield').tokenfield('destroy');
+    $('#beds_tokenfield').val(selectedRooms);
+    $('#beds_tokenfield').tokenfield({
+        autocomplete: {
+            source: function (request, response) {
+                jQuery.get("/api/combolistroombedsizesjson", {
+                    query: request.term
+                }, function (data) {
+                    data = $.parseJSON(data);
+                    response(data);
+                });
+            },
+            delay: 100
+        },
+        showAutocompleteOnFocus: true
+    });
+
+    $('#beds_tokenfield')
+        .on('tokenfield:createdtoken', function (e) {
+            $('#beds_tokenfield-tokenfield').blur();
+        })
+        .tokenfield()
+}
 
 function loadConfigurationPageData() {
     $("body").addClass("loading");
@@ -46,10 +73,7 @@ function bindConfigElements() {
     $("#config_room_form").validate({
         // Specify validation rules
         rules: {
-            room_name: "required",
-            room_description: "required",
-            room_sleeps: "required",
-            room_price: {
+            room_name: "required", room_description: "required",  room_sleeps: "required", beds_tokenfield: "required", room_price: {
                 required: true, digits: true
             }, room_size: {
                 required: true, digits: true
@@ -66,8 +90,7 @@ function bindConfigElements() {
     $("#config_addOn_form").validate({
         // Specify validation rules
         rules: {
-            addon_name: "required",
-            addon_price: {
+            addon_name: "required", addon_price: {
                 required: true, digits: true
             },
         }, submitHandler: function () {
@@ -146,13 +169,18 @@ function createUpdateRoom() {
     const room_size = $('#room_size').val().trim();
     const select_room_status = $('#select_room_status').find(":selected").val();
     const select_linked_room = $('#select_linked_room').find(":selected").val();
-    const select_bed = $('#select_bed').find(":selected").val();
+    const input_bed =  $('#beds_tokenfield').tokenfield('getTokensList', ',');
     const select_Stairs = $('#select_Stairs').find(":selected").val();
     const select_tv = $('#select_tv').find(":selected").val();
 
+    if(input_bed.length < 1){
+        $('#beds_tokenfield').form();
+
+    }
+
     $("body").addClass("loading");
     isUserLoggedIn();
-    let url = "/api/createroom/" + room_id + "/" + room_name + "/" + room_price + "/" + room_sleeps + "/" + select_room_status + "/" + select_linked_room + "/" + room_size + "/" + select_bed + "/" + select_Stairs + "/" + select_tv + "/" + encodeURIComponent(room_description.replaceAll("/", "###")) ;
+    let url = "/api/createroom/" + room_id + "/" + room_name + "/" + room_price + "/" + room_sleeps + "/" + select_room_status + "/" + select_linked_room + "/" + room_size + "/" + input_bed + "/" + select_Stairs + "/" + select_tv + "/" + encodeURIComponent(room_description.replaceAll("/", "###"));
     $.ajax({
         type: "get",
         url: url,
@@ -368,6 +396,7 @@ function populateFormWithRoom(event) {
     setCookie("room_id", roomId);
     let newUploadForm;
     if (roomId.localeCompare("0") === 0) {
+        createBedsTokenField("");
 
         $('#manage_room_h3').html("Create A New Room");
         $('#imageUploaderDiv').addClass("display-none");
@@ -401,7 +430,18 @@ function populateFormWithRoom(event) {
                 $("#select_linked_room option[value='" + roomId + "']").remove();
                 $('#select_linked_room').val(response[0].linked_room);
                 $('#room_size').val(response[0].room_size);
-                $('#select_bed').val(response[0].bed);
+
+                var json = JSON.parse(response[0].beds);
+                var i;
+                var iLength = json.length;
+                var stringSelectedBeds = "";
+                for (i = 0; i < iLength; i++) {
+                    //alert(json[i].name);
+                    stringSelectedBeds += json[i].name + ",";
+                }
+
+                createBedsTokenField(stringSelectedBeds);
+
                 $('#select_tv').val(response[0].tv);
                 $('#select_Stairs').val(response[0].stairs);
                 $("#links_div").html(response[0].ical_links);

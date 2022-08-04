@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Property;
 use App\Entity\ReservationStatus;
+use App\Entity\RoomBeds;
 use App\Entity\RoomBedSize;
 use App\Entity\RoomImages;
 use App\Entity\Rooms;
@@ -16,6 +17,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+
 require_once(__DIR__ . '/../app/application.php');
 
 class RoomApi
@@ -51,17 +53,17 @@ class RoomApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
         }
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        if(empty($responseArray)){
+        if (empty($responseArray)) {
             $this->logger->debug("Rooms array empty ");
             return null;
-        }else{
+        } else {
             $this->logger->debug("Rooms array not empty ");
             return $responseArray;
         }
@@ -107,7 +109,7 @@ class RoomApi
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
             );
             $this->logger->error(print_r($responseArray, true));
             return $responseArray;
@@ -126,9 +128,9 @@ class RoomApi
             if (strcmp($roomId, "all") === 0) {
                 //check if the PROPERTY_ID if not get it from the host
                 $propertyApi = new PropertyApi($this->em, $this->logger);
-                if(!isset($_SESSION['PROPERTY_ID'])){
+                if (!isset($_SESSION['PROPERTY_ID'])) {
                     $propertyId = $propertyApi->getPropertyIdByHost($request);
-                }else{
+                } else {
                     $propertyId = $_SESSION['PROPERTY_ID'];
                 }
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
@@ -159,7 +161,7 @@ class RoomApi
                     $roomImages = $this->getRoomImages($room->getId());
                     $roomImagesUploadHtml = new RoomImagesHTML($this->em, $this->logger);
                     $imagesHtml = $roomImagesUploadHtml->formatUpdateRoomHtml($roomImages);
-
+                    $roomBeds = $this->getRoomBeds($room->getId());
                     $iCalApi = new ICalApi($this->em, $this->logger);
                     $icalLinks = $iCalApi->getIcalLinks($room->getId());
                     $configIcalHtml = new ConfigIcalLinksHTML($this->em, $this->logger);
@@ -173,8 +175,7 @@ class RoomApi
                         'sleeps' => $room->GetSleeps(),
                         'description' => $room->getDescription(),
                         'description_html' => $this->replaceWithBold($room->getDescription()),
-                        'bed' => $room->getBed()->getId(),
-                        'bed_name' => $room->getBed()->getName(),
+                        'beds' => json_encode($roomBeds),
                         'stairs' => $stairs,
                         'linked_room' => $linkedRoomId,
                         'room_size' => $room->getSize(),
@@ -187,11 +188,9 @@ class RoomApi
                     );
                 }
             }
-
-
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -203,7 +202,7 @@ class RoomApi
 
     public function replaceWithBold($string): array|string
     {
-        $string= str_replace("{", "<b>", $string);
+        $string = str_replace("{", "<b>", $string);
         return str_replace("}", "</b>", $string);
     }
 
@@ -215,7 +214,7 @@ class RoomApi
             return $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $roomId));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -230,10 +229,10 @@ class RoomApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             if ($roomId === 0) {
-                if(!isset($_SESSION['PROPERTY_ID'])){
+                if (!isset($_SESSION['PROPERTY_ID'])) {
                     $propertyApi = new PropertyApi($this->em, $this->logger);
                     $propertyId = $propertyApi->getPropertyIdByHost($request);
-                }else{
+                } else {
                     $propertyId = $_SESSION['PROPERTY_ID'];
                 }
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
@@ -244,7 +243,7 @@ class RoomApi
             return $rooms;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -273,7 +272,45 @@ class RoomApi
             return $roomImages;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+    public function getRoomBeds($roomId): ?array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $room = $this->em->getRepository(Rooms::class)->findOneBy(
+                array('id' => $roomId));
+            if ($room === null) {
+                $this->logger->debug("room is null");
+                return null;
+            }
+
+            //get room images
+            $roomBeds = $this->em->getRepository(RoomBeds::class)->findBy(
+                array('room' => $roomId));
+
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
+            if ($roomBeds !== null) {
+                foreach ($roomBeds as $roomBed) {
+                    $responseArray[] = array(
+                        'id' => $roomBed->getBed()->getId(),
+                        'name' => $roomBed->getBed()->getName()
+                    );
+                }
+            }
+            return $responseArray;
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -300,7 +337,7 @@ class RoomApi
                 array('room' => $roomId,
                     'status' => array("active", "default")));
 
-            foreach ($roomImages as $roomImage){
+            foreach ($roomImages as $roomImage) {
                 $responseArray[] = array(
                     'name' => $roomImage->getName(),
                     'size' => "5mb",
@@ -310,7 +347,7 @@ class RoomApi
             $this->logger->debug("Ending Method before the return: " . __METHOD__);
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -354,7 +391,7 @@ class RoomApi
             );
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -373,7 +410,31 @@ class RoomApi
             return $roomStatuses;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+    public function getRoomBedSizesJson(): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $roomBedSizes = $this->em->getRepository(RoomBedSize::class)->findAll();
+            $this->logger->debug("Ending Method before the return: " . __METHOD__);
+            $json = [];
+            foreach ($roomBedSizes as $roomBedSize) {
+                $json[] = $roomBedSize->getName();
+            }
+            return $json;
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -393,7 +454,7 @@ class RoomApi
             return $roomBedSizes;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -413,7 +474,7 @@ class RoomApi
             return $roomTvs;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -423,7 +484,7 @@ class RoomApi
         return $responseArray;
     }
 
-    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $tv, $description): array
+    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs, $tv, $description): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -435,14 +496,17 @@ class RoomApi
             } else {
                 $successMessage = "Successfully updated room";
             }
-            $bedSize = $this->em->getRepository(RoomBedSize::class)->findOneBy(array('id' => $bed));
+            $beds = urldecode($beds);
+            $beds = trim($beds);
+            $bedsNameArray = explode(",", $beds);
+
+            $this->logger->debug("selected beds: " . $beds);
             $tvType = $this->em->getRepository(RoomTv::class)->findOneBy(array('id' => $tv));
             $roomStatus = $this->em->getRepository(RoomStatus::class)->findOneBy(array('id' => $status));
 
             if (strlen($linkedRoom) > 1) {
                 $room->setLinkedRoom($linkedRoom);
             }
-            $propertyApi = new PropertyApi($this->em, $this->logger);
             $propertyId = $_SESSION['PROPERTY_ID'];
             $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $propertyId));
 
@@ -452,7 +516,6 @@ class RoomApi
             $room->setStatus($roomStatus);
             $room->setLinkedRoom($linkedRoom);
             $room->setSize($size);
-            $room->setBed($bedSize);
             $room->setStairs($stairs);
             $room->setDescription($description);
             $room->setProperty($property);
@@ -461,17 +524,43 @@ class RoomApi
             $this->em->persist($room);
             $this->em->flush($room);
 
+
+            //remove current beds
+            $this->logger->debug("getting current beds");
+            $currentSelectedBeds = $this->em->getRepository(RoomBeds::class)->findBy(array('room' => $room->getId()));
+
+            if($currentSelectedBeds !== null){
+                foreach ($currentSelectedBeds as $currentSelectedBed){
+                    $this->logger->debug("removing new Bed " .$currentSelectedBed->getBed()->getName() );
+                    $this->em->remove($currentSelectedBed);
+                    $this->em->flush($currentSelectedBed);
+                }
+            }
+
+
+
+            // add new selected beds
+            //update beds
+
+            foreach ($bedsNameArray as $bedName){
+                $bed = $this->em->getRepository(RoomBedSize::class)->findOneBy(array('name' => trim($bedName)));
+                $this->logger->debug("creating new Bed " .$bed->getName() );
+                $roomBeds = new RoomBeds();
+                $roomBeds->setRoom($room);
+                $roomBeds->setBed($bed);
+                $this->em->persist($roomBeds);
+                $this->em->flush($roomBeds);
+            }
+
             $responseArray[] = array(
                 'result_message' => $successMessage,
                 'result_code' => 0,
                 'room_id' => $room->getId(),
                 'room_name' => $room->getName()
             );
-
-
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -513,7 +602,7 @@ class RoomApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -556,7 +645,7 @@ class RoomApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));

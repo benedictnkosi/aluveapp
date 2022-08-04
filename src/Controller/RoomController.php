@@ -41,6 +41,7 @@ class RoomController extends AbstractController
         return $response;
     }
 
+
     /**
      * @Route("/public/allroomsjson")
      */
@@ -163,6 +164,15 @@ class RoomController extends AbstractController
     }
 
     /**
+     * @Route("/api/combolistroombedsizesjson")
+     */
+    public function getComboListRoomBedSizesJson(LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $bedSizes = $roomApi->getRoomBedSizesJson();
+        return new JsonResponse(json_encode($bedSizes) , 200, array());
+    }
+    /**
      * @Route("/api/combolistroomtvs")
      */
     public function getComboListRoomTvs(LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
@@ -199,12 +209,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{bed}/{stairs}/{tv}/{description}")
+     * @Route("/api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{beds}/{stairs}/{tv}/{description}")
      */
-    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs, $tv, $description, Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs, $tv, $description, Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $bed, $stairs,$tv, str_replace("###", "/", $description));
+        $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs,$tv, str_replace("###", "/", $description));
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

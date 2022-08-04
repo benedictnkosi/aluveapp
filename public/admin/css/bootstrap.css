@@ -5841,26 +5841,8 @@ button.list-group-item-danger.active:focus {
   padding: 9px;
   border-radius: 3px;
 }
-.close {
-  float: right;
-  font-size: 2em;
-  font-weight: bold;
-  line-height: 1;
-  color: red;
-  text-shadow: 0 1px 0 #fff;
-  filter: alpha(opacity=20);
-  /* opacity: .2; */
-  position: absolute;
-  cursor: pointer;
-}
-.close:hover,
-.close:focus {
-  color: red;
-  text-decoration: none;
-  cursor: pointer;
-  filter: alpha(opacity=50);
-  opacity: .5;
-}
+
+
 button.close {
   -webkit-appearance: none;
   padding: 0;

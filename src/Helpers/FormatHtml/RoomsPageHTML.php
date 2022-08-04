@@ -2,6 +2,7 @@
 
 namespace App\Helpers\FormatHtml;
 
+use App\Entity\RoomBeds;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 require_once(__DIR__ . '/../../app/application.php');
@@ -39,6 +40,8 @@ class RoomsPageHTML
             $size = $room->getSize();
             $description = $roomApi->replaceWithBold($room->getDescription());
 
+            $roomBeds = $this->em->getRepository(RoomBeds::class)->findBy(array('room' => $roomId));
+
             $html.='<div class="maghny-gd-1 col-lg-4 col-md-6">
                 <div class="maghny-grid">
                     <a href="/room.html?id='.$roomId.'"><figure class="effect-lily">
@@ -63,7 +66,14 @@ class RoomsPageHTML
                         <h3 class="room-title"><a href="/room.html?id='.$roomId.'">'.$roomName.'</a></h3>
                         <ul class="mb-3">
                             <li><span class="fa fa-users"></span> '.$sleeps.' Guests</li>
-                            <li><span class="fa fa-bed"></span> '.$size.' m2</li>
+                            ';
+
+            if($roomBeds !== null){
+                foreach ($roomBeds as $roomBed){
+                    $html.='<li><span class="fa fa-bed"></span>'.$roomBed->getBed()->getName().'</li>';
+                }
+            }
+            $html.='
                         </ul>
                         <p><pre>'. substr($description, 0, 100).'...</pre></p>
                         <a href="/booking.html?id='.$roomId.'" class="btn mt-sm-4 mt-3">Book Now</a>

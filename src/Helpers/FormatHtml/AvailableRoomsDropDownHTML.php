@@ -2,6 +2,7 @@
 
 namespace App\Helpers\FormatHtml;
 
+use App\Entity\RoomBeds;
 use App\Service\RoomApi;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,9 +41,22 @@ class AvailableRoomsDropDownHTML
                     $roomDefaultImage = $roomImage->getName();
                 }
             }
+
+            $currentSelectedBeds = $this->em->getRepository(RoomBeds::class)->findBy(array('room' => $availableRoom->getId()));
+
+            $beds = "";
+            if($currentSelectedBeds !== null){
+                foreach ($currentSelectedBeds as $currentSelectedBed){
+                    $beds .= $currentSelectedBed->getBed()->getName() . ",";
+                }
+            }
+
+            $beds = substr($beds,0,strlen($beds) - 1);
+
+            $this->logger->debug("found beds string: " . $beds);
             $numberOfRooms++;
             $htmlString .= '<option value="' . $availableRoom->getName() . '"
-                                                data-thumbnail="'.PROTOCOL.'://'.SERVER_NAME.'/public/room/image/thumb' . $roomDefaultImage . '" data-sleeps="' . $availableRoom->getSleeps() . '" data-price="' . $availableRoom->getPrice() . '" data-roomId="' . $availableRoom->getId() . '">' . $availableRoom->getName() . '
+                                                data-thumbnail="'.PROTOCOL.'://'.SERVER_NAME.'/public/room/image/thumb' . $roomDefaultImage . '" data-sleeps="' . $availableRoom->getSleeps() . '" data-price="' . $availableRoom->getPrice() . '" data-roomId="' . $availableRoom->getId() . '" data-beds="' . $beds . '">' . $availableRoom->getName() . '
                                         </option>';
 
         }
