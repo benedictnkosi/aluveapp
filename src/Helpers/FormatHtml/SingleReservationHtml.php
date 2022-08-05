@@ -139,19 +139,31 @@ class SingleReservationHtml
             $isEarlyCheckInClass = "early-check-in";
         }
 
-        $htmlString .= '<span class="glyphicon glyphicon-time glyphicon-small-icon" >  
+        /*$htmlString .= '<span class="glyphicon glyphicon-time glyphicon-small-icon" >
 <input data-res-id="' . $reservationId . '" type="text"  name="check_in_time" class="input-as-text time-picker check_in_time_input ' . $isEarlyCheckInClass . '" value="' . $reservation->getCheckInTime() . '" ' . $checkInTimeDisabled . '> - 
 <input data-res-id="' . $reservationId . '" type="text" name="check_out_time" class="input-as-text  time-picker check_out_time_input" value="' . $reservation->getCheckOutTime() . '" ' . $checkOutTimeDisabled . '></span>';
-        //contact detailsh
+        */
+
+
+        //contact details
 
         $this->logger->debug("HTML output - contact details " . $reservation->getId());
         if ($guest->getPhoneNumber() == Null) {
             $htmlString .= '';
-            $htmlString .= '<p name="guest-contact"><span class="glyphicon glyphicon-earphone glyphicon-small-icon" ><input name="phone_number" type="text" customer_id="' . $guest->getId() . '"   
+            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-earphone glyphicon-small-icon" ><input name="phone_number" type="text" customer_id="' . $guest->getId() . '"   
 							placeholder="Phone Number" class="textbox phone_number_input"></span></p>';
 
         } else {
-            $htmlString .= '<p name="guest-contact"><span class="glyphicon glyphicon-earphone glyphicon-small-icon" ><a href="tel:' . $guest->getPhoneNumber() . '">  ' . $guest->getPhoneNumber() . '</a></span></p>';
+            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-earphone glyphicon-small-icon" ><a class="res-contact-link" href="tel:' . $guest->getPhoneNumber() . '">  ' . $guest->getPhoneNumber() . '</a></span></p>';
+        }
+
+        if ($guest->getEmail() == Null) {
+            $htmlString .= '';
+            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-envelope glyphicon-small-icon" ><input name="email" type="text" customer_email="' . $guest->getId() . '"   
+							placeholder="Email Address" class="textbox phone_number_input"></span></p>';
+
+        } else {
+            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-envelope glyphicon-small-icon"><a class="res-contact-link" href="mailto:' . $guest->getEmail() . '">  ' . $guest->getEmail() . '</a></span></p>';
         }
 
         // check if room cleaned for checkout reservations only

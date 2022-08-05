@@ -177,12 +177,12 @@ function getReservationById(reservation_id){
         dataType: "jsonp",
         contentType: "application/json; charset=UTF-8",
         success: function (data) {
-            $("body").removeClass("loading");
             $('#reservation-details')
                 .html(data.html);
             $('#reservation-details')
                 .removeClass("display-none");
             setBindings();
+            $("body").removeClass("loading");
         },
         error: function (xhr) {
             $("body").removeClass("loading");

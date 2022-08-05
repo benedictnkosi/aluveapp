@@ -5,6 +5,17 @@
 	License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
 
+
+
+.guest-contact {
+	margin-top: 1em;
+
+}
+.res-contact-link{
+	margin-left:1em;
+	color:#777;
+}
+
 #checkbox_rooms label{
 	margin-left: 1em;
 }
@@ -241,9 +252,10 @@ input[type="checkbox"]{
 
 @media (max-width: 768px) {
 
-	.reservation-item, .reservation-date-divider{
+	.reservation-item{
 		min-height: 10em;
 	}
+
 
 	.reservations_div{
 		width: 100%;
