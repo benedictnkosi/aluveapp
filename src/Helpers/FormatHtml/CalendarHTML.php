@@ -45,7 +45,7 @@ class CalendarHTML
             $todayDate->add(DateInterval::createFromDateString('yesterday'));
             $tempDate = $todayDate->add(new DateInterval('P' . $x . 'D'));
 
-            if (strcmp($tempDate->format('d'), "01") == 0 && $numberOfFirstOfMonth > 0) {
+            if (strcmp($tempDate->format('d'), "01") === 0) {
                 $htmlString .= '<th class="new-month">' . $tempDate->format('M') . '</th>';
                 $numberOfFirstOfMonth++;
             }
@@ -79,7 +79,7 @@ class CalendarHTML
                     $blockNote = "";
                     $isCheckInDay = false;
 
-                    if (strcmp($tempDate->format('d'), "01") == 0  && $numberOfFirstOfMonth > 1) {
+                    if (strcmp($tempDate->format('d'), "01") === 0) {
                         $htmlString .= '<td class="new-month"></td>';
                     }
                     if($reservations !== null){
