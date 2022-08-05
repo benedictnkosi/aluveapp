@@ -9,7 +9,7 @@
 
 .guest-contact {
 	margin-top: 1em;
-
+	margin-bottom: 1em;
 }
 .res-contact-link{
 	margin-left:1em;
@@ -276,14 +276,12 @@ input[type="checkbox"]{
 	.addon-left-div{
 		float: left;
 		width: 100%;
-		padding: 1em;
 		background: #fff;
 	}
 
 	.addon-right-div{
 		float: right;
 		width: 100%;
-		padding: 1em;
 		background: #fff;
 	}
 

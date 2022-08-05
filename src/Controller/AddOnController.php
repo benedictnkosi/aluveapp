@@ -63,7 +63,6 @@ class AddOnController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
 
-
         $response = $addOnsApi->createAddOn($addOnName, $addOnPrice);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
