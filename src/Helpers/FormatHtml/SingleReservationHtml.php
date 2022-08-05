@@ -148,26 +148,20 @@ class SingleReservationHtml
         //contact details
 
         $this->logger->debug("HTML output - contact details " . $reservation->getId());
-        if ($guest->getPhoneNumber() == Null) {
-            $htmlString .= '';
-            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-earphone glyphicon-small-icon" ><input name="phone_number" type="text" customer_id="' . $guest->getId() . '"   
-							placeholder="Phone Number" class="textbox phone_number_input"></span></p>';
-
-        } else {
+        if ($guest->getPhoneNumber() !== Null &&  !empty($guest->getPhoneNumber())) {
             $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-earphone glyphicon-small-icon" ><a class="res-contact-link" href="tel:' . $guest->getPhoneNumber() . '">  ' . $guest->getPhoneNumber() . '</a></span></p>';
         }
 
-        if ($guest->getEmail() == Null) {
-            $htmlString .= '';
-            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-envelope glyphicon-small-icon" ><input name="email" type="text" customer_email="' . $guest->getId() . '"   
-							placeholder="Email Address" class="textbox phone_number_input"></span></p>';
-
-        } else {
+        if ($guest->getEmail() !== Null && !empty($guest->getEmail())) {
             $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-envelope glyphicon-small-icon"><a class="res-contact-link" href="mailto:' . $guest->getEmail() . '">  ' . $guest->getEmail() . '</a></span></p>';
         }
 
         if ($reservation->getAdults() !== Null && $reservation->getChildren() !== Null) {
             $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-user glyphicon-small-icon"><a class="res-contact-link" href="javascript:void(0)">'.$reservation->getAdults().' Adults and ' . $reservation->getChildren() . ' Children</a></span></p>';
+        }
+
+        if ($guest->getIdNumber() !== Null && !empty($guest->getIdNumber())) {
+            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-user glyphicon-small-icon"><a class="res-contact-link" href="javascript:void(0)">'. $guest->getIdNumber() . '</a></span></p>';
         }
 
         // check if room cleaned for checkout reservations only
@@ -176,17 +170,6 @@ class SingleReservationHtml
         if ($results[0]['cleaned']) {
             $cleanedBy = $results[0]['cleaned_by'];
             $htmlString .= '<p><span class="em1-right-margin glyphicon glyphicon-certificate" ></span>Room Cleaned By ' . $cleanedBy . '</p>';
-        }
-
-
-        //notes
-        $this->logger->debug("HTML output - notes " . $reservation->getId());
-        $notes = $notesApi->getReservationNotes($reservationId);
-        if (count($notes) > 0) {
-            $htmlString .= '<h5 class="text-align-left">Notes</h5>';
-            foreach ($notes as $note) {
-                $htmlString .= "<p>" . $note->getDate()->format("d-M") . " - " . $note->getNote() . "</p>";
-            }
         }
 
         //customer image
@@ -237,13 +220,9 @@ class SingleReservationHtml
         //booking created on
         $this->logger->debug("HTML output - bottom right icons " . $reservation->getId());
         $htmlString .= '<p class="top-margin-1em"> Received on: ' . $reservation->getReceivedOn()->format('Y-m-d') . '</p>';
-        if($guest->getIdNumber() !== null){
-            $htmlString .= '<p class="top-margin-1em"> ID\Passport Number: ' . $guest->getIdNumber() . '</p>';
-        }
 
         $htmlString .= '<hr>';
 
-        //close far right
         $htmlString .= '</p>';
 
 
@@ -254,9 +233,19 @@ class SingleReservationHtml
 						<div class="clearfix"><div></div></div></div>';
 
 
-        //inner right div
+        //items
         $htmlString .= '<div>';
 
+
+        //notes
+        $this->logger->debug("HTML output - notes " . $reservation->getId());
+        $notes = $notesApi->getReservationNotes($reservationId);
+        if (count($notes) > 0) {
+            $htmlString .= '<h5 class="text-align-left">Notes</h5>';
+            foreach ($notes as $note) {
+                $htmlString .= "<p>" . $note->getDate()->format("d-M") . " - " . $note->getNote() . "</p>";
+            }
+        }
 
         //Line Items (Room and add ons)
         $this->logger->debug("HTML output - Line Items " . $reservation->getId());
@@ -326,14 +315,34 @@ class SingleReservationHtml
 
         $htmlString .= '<div id="right-div-' . $reservation->getId() . '">';
 
+        // add phone number
+        if ($guest->getPhoneNumber() === null || empty($guest->getPhoneNumber())) {
+            $this->logger->debug(" HTML output - add guest phonenumber" . $reservation->getId());
+
+            $htmlString .= '
+                <div class="right-side-action-block">
+                <input id="guest_phone_input" type="text" data-guestid="' . $guest->getId() . '"
+										 class="textbox  display-none block-display reservation_input" placeholder="Phone number"/><div id="add_guest_phone_button" class="ClickableButton res_add_guest_phone" data-guestid="' . $guest->getId() . '" >Add Phone Number</div></div>';
+        }
+
+        // add email
+        if ($guest->getEmail() === null || empty($guest->getPhoneNumber())) {
+            $this->logger->debug(" HTML output - add guest email" . $reservation->getId());
+
+            $htmlString .= '
+                <div class="right-side-action-block">
+                <input id="guest_email_input" type="text" data-guestid="' . $guest->getId() . '"
+										 class="textbox  display-none block-display reservation_input" placeholder="Email Address"/><div id="add_guest_email_button" class="ClickableButton res_add_guest_email" data-guestid="' . $guest->getId() . '" >Add Email</div></div>';
+        }
+
         // add Guest ID
-        if ($guest->getIdNumber() == null) {
+        if ($guest->getIdNumber() === null || empty($guest->getIdNumber())) {
             $this->logger->debug(" HTML output - add guest ID" . $reservation->getId());
 
             $htmlString .= '
                 <div class="right-side-action-block">
-                <input id="guest_id_' . $reservationId . '" type="text"
-										 class="textbox  display-none block-display reservation_input" placeholder="Passport\ID number"/><div id="add_guest_id_button_' . $reservationId . '" class="ClickableButton res_add_guest_id" data-resid="' . $reservationId . '" >Add ID\Passport</div></div>';
+                <input id="guest_id_input" type="text" data-guestid="' . $guest->getId() . '"
+										 class="textbox  display-none block-display reservation_input" placeholder="Passport\ID number"/><div id="add_guest_id_button" class="ClickableButton res_add_guest_id" data-guestid="' . $guest->getId() . '" >Add ID\Passport</div></div>';
         }
 
         // add payment

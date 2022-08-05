@@ -39,6 +39,7 @@ function getReservationsByPeriod(period) {
             $('.open-reservation-details').unbind('click')
             $(".open-reservation-details").click(function (event) {
                 event.stopImmediatePropagation();
+                sessionStorage.setItem("reservation_id", event.target.getAttribute("data-res-id"));
                 getReservationById(event.target.getAttribute("data-res-id"));
             });
         },
@@ -107,11 +108,6 @@ function setBindings() {
         blockGuest(event);
     });
 
-    $('.phone_number_input').unbind('change')
-    $(".phone_number_input").change(function (event) {
-        event.stopImmediatePropagation();
-        captureGuestPhoneNumber(event);
-    });
 
     $('.NotCheckedIn').unbind('click')
     $(".NotCheckedIn").click(function (event) {
@@ -123,6 +119,18 @@ function setBindings() {
     $(".res_add_payment").click(function (event) {
         event.stopImmediatePropagation();
         addPayment(event);
+    });
+
+    $('.res_add_guest_phone').unbind('click')
+    $(".res_add_guest_phone").click(function (event) {
+        event.stopImmediatePropagation();
+        addGuestPhone(event);
+    });
+
+    $('.res_add_guest_email').unbind('click')
+    $(".res_add_guest_email").click(function (event) {
+        event.stopImmediatePropagation();
+        addGuestEmail(event);
     });
 
     $('.res_add_guest_id').unbind('click')
@@ -325,26 +333,11 @@ function markReservationAsCheckedInOut(event, status) {
 
 }
 
-function captureGuestPhoneNumber(event) {
-    let guestID = event.target.getAttribute("customer_id");
-    const phoneNumber = event.target.value.trim();
-    if (phoneNumber.length < 10) {
-        return;
-    }
-    isUserLoggedIn();
-    $("body").addClass("loading");
-    let url = "/api/guests/" + guestID + "/phone/" + phoneNumber;
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        const jsonObj = response[0];
-        if (jsonObj.result_code === 0) {
-            refreshReservations();
-            showResSuccessMessage("reservation", response[0].result_message);
-        } else {
-            showResErrorMessage("reservation", response[0].result_message);
-        }
-    });
+function isEmail(email) {
+    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    return regex.test(email);
 }
+
 
 function updateCheckInOutTime() {
     let checkinTime = $('.check_in_time_input').val();
@@ -421,7 +414,7 @@ function markAsCleaned(event) {
             $("body").removeClass("loading");
 
             if (response[0].result_code === 0) {
-                refreshReservations();
+                getReservationById(sessionStorage.getItem("reservation_id"));
                 showResSuccessMessage("reservation", response[0].result_message);
             } else {
                 showResErrorMessage("reservation", response[0].result_message);
@@ -451,7 +444,7 @@ function addAddOn(event) {
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
             if (response[0].result_code === 0) {
-                refreshReservations();
+                getReservationById(sessionStorage.getItem("reservation_id"));
                 showResSuccessMessage("reservation", response[0].result_message);
             } else {
                 showResErrorMessage("reservation", response[0].result_message);
@@ -461,25 +454,75 @@ function addAddOn(event) {
     }
 }
 
-function addGuestID(event) {
-
-    const id = event.target.id.replace("add_guest_id_button_", "");
-    const article = document.querySelector('#add_guest_id_button_' + id);
-    if (!$("#guest_id_" + article.dataset.resid).val()) {
+function addGuestPhone(event) {
+    const id = $('#guest_phone_input').attr("data-guestid");
+    if (!$("#guest_phone_input").val()) {
         //hide other opened reservation inputs
         $(".reservation_input").addClass("display-none");
-        $("#guest_id_" + article.dataset.resid).removeClass("display-none");
+        $("#guest_phone_input").removeClass("display-none");
     } else {
-        const idNumber = $("#guest_id_" + article.dataset.resid).val();
+        const phone = $('#guest_phone_input').val();
         $("body").addClass("loading");
         isUserLoggedIn();
-        let url = "/api/reservation/" + id + "/idnumber/" + idNumber;
+        let url = "/api/guest/" + id + "/phone/" + phone;
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
 
             if (response[0].result_code === 0) {
-                refreshReservations();
-                getBlockedRooms();
+                getReservationById(sessionStorage.getItem("reservation_id"));
+                showResSuccessMessage("reservation", response[0].result_message);
+            } else {
+                showResErrorMessage("reservation", response[0].result_message);
+            }
+        });
+    }
+}
+
+function addGuestEmail(event) {
+    const id = $('#guest_email_input').attr("data-guestid");
+    if (!$("#guest_email_input").val()) {
+        //hide other opened reservation inputs
+        $(".reservation_input").addClass("display-none");
+        $("#guest_email_input").removeClass("display-none");
+    } else {
+        const email = $('#guest_email_input').val();
+        if (!isEmail(email)) {
+            showResErrorMessage("reservation", 'Email address is invalid');
+            return;
+        }
+        $("body").addClass("loading");
+        isUserLoggedIn();
+        let url = "/api/guest/" + id + "/email/" + email;
+        $.getJSON(url + "?callback=?", null, function (response) {
+            $("body").removeClass("loading");
+
+            if (response[0].result_code === 0) {
+                getReservationById(sessionStorage.getItem("reservation_id"));
+                showResSuccessMessage("reservation", response[0].result_message);
+            } else {
+                showResErrorMessage("reservation", response[0].result_message);
+            }
+        });
+    }
+}
+
+
+function addGuestID(event) {
+    const id = $('#guest_id_input').attr("data-guestid");
+    if (!$("#guest_id_input").val()) {
+        //hide other opened reservation inputs
+        $(".reservation_input").addClass("display-none");
+        $("#guest_id_input").removeClass("display-none");
+    } else {
+        const idNumber = $('#guest_id_input').val();
+        $("body").addClass("loading");
+        isUserLoggedIn();
+        let url = "/api/guest/" + id + "/idnumber/" + idNumber;
+        $.getJSON(url + "?callback=?", null, function (response) {
+            $("body").removeClass("loading");
+
+            if (response[0].result_code === 0) {
+                getReservationById(sessionStorage.getItem("reservation_id"));
                 showResSuccessMessage("reservation", response[0].result_message);
             } else {
                 showResErrorMessage("reservation", response[0].result_message);
@@ -511,6 +554,7 @@ function addPayment(event) {
             if (response[0].result_code === 0) {
                 refreshReservations();
                 getBlockedRooms();
+                getReservationById(sessionStorage.getItem("reservation_id"));
                 showResSuccessMessage("reservation", response[0].result_message);
             } else {
                 showResErrorMessage("reservation", response[0].result_message);
@@ -536,7 +580,7 @@ function addNote(event) {
             $("body").removeClass("loading");
 
             if (response[0].result_code === 0) {
-                refreshReservations();
+                getReservationById(sessionStorage.getItem("reservation_id"));
                 showResSuccessMessage("reservation", response[0].result_message);
             } else {
                 $("#reservation_error_message_div").removeClass("display-none");

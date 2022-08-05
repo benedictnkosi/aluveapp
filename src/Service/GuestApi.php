@@ -58,25 +58,92 @@ class GuestApi
         return $responseArray;
     }
 
-    public function updateGuestPhoneNumber($resId, $phoneNumber): array
+    public function updateGuestPhoneNumber($guestId, $phoneNumber): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
-            if($reservation === null){
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId ));
+            if($guest === null){
                 $responseArray[] = array(
                     'result_code' => 1,
-                    'result_message' => 'Reservation not found for id ' . $resId
+                    'result_message' => 'Guest not found for id ' . $guestId
                 );
             }else{
-                $guest = $reservation->getGuest();
-                $guest->setIdNumber($phoneNumber);
+                $guest->setPhoneNumber($phoneNumber);
                 $this->em->persist($guest);
                 $this->em->flush($guest);
                 $responseArray[] = array(
                     'result_code' => 0,
                     'result_message' => 'Successfully updated guest phone number'
+                );
+            }
+
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_code' => 1,
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+    public function updateGuestEmail($guestId, $email): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId ));
+            if($guest === null){
+                $responseArray[] = array(
+                    'result_code' => 1,
+                    'result_message' => 'Guest not found for id ' . $guestId
+                );
+            }else{
+                $guest->setEmail($email);
+                $this->em->persist($guest);
+                $this->em->flush($guest);
+                $responseArray[] = array(
+                    'result_code' => 0,
+                    'result_message' => 'Successfully updated guest email address'
+                );
+            }
+
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_code' => 1,
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+
+
+    public function updateGuestIdNumber($guestId, $IdNumber): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId ));
+            if($guest === null) {
+                $responseArray[] = array(
+                    'result_code' => 1,
+                    'result_message' => 'Guest not found for id ' . $guestId
+                );
+            }else{
+                $guest->setIdNumber($IdNumber);
+                $this->em->persist($guest);
+                $this->em->flush($guest);
+                $responseArray[] = array(
+                    'result_code' => 0,
+                    'result_message' => 'Successfully updated guest ID number'
                 );
             }
 
@@ -126,31 +193,6 @@ class GuestApi
             $responseArray[] = array(
                 'result_code' => 0,
                 'result_message' => 'Successfully updated reservation guest'
-            );
-        } catch (Exception $ex) {
-            $responseArray[] = array(
-                'result_code' => 1,
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
-            );
-            $this->logger->error(print_r($responseArray, true));
-        }
-
-        $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        return $responseArray;
-    }
-
-    public function updateGuestIdNumber($guestId, $IdNumber): array
-    {
-        $this->logger->debug("Starting Method: " . __METHOD__);
-        $responseArray = array();
-        try {
-            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId));
-            $guest->setIdNumber($IdNumber);
-            $this->em->persist($guest);
-            $this->em->flush($guest);
-            $responseArray[] = array(
-                'result_code' => 0,
-                'result_message' => 'Successfully updated guest phone number'
             );
         } catch (Exception $ex) {
             $responseArray[] = array(

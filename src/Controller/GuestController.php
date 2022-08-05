@@ -28,9 +28,9 @@ class GuestController extends AbstractController
     }
 
     /**
-     * @Route("/api/guests/{guestId}/phone/{phoneNumber}")
+     * @Route("/api/guest/{guestId}/phone/{phoneNumber}")
      */
-    public function updateGuest($guestId, $phoneNumber, LoggerInterface $logger,Request $request,GuestApi $guestApi): Response
+    public function updateGuestPhone($guestId, $phoneNumber, LoggerInterface $logger,Request $request,GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $guestApi->updateGuestPhoneNumber($guestId, $phoneNumber);
@@ -41,12 +41,25 @@ class GuestController extends AbstractController
     }
 
     /**
-     * @Route("/api/reservation/{resId}/idnumber/{idNumber}")
+     * @Route("/api/guest/{guestId}/email/{email}")
      */
-    public function updateGuestIdNumber($resId, $idNumber, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
+    public function updateGuestEmail($guestId, $email, LoggerInterface $logger,Request $request,GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $guestApi->updateGuestPhoneNumber($resId, $idNumber);
+        $response = $guestApi->updateGuestEmail($guestId, $email);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
+     * @Route("/api/guest/{guestId}/idnumber/{idNumber}")
+     */
+    public function updateGuestIdNumber($guestId, $idNumber, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $guestApi->updateGuestIdNumber($guestId, $idNumber);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
