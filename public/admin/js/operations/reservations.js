@@ -16,7 +16,7 @@ function loadReservationsPageData(){
 }
 
 function refreshReservations() {
-    getServerName();
+    getPropertyUid();
     $("body").addClass("loading");
     getReservationsByPeriod("future");
     getReservationsByPeriod("pending");
@@ -588,7 +588,7 @@ function getRooms(id) {
     });
 }
 
-function getServerName() {
+function getPropertyUid() {
     isUserLoggedIn();
     let url = "/api/property/propertyuid";
     $.ajax({
@@ -602,11 +602,11 @@ function getServerName() {
             $('#new_reservation_button').attr("href", "/booking?uid=" + data[0].uid );
         },
         error: function (xhr) {
-            console.log("request for getRooms is " + xhr.status);
-            if (!isRetry("getServerName")) {
+            console.log("request for getPropertyUid is " + xhr.status);
+            if (!isRetry("getPropertyUid")) {
                 return;
             }
-            getServerName();
+            getPropertyUid();
         }
     });
 }
