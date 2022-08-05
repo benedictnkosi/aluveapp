@@ -123,7 +123,7 @@ class PaymentApi
 
                         $this->logger->debug("no errors adding payment for reservation $resId. amount $amount");
                     } else {
-                        if(strcmp($channel, "payfast")){
+                        if(strcmp($channel, "payfast")===0){
                             $communicationApi = new CommunicationApi($this->em, $this->logger);
 
                             //send email to guest house
