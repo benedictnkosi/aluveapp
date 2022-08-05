@@ -1,4 +1,8 @@
 
+
+.book-depature-6{
+    text-align: left;
+}
 .btn-secondary {
     color: #212529;
     background-color: #f57b51;
@@ -325,6 +329,10 @@
 }
 
 @media (max-width: 992px) {
+    #backToReservations{
+        margin-right: 3em;
+    }
+
     .w3l-booking-top .grid-columns3 {
         grid-template-columns: 1fr;
         display: grid;

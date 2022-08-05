@@ -504,37 +504,19 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: 100%;
   margin-right: auto;
   margin-left: auto;
-  padding-right: 16px;
-  padding-left: 16px;
 }
 
-@media (min-width: 540px) {
+@media (max-width: 960px) {
   .container {
-    max-width: 540px;
-  }
-}
-
-@media (min-width: 720px) {
-  .container {
-    max-width: 720px;
+    width: 100%;
   }
 }
 
 @media (min-width: 960px) {
   .container {
     max-width: 960px;
-  }
-}
-
-@media (min-width: 1140px) {
-  .container {
-    max-width: 1140px;
-  }
-}
-
-@media (min-width: 1320px) {
-  .container {
-    max-width: 1320px;
+    padding-right: 16px;
+    padding-left: 16px;
   }
 }
 

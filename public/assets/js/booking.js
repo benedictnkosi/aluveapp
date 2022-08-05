@@ -115,7 +115,7 @@ function displayTotal() {
 }
 
 function getAvailableRooms(checkInDate, checkOutDate) {
-    let url = "/public/availablerooms/" + checkInDate + "/" + checkOutDate  + "/" + sessionStorage.getItem("property_uid");
+    let url = "/public/availablerooms/" + checkInDate + "/" + checkOutDate + "/" + sessionStorage.getItem("property_uid");
     $.getJSON(url + "?callback=?", null, function (data) {
         let roomIndex;
         $("#availableRoomsDropdown").html(data.html);
@@ -138,10 +138,10 @@ function getAvailableRooms(checkInDate, checkOutDate) {
             }
 
             if (price.localeCompare("0") === 0) {
-                var item = '<li><img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/><div class="div-select-room-name">' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>'+bedshtml+'</div></div>' +
+                var item = '<li><img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/><div class="div-select-room-name">' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div></div>' +
                     '</li>';
             } else {
-                var item = '<li><img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/><div class="div-select-room-name">' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>'+bedshtml+'</div><button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button></div>' +
+                var item = '<li><img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/><div class="div-select-room-name">' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div><button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button></div>' +
                     '</li>';
             }
 
@@ -195,46 +195,45 @@ function getAvailableRooms(checkInDate, checkOutDate) {
 }
 
 function createReservation() {
-    $("#reservation_error_message_div").addClass("display-none");
     let isRoomSelected;
-    if ($('#accept_terms').is(':checked')) {
-        $("#reservation_error_message_div").addClass("display-none");
-        const guestName = $('#guestName').val();
-        const phoneNumber = $('#phoneNumber').val().trim().replaceAll(" ", "");
-        const email = $('#email').val();
-        const checkInDate = sessionStorage.getItem('checkInDate');
-        const checkOutDate = sessionStorage.getItem('checkOutDate');
+    $("#reservation_error_message_div").addClass("display-none");
+    const guestName = $('#guestName').val();
+    const phoneNumber = $('#phoneNumber').val().trim().replaceAll(" ", "");
+    const email = $('#email').val();
+    const checkInDate = sessionStorage.getItem('checkInDate');
+    const checkOutDate = sessionStorage.getItem('checkOutDate');
 
-        isRoomSelected = sessionStorage.getItem("isRoomSelected");
-        if (isRoomSelected === null) {
-            $("#reservation_message").text("Please select a room")
-            $("#reservation_error_message_div").removeClass("display-none");
-            return;
-        }
-
-        $("body").addClass("loading");
-        let url = "/public/reservations/create/" + sessionStorage.getItem("selected_rooms_array") + '/' + guestName + '/' + phoneNumber + '/' + checkInDate + '/' + checkOutDate;
-        if(email.length > 0){
-            url += "/" + email;
-        }
-        $.getJSON(url + "?callback=?", null, function (data) {
-            $("body").removeClass("loading");
-            if (data[0].result_code !== 0) {
-                $("#reservation_message").text(data[0].result_message)
-                $("#reservation_error_message_div").removeClass("display-none");
-            } else {
-                sessionStorage.setItem("reservation_id", JSON.stringify(data[0].reservation_id));
-                window.location.href = "/confirmation";
-            }
-        }).done(function() { $("body").removeClass("loading"); })
-            .fail(function() {
-                $("#reservation_message").text("Server error occurred, please try again")
-                $("#reservation_error_message_div").removeClass("display-none");
-            })
-            .always(function() { $("body").removeClass("loading"); });
-
-    } else {
-        $("#reservation_message").text("Please accept the terms and conditions")
+    isRoomSelected = sessionStorage.getItem("isRoomSelected");
+    if (isRoomSelected === null) {
+        $("#reservation_message").text("Please select a room")
         $("#reservation_error_message_div").removeClass("display-none");
+        return;
     }
+
+    $("body").addClass("loading");
+    let url = "/public/reservations/create/" + sessionStorage.getItem("selected_rooms_array") + '/' + guestName + '/' + phoneNumber + '/' + checkInDate + '/' + checkOutDate;
+    if (email.length > 0) {
+        url += "/" + email;
+    }
+    $.getJSON(url + "?callback=?", null, function (data) {
+        $("body").removeClass("loading");
+        if (data[0].result_code !== 0) {
+            $("#reservation_message").text(data[0].result_message)
+            $("#reservation_error_message_div").removeClass("display-none");
+        } else {
+            sessionStorage.setItem("reservation_id", JSON.stringify(data[0].reservation_id));
+            window.location.href = "/confirmation";
+        }
+    }).done(function () {
+        $("body").removeClass("loading");
+    })
+        .fail(function () {
+            $("#reservation_message").text("Server error occurred, please try again")
+            $("#reservation_error_message_div").removeClass("display-none");
+        })
+        .always(function () {
+            $("body").removeClass("loading");
+        });
+
+
 }

@@ -289,8 +289,9 @@ input[type="checkbox"]{
 		border-style: solid;
 		border-color: #ddd;
 		background-color: #fff;
-		padding-left: 10em;
-		padding-right: 10em;
+		padding-left: 1em;
+		padding-right: 1em;
+
 	}
 
 	.reservations_div{
@@ -3397,7 +3398,8 @@ span.middle-text {
 		border-style: solid;
 		border-color: #ddd;
 		background-color: #fff;
-		padding: 1px;
+		padding-left: 1em;
+		padding-right: 1em;
 	}
 
 	.time_slider {
