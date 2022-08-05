@@ -15,8 +15,8 @@ $(document).ready(function () {
     if($('#item_description').length > 0){
         $('#item_description').val(sessionStorage.getItem("reservation_id"));
         $('#item_amount').val(sessionStorage.getItem("item_amount"));
-        $('#return_url').val("http://" +location.hostname+"/thank_you_for_payment.html");
-        $('#cancel_url').val("http://" +location.hostname+"/payment_cancelled.html");
+        $('#return_url').val("https://" +location.hostname+"/thankyou");
+        $('#cancel_url').val("https://" +location.hostname+"/cancelled");
     }
     showBackToReservationsLink();
 });
