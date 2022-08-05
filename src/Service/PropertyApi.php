@@ -96,7 +96,7 @@ class PropertyApi
         return $responseArray;
     }
 
-    public function getPropertyServerName(): array
+    public function getPropertyUid(): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -107,7 +107,7 @@ class PropertyApi
                 array("id" =>$propertyId));
 
             $responseArray[] = array(
-                'server_name' => $property->getServerName(),
+                'uid' => $property->getUid(),
                 'result_code' => 0,
             );
         } catch (Exception $ex) {

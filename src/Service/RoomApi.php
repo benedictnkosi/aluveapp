@@ -37,14 +37,25 @@ class RoomApi
         }
     }
 
-    public function getAvailableRooms($checkInDate, $checkOutDate, $request): ?array
+    public function getAvailableRooms($checkInDate, $checkOutDate, $request, $propertyUid = 0): ?array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
+            if($propertyUid === 0){
+                $propertyId = $_SESSION['PROPERTY_ID'] ?? $propertyApi->getPropertyIdByHost($request);
+            }else{
+                $property = $this->em->getRepository(Property::class)->findOneBy(
+                    array("uid" =>$propertyUid));
+                if($property !== null){
+                    $propertyId = $property->getId();
+                }else{
+                    $this->logger->error("Property id not found");
+                    return null;
+                }
+            }
 
-            $propertyId = $_SESSION['PROPERTY_ID'] ?? $propertyApi->getPropertyIdByHost($request);
             $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
             foreach ($rooms as $room) {
                 if ($this->isRoomAvailable($room->getId(), $checkInDate, $checkOutDate)) {

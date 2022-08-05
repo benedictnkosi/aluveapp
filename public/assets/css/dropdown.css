@@ -1,0 +1,93 @@
+.div-select-room-name {
+    margin-top: 1em;
+    margin-left: 2em;
+    min-width: 12em;
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 1px;
+    text-align: left;
+}
+
+.select_sleeps {
+    display: block;
+    margin-top: 1em;
+}
+
+.vodiapicker{
+    display: none;
+}
+
+#a{
+    padding-left: 0px;
+}
+
+#a img, .btn-select img {
+    width: 7em;
+    height: 7em;
+}
+
+#a li{
+    list-style: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    overflow: auto;
+}
+
+#a li:hover{
+    background-color: #F4F3F3;
+}
+
+#a li img{
+    margin: 5px;
+    float:right;
+}
+
+#a li span, .btn-select li span{
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+/* item list */
+
+.b{
+    display: none;
+    width: 100%;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 5px;
+
+}
+
+.open{
+    display: show !important;
+}
+
+.btn-select{
+    margin-top: 10px;
+    width: 100%;
+    height: 7em;
+    border-radius: 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+
+}
+.btn-select li{
+    list-style: none;
+    float: left;
+    padding-bottom: 0px;
+}
+
+.btn-select:hover li{
+    margin-left: 0px;
+}
+
+.btn-select:hover{
+    background-color: #F4F3F3;
+    border: 1px solid transparent;
+    box-shadow: inset 0 0px 0px 1px #ccc;
+
+
+}
+
+.btn-select:focus{
+    outline:none;
+}

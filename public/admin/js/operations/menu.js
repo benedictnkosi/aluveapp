@@ -102,8 +102,6 @@ function isRetry(functionName){
     return true;
 }
 
-
-
 function isUserLoggedIn() {
     let url =  "/public/me/";
 

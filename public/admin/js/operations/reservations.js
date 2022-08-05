@@ -590,7 +590,7 @@ function getRooms(id) {
 
 function getServerName() {
     isUserLoggedIn();
-    let url = "/api/property/severname";
+    let url = "/api/property/propertyuid";
     $.ajax({
         type: "get",
         url: url,
@@ -599,7 +599,7 @@ function getServerName() {
         dataType: "jsonp",
         contentType: "application/json; charset=UTF-8",
         success: function (data) {
-            $('#new_reservation_button').attr("href", "http://" + data[0].server_name + "/booking.html");
+            $('#new_reservation_button').attr("href", "/booking?uid=" + data[0].uid );
         },
         error: function (xhr) {
             console.log("request for getRooms is " + xhr.status);

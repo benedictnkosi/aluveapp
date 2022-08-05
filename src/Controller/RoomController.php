@@ -56,12 +56,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/public/availablerooms/{checkInDate}/{checkOutDate}")
+     * @Route("/public/availablerooms/{checkInDate}/{checkOutDate}/{propertyUid}", defaults={"propertyUid": 0})
      */
-    public function getAvailableRooms($checkInDate, $checkOutDate,Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
+    public function getAvailableRooms($checkInDate, $checkOutDate,$propertyUid, Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate, $request);
+        $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate, $request, $propertyUid);
         $availableRoomsDropDownHTML = new AvailableRoomsDropDownHTML($entityManager, $logger);
         $html = $availableRoomsDropDownHTML->formatHtml($rooms);
         $response = array(

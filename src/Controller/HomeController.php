@@ -57,6 +57,37 @@ class HomeController extends AbstractController
      return $this->render("signup.html");
     }
 
+    #[Route('/booking', name: 'booking')]
+    public function booking(): Response
+    {
+
+        return $this->render("booking.html");
+    }
+
+
+    #[Route('/confirmation', name: 'confirmation')]
+    public function confirmation(): Response
+    {
+        return $this->render("confirmation.html");
+    }
+
+    #[Route('/cancelled', name: 'payment_cancelled')]
+    public function payment_cancelled(): Response
+    {
+        return $this->render("cancelled.html");
+    }
+
+    #[Route('/thankyou', name: 'thank_you_for_payment')]
+    public function thank_you_for_payment(): Response
+    {
+        return $this->render("thankyou.html");
+    }
+
+    #[Route('/invoice', name: 'invoice')]
+    public function invoice(): Response
+    {
+        return $this->render("invoice.html");
+    }
 
     /**
      * @Route("/public/userloggedin")

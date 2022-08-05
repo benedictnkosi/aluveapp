@@ -45,12 +45,10 @@ class InvoiceHTML
 					<td colspan="4">
 						<table>
 							<tr>
-								<td class="title">
-									<img src="/assets/images/logo.png" style="width: 100%; max-width: 300px" />
-								</td>
-
+								
 								<td>
 									<h1>'.$invoiceTitle.'</h1>
+									<h2>'.$propertyDetails[0]['name'].'</h2>
 									#'.$reservation->getId().'<br />
 									Created: '.$reservation->getReceivedOn()->format('Y-m-d').'<br />
 									<b>Balance Due: R'.$totalDue.'.00</b>

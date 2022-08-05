@@ -41,12 +41,12 @@ class PropertyController extends AbstractController
     }
 
     /**
-     * @Route("api/property/severname")
+     * @Route("api/property/propertyuid")
      */
-    public function getPropertyServerName( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    public function getPropertyUid( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->getPropertyServerName();
+        $response = $propertyApi->getPropertyUid();
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

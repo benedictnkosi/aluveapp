@@ -163,5 +163,6 @@
     <orderEntry type="library" name="jquery-validate" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="bootstrap-tokenfield" level="application" />
+    <orderEntry type="library" name="daterangepicker" level="application" />
   </component>
 </module>
