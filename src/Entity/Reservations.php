@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Reservations
  *
- * @ORM\Table(name="reservations", indexes={@ORM\Index(name="reservations_ibfk_3", columns={"status"}), @ORM\Index(name="room_id", columns={"room_id"}), @ORM\Index(name="guest_id", columns={"guest_id"})})
+ * @ORM\Table(name="reservations", indexes={@ORM\Index(name="guest_id", columns={"guest_id"}), @ORM\Index(name="reservations_ibfk_3", columns={"status"}), @ORM\Index(name="room_id", columns={"room_id"})})
  * @ORM\Entity
  */
 class Reservations
@@ -23,14 +22,14 @@ class Reservations
     private $id;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @ORM\Column(name="check_in", type="date", nullable=false)
      */
     private $checkIn;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @ORM\Column(name="check_out", type="date", nullable=false)
      */
@@ -60,7 +59,7 @@ class Reservations
     /**
      * @var string
      *
-     * @ORM\Column(name="uid", type="string", length=50, nullable=false)
+     * @ORM\Column(name="uid", type="string", length=500, nullable=false)
      */
     private $uid;
 
@@ -114,14 +113,18 @@ class Reservations
     private $checkOutTime = '10:00';
 
     /**
-     * @var ReservationStatus
+     * @var int|null
      *
-     * @ORM\ManyToOne(targetEntity="ReservationStatus")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="status", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="adults", type="integer", nullable=true)
      */
-    private $status;
+    private $adults;
+
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="children", type="integer", nullable=true)
+     */
+    private $children;
 
     /**
      * @var Rooms
@@ -144,6 +147,16 @@ class Reservations
     private $guest;
 
     /**
+     * @var ReservationStatus
+     *
+     * @ORM\ManyToOne(targetEntity="ReservationStatus")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="status", referencedColumnName="id")
+     * })
+     */
+    private $status;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -160,33 +173,33 @@ class Reservations
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getCheckIn(): DateTime
+    public function getCheckIn(): \DateTime
     {
         return $this->checkIn;
     }
 
     /**
-     * @param DateTime $checkIn
+     * @param \DateTime $checkIn
      */
-    public function setCheckIn(DateTime $checkIn): void
+    public function setCheckIn(\DateTime $checkIn): void
     {
         $this->checkIn = $checkIn;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getCheckOut(): DateTime
+    public function getCheckOut(): \DateTime
     {
         return $this->checkOut;
     }
 
     /**
-     * @param DateTime $checkOut
+     * @param \DateTime $checkOut
      */
-    public function setCheckOut(DateTime $checkOut): void
+    public function setCheckOut(\DateTime $checkOut): void
     {
         $this->checkOut = $checkOut;
     }
@@ -368,19 +381,35 @@ class Reservations
     }
 
     /**
-     * @return ReservationStatus
+     * @return int|null
      */
-    public function getStatus(): ReservationStatus
+    public function getAdults(): ?int
     {
-        return $this->status;
+        return $this->adults;
     }
 
     /**
-     * @param ReservationStatus $status
+     * @param int|null $adults
      */
-    public function setStatus(ReservationStatus $status): void
+    public function setAdults(?int $adults): void
     {
-        $this->status = $status;
+        $this->adults = $adults;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getChildren(): ?int
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param int|null $children
+     */
+    public function setChildren(?int $children): void
+    {
+        $this->children = $children;
     }
 
     /**
@@ -413,6 +442,22 @@ class Reservations
     public function setGuest(Guest $guest): void
     {
         $this->guest = $guest;
+    }
+
+    /**
+     * @return ReservationStatus
+     */
+    public function getStatus(): ReservationStatus
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param ReservationStatus $status
+     */
+    public function setStatus(ReservationStatus $status): void
+    {
+        $this->status = $status;
     }
 
 

@@ -525,7 +525,7 @@ class ReservationApi
         return $responseArray;
     }
 
-    public function createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $request = null, $uid = null, $isImport = false, $origin = "website", $originUrl = "website"): array
+    public function createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $request = null, $adultGuests = null, $childGuests = null, $uid = null, $isImport = false, $origin = "website", $originUrl = "website"): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $this->logger->debug("room ids" . $roomIds);
@@ -592,6 +592,8 @@ class ReservationApi
                 $reservation->setUpdatedOn(new DateTime());
                 $reservation->setCheckedInTime(NULL);
                 $reservation->setOriginUrl($originUrl);
+                $reservation->setAdults($adultGuests);
+                $reservation->setChildren($childGuests);
 
                 if ($isImport) {
                     $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));

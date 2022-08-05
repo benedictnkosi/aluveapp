@@ -200,6 +200,8 @@ function createReservation() {
     const guestName = $('#guestName').val();
     const phoneNumber = $('#phoneNumber').val().trim().replaceAll(" ", "");
     const email = $('#email').val();
+    const adultGuests = $('#adults').val();
+    const childGuests = $('#children').val();
     const checkInDate = sessionStorage.getItem('checkInDate');
     const checkOutDate = sessionStorage.getItem('checkOutDate');
 
@@ -211,7 +213,7 @@ function createReservation() {
     }
 
     $("body").addClass("loading");
-    let url = "/public/reservations/create/" + sessionStorage.getItem("selected_rooms_array") + '/' + guestName + '/' + phoneNumber + '/' + checkInDate + '/' + checkOutDate;
+    let url = "/public/reservations/create/" + sessionStorage.getItem("selected_rooms_array") + '/' + guestName + '/' + phoneNumber + '/'+ adultGuests + '/' + childGuests + '/' + checkInDate + '/' + checkOutDate;
     if (email.length > 0) {
         url += "/" + email;
     }

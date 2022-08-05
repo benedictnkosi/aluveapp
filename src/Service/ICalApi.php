@@ -219,7 +219,7 @@ class ICalApi
                         $this->logger->debug("booking has not been imported");
 
                         //create reservation
-                        $response = $reservationApi->createReservation($roomId, $guestName, $guestPhoneNumber, $email, $checkInDate, $checkOutDate, null, $uid, true, $origin, $originUrl);
+                        $response = $reservationApi->createReservation($roomId, $guestName, $guestPhoneNumber, $email, $checkInDate, $checkOutDate, null, null, null, $uid, true, $origin, $originUrl);
                         if ($response[0]['result_code'] != 0) {
                             $icalMessagesArray[] = array(
                                 "ERROR: " . $response[0]['result_message']

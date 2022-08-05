@@ -166,6 +166,10 @@ class SingleReservationHtml
             $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-envelope glyphicon-small-icon"><a class="res-contact-link" href="mailto:' . $guest->getEmail() . '">  ' . $guest->getEmail() . '</a></span></p>';
         }
 
+        if ($reservation->getAdults() !== Null && $reservation->getChildren() !== Null) {
+            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-user glyphicon-small-icon"><a class="res-contact-link" href="javascript:void(0)">'.$reservation->getAdults().' Adults and ' . $reservation->getChildren() . ' Children</a></span></p>';
+        }
+
         // check if room cleaned for checkout reservations only
         $this->logger->debug("HTML output - check if room cleaned for checkout reservations only " . $reservation->getId());
         $results = $cleaningApi->isRoomCleanedForCheckOut($reservationId);
@@ -327,7 +331,7 @@ class SingleReservationHtml
             $this->logger->debug(" HTML output - add guest ID" . $reservation->getId());
 
             $htmlString .= '
-                <div>
+                <div class="right-side-action-block">
                 <input id="guest_id_' . $reservationId . '" type="text"
 										 class="textbox  display-none block-display reservation_input" placeholder="Passport\ID number"/><div id="add_guest_id_button_' . $reservationId . '" class="ClickableButton res_add_guest_id" data-resid="' . $reservationId . '" >Add ID\Passport</div></div>';
         }

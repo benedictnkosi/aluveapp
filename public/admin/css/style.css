@@ -265,6 +265,14 @@ input[type="checkbox"]{
 		margin-top: auto !important;
 	}
 
+	.reservations_details_div{
+		width: 100%;
+		display: block;
+		margin-bottom: 3px;
+		padding: 15px;
+		margin-top: auto !important;
+	}
+
 	.addon-left-div{
 		float: left;
 		width: 100%;
@@ -289,14 +297,23 @@ input[type="checkbox"]{
 		border-style: solid;
 		border-color: #ddd;
 		background-color: #fff;
-		padding-left: 1em;
-		padding-right: 1em;
+		padding-left: 4em;
+		padding-right: 4em;
 
 	}
 
 	.reservations_div{
 		width: 60%;
 		margin-left: 20%;
+		display: block;
+		margin-bottom: 3px;
+		padding: 15px;
+		margin-top: auto !important;
+	}
+
+	.reservations_details_div{
+		width: 40%;
+		margin-left: 30%;
 		display: block;
 		margin-bottom: 3px;
 		padding: 15px;

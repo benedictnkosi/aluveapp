@@ -262,13 +262,13 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("public/reservations/create/{roomIds}/{guestName}/{phoneNumber}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
+     * @Route("public/reservations/create/{roomIds}/{guestName}/{phoneNumber}/{adultGuests}/{childGuests}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
      * @throws \Exception
      */
-    public function creatReservation($roomIds, $guestName, $phoneNumber, $checkInDate, $checkOutDate, $email, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
+    public function creatReservation($roomIds, $guestName, $phoneNumber, $adultGuests, $childGuests, $checkInDate, $checkOutDate, $email, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $reservationApi->createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $request);
+        $response = $reservationApi->createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $request, $adultGuests, $childGuests);
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
