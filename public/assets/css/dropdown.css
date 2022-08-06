@@ -36,10 +36,30 @@
     background-color: #F4F3F3;
 }
 
-#a li img{
-    margin: 5px;
-    float:right;
+@media (max-width: 960px) {
+    .no_beds_image{
+        margin-top: -1em !important;
+    }
+
+    #a li img{
+        margin: 5px;
+        float:right;
+    }
 }
+
+@media (min-width: 960px) {
+    .no_beds_image{
+        margin-top: -1em !important;
+    }
+
+    #a li img{
+        margin: 5px;
+        float:right;
+        margin-top: -1em;
+    }
+}
+
+
 
 #a li span, .btn-select li span{
     margin-left: 1em;

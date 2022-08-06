@@ -514,7 +514,7 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 @media (min-width: 960px) {
   .container {
-    max-width: 960px;
+    max-width: 1050px;
     padding-right: 16px;
     padding-left: 16px;
   }

@@ -73,7 +73,6 @@ function setBindings() {
         });
     });
 
-    $.getScript("https://cdn.jsdelivr.net/jquery/latest/jquery.min.js", function () {
         $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
             $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
                 $('input[name="check_in_date"]').daterangepicker({
@@ -92,7 +91,7 @@ function setBindings() {
                     sessionStorage.setItem('original_check_out_date', picker.endDate.format('MM/DD/YYYY'));
                 });
             });
-        });
+
     });
 
     $('.reservation_room_input').unbind('change')

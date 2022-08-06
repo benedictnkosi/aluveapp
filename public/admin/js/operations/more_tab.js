@@ -99,8 +99,6 @@ function bindBlockedRoomsEvents(){
         event.preventDefault();
         blockRoom();
     });
-
-    $.getScript("https://cdn.jsdelivr.net/jquery/latest/jquery.min.js", function () {
         $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
             $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
                 const date = new Date();
@@ -120,7 +118,6 @@ function bindBlockedRoomsEvents(){
                 });
             });
         });
-    });
 
     $(".filter-block-room-tabs").click(function (event) {
         event.stopImmediatePropagation();
