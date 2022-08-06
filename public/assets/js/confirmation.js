@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    $('#hotel_name').html('<a href="/booking?uid='+sessionStorage.getItem('property_uid')+'">'+sessionStorage.getItem('PropertyName')+'</a>');
     let reservationIdArray = JSON.parse(sessionStorage.getItem("reservation_id"));
     let message;
     if (reservationIdArray.length > 1) {

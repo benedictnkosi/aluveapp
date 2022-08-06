@@ -30,12 +30,7 @@ class RoomImagesHTML
             </div>';
             }
 
-            $html .= '<a class="previous" onclick="moveSlides(-1)">
-                <i class="fa fa-chevron-circle-left"></i>
-            </a>
-            <a class="next" onclick="moveSlides(1)">
-                <i class="fa fa-chevron-circle-right"></i>
-            </a>';
+            $html .= '';
 
             $html .= '</div>
             <br>

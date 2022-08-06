@@ -1,0 +1,615 @@
+
+/* room-single-block */
+.room-single-block {
+    /* responsive code */
+}
+
+.room-single-block .content-with-slider {
+    padding: 70px 0;
+    background: #f4f4f4;
+}
+
+.room-single-block .content-with-slider h4 {
+    font-size: 30px;
+    line-height: 35px;
+    color: var(--heading-color);
+    font-weight: 600;
+    margin-top: 20px;
+    text-transform: capitalize;
+}
+
+.room-single-block .content-with-slider h6 {
+    font-style: italic;
+    color: var(--para-color);
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.room-single-block .content-with-slider span.price {
+    color: #f57b51;
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 30px;
+}
+
+.room-single-block .border-line {
+    margin-top: 1em;
+    padding-top: .5em;
+    position: relative;
+    z-index: 1;
+}
+
+.room-single-block .border-line:after {
+    position: absolute;
+    content: '';
+    border: 2px solid #f57b51;
+    top: 20px;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    width: 300px;
+    margin: auto;
+    z-index: -1;
+    border-radius: 10px;
+}
+
+.room-single-block a.back {
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    margin-top: 2em;
+}
+
+.room-single-block .bg, .room-single-block .book-btn {
+    background: #f4f4f4;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin: auto;
+    padding: 0 15px;
+}
+
+.room-single-block .content-photo-1 {
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 50px;
+}
+
+.room-single-block .content-photo-right img {
+    width: 100%;
+}
+
+.room-single-block .content-photo-left {
+    align-self: center;
+}
+
+.room-single-block ul.room-amenities li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.room-single-block ul.room-amenities li a {
+    color: var(--para-color);
+}
+
+.room-single-block ul.room-amenities {
+    margin-top: 30px;
+    margin-bottom: 2em;
+}
+
+.room-single-blockul li {
+    display: inline-block;
+    margin-right: 15px;
+    color: var(--para-color);
+    font-weight: 500;
+}
+
+.room-single-block ul li span.fa {
+    color: #d1cebd;
+}
+
+@media (max-width: 1190px) {
+    .room-single-block .content-with-slider h4 {
+        font-size: 32px;
+    }
+}
+
+@media screen and (max-width: 1080px) {
+    .room-single-block .content-with-slider h4 {
+        font-size: 25px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .room-single-block .content-with-slider h4 {
+        line-height: 32px;
+        font-size: 28px;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .room-single-block .content-photo-1 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .room-single-block .content-with-slider {
+        padding: 50px 0;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .room-single-block .content-photo-right {
+        width: 100%;
+    }
+
+    .room-single-block .content-photo-left {
+        padding: 0;
+        width: 100%;
+    }
+
+    .room-single-block ul.banner_slide_bg img {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 440px) {
+    .room-single-block .content-with-slider h4 {
+        line-height: 30px;
+        font-size: 25px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .room-single-block .content-with-slider {
+        padding: 50px 0;
+    }
+}
+
+@media screen and (max-width: 387px) {
+    .room-single-block .content-with-slider h4 {
+        font-size: 22px;
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .room-single-block .content-with-slider h4 {
+        line-height: 24px;
+        font-size: 20px;
+    }
+}
+
+/* //room-single-block */
+.room-single-block {
+    /* responsive */
+    /* //responsive */
+}
+
+.room-single-block .csslider {
+    text-align: left;
+    position: relative;
+    margin-bottom: 0px;
+}
+
+.room-single-block .csslider > input {
+    display: none;
+}
+
+.room-single-block .csslider > input:nth-of-type(10):checked ~ ul li:first-of-type {
+    margin-left: -900%;
+}
+
+.room-single-block .csslider > input:nth-of-type(9):checked ~ ul li:first-of-type {
+    margin-left: -800%;
+}
+
+.room-single-block .csslider > input:nth-of-type(8):checked ~ ul li:first-of-type {
+    margin-left: -700%;
+}
+
+.room-single-block .csslider > input:nth-of-type(7):checked ~ ul li:first-of-type {
+    margin-left: -600%;
+}
+
+.room-single-block .csslider > input:nth-of-type(6):checked ~ ul li:first-of-type {
+    margin-left: -500%;
+}
+
+.room-single-block .csslider > input:nth-of-type(5):checked ~ ul li:first-of-type {
+    margin-left: -400%;
+}
+
+.room-single-block .csslider > input:nth-of-type(4):checked ~ ul li:first-of-type {
+    margin-left: -300%;
+}
+
+.room-single-block .csslider > input:nth-of-type(3):checked ~ ul li:first-of-type {
+    margin-left: -200%;
+}
+
+.room-single-block .csslider > input:nth-of-type(2):checked ~ ul li:first-of-type {
+    margin-left: -100%;
+}
+
+.room-single-block .csslider > input:nth-of-type(1):checked ~ ul li:first-of-type {
+    margin-left: 0%;
+}
+
+.room-single-block .csslider > ul {
+    position: relative;
+    /* height: 760px; */
+    z-index: 1;
+    font-size: 0;
+    line-height: 0;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.room-single-block .csslider > ul > li {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-size: 15px;
+    font-size: initial;
+    line-height: normal;
+    transition: all 0.5s cubic-bezier(0.4, 1.3, 0.65, 1);
+    vertical-align: top;
+    box-sizing: border-box;
+    white-space: normal;
+}
+
+.room-single-block .csslider > ul > li.scrollable {
+    overflow-y: scroll;
+}
+
+.room-single-block .csslider > .navigation {
+    position: absolute;
+    bottom: 10%;
+    left: 49%;
+    z-index: 10;
+    margin-bottom: -10px;
+    font-size: 0;
+    line-height: 0;
+    text-align: center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.room-single-block .csslider > .navigation > div {
+    margin-left: -100%;
+}
+
+.room-single-block .csslider > .navigation label {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 50%;
+    margin: 0 4px;
+    padding: 5px;
+    background: #f57b51;
+    opacity: 1;
+}
+
+.room-single-block ul.banner_slide_bg img {
+    border-radius: 10px;
+}
+
+.room-single-block .csslider > .navigation label:hover:after {
+    opacity: 1;
+}
+
+.room-single-block .csslider > .navigation label:after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -6px;
+    margin-top: -6px;
+    background: #fff;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    padding: 5px;
+    opacity: 0;
+}
+
+.room-single-block .csslider > .arrows {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.room-single-block .csslider.inside .navigation {
+    bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.room-single-block .csslider.inside .navigation label {
+    border: 1px solid #7e7e7e;
+}
+
+.room-single-block .csslider > input:nth-of-type(1):checked ~ .navigation label:nth-of-type(1):after,
+.room-single-block .csslider > input:nth-of-type(2):checked ~ .navigation label:nth-of-type(2):after,
+.room-single-block .csslider > input:nth-of-type(3):checked ~ .navigation label:nth-of-type(3):after,
+.room-single-block .csslider > input:nth-of-type(4):checked ~ .navigation label:nth-of-type(4):after,
+.room-single-block .csslider > input:nth-of-type(5):checked ~ .navigation label:nth-of-type(5):after,
+.room-single-block .csslider > input:nth-of-type(6):checked ~ .navigation label:nth-of-type(6):after,
+.room-single-block .csslider > input:nth-of-type(7):checked ~ .navigation label:nth-of-type(7):after,
+.room-single-block .csslider > input:nth-of-type(8):checked ~ .navigation label:nth-of-type(8):after,
+.room-single-block .csslider > input:nth-of-type(9):checked ~ .navigation label:nth-of-type(9):after,
+.room-single-block .csslider > input:nth-of-type(10):checked ~ .navigation label:nth-of-type(10):after,
+.room-single-block .csslider > input:nth-of-type(11):checked ~ .navigation label:nth-of-type(11):after {
+    opacity: 1;
+}
+
+.room-single-block .csslider > .arrows {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 26px;
+    z-index: 1;
+    box-sizing: content-box;
+}
+
+.room-single-block .csslider > .arrows label {
+    display: none;
+    position: absolute;
+    top: -50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.room-single-block .csslider > .arrows label:hover {
+    margin: 0 0px;
+}
+
+.room-single-block .csslider > .arrows label:before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    height: 300%;
+    width: 300%;
+}
+
+.room-single-block .csslider.infinity > input:first-of-type:checked ~ .arrows label.goto-last,
+.room-single-block .csslider > input:nth-of-type(1):checked ~ .arrows > label:nth-of-type(0),
+.room-single-block .csslider > input:nth-of-type(2):checked ~ .arrows > label:nth-of-type(1),
+.room-single-block .csslider > input:nth-of-type(3):checked ~ .arrows > label:nth-of-type(2),
+.room-single-block .csslider > input:nth-of-type(4):checked ~ .arrows > label:nth-of-type(3),
+.room-single-block .csslider > input:nth-of-type(5):checked ~ .arrows > label:nth-of-type(4),
+.room-single-block .csslider > input:nth-of-type(6):checked ~ .arrows > label:nth-of-type(5),
+.room-single-block .csslider > input:nth-of-type(7):checked ~ .arrows > label:nth-of-type(6),
+.room-single-block .csslider > input:nth-of-type(8):checked ~ .arrows > label:nth-of-type(7),
+.room-single-block .csslider > input:nth-of-type(9):checked ~ .arrows > label:nth-of-type(8),
+.room-single-block .csslider > input:nth-of-type(10):checked ~ .arrows > label:nth-of-type(9),
+.room-single-block .csslider > input:nth-of-type(11):checked ~ .arrows > label:nth-of-type(10) {
+    display: block;
+    left: 5%;
+    right: auto;
+    background: url(../images/left.png) no-repeat center;
+    background-color: #f25621;
+}
+
+.room-single-block .csslider.infinity > input:last-of-type:checked ~ .arrows label.goto-first,
+.room-single-block .csslider > input:nth-of-type(1):checked ~ .arrows > label:nth-of-type(2),
+.room-single-block .csslider > input:nth-of-type(2):checked ~ .arrows > label:nth-of-type(3),
+.room-single-block .csslider > input:nth-of-type(3):checked ~ .arrows > label:nth-of-type(4),
+.room-single-block .csslider > input:nth-of-type(4):checked ~ .arrows > label:nth-of-type(5),
+.room-single-block .csslider > input:nth-of-type(5):checked ~ .arrows > label:nth-of-type(6),
+.room-single-block .csslider > input:nth-of-type(6):checked ~ .arrows > label:nth-of-type(7),
+.room-single-block .csslider > input:nth-of-type(7):checked ~ .arrows > label:nth-of-type(8),
+.room-single-block .csslider > input:nth-of-type(8):checked ~ .arrows > label:nth-of-type(9),
+.room-single-block .csslider > input:nth-of-type(9):checked ~ .arrows > label:nth-of-type(10),
+.room-single-block .csslider > input:nth-of-type(10):checked ~ .arrows > label:nth-of-type(11),
+.room-single-block .csslider > input:nth-of-type(11):checked ~ .arrows > label:nth-of-type(12) {
+    display: block;
+    right: 5%;
+    left: auto;
+    background: url(../images/right.png) no-repeat center;
+    background-color: #f25621;
+}
+
+.room-single-block #slider1 > input:nth-of-type(1):checked ~ ul #bg,
+.room-single-block #slider1 > input:nth-of-type(2):checked ~ ul #bg1,
+.room-single-block #slider1 > input:nth-of-type(3):checked ~ ul #bg2,
+.room-single-block #slider1 > input:nth-of-type(4):checked ~ ul #bg3 {
+    width: 100%;
+    transition: 0.5s 0.5s;
+    text-align: center;
+    padding: 0;
+    height: 100%;
+}
+
+.room-single-block #slider1 > input:nth-of-type(1):checked ~ ul #bg div,
+.room-single-block #slider1 > input:nth-of-type(2):checked ~ ul #bg1 div,
+.room-single-block #slider1 > input:nth-of-type(3):checked ~ ul #bg2 div,
+.room-single-block #slider1 > input:nth-of-type(4):checked ~ ul #bg3 div {
+    transform: translate(0);
+    transition: 0.5s 0.9s;
+}
+
+@media screen and (max-width: 1280px) {
+    .room-single-block .csslider.infinity > input:last-of-type:checked ~ .arrows label.goto-first,
+    .room-single-block .csslider > input:nth-of-type(1):checked ~ .arrows > label:nth-of-type(2),
+    .room-single-block .csslider > input:nth-of-type(2):checked ~ .arrows > label:nth-of-type(3),
+    .room-single-block .csslider > input:nth-of-type(3):checked ~ .arrows > label:nth-of-type(4),
+    .room-single-block .csslider > input:nth-of-type(4):checked ~ .arrows > label:nth-of-type(5),
+    .room-single-block .csslider > input:nth-of-type(5):checked ~ .arrows > label:nth-of-type(6),
+    .room-single-block .csslider > input:nth-of-type(6):checked ~ .arrows > label:nth-of-type(7),
+    .room-single-block .csslider > input:nth-of-type(7):checked ~ .arrows > label:nth-of-type(8),
+    .room-single-block .csslider > input:nth-of-type(8):checked ~ .arrows > label:nth-of-type(9),
+    .room-single-block .csslider > input:nth-of-type(9):checked ~ .arrows > label:nth-of-type(10),
+    .room-single-block .csslider > input:nth-of-type(10):checked ~ .arrows > label:nth-of-type(11),
+    .room-single-block .csslider > input:nth-of-type(11):checked ~ .arrows > label:nth-of-type(12) {
+        right: 3%;
+    }
+
+    .room-single-block .csslider.infinity > input:first-of-type:checked ~ .arrows label.goto-last,
+    .room-single-block .csslider > input:nth-of-type(1):checked ~ .arrows > label:nth-of-type(0),
+    .room-single-block .csslider > input:nth-of-type(2):checked ~ .arrows > label:nth-of-type(1),
+    .room-single-block .csslider > input:nth-of-type(3):checked ~ .arrows > label:nth-of-type(2),
+    .room-single-block .csslider > input:nth-of-type(4):checked ~ .arrows > label:nth-of-type(3),
+    .room-single-block .csslider > input:nth-of-type(5):checked ~ .arrows > label:nth-of-type(4),
+    .room-single-block .csslider > input:nth-of-type(6):checked ~ .arrows > label:nth-of-type(5),
+    .room-single-block .csslider > input:nth-of-type(7):checked ~ .arrows > label:nth-of-type(6),
+    .room-single-block .csslider > input:nth-of-type(8):checked ~ .arrows > label:nth-of-type(7),
+    .room-single-block .csslider > input:nth-of-type(9):checked ~ .arrows > label:nth-of-type(8),
+    .room-single-block .csslider > input:nth-of-type(10):checked ~ .arrows > label:nth-of-type(9),
+    .room-single-block .csslider > input:nth-of-type(11):checked ~ .arrows > label:nth-of-type(10) {
+        left: 3%;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .room-single-block .csslider > .navigation {
+        bottom: 10%;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .room-single-block .csslider.infinity > input:last-of-type:checked ~ .arrows label.goto-first,
+    .room-single-block .csslider > input:nth-of-type(1):checked ~ .arrows > label:nth-of-type(2),
+    .room-single-block .csslider > input:nth-of-type(2):checked ~ .arrows > label:nth-of-type(3),
+    .room-single-block .csslider > input:nth-of-type(3):checked ~ .arrows > label:nth-of-type(4),
+    .room-single-block .csslider > input:nth-of-type(4):checked ~ .arrows > label:nth-of-type(5),
+    .room-single-block .csslider > input:nth-of-type(5):checked ~ .arrows > label:nth-of-type(6),
+    .room-single-block .csslider > input:nth-of-type(6):checked ~ .arrows > label:nth-of-type(7),
+    .room-single-block .csslider > input:nth-of-type(7):checked ~ .arrows > label:nth-of-type(8),
+    .room-single-block .csslider > input:nth-of-type(8):checked ~ .arrows > label:nth-of-type(9),
+    .room-single-block .csslider > input:nth-of-type(9):checked ~ .arrows > label:nth-of-type(10),
+    .room-single-block .csslider > input:nth-of-type(10):checked ~ .arrows > label:nth-of-type(11),
+    .room-single-block .csslider > input:nth-of-type(11):checked ~ .arrows > label:nth-of-type(12) {
+        right: 5%;
+    }
+
+    .room-single-block .csslider.infinity > input:first-of-type:checked ~ .arrows label.goto-last,
+    .room-single-block .csslider > input:nth-of-type(1):checked ~ .arrows > label:nth-of-type(0),
+    .room-single-block .csslider > input:nth-of-type(2):checked ~ .arrows > label:nth-of-type(1),
+    .room-single-block .csslider > input:nth-of-type(3):checked ~ .arrows > label:nth-of-type(2),
+    .room-single-block .csslider > input:nth-of-type(4):checked ~ .arrows > label:nth-of-type(3),
+    .room-single-block .csslider > input:nth-of-type(5):checked ~ .arrows > label:nth-of-type(4),
+    .room-single-block .csslider > input:nth-of-type(6):checked ~ .arrows > label:nth-of-type(5),
+    .room-single-block .csslider > input:nth-of-type(7):checked ~ .arrows > label:nth-of-type(6),
+    .room-single-block .csslider > input:nth-of-type(8):checked ~ .arrows > label:nth-of-type(7),
+    .room-single-block .csslider > input:nth-of-type(9):checked ~ .arrows > label:nth-of-type(8),
+    .room-single-block .csslider > input:nth-of-type(10):checked ~ .arrows > label:nth-of-type(9),
+    .room-single-block .csslider > input:nth-of-type(11):checked ~ .arrows > label:nth-of-type(10) {
+        left: 5%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .room-single-block .csslider > .arrows label {
+        padding: 6px;
+    }
+
+    .room-single-block .csslider > .arrows {
+        width: 99%;
+    }
+}
+
+@media screen and (max-width: 384px) {
+    .room-single-block .csslider > .arrows label {
+        padding: 5px;
+    }
+
+    .room-single-block .csslider.infinity > input:last-of-type:checked ~ .arrows label.goto-first,
+    .room-single-block .csslider > input:nth-of-type(1):checked ~ .arrows > label:nth-of-type(2),
+    .room-single-block .csslider > input:nth-of-type(2):checked ~ .arrows > label:nth-of-type(3),
+    .room-single-block .csslider > input:nth-of-type(3):checked ~ .arrows > label:nth-of-type(4),
+    .room-single-block .csslider > input:nth-of-type(4):checked ~ .arrows > label:nth-of-type(5),
+    .room-single-block .csslider > input:nth-of-type(5):checked ~ .arrows > label:nth-of-type(6),
+    .room-single-block .csslider > input:nth-of-type(6):checked ~ .arrows > label:nth-of-type(7),
+    .room-single-block .csslider > input:nth-of-type(7):checked ~ .arrows > label:nth-of-type(8),
+    .room-single-block .csslider > input:nth-of-type(8):checked ~ .arrows > label:nth-of-type(9),
+    .room-single-block .csslider > input:nth-of-type(9):checked ~ .arrows > label:nth-of-type(10),
+    .room-single-block .csslider > input:nth-of-type(10):checked ~ .arrows > label:nth-of-type(11),
+    .room-single-block .csslider > input:nth-of-type(11):checked ~ .arrows > label:nth-of-type(12) {
+        right: 6%;
+    }
+
+    .room-single-block .csslider.infinity > input:first-of-type:checked ~ .arrows label.goto-last,
+    .room-single-block .csslider > input:nth-of-type(1):checked ~ .arrows > label:nth-of-type(0),
+    .room-single-block .csslider > input:nth-of-type(2):checked ~ .arrows > label:nth-of-type(1),
+    .room-single-block .csslider > input:nth-of-type(3):checked ~ .arrows > label:nth-of-type(2),
+    .room-single-block .csslider > input:nth-of-type(4):checked ~ .arrows > label:nth-of-type(3),
+    .room-single-block .csslider > input:nth-of-type(5):checked ~ .arrows > label:nth-of-type(4),
+    .room-single-block .csslider > input:nth-of-type(6):checked ~ .arrows > label:nth-of-type(5),
+    .room-single-block .csslider > input:nth-of-type(7):checked ~ .arrows > label:nth-of-type(6),
+    .room-single-block .csslider > input:nth-of-type(8):checked ~ .arrows > label:nth-of-type(7),
+    .room-single-block .csslider > input:nth-of-type(9):checked ~ .arrows > label:nth-of-type(8),
+    .room-single-block .csslider > input:nth-of-type(10):checked ~ .arrows > label:nth-of-type(9),
+    .room-single-block .csslider > input:nth-of-type(11):checked ~ .arrows > label:nth-of-type(10) {
+        left: 6%;
+    }
+}
+
+.w3l-roomsingleblock1 p.roomsingle {
+    border: 2px solid #ddd;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.w3l-roomsingleblock1 img {
+    border-radius: 10px;
+    width: 100%;
+    max-height: 400px;
+}
+
+.w3l-roomsingleblock1 ul.w3l-right-book li {
+    margin-bottom: 10px;
+    color: var(--para-color);
+    font-size: 18px;
+    list-style: inside;
+    font-weight: 400;
+    list-style-type: none;
+}
+
+.w3l-roomsingleblock1 ul.w3l-right-book li span {
+    font-size: 12px;
+    margin-right: 10px;
+    opacity: 0.4;
+}
+
+.w3l-roomsingleblock1 ul.w3l-right-book {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 20px;
+}
+
+.w3l-roomsingleblock1 ul.w3l-right-book li a {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    font-weight: 500;
+}
+
+.w3l-roomsingleblock1 ul.w3l-right-book li a:hover {
+    color: var(--heading-color);
+}
+
+@media (max-width: 480px) {
+    .w3l-roomsingleblock1 ul.w3l-right-book {
+        grid-template-columns: 1fr;
+    }
+
+    .w3l-roomsingleblock1 ul.w3l-right-book li a {
+        font-size: 17px;
+    }
+
+    .w3l-roomsingleblock1 p.roomsingle {
+        padding: 20px;
+    }
+}

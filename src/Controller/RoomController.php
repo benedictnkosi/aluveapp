@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Helpers\FormatHtml\AvailableRoomsDropDownHTML;
+use App\Helpers\FormatHtml\BookingPageAvailableRoomsHTML;
 use App\Helpers\FormatHtml\ConfigurationRoomsHTML;
 use App\Helpers\FormatHtml\RoomImagesHTML;
 use App\Helpers\FormatHtml\RoomsPageHTML;
@@ -62,7 +62,7 @@ class RoomController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $rooms = $roomApi->getAvailableRooms($checkInDate, $checkOutDate, $request, $propertyUid);
-        $availableRoomsDropDownHTML = new AvailableRoomsDropDownHTML($entityManager, $logger);
+        $availableRoomsDropDownHTML = new BookingPageAvailableRoomsHTML($entityManager, $logger);
         $html = $availableRoomsDropDownHTML->formatHtml($rooms);
         $response = array(
             'html' => $html,

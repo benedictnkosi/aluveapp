@@ -89,6 +89,12 @@ class HomeController extends AbstractController
         return $this->render("invoice.html");
     }
 
+    #[Route('/room', name: 'room')]
+    public function room(): Response
+    {
+        return $this->render("room.html");
+    }
+
     /**
      * @Route("/public/userloggedin")
      */

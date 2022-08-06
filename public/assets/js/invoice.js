@@ -1,5 +1,6 @@
 $(document).ready(function () {
     $("body").addClass("loading");
+    $('#hotel_name').html('<a href="/booking?uid='+sessionStorage.getItem('property_uid')+'">'+sessionStorage.getItem('PropertyName')+'</a>');
     getInvoice();
 });
 

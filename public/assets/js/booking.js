@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     sessionStorage.setItem("property_uid", getUrlParameter('uid'))
+    getPropertyName();
     $("#new-res-form").submit(function (event) {
         event.preventDefault();
     });
@@ -135,7 +136,9 @@ function getAvailableRooms(checkInDate, checkOutDate) {
                 var item = '<li><img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/><div class="div-select-room-name">' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div></div>' +
                     '</li>';
             } else {
-                var item = '<li><img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/><div class="div-select-room-name">' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div><button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button></div>' +
+                var item = '<li><img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/><div class="div-select-room-name">' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div><button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button>' +
+                    '<button class="btn btn-style btn-secondary book mt-3 view-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">View Room</button>' +
+                    '</div>' +
                     '</li>';
             }
 
@@ -182,6 +185,14 @@ function getAvailableRooms(checkInDate, checkOutDate) {
             }
 
             displayTotal();
+        });
+
+        $(".view-room-button").click(function (event) {
+            event.preventDefault();
+            window.open(
+                "/room?id=" + event.target.getAttribute("data-roomId"),
+                '_blank' // <- This is what makes it open in a new window.
+            );
         });
 
         $("body").removeClass("loading");
@@ -231,5 +242,22 @@ function createReservation() {
             $("body").removeClass("loading");
         });
 
+
+}
+
+function getPropertyName() {
+    let url = "public/property_details/" + getUrlParameter("uid");
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (response) {
+            sessionStorage.setItem("PropertyName", response[0].name)
+            $('#hotel_name').html(response[0].name);
+        }
+    });
 
 }

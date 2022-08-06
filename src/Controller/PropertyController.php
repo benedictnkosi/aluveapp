@@ -53,4 +53,17 @@ class PropertyController extends AbstractController
         return $response;
     }
 
+    /**
+     * @Route("public/property_details/{uid}")
+     */
+    public function getPropertyDetails($uid,  LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi, RoomApi $roomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $propertyApi->getPropertyDetailsByUid($uid);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
 }

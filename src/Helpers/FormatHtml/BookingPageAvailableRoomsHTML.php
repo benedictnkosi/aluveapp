@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 require_once(__DIR__ . '/../../app/application.php');
 
 
-class AvailableRoomsDropDownHTML
+class BookingPageAvailableRoomsHTML
 {
     private $em;
     private $logger;
