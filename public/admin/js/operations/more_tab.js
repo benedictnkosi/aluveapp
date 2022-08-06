@@ -104,7 +104,7 @@ function bindBlockedRoomsEvents(){
                 const date = new Date();
 
                 $('input[name="block_date"]').daterangepicker({
-                    autoApply: false,
+                    autoApply: true,
                     minDate: date,
                     autoUpdateInput: false,
                 }, function (start, end, label) {

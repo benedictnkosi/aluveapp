@@ -20,7 +20,7 @@ class CommandsController extends AbstractController
     /**
      * @Route("public/runcommand/clear")
      */
-    public function runCommand(LoggerInterface $logger): Response
+    public function clearSymfony(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
@@ -122,9 +122,9 @@ class CommandsController extends AbstractController
         );
 
         if(str_contains(SERVER_NAME,"qa")){
-            $command = 'git pull origin development --force';
+            $command = 'git pull https://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@github.com/benedictnkosi/aluveapp.git development --force';
         }else{
-            $command = 'git pull origin main --force';
+            $command = 'git pull https://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@github.com/benedictnkosi/aluveapp.git main --force';
         }
 
         exec($command, $result);
@@ -141,7 +141,7 @@ class CommandsController extends AbstractController
     /**
      * @Route("public/phpinfo")
      */
-    public function clearsymfony(LoggerInterface $logger): Response
+    public function phpinfo(LoggerInterface $logger): Response
     {
         $fs = new Filesystem();
         $fs->remove($this->container->getParameter('kernel.cache_dir'));
