@@ -151,4 +151,21 @@ class CommandsController extends AbstractController
 
         return new JsonResponse( $responseArray, 200, array());
     }
+
+    /**
+     * @Route("public/mysqldump")
+     */
+    public function mysql(LoggerInterface $logger): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $command = 'mysql --version';
+        exec($command, $result);
+        $responseArray[] = array(
+            'command' =>  $command,
+            'result_message' => print_r($result, true),
+            'result_code' => 0
+        );
+
+        return new JsonResponse( $responseArray, 200, array());
+    }
 }
