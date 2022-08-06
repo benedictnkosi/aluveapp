@@ -3,6 +3,8 @@ $(document).ready(function () {
     $('#hotel_name').html('<a href="/booking?uid='+sessionStorage.getItem('property_uid')+'">'+sessionStorage.getItem('PropertyName')+'</a>');
     getRoomSlide();
     getRoomDetails();
+    showBackToReservationsLink();
+    $('#backToBooking').removeClass("hidden");
 });
 
 function getRoomDetails() {

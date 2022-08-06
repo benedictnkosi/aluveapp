@@ -45,14 +45,14 @@ $(document).ready(function () {
             $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
 
                 $('#checkindate').daterangepicker({
+                    startDate: date,
+                    endDate: endDate,
                     opens: 'left',
-                    autoApply: false,
+                    autoApply: true,
                     minDate: date
                 }, function (start, end, label) {
                     console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
                 });
-
-                $('#checkindate').daterangepicker({startDate: date, endDate: endDate});
 
                 $('#checkindate').on('apply.daterangepicker', function (event, picker) {
                     getAvailableRooms(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
@@ -88,7 +88,6 @@ function displayTotal() {
             nightsMessage += roomName + " - " + numberOfNights + " x nights @ R" + roomPrice + ".00" + "<br>";
             roomIdArray.push(roomId);
         }
-
     }
 
     if (total > 0) {
@@ -135,15 +134,18 @@ function getAvailableRooms(checkInDate, checkOutDate) {
                     '</li>';
             } else {
                 if(bedshtml.length > 1){
-                    var item = '<li><div class="div-select-room-name"><img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/>' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div><button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button>' +
-                        '<button class="btn btn-style btn-secondary book mt-3 view-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">View Room</button>' +
+                    var item = '<li>' +
+                        '<a href="/room?id='+room_id+'"><div class="div-select-room-name">' +
+                        '<img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/>' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div><button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button>' +
                         '</div>' +
-                        '</li>';
+                        '</a></li>';
                 }else{
-                    var item = '<li><div class="div-select-room-name"><img class="no_beds_image" src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/>' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div><button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button>' +
-                        '<button class="btn btn-style btn-secondary book mt-3 view-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">View Room</button>' +
+                    var item = '<li>' +
+                        '<a href="/room?id='+room_id+'"><div class="div-select-room-name">' +
+                        '<img class="no_beds_image" src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/>' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div>' +
+                        '<button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button>' +
                         '</div>' +
-                        '</li>';
+                        '</a></li>';
                 }
 
             }
