@@ -38,7 +38,7 @@ class CommunicationApi
             if(!empty($emailTo)){
                 $gmailService = $this->createGmailService();
                 $messageBody = $this->createMessage($emailFrom, $emailTo, $subject, $messageBody, $propertyName, $replyTo);
-                $this->createDraft($gmailService, $emailFrom, $messageBody);
+                //$this->createDraft($gmailService, $emailFrom, $messageBody);
                 $this->sendGmailMessage($gmailService, $emailFrom, $messageBody);
                 $responseArray[] = array(
                     'result_message' => 'Successfully sent message. Thank you',
