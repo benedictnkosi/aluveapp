@@ -25,7 +25,7 @@ php composer.phar require --dev symfony/maker-bundle
 Add annotations for routing
 php composer.phar require annotations
 
-Add apache support - this create the .htaccess file inside public folder. Xamp must be configured to point to the public folder
+Add apache support - this creates the .htaccess file inside public folder. Xamp must be configured to point to the public folder
 php composer.phar require symfony/apache-pack
 
 Start the symfony server
@@ -37,6 +37,20 @@ Database
 Add entry in .env
 DATABASE_URL="mysql://root:@127.0.0.1:3306/new_aluve_db?serverVersion=mariadb-{slq_server_version}&charset=utf8mb4"
 Comment out the postgres connection string 
+
+make sure routes.yml is empty
+config/routes.yaml
+
+create file config/routes/annotations.yaml with below content
+# config/routes/annotations.yaml
+controllers:
+resource: ../../src/Controller/
+type: annotation
+
+kernel:
+resource: ../../src/Kernel.php
+type: annotation
+
 
 import existing database entities
 php bin/console doctrine:mapping:import --force "App\Entity" annotation --path=src/Entity_new

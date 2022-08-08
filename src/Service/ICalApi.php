@@ -88,6 +88,8 @@ class ICalApi
                     $reservation->setStatus($status);
                     $this->em->persist($reservation);
                     $this->em->flush($reservation);
+                    $blockedRoomApi = new BlockedRoomApi($this->em, $this->logger);
+                    $blockedRoomApi->deleteBlockedRoomByReservation($reservation->getId());
                     $this->logger->debug("Reservation successfully cancelled");
                 }
             }
