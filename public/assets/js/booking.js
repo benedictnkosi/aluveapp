@@ -21,7 +21,12 @@ $(document).ready(function () {
         }
     });
 
-    $("body").addClass("loading");
+    $("#phoneNumber").blur(function () {
+        if (document.referrer.includes("admin")) {
+            getCustomer();
+        }
+    });
+
 
     let date = new Date();
     let endDate = new Date(date.getTime());
@@ -41,32 +46,32 @@ $(document).ready(function () {
     }
 
     //date picker
-        $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
-            $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
+    $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
+        $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
 
-                $('#checkindate').daterangepicker({
-                    startDate: date,
-                    endDate: endDate,
-                    opens: 'left',
-                    autoApply: true,
-                    minDate: date
-                }, function (start, end, label) {
-                    console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-                });
-
-                $('#checkindate').on('apply.daterangepicker', function (event, picker) {
-                    getAvailableRooms(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
-                    sessionStorage.setItem('checkInDate', picker.startDate.format("YYYY-MM-DD"));
-                    sessionStorage.setItem('checkOutDate', picker.endDate.format("YYYY-MM-DD"));
-
-                    let checkInDate = new Date(picker.startDate.format("YYYY-MM-DD"));
-                    let checkOutDate = new Date(picker.endDate.format("YYYY-MM-DD"))
-                    let difference = checkOutDate - checkInDate;
-                    let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
-                    console.log("date diff is " + totalDays);
-                    sessionStorage.setItem('numberOfNights', totalDays);
-                });
+            $('#checkindate').daterangepicker({
+                startDate: date,
+                endDate: endDate,
+                opens: 'left',
+                autoApply: true,
+                minDate: date
+            }, function (start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
             });
+
+            $('#checkindate').on('apply.daterangepicker', function (event, picker) {
+                getAvailableRooms(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
+                sessionStorage.setItem('checkInDate', picker.startDate.format("YYYY-MM-DD"));
+                sessionStorage.setItem('checkOutDate', picker.endDate.format("YYYY-MM-DD"));
+
+                let checkInDate = new Date(picker.startDate.format("YYYY-MM-DD"));
+                let checkOutDate = new Date(picker.endDate.format("YYYY-MM-DD"))
+                let difference = checkOutDate - checkInDate;
+                let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
+                console.log("date diff is " + totalDays);
+                sessionStorage.setItem('numberOfNights', totalDays);
+            });
+        });
     });
 
     showBackToReservationsLink();
@@ -107,6 +112,7 @@ function displayTotal() {
 }
 
 function getAvailableRooms(checkInDate, checkOutDate) {
+    $("body").addClass("loading");
     let url = "/public/availablerooms/" + checkInDate + "/" + checkOutDate + "/" + sessionStorage.getItem("property_uid");
     $.getJSON(url + "?callback=?", null, function (data) {
         let roomIndex;
@@ -133,15 +139,15 @@ function getAvailableRooms(checkInDate, checkOutDate) {
                 var item = '<li><img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/><div class="div-select-room-name">' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div></div>' +
                     '</li>';
             } else {
-                if(bedshtml.length > 1){
+                if (bedshtml.length > 1) {
                     var item = '<li>' +
-                        '<a href="/room?id='+room_id+'"><div class="div-select-room-name">' +
+                        '<a href="/room?id=' + room_id + '"><div class="div-select-room-name">' +
                         '<img src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/>' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div><button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button>' +
                         '</div>' +
                         '</a></li>';
-                }else{
+                } else {
                     var item = '<li>' +
-                        '<a href="/room?id='+room_id+'"><div class="div-select-room-name">' +
+                        '<a href="/room?id=' + room_id + '"><div class="div-select-room-name">' +
                         '<img class="no_beds_image" src="' + img + '" data-price="' + price + '" data-roomId="' + room_id + '" data-roomName="' + room_name + '"/>' + room_name + '<div class="select_sleeps"><span>ZAR ' + price + '</span><span class="fa fa-users">' + sleeps + ' Guests</span>' + bedshtml + '</div>' +
                         '<button class="btn btn-style btn-secondary book mt-3 add-room-button" data-roomId="' + room_id + '" data-roomName="' + room_name + '" data-roomPrice="' + price + '">Add</button>' +
                         '</div>' +
@@ -226,7 +232,7 @@ function createReservation() {
     }
 
     $("body").addClass("loading");
-    let url = "/public/reservations/create/" + sessionStorage.getItem("selected_rooms_array") + '/' + guestName + '/' + phoneNumber + '/'+ adultGuests + '/' + childGuests + '/' + checkInDate + '/' + checkOutDate;
+    let url = "/public/reservations/create/" + sessionStorage.getItem("selected_rooms_array") + '/' + guestName + '/' + phoneNumber + '/' + adultGuests + '/' + childGuests + '/' + checkInDate + '/' + checkOutDate;
     if (email.length > 0) {
         url += "/" + email;
     }
@@ -268,4 +274,31 @@ function getPropertyName() {
         }
     });
 
+}
+
+
+function getCustomer() {
+    if(sessionStorage.getItem('authenticated').localeCompare('true') === 0) {
+        $("#phoneNumber").val($("#phoneNumber").val().replaceAll(" ", ""));
+        $("body").addClass("loading");
+        let url = "/api/guests/" + $("#phoneNumber").val();
+        $.ajax({
+            type: "get",
+            url: url,
+            crossDomain: true,
+            cache: false,
+            dataType: "jsonp",
+            contentType: "application/json; charset=UTF-8",
+            success: function (response) {
+                $("body").removeClass("loading");
+                if (response[0].result_code === 0) {
+                    $('#guestName').val(response[0].name);
+                    $('#email').val(response[0].email);
+                }
+            },
+            done: function (response) {
+                $("body").removeClass("loading");
+            }
+        });
+    }
 }

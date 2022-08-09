@@ -530,7 +530,6 @@ class ReservationApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $this->logger->debug("room ids" . $roomIds);
         $responseArray = array();
-        $roomApi = new RoomApi($this->em, $this->logger);
         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
         try {
             //get property Id
@@ -567,8 +566,6 @@ class ReservationApi
                     }
                 }
 
-
-                $paid = 0;
                 //check if room is available
                 $isRoomAvailable = $roomApi->isRoomAvailable($room->getId(), $checkInDate, $checkOutDate);
 

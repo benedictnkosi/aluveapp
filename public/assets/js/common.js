@@ -18,6 +18,7 @@ function showBackToReservationsLink() {
     let url =  "/public/me";
     $.get(url, function(data){
         isLoggedin = data[0].authenticated;
+        sessionStorage.setItem('authenticated',isLoggedin )
         if(isLoggedin){
             $('.loginBtn').addClass("hidden");
             $('.signUpBtn').addClass("hidden");

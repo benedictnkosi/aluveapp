@@ -33,7 +33,7 @@ class GuestApi
             $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $propertyId));
             $guest = new Guest();
             $guest->setName($name);
-            $guest->setPhoneNumber($phoneNumber);
+            $guest->setPhoneNumber(str_replace("+27", "0", trim($phoneNumber)));
             $guest->setEmail($email);
             $guest->setProperty($property);
             $guest->setComments($origin);
@@ -236,13 +236,12 @@ class GuestApi
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
-            $propertyApi = new PropertyApi($this->em, $this->logger);
             $propertyId =   $_SESSION['PROPERTY_ID'];
             if ($filterValue == 0) {
                 $guest = $this->em->getRepository(Guest::class)->findBy(array('property' => $propertyId));
             } else {
                 if (strlen($filterValue) > 4) {
-                    $guest = $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => $filterValue, 'property' => $propertyId));
+                    $guest = $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => str_replace("+27", "0", trim($filterValue)), 'property' => $propertyId));
                 } else {
                     $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $filterValue, 'property' => $propertyId));
                 }
@@ -286,7 +285,7 @@ class GuestApi
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
             $propertyId = $propertyApi->getPropertyIdByHost($request);
-            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => $phoneNumber, 'property' => $propertyId));
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => str_replace("+27", "0", trim($phoneNumber)), 'property' => $propertyId));
         } catch (Exception $exception) {
             $responseArray[] = array(
                 'result_message' => $exception->getMessage(),
