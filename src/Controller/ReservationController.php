@@ -128,7 +128,7 @@ class ReservationController extends AbstractController
                     $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('name' => $newValue));
                 }
                 $reservation->SetStatus($status);
-                if(strcmp($status->getName(), 'cancelled')){
+                if(strcmp($status->getName(), 'cancelled')===0){
                     $blockedRoomApi->deleteBlockedRoomByReservation($reservation->getId());
                 }
                 break;

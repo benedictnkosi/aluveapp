@@ -546,6 +546,10 @@ class ReservationApi
                 $guest = null;
                 if (strcmp($origin, "airbnb.com") === 0) {
                     $guest = $guestApi->getGuestByName("Airbnb Guest");
+                }elseif (strcmp($origin, "booking.com") === 0) {
+                    if(!empty($phoneNumber)){
+                        $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
+                    }
                 } elseif (strlen($phoneNumber) > 1) {
                     $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
                 }
