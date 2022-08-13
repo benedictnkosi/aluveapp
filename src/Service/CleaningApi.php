@@ -148,7 +148,7 @@ class CleaningApi
             foreach($reservations  as $reservation){
                 $cleanings = $this->em->getRepository(Cleaning::class)->findBy(
                     array('reservation' => $reservation->getId()),
-                array('date' => 'desc'),
+                array('date' => 'asc'),
                     100
                 );
                 foreach($cleanings  as $cleaning){
@@ -166,7 +166,7 @@ class CleaningApi
 
         } catch (Exception $ex) {
             $htmlResponse = "Failed to get Cleaning for room";
-            $this->logger->error("Error " . print_r($responseArray, true));
+            $this->logger->error("Error " . $ex->getMessage());
         }
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
