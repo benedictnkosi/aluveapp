@@ -142,12 +142,13 @@ class CleaningApi
         $responseArray = array();
         try {
             $htmlResponse = "";
-            $reservations  =  $this->em->getRepository(Reservations::class)->findBy(array('room' => $roomId));
+            $reservations  =  $this->em->getRepository(Reservations::class)->findBy(array('room' => $roomId),
+                array('checkOut' => 'desc'));
             $cleaningsFound = false;
             foreach($reservations  as $reservation){
                 $cleanings = $this->em->getRepository(Cleaning::class)->findBy(
                     array('reservation' => $reservation->getId()),
-                array('date' => 'asc'),
+                array('date' => 'desc'),
                     100
                 );
                 foreach($cleanings  as $cleaning){
