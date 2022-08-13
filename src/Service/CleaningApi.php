@@ -147,7 +147,7 @@ class CleaningApi
             foreach($reservations  as $reservation){
                 $cleanings = $this->em->getRepository(Cleaning::class)->findBy(
                     array('reservation' => $reservation->getId()),
-                array('date' => 'desc'),
+                array('date' => 'asc'),
                     100
                 );
                 foreach($cleanings  as $cleaning){

@@ -108,7 +108,7 @@ class SingleReservationHtml
         //check in\out date
 
         $checkInDateDisabled = "";
-        if ($reservation->getCheckIn() < $now || (strcasecmp($reservation->getOrigin(), "website") !=0)){
+        if ($reservation->getCheckOut() < $now || (strcasecmp($reservation->getOrigin(), "website") !=0)){
             $checkInDateDisabled = "Disabled";
         }
 
