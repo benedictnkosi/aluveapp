@@ -34,11 +34,19 @@ class CommunicationApi
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
+        if(str_contains($_SERVER['SERVER_NAME'], "localhost" )){
+            $responseArray[] = array(
+                'result_message' => "local host not sending email",
+                'result_code' => 1
+            );
+            $this->logger->debug("local host not sending email");
+            return $responseArray;
+        }
+
         try {
             if(!empty($emailTo)){
                 $gmailService = $this->createGmailService();
                 $messageBody = $this->createMessage($emailFrom, $emailTo, $subject, $messageBody, $propertyName, $replyTo);
-                //$this->createDraft($gmailService, $emailFrom, $messageBody);
                 $this->sendGmailMessage($gmailService, $emailFrom, $messageBody);
                 $responseArray[] = array(
                     'result_message' => 'Successfully sent message. Thank you',

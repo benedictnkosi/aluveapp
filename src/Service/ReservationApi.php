@@ -281,12 +281,38 @@ class ReservationApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $now = new DateTime('today midnight');
-            $maxPastDate = $now->add(new DateInterval("P" . $days . "D"));
+            $checkInDate = $now->add(new DateInterval("P" . $days . "D"));
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
-            WHERE r.checkIn = '" . $maxPastDate->format('Y-m-d') . "'
+            WHERE r.checkIn = '" . $checkInDate->format('Y-m-d') . "'
+            and r.room = $roomId 
+            and r.status = " . $status->getId())
+                ->getResult();
+
+            if (empty($reservations)) {
+                return null;
+            }
+
+            return $reservations;
+
+        } catch (Exception) {
+            return null;
+        }
+    }
+
+    public function getReservationsByRoomAndDaysAfterCheckOut($roomId, $days)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        try {
+            $now = new DateTime('today midnight');
+            $checkOutDate = $now->sub(new DateInterval("P" . $days . "D"));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+
+            $reservations = $this->em
+                ->createQuery("SELECT r FROM App\Entity\Reservations r 
+            WHERE r.checkOut = '" . $checkOutDate->format('Y-m-d') . "'
             and r.room = $roomId 
             and r.status = " . $status->getId())
                 ->getResult();

@@ -216,7 +216,16 @@ class ScheduleMessageApi
             if ($scheduleMessages !== null) {
                 foreach ($scheduleMessages as $scheduleMessage) {
                     $this->logger->debug("found schedule message " . $scheduleMessage->getId());
-                    $reservations = $reservationApi->getReservationsByRoomAndDaysToCheckIn($scheduleMessage->getRoom()->getId(), $scheduleTime->getDays());
+                    $checkInReservations = $reservationApi->getReservationsByRoomAndDaysToCheckIn($scheduleMessage->getRoom()->getId(), $scheduleTime->getDays());
+                    $checkOutReservations = $reservationApi->getReservationsByRoomAndDaysAfterCheckOut($scheduleMessage->getRoom()->getId(), $scheduleTime->getDays());
+                    $reservations = array();
+                    foreach ($checkInReservations as $reservation) {
+                        $reservations[] = $reservation;
+                    }
+
+                    foreach ($checkOutReservations as $reservation) {
+                        $reservations[] = $reservation;
+                    }
 
                     if ($reservations !== null) {
                         foreach ($reservations as $reservation) {

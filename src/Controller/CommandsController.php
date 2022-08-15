@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\PropertyApi;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +24,6 @@ class CommandsController extends AbstractController
     public function clearSymfony(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-
         if(function_exists('exec')) {
             echo "exec is enabled";
         }else{
@@ -31,7 +31,7 @@ class CommandsController extends AbstractController
         }
 
         $command = 'php ../bin/console doctrine:cache:clear-metadata';
-        exec($command, $result);
+        $result = $this->execute($command);
         $responseArray[] = array(
             'command' =>  $command,
             'result_message' => print_r($result, true),
@@ -39,7 +39,7 @@ class CommandsController extends AbstractController
         );
 
         $command = 'php ../bin/console doctrine:cache:clear-query';
-        exec($command, $result);
+        $result = $this->execute($command);
         $responseArray[] = array(
             'command' =>  $command,
             'result_message' => print_r($result, true),
@@ -47,7 +47,7 @@ class CommandsController extends AbstractController
         );
 
         $command = 'php ../bin/console doctrine:cache:clear-result';
-        exec($command, $result);
+        $result = $this->execute($command);
         $responseArray[] = array(
             'command' =>  $command,
             'result_message' => print_r($result, true),
@@ -63,7 +63,7 @@ class CommandsController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $command = 'php -i | grep "memory_limit"';
-        exec($command, $result);
+        $result = $this->execute($command);
         $responseArray[] = array(
             'command' =>  $command,
             'result_message' => print_r($result, true),
@@ -79,8 +79,9 @@ class CommandsController extends AbstractController
     public function gitVersion(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        $logger->info("Server name: " . $_SERVER['SERVER_NAME']);
         $command = 'git --version';
-        exec($command, $result);
+        $result = $this->execute($command);
         $responseArray[] = array(
             'command' =>  $command,
             'result_message' => print_r($result, true),
@@ -96,70 +97,94 @@ class CommandsController extends AbstractController
     public function gitPull(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $command = 'git config --global user.email nkosi.benedict@gmail.com';
-        exec($command, $result);
-        $responseArray[] = array(
-            'command' =>  $command,
-            'result_message_auto' => print_r($result, true),
-            'result_code' => 0
-        );
+        try{
+            $command = 'git config --global user.email nkosi.benedict@gmail.com';
+            $result = $this->execute($command);
+            $responseArray[] = array(
+                'command' =>  $command,
+                'result_message_auto' => print_r($result, true),
+                'result_code' => 0
+            );
 
-        $command = 'git config --global user.name nkosibenedict';
-        exec($command, $result);
-        $responseArray[] = array(
-            'command' =>  $command,
-            'result_message_auto' => print_r($result, true),
-            'result_code' => 0
-        );
+            $command = 'git config --global user.name nkosibenedict';
+            $result = $this->execute($command);
+            $responseArray[] = array(
+                'command' =>  $command,
+                'result_message_auto' => print_r($result, true),
+                'result_code' => 0
+            );
 
 
-        $command = 'git stash';
-        exec($command, $result);
-        $responseArray[] = array(
-            'command' =>  $command,
-            'result_message_auto' => print_r($result, true),
-            'result_code' => 0
-        );
+            $command = 'git stash';
+            $result = $this->execute($command);
+            $responseArray[] = array(
+                'command' =>  $command,
+                'result_message_auto' => print_r($result, true),
+                'result_code' => 0
+            );
 
-        if(str_contains(SERVER_NAME,"qa")){
-            $command = 'git pull https://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@github.com/benedictnkosi/aluveapp.git development --force';
-        }else{
-            $command = 'git pull https://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@github.com/benedictnkosi/aluveapp.git main --force';
+            if(str_contains(SERVER_NAME,"qa")){
+                $command = 'git pull https://'.GIT_TOKEN.'@github.com/benedictnkosi/aluveapp.git development --force';
+            }else{
+                $command = 'git pull https://'.GIT_TOKEN.'@github.com/benedictnkosi/aluveapp.git main --force';
+            }
+
+            $result = $this->execute($command);
+            $responseArray[] = array(
+                'command' =>  $command,
+                'result_message_auto' => print_r($result, true),
+                'result_code' => 0
+            );
+            return new JsonResponse( $responseArray, 200, array());
+        }catch(Exception $ex){
+            $logger->error($ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString());
         }
-
-        exec($command, $result);
-        $responseArray[] = array(
-            'command' =>  $command,
-            'result_message_auto' => print_r($result, true),
-            'result_code' => 0
-        );
-
-
         return new JsonResponse( $responseArray, 200, array());
     }
 
     /**
-     * @Route("public/phpinfo")
+     * @Route("public/runcommand/gitstash")
+     */
+    public function gitStash(LoggerInterface $logger): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        $command = 'git stash';
+        $result = $this->execute($command);
+        $responseArray[] = array(
+            'command' =>  $command,
+            'result_message_auto' => print_r($result, true),
+            'result_code' => 0
+        );
+
+        return new JsonResponse( $responseArray, 200, array());
+    }
+
+
+    /**
+     * @Route("public/runcommand/phpinfo")
      */
     public function phpinfo(LoggerInterface $logger): Response
     {
-        $fs = new Filesystem();
-        $fs->remove($this->container->getParameter('kernel.cache_dir'));
-        $responseArray[] = array(
-            'result_code' => 0
-        );
+        if ($this->container->has('profiler')) {
+            $this->container->get('profiler')->disable();
+        }
+        ob_start();
+        phpinfo();
+        $str = ob_get_contents();
+        ob_get_clean();
 
-        return new JsonResponse( $responseArray, 200, array());
+        return new Response($str);
     }
 
     /**
-     * @Route("public/mysqldump")
+     * @Route("public/runcommand/mysqldump")
      */
     public function mysql(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $command = 'mysql --version';
-        exec($command, $result);
+        $result = $this->execute($command);
         $responseArray[] = array(
             'command' =>  $command,
             'result_message' => print_r($result, true),
@@ -168,4 +193,39 @@ class CommandsController extends AbstractController
 
         return new JsonResponse( $responseArray, 200, array());
     }
+
+    /**
+     * Executes a command and reurns an array with exit code, stdout and stderr content
+     * @param string $cmd - Command to execute
+     * @param string|null $workdir - Default working directory
+     * @return string[] - Array with keys: 'code' - exit code, 'out' - stdout, 'err' - stderr
+     */
+    function execute($cmd, $workdir = null) {
+
+        if (is_null($workdir)) {
+            $workdir = __DIR__;
+        }
+
+        $descriptorspec = array(
+            0 => array("pipe", "r"),  // stdin
+            1 => array("pipe", "w"),  // stdout
+            2 => array("pipe", "w"),  // stderr
+        );
+
+        $process = proc_open($cmd, $descriptorspec, $pipes, $workdir, null);
+
+        $stdout = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        return [
+            'code' => proc_close($process),
+            'out' => trim($stdout),
+            'err' => trim($stderr),
+        ];
+    }
+
+
 }
