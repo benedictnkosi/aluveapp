@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\PropertyApi;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -79,6 +80,7 @@ class CommandsController extends AbstractController
     public function gitVersion(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        $logger->info("Server name: " . $_SERVER['SERVER_NAME']);
         $command = 'git --version';
         exec($command, $result);
         $responseArray[] = array(
@@ -96,45 +98,48 @@ class CommandsController extends AbstractController
     public function gitPull(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $command = 'git config --global user.email nkosi.benedict@gmail.com';
-        exec($command, $result);
-        $responseArray[] = array(
-            'command' =>  $command,
-            'result_message_auto' => print_r($result, true),
-            'result_code' => 0
-        );
+        try{
+            $command = 'git config --global user.email nkosi.benedict@gmail.com';
+            exec($command, $result);
+            $responseArray[] = array(
+                'command' =>  $command,
+                'result_message_auto' => print_r($result, true),
+                'result_code' => 0
+            );
 
-        $command = 'git config --global user.name nkosibenedict';
-        exec($command, $result);
-        $responseArray[] = array(
-            'command' =>  $command,
-            'result_message_auto' => print_r($result, true),
-            'result_code' => 0
-        );
+            $command = 'git config --global user.name nkosibenedict';
+            exec($command, $result);
+            $responseArray[] = array(
+                'command' =>  $command,
+                'result_message_auto' => print_r($result, true),
+                'result_code' => 0
+            );
 
 
-        $command = 'git stash';
-        exec($command, $result);
-        $responseArray[] = array(
-            'command' =>  $command,
-            'result_message_auto' => print_r($result, true),
-            'result_code' => 0
-        );
+            $command = 'git stash';
+            exec($command, $result);
+            $responseArray[] = array(
+                'command' =>  $command,
+                'result_message_auto' => print_r($result, true),
+                'result_code' => 0
+            );
 
-        if(str_contains(SERVER_NAME,"qa")){
-            $command = 'git pull https://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@github.com/benedictnkosi/aluveapp.git development --force';
-        }else{
-            $command = 'git pull https://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@github.com/benedictnkosi/aluveapp.git main --force';
+            if(str_contains(SERVER_NAME,"qa")){
+                $command = 'git pull https://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@github.com/benedictnkosi/aluveapp.git development --force';
+            }else{
+                $command = 'git pull https://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@github.com/benedictnkosi/aluveapp.git main --force';
+            }
+
+            exec($command, $result);
+            $responseArray[] = array(
+                'command' =>  $command,
+                'result_message_auto' => print_r($result, true),
+                'result_code' => 0
+            );
+            return new JsonResponse( $responseArray, 200, array());
+        }catch(Exception $ex){
+            $logger->error($ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString());
         }
-
-        exec($command, $result);
-        $responseArray[] = array(
-            'command' =>  $command,
-            'result_message_auto' => print_r($result, true),
-            'result_code' => 0
-        );
-
-
         return new JsonResponse( $responseArray, 200, array());
     }
 
