@@ -124,7 +124,7 @@ class CommandsController extends AbstractController
             );
 
             if(str_contains(SERVER_NAME,"qa")){
-                $command = 'git pull https://'.GIT_TOKEN.'@github.com/benedictnkosi/aluveapp.git development --force';
+                $command = 'git pull https://'.GIT_TOKEN.'@github.com/benedictnkosi/aluveapp.git main --force';
             }else{
                 $command = 'git pull https://'.GIT_TOKEN.'@github.com/benedictnkosi/aluveapp.git main --force';
             }
