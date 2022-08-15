@@ -158,7 +158,7 @@ class CommandsController extends AbstractController
 
 
     /**
-     * @Route("public/phpinfo")
+     * @Route("public/runcommand/phpinfo")
      */
     public function phpinfo(LoggerInterface $logger): Response
     {
@@ -172,7 +172,7 @@ class CommandsController extends AbstractController
     }
 
     /**
-     * @Route("public/mysqldump")
+     * @Route("public/runcommand/mysqldump")
      */
     public function mysql(LoggerInterface $logger): Response
     {
