@@ -139,6 +139,25 @@ class CommandsController extends AbstractController
     }
 
     /**
+     * @Route("public/runcommand/gitstash")
+     */
+    public function gitStash(LoggerInterface $logger): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        $command = 'git stash';
+        exec($command, $result);
+        $responseArray[] = array(
+            'command' =>  $command,
+            'result_message_auto' => print_r($result, true),
+            'result_code' => 0
+        );
+
+        return new JsonResponse( $responseArray, 200, array());
+    }
+
+
+    /**
      * @Route("public/phpinfo")
      */
     public function phpinfo(LoggerInterface $logger): Response
