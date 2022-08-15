@@ -9,6 +9,7 @@ use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+
 require_once(__DIR__ . '/../app/application.php');
 
 class PaymentApi
@@ -20,7 +21,7 @@ class PaymentApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
-        if(session_id() === ''){
+        if (session_id() === '') {
             $logger->info("Session id is empty");
             session_start();
         }
@@ -36,7 +37,7 @@ class PaymentApi
             return $payments;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error("failed to get payments " . print_r($responseArray, true));
@@ -63,7 +64,7 @@ class PaymentApi
             return $html;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error($ex->getMessage());
@@ -76,12 +77,12 @@ class PaymentApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $resId = str_replace("[", "",$resId);
-            $resId = str_replace("]", "",$resId);
+            $resId = str_replace("[", "", $resId);
+            $resId = str_replace("]", "", $resId);
             $reservationIdsArray = explode(",", $resId);
             $numberOfReservations = count($reservationIdsArray);
 
-            foreach ($reservationIdsArray as $resId){
+            foreach ($reservationIdsArray as $resId) {
                 $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
                 $payment = new Payments();
                 $now = new DateTime('today midnight');
@@ -95,7 +96,7 @@ class PaymentApi
                 $this->logger->debug("reservation status is " . $reservation->getStatus()->getName());
 
                 //updated status to confirmed if it is pending
-                if(strcmp($reservation->getStatus()->getName(), "pending") ===0) {
+                if (strcmp($reservation->getStatus()->getName(), "pending") === 0) {
                     $roomApi = new RoomApi($this->em, $this->logger);
 
                     $isRoomAvailable = $roomApi->isRoomAvailable($reservation->getRoom()->getId(), $reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d"));
@@ -115,7 +116,7 @@ class PaymentApi
                         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
                         $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom(), $reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d"), "Connected Room Booked ", $reservation->getId());
 
-                        $this->sendEmailToGuest( $reservation, $amountPerReservation);
+                        $this->sendEmailToGuest($reservation, $amountPerReservation);
                         $responseArray[] = array(
                             'result_code' => 0,
                             'result_message' => 'Successfully added payment'
@@ -123,7 +124,7 @@ class PaymentApi
 
                         $this->logger->debug("no errors adding payment for reservation $resId. amount $amount");
                     } else {
-                        if(strcmp($channel, "payfast")===0){
+                        if (strcmp($channel, "payfast") === 0) {
                             $communicationApi = new CommunicationApi($this->em, $this->logger);
 
                             //send email to guest house
@@ -132,7 +133,7 @@ class PaymentApi
                             $emailBody = str_replace("amount_paid", $amount, $emailBody);
                             $emailBody = str_replace("property_name", $reservation->getRoom()->getProperty()->getName(), $emailBody);
 
-                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getRoom()->getProperty()->getEmailAddress(),  $emailBody, 'Aluve App - Adding payment failed');
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getRoom()->getProperty()->getEmailAddress(), $emailBody, 'Aluve App - Adding payment failed');
 
                             //send email to guest
                             $emailBody = file_get_contents(__DIR__ . '/../email_template/failed_payment_to_guest.html');
@@ -143,7 +144,7 @@ class PaymentApi
                             $emailBody = str_replace("property_number", $reservation->getRoom()->getProperty()->getPhoneNumber(), $emailBody);
                             $emailBody = str_replace("guest_name", $reservation->getGuest()->getName(), $emailBody);
 
-                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(),  $emailBody, 'Aluve App - Adding payment failed', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(), $emailBody, 'Aluve App - Adding payment failed', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
                         }
 
                         $responseArray[] = array(
@@ -152,7 +153,7 @@ class PaymentApi
                         );
 
                     }
-                }else{
+                } else {
                     //commit the payment changes
                     $this->em->persist($payment);
                     $this->em->flush($payment);
@@ -160,15 +161,50 @@ class PaymentApi
                         'result_code' => 0,
                         'result_message' => 'Successfully added payment'
                     );
-                    $this->sendEmailToGuest( $reservation, $amountPerReservation);
+                    $this->sendEmailToGuest($reservation, $amountPerReservation);
                 }
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error("failed to get payments " . print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+    public function addDiscount($resId, $amount, $channel = null): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
+            $payment = new Payments();
+            $now = new DateTime('today midnight');
+
+            $payment->setReservation($reservation);
+            $payment->setAmount($amount);
+            $payment->setDate($now);
+            $payment->setChannel($channel);
+            $payment->setDiscount(true);
+
+            //commit the payment changes
+            $this->em->persist($payment);
+            $this->em->flush($payment);
+
+            $responseArray[] = array(
+                'result_code' => 0,
+                'result_message' => 'Successfully added discount'
+            );
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error("failed to add discount " . print_r($responseArray, true));
         }
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
@@ -213,7 +249,7 @@ class PaymentApi
             return $due;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error("failed to get payments " . print_r($responseArray, true));
@@ -223,25 +259,25 @@ class PaymentApi
         return $responseArray;
     }
 
-    function sendEmailToGuest( $reservation, $amountPaid): void
+    function sendEmailToGuest($reservation, $amountPaid): void
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        try{
+        try {
             //send email to guest
             $amountDue = $this->getTotalDue($reservation->getId());
             $emailBody = file_get_contents(__DIR__ . '/../email_template/thank_you_for_payment.html');
-            $emailBody = str_replace("guest_name",$reservation->getGuest()->getName(),$emailBody);
-            $emailBody = str_replace("amount_paid",$amountPaid,$emailBody);
-            $emailBody = str_replace("amount_balance",$amountDue,$emailBody);
-            $emailBody = str_replace("server_name",$reservation->getRoom()->getProperty()->getServerName(), $emailBody);
-            $emailBody = str_replace("reservation_id",$reservation->getId(),$emailBody);
-            $emailBody = str_replace("property_name",$reservation->getRoom()->getProperty()->getName(),$emailBody);
-            $emailBody = str_replace("room_name",$reservation->getRoom()->getName(),$emailBody);
+            $emailBody = str_replace("guest_name", $reservation->getGuest()->getName(), $emailBody);
+            $emailBody = str_replace("amount_paid", $amountPaid, $emailBody);
+            $emailBody = str_replace("amount_balance", $amountDue, $emailBody);
+            $emailBody = str_replace("server_name", $reservation->getRoom()->getProperty()->getServerName(), $emailBody);
+            $emailBody = str_replace("reservation_id", $reservation->getId(), $emailBody);
+            $emailBody = str_replace("property_name", $reservation->getRoom()->getProperty()->getName(), $emailBody);
+            $emailBody = str_replace("room_name", $reservation->getRoom()->getName(), $emailBody);
 
             $communicationApi = new CommunicationApi($this->em, $this->logger);
-            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(),  $emailBody, $reservation->getRoom()->getProperty()->getName() . '- Thank you for payment', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getGuest()->getEmail(), $emailBody, $reservation->getRoom()->getProperty()->getName() . '- Thank you for payment', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
             $this->logger->debug("Successfully sent email to guest");
-        }catch (Exception $ex){
+        } catch (Exception $ex) {
             $this->logger->error(print_r($ex, true));
         }
     }

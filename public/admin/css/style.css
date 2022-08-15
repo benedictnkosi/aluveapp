@@ -289,6 +289,11 @@ input[type="checkbox"]{
 
 @media (min-width: 769px) {
 
+	.button-50{
+		width: 50%;
+		margin-left: 25%;
+	}
+
 	.res-details {
 		overflow: auto;
 		border-width: 1px;

@@ -43,6 +43,13 @@ class Payments
     private $channel;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="discount", type="boolean", nullable=false)
+     */
+    private $discount = '0';
+
+    /**
      * @var Reservations
      *
      * @ORM\ManyToOne(targetEntity="Reservations")
@@ -114,6 +121,22 @@ class Payments
     public function setChannel(?string $channel): void
     {
         $this->channel = $channel;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDiscount(): bool|string
+    {
+        return $this->discount;
+    }
+
+    /**
+     * @param bool $discount
+     */
+    public function setDiscount(bool|string $discount): void
+    {
+        $this->discount = $discount;
     }
 
     /**

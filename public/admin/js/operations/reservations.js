@@ -120,6 +120,12 @@ function setBindings() {
         addPayment(event);
     });
 
+    $('.res_add_discount').unbind('click')
+    $(".res_add_discount").click(function (event) {
+        event.stopImmediatePropagation();
+        addDiscount(event);
+    });
+
     $('.res_add_guest_phone').unbind('click')
     $(".res_add_guest_phone").click(function (event) {
         event.stopImmediatePropagation();
@@ -553,6 +559,36 @@ function addPayment(event) {
             if (response[0].result_code === 0) {
                 refreshReservations();
                 getBlockedRooms();
+                getReservationById(sessionStorage.getItem("reservation_id"));
+                showResSuccessMessage("reservation", response[0].result_message);
+            } else {
+                showResErrorMessage("reservation", response[0].result_message);
+            }
+        });
+    }
+}
+
+function addDiscount(event) {
+
+    const id = event.target.id.replace("add_discount_button_", "");
+    const article = document.querySelector('#add_discount_button_' + id);
+    if (!$("#discount_" + article.dataset.resid).val()) {
+        //hide other opened reservation inputs
+        $(".reservation_input").addClass("display-none");
+        $("#discount_" + article.dataset.resid).removeClass("display-none");
+    } else {
+        const amount = $("#discount_" + article.dataset.resid).val();
+        if (isNaN(amount)) {
+            showResErrorMessage(reservation, "Please provide numbers only for discount");
+            return;
+        }
+        isUserLoggedIn();
+        $("body").addClass("loading");
+        let url = "/api/discount/" + id + "/amount/" + amount;
+        $.getJSON(url + "?callback=?", null, function (response) {
+            $("body").removeClass("loading");
+
+            if (response[0].result_code === 0) {
                 getReservationById(sessionStorage.getItem("reservation_id"));
                 showResSuccessMessage("reservation", response[0].result_message);
             } else {

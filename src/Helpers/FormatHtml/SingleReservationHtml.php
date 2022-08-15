@@ -274,7 +274,11 @@ class SingleReservationHtml
         $paymentsHtml = "";
         $totalPayment = 0;
         foreach ($payments as $payment) {
-            $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format("d-M") . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . '</p>';
+            if($payment->isDiscount()){
+                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format("d-M") . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (Discount)</p>';
+            }else{
+                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format("d-M") . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . '</p>';
+            }
             $totalPayment += (intVal($payment->getAmount()));
         }
 
@@ -352,6 +356,14 @@ class SingleReservationHtml
                 <div class="right-side-action-block">
                 <input id="amount_' . $reservationId . '" type="text"
 										 class="textbox  display-none block-display reservation_input" placeholder="0.00"/><div id="add_payment_button_' . $reservationId . '" class="ClickableButton res_add_payment" data-resid="' . $reservationId . '" >Add Payment</div></div>';
+
+        // add discount
+        $this->logger->debug(" HTML output - add discount" . $reservation->getId());
+
+        $htmlString .= '
+                <div class="right-side-action-block">
+                <input id="discount_' . $reservationId . '" type="text"
+										 class="textbox  display-none block-display reservation_input" placeholder="0.00"/><div id="add_discount_button_' . $reservationId . '" class="ClickableButton res_add_discount" data-resid="' . $reservationId . '" >Add Discount</div></div>';
 
         // add notes
         $this->logger->debug(" HTML output - add notes" . $reservation->getId());
