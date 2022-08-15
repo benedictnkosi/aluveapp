@@ -23,7 +23,7 @@ class RoomImagesHTML
         $html = "";
         if ($roomImages != null) {
 
-            $html .= '<div class="image-container">';
+            $html .= '';
             foreach ($roomImages as $roomImage) {
                 $html .= '<div class="slide">
                 <img src="'.PROTOCOL.'://'.SERVER_NAME.'/public/room/image/' . $roomImage->getName() . '">
@@ -42,7 +42,6 @@ class RoomImagesHTML
             onclick="activeSlide('.$i.')">
         </span>';
             }
-            $html .= '</div>';
         }else{
             $html .= '<div class="slide">
                 <img src="'.PROTOCOL.'://'.SERVER_NAME.'/public/room/image/room_noimage.jpg">
