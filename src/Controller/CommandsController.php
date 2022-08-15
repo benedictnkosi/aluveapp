@@ -162,13 +162,15 @@ class CommandsController extends AbstractController
      */
     public function phpinfo(LoggerInterface $logger): Response
     {
-        $fs = new Filesystem();
-        $fs->remove($this->container->getParameter('kernel.cache_dir'));
-        $responseArray[] = array(
-            'result_code' => 0
-        );
+        if ($this->container->has('profiler')) {
+            $this->container->get('profiler')->disable();
+        }
+        ob_start();
+        phpinfo();
+        $str = ob_get_contents();
+        ob_get_clean();
 
-        return new JsonResponse( $responseArray, 200, array());
+        return new Response($str);
     }
 
     /**
