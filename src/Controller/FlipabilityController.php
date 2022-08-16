@@ -13,7 +13,7 @@ class FlipabilityController extends AbstractController
 {
 
     /**
-     * @Route("/home")
+     * @Route("/flipability")
      */
     public function home( LoggerInterface $logger, BirdViewApi $birdViewApi): Response
     {
