@@ -34,7 +34,7 @@ class CommunicationApi
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
-        if(str_contains($_SERVER['SERVER_NAME'], "localhost" )){
+        if(str_contains($_SERVER['SERVER_NAME'], "localhost1" )){
             $responseArray[] = array(
                 'result_message' => "local host not sending email",
                 'result_code' => 1
@@ -94,6 +94,7 @@ class CommunicationApi
         $rawMessageString .= 'Content-Transfer-Encoding: quoted-printable' . "\r\n\r\n";
         $rawMessageString .= "{$messageText}\r\n";
         $rawMessage = strtr(base64_encode($rawMessageString), array('+' => '-', '/' => '_'));
+        $this->logger->debug("email: " . $rawMessage);
         $message->setRaw($rawMessage);
         return $message;
     }

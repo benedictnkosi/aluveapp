@@ -33,8 +33,8 @@ class BirdViewApi
         try {
             $query = $this->em->createQuery("SELECT p, count(p.id) as count, avg(p.price) as price, avg(p.erf) as erf
             FROM App\Entity\FlipabilityProperty p
-            where  p.bedrooms > " . $bedrooms . "
-             and p.bathrooms > " . $bathrooms . "
+            where  p.bedrooms >= " . $bedrooms . "
+             and p.bathrooms >= " . $bathrooms . "
             GROUP BY p.location
             ORDER BY count desc ");
             $properties = $query->getResult();
@@ -129,8 +129,8 @@ class BirdViewApi
             $query = $this->em->createQuery("SELECT p, avg(p.price) as price, avg(p.erf) as erf
             FROM App\Entity\FlipabilityProperty p
             where p.location = '" . str_replace("'", "''", $location) . "'
-            and p.bedrooms > " . $bedrooms . "
-            and p.bathrooms > " . $bathrooms . "
+            and p.bedrooms >= " . $bedrooms . "
+            and p.bathrooms >= " . $bathrooms . "
             GROUP BY p.location");
             $this->logger->debug("before running query");
             $properties = $query->getResult();
@@ -151,8 +151,8 @@ class BirdViewApi
             where p.price < ' . $maxPrice . '
             and p.erf > ' . $minErfSize . "
             and p.location = '" . str_replace("'", "''", $location) . "'
-            and p.bedrooms > " . $bedrooms . "
-            and p.bathrooms > " . $bathrooms . "
+            and p.bedrooms >= " . $bedrooms . "
+            and p.bathrooms >= " . $bathrooms . "
             order by p.erf ");
             $this->logger->debug("before running query 2");
 
@@ -176,8 +176,8 @@ class BirdViewApi
             $query = $this->em->createQuery("SELECT p
             FROM App\Entity\FlipabilityProperty p
             where p.location = '" . str_replace("'", "''", $location) . "'
-            and p.bedrooms > " . $bedrooms . "
-            and p.bathrooms > " . $bathrooms);
+            and p.bedrooms >= " . $bedrooms . "
+            and p.bathrooms >= " . $bathrooms);
             $properties = $query->getResult();
             $priceArray = array();
             foreach ($properties as $property) {
@@ -222,8 +222,8 @@ class BirdViewApi
             where p.price < " . $maxPrice . " 
             and p.erf > " . $minErfSize . "
             and p.location = '" . str_replace("'", "''", $location) . "'
-            and p.bedrooms > " . $bedrooms . "
-            and p.bathrooms > " . $bathrooms . "
+            and p.bedrooms >= " . $bedrooms . "
+            and p.bathrooms > =" . $bathrooms . "
             order by p.erf ");
             return $query->getResult();
 
@@ -343,8 +343,8 @@ class BirdViewApi
             $query = $this->em->createQuery("SELECT p
             FROM App\Entity\FlipabilityProperty p
             where p.location = '" . str_replace("'", "''", $location) . "'
-            and p.bedrooms > " . $bedrooms . "
-            and p.bathrooms > " . $bathrooms . "
+            and p.bedrooms >= " . $bedrooms . "
+            and p.bathrooms >= " . $bathrooms . "
             order by p.erf ");
 
             $properties = $query->getResult();
@@ -544,8 +544,8 @@ class BirdViewApi
             $erfPercentage = 1 - floatval($erf);
             $query = $this->em->createQuery("SELECT p
             FROM App\Entity\FlipabilityProperty p
-            where p.bedrooms > " . $bedrooms . "
-            and p.bathrooms > " . $bathrooms . "
+            where p.bedrooms >= " . $bedrooms . "
+            and p.bathrooms >= " . $bathrooms . "
             and p.erf > (SELECT avg(p2.erf)*$erfPercentage FROM App\Entity\FlipabilityProperty p2 where p2.location = p.location)
             and p.price < (SELECT avg(p3.price)*$pricePercentage FROM App\Entity\FlipabilityProperty p3 where p3.location = p.location)");
 
@@ -572,8 +572,8 @@ class BirdViewApi
             $query = $this->em->createQuery("SELECT p, avg(p.price) as price, avg(p.erf) as erf, count(p.id) as count
             FROM App\Entity\FlipabilityProperty p
             where  p.location = '" . $location . "' 
-            and p.bedrooms > " . $bedrooms . "
-             and p.bathrooms > " . $bathrooms . "
+            and p.bedrooms >= " . $bedrooms . "
+             and p.bathrooms >= " . $bathrooms . "
             GROUP BY p.location");
             return $query->getResult();
         } catch (Exception $ex) {

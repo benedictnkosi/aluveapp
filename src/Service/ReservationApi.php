@@ -779,16 +779,18 @@ class ReservationApi
             if ($reservations != null) {
                 foreach ($reservations as $reservation) {
                     //send email if provided
-                    //disabled href not working on emails :(
-                    //$this->sendReviewEmail($reservation);
-
-                    //send sms
-                    if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
-                        $this->logger->debug("this is a south african number " . $reservation->getGuest()->getPhoneNumber());
-                        $SMSHelper = new SMSHelper($this->logger);
-                        $message = "Hi " . $reservation->getGuest()->getName() . ", Thank you for your reservation. Please make payment to confirm the reservation. View your invoice http://" . $reservation->getRoom()->getProperty()->getServerName() . "/invoice.html?reservation=" . $reservation->getId();
-                        $SMSHelper->sendMessage($reservation->getGuest()->getPhoneNumber(), $message);
+                    if (!empty($reservation->getGuest()->getEmail())) {
+                        $this->sendReviewEmail($reservation);
+                    }else{
+                        //send sms
+                        if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
+                            $this->logger->debug("this is a south african number " . $reservation->getGuest()->getPhoneNumber());
+                            $SMSHelper = new SMSHelper($this->logger);
+                            $message = "Hi " . $reservation->getGuest()->getName() . ", Thank you for staying with us. Please take a few seconds to give us a 5-star review on Google. " . $reservation->getRoom()->getProperty()->getGoogleReviewLink();
+                            $SMSHelper->sendMessage($reservation->getGuest()->getPhoneNumber(), $message);
+                        }
                     }
+
                     $this->logger->debug(print_r($responseArray, true));
                 }
             }
