@@ -89,7 +89,7 @@ class FlipabilityController extends AbstractController
     public function scrap(LoggerInterface $logger, WebScrapperApi $webScrapperApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $responseArray = $webScrapperApi->scrapPage('https://www.property24.com/houses-for-sale/gauteng/1/ppage_number?sp=pt%3d2000000');
+        $responseArray = $webScrapperApi->scrapPage();
         return new JsonResponse( $responseArray, 200, array());
     }
 }

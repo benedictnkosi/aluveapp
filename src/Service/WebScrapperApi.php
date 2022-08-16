@@ -30,18 +30,18 @@ class WebScrapperApi
         $this->client = new Client();
     }
 
-    public function scrapPage($url): array
+    public function scrapPage(): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
         try{
 
-            $pageLimit = 1;
+            $pageLimit = 2;
             $this->pageCounter = 0;
             while ($this->nextLinkPresent && $this->pageCounter < $pageLimit) {
                 $this->pageCounter++;
                 $this->logger->info("Page number: " . $this->pageCounter);
 
-                $crawler = $this->client->request('GET', str_replace("page_number", $this->pageCounter,$url));
+                $crawler = $this->client->request('GET', str_replace("page_number", $this->pageCounter,PROPERTY24_URL));
 
                 $this->nextLinkPresent = false;
                 //per listing
