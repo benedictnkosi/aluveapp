@@ -346,6 +346,7 @@ class BirdViewApi
 
             $htmlTable = '<table><tr>
 <th>Score &#8593</th>
+<th>Link</th>
 <th>Location</th>
 <th>#Properties</th>
 <th>AVG Price</th>
@@ -356,7 +357,7 @@ class BirdViewApi
     <th>Bedrooms</th>
     <th>Bathrooms</th>
     <th>Parking</th>
-    <th>Link</th>
+    
   </tr>';
 
             $this->logger->info("before checking property count");
@@ -405,6 +406,7 @@ class BirdViewApi
                     $htmlTable .= '
                       <tr>
                       <td>' . number_format((float)$property['score'], 2, '.', '') . '</td>
+                      <td><a href="' . $property['url'] . '" target="_blank">Link</a></td>
                       <td><a target="_blank" href="https://www.google.com/maps/place/Gauteng ' . $property['location'] . '">' . $property['location'] . '</a></td>
                       <td>' . $property['count'] . '</td>
                       <td>R' . number_format((float)$property['avg_price'], 0, '.', ' ') . '</td>
@@ -415,7 +417,7 @@ class BirdViewApi
                         <td>' . $property['bedrooms'] . '</td>
                         <td>' . $property['bathrooms'] . '</td>
                         <td>' . $property['parking'] . '</td>
-                        <td><a href="' . $property['url'] . '" target="_blank">Link</a></td>';
+                        ';
                 }
                 $this->logger->info("creating response");
                 $htmlTable .= '</table > ';
