@@ -345,13 +345,14 @@ class BirdViewApi
             }
 
             $htmlTable = '<table><tr>
+<th>Score &#8593</th>
 <th>Location</th>
 <th>#Properties</th>
 <th>AVG Price</th>
 <th>Price</th>
 <th>AVG ERF</th>
     
-    <th>ERF &#8593</th>
+    <th>ERF</th>
     <th>Bedrooms</th>
     <th>Bathrooms</th>
     <th>Parking</th>
@@ -372,6 +373,9 @@ class BirdViewApi
                         $numberOfProperties = $locationAverage['count'];
                     }
 
+                    $FlipabilityScore = floatval(intval($averagePrice) / intval($property->getPrice())) +
+                        floatval(intval($property->getErf()) / intval($averageErf));
+
                     $propertiesArray[] = array(
                         'location' => $property->getLocation(),
                         'price' => $property->getPrice(),
@@ -382,16 +386,16 @@ class BirdViewApi
                         'url' => $property->getUrl(),
                         'avg_price' => $averagePrice,
                         'avg_erf' => $averageErf,
-                        'count' => $numberOfProperties
+                        'count' => $numberOfProperties,
+                        'score' => $FlipabilityScore
                     );
 
                     $sort = array();
                     foreach ($propertiesArray as $k => $v) {
-                        $sort['price'][$k] = $v['price'];
-                        $sort['erf'][$k] = $v['erf'];
+                        $sort['score'][$k] = $v['score'];
                     }
                     # sort by event_type desc and then title asc
-                    array_multisort($sort['erf'], SORT_DESC, $sort['price'], SORT_ASC, $propertiesArray);
+                    array_multisort($sort['score'], SORT_DESC, $propertiesArray);
 
                 }
 
@@ -400,6 +404,7 @@ class BirdViewApi
                 foreach ($propertiesArray as $property) {
                     $htmlTable .= '
                       <tr>
+                      <td>' . number_format((float)$property['score'], 2, '.', '') . '</td>
                       <td><a target="_blank" href="https://www.google.com/maps/place/Gauteng ' . $property['location'] . '">' . $property['location'] . '</a></td>
                       <td>' . $property['count'] . '</td>
                       <td>R' . number_format((float)$property['avg_price'], 0, '.', ' ') . '</td>
