@@ -30,5 +30,6 @@ table {
  }
 
  .max-width{
+     overflow: scroll;
      max-width: none !important;
  }
