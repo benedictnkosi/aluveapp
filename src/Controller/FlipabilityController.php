@@ -61,7 +61,12 @@ class FlipabilityController extends AbstractController
     public function location($location, $filterType, $percentageCheaper,  $bedrooms,$bathrooms ,$erf, $avgErf,LoggerInterface $logger, BirdViewApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $responseArray = $birdViewApi->getLocationFlipableProperties($location, $filterType, $percentageCheaper, $bedrooms,$bathrooms, $erf, $avgErf);
+        if(strcmp($percentageCheaper, "0")!==0){
+            $responseArray = $birdViewApi->getLocationFlipableProperties($location, $filterType, $percentageCheaper, $bedrooms,$bathrooms, $erf, $avgErf);
+        }else{
+            $responseArray = $birdViewApi->getLocationProperties($location, $bedrooms,$bathrooms);
+        }
+
         $logger->info("response array" . print_r($responseArray, true));
         $percentageCheaper = floatval($percentageCheaper) *100;
         if(strcmp($filterType, 'average')===0){
@@ -69,7 +74,10 @@ class FlipabilityController extends AbstractController
             <br> Only showing property  with <b>$bedrooms+</b> bedrooms and  <b>$bathrooms+</b> bathrooms
             <br> The price for the average house is <b>R" . number_format((float)$responseArray[0]['average_price'], 0, '.', ' ') . "</b>
             <br> The stand size for the average house is <b>" . number_format((float)$responseArray[0]['average_erf'], 0, '.', '') . "m2</b>";
-        }else{
+        }elseif (strcmp($percentageCheaper, "0")===0) {
+            $summaryMessage = "Only showing property  with <b>$bedrooms+</b> bedrooms and  <b>$bathrooms+</b> bathrooms";
+        }
+        else {
             $summaryMessage = "Showing properties that are <b>$percentageCheaper%</b> cheaper than the  <b>$filterType%</b> most expensive houses
             <br> Only showing property  with <b>$bedrooms+</b> bedrooms and  <b>$bathrooms+</b> bathrooms
             <br> The price for the <b>$filterType% (".$responseArray[0]['percentile_count'] . " Properties)</b> most expensive houses start at <b>R" . number_format((float)$responseArray[0]['percentile_price'], 0, '.', ' ') . "</b>

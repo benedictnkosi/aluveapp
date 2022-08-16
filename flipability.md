@@ -1,5 +1,10 @@
 delete duplicates
 
+ALTER TABLE `flipability_property` ADD `id` INT NOT NULL AUTO_INCREMENT AFTER `type`, ADD PRIMARY KEY (`id`);
+ALTER TABLE `flipability_property` ADD `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `id`;
+ALTER TABLE `flipability_property` CHANGE `ï»¿bedrooms` `bedrooms` INT(11) NULL DEFAULT NULL;
+
+
 DELETE t1 FROM flipability_property t1
 INNER JOIN flipability_property t2
 WHERE

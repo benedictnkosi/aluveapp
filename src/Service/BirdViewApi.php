@@ -333,6 +333,94 @@ class BirdViewApi
         }
     }
 
+
+    public function getLocationProperties($location, $bedrooms, $bathrooms): array|string
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        $propertiesArray = array();
+        try {
+            $query = $this->em->createQuery("SELECT p
+            FROM App\Entity\FlipabilityProperty p
+            where p.location = '" . str_replace("'", "''", $location) . "'
+            and p.bedrooms > " . $bedrooms . "
+            and p.bathrooms > " . $bathrooms . "
+            order by p.erf ");
+
+            $properties = $query->getResult();
+
+            $htmlTable = '<table><tr>
+<th>Link</th>
+    <th>Price</th>
+    <th>ERF &#8593</th>
+    <th>Bedrooms</th>
+    <th>Bathrooms</th>
+    <th>Parking</th>
+    
+  </tr>';
+
+            $this->logger->info("before checking property count");
+            if (count($properties) > 0) {
+                $this->logger->info("count is greater than zero");
+                foreach ($properties as $property) {
+                    $propertiesArray[] = array(
+                        'price' => $property->getPrice(),
+                        'erf' => $property->getErf(),
+                        'bedrooms' => $property->getBedrooms(),
+                        'bathrooms' => $property->getBathrooms(),
+                        'parking' => $property->getGarage(),
+                        'url' => $property->getUrl(),
+                    );
+
+                    $sort = array();
+                    foreach ($propertiesArray as $k => $v) {
+                        $sort['price'][$k] = $v['price'];
+                        $sort['erf'][$k] = $v['erf'];
+                    }
+                    # sort by event_type desc and then title asc
+                    array_multisort($sort['erf'], SORT_DESC, $sort['price'], SORT_ASC, $propertiesArray);
+
+                }
+
+                $this->logger->info("looping propertiesArray");
+
+                foreach ($propertiesArray as $property) {
+                    $htmlTable .= '
+                      <tr>
+                      <td><a href="' . $property['url'] . '" target="_blank">Link</a></td>
+                      <td>R' . number_format((float)$property['price'], 0, '.', ' ') . '</td>
+                        <td>' . $property['erf'] . '</td>
+                        <td>' . $property['bedrooms'] . '</td>
+                        <td>' . $property['bathrooms'] . '</td>
+                        <td>' . $property['parking'] . '</td>
+                        ';
+                }
+
+                $this->logger->info("creating response");
+                $htmlTable .= '</table > ';
+                $responseArray[] = array(
+                    'html' => $htmlTable
+                );
+                $this->logger->info("response array before return " . print_r($responseArray, true));
+
+                return $responseArray;
+            } else {
+                $this->logger->info("properties not found");
+
+                return "";
+            }
+
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error("Error " . print_r($responseArray, true));
+            return $responseArray;
+        }
+    }
+
+
     public function getFlipableProperties($type, $percentageCheaper, $bedrooms, $bathrooms, $erf): array|string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
@@ -408,7 +496,7 @@ class BirdViewApi
                       <td>' . number_format((float)$property['score'], 2, '.', '') . '</td>
                       <td><a href="' . $property['url'] . '" target="_blank">Link</a></td>
                       <td><a target="_blank" href="https://www.google.com/maps/place/Gauteng ' . $property['location'] . '">' . $property['location'] . '</a></td>
-                      <td>' . $property['count'] . '</td>
+                      <td> <a target="_blank" href="/location/' . $property['location'] . '/none/0/2/1/0/0">' . $property['count'] . '</a></td>
                       <td>R' . number_format((float)$property['avg_price'], 0, '.', ' ') . '</td>
                       <td>R' . number_format((float)$property['price'], 0, '.', ' ') . '</td>
                      <td>' . number_format((float)$property['avg_erf'], 0, '.', '') . '</td>
