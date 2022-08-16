@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\BirdViewApi;
+use App\Service\WebScrapperApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -82,4 +83,13 @@ class FlipabilityController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/public/scrap/")
+     */
+    public function scrap(LoggerInterface $logger, WebScrapperApi $webScrapperApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $responseArray = $webScrapperApi->scrapPage('https://www.property24.com/houses-for-sale/gauteng/1/ppage_number?sp=pt%3d2000000');
+        return new JsonResponse( $responseArray, 200, array());
+    }
 }

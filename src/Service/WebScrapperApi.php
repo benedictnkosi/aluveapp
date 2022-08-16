@@ -2,11 +2,13 @@
 
 namespace App\Service;
 
-use App\Entity\Property;
+use App\Entity\FlipabilityProperty;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Goutte\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DomCrawler\Crawler;
+require_once(__DIR__ . '/../app/application.php');
 
 class WebScrapperApi
 {
@@ -19,6 +21,7 @@ class WebScrapperApi
     private $listingCount = 0;
     private $pageCounter = 0;
     private $isPriceInt = false;
+    private $isErfInt = false;
 
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
@@ -32,7 +35,7 @@ class WebScrapperApi
         $this->logger->info("Starting Method: " . __METHOD__);
         try{
 
-            $pageLimit = 1000;
+            $pageLimit = 1;
             $this->pageCounter = 0;
             while ($this->nextLinkPresent && $this->pageCounter < $pageLimit) {
                 $this->pageCounter++;
@@ -48,8 +51,9 @@ class WebScrapperApi
                     try{
                         $this->logger->debug("iterating the listing " . $this->listingCount);
                         $this->isPriceInt = false;
+                        $this->isErfInt = false;
                         $this->listingCount++;
-                        $this->property = new Property();
+                        $this->property = new FlipabilityProperty();
                         //price
                         $parentCrawler->filterXPath('//span[@class="p24_price"]')->each(function ($node) {
                             //$this->logger->debug("found price " . $node->text());
@@ -62,6 +66,11 @@ class WebScrapperApi
                             if($price !== 0){
                                 $this->isPriceInt = true;
                             }
+
+                            if($price > MAX_FLIPABILITY_PRICE){
+                                $this->isPriceInt = false;
+                            }
+
                             // $this->logger->debug("clean price is " . $price);
                             $this->property->setPrice($price);
                         });
@@ -106,13 +115,13 @@ class WebScrapperApi
                             $this->property->setUrl("https://www.property24.com" . $node->attr('href'));
                         });
 
-                        //link
+                        //erf
                         $parentCrawler->filter('span[title="Erf Size"] > span')->each(function ($node) {
                             $this->responseArray[] = array(
                                 'Erf Size' => str_replace(" m²", "", $node->text())
                             );
 
-                            $property = $this->em->getRepository(Property::class)->findOneBy(array('url' => $node->text()));
+                            $property = $this->em->getRepository(FlipabilityProperty::class)->findOneBy(array('url' => $node->text()));
                             if($property !== null){
                                 $this->logger->debug("found duplicate url. exiting- " . $node->text());
                                 exit();
@@ -120,11 +129,19 @@ class WebScrapperApi
 
                             $erf = str_replace(" m²", "", $node->text());
                             $erf = intval(str_replace(" ", "", $erf));
+                            if($erf !== 0) {
+                                $this->isErfInt = true;
+                            }
+
+                            if($erf < MIN_FLIPABILITY_ERF) {
+                                $this->isErfInt = false;
+                            }
+
                             $this->property->setErf($erf);
                         });
 
                         $this->property->setType('house');
-                        $this->property->setPage($this->pageCounter);
+                        $this->property->setTimestamp(new DateTime());
 
                         if (!$this->em->isOpen()) {
                             $this->em = $this->em->create(
@@ -132,13 +149,12 @@ class WebScrapperApi
                                 $this->em->getConfiguration()
                             );
                         }
-                        if($this->isPriceInt){
+                        if($this->isPriceInt && $this->isErfInt){
                             $this->em->persist($this->property);
                             $this->em->flush($this->property);
                         }
 
-
-                        // $this->logger->debug(print_r($this->responseArray, true));
+                         $this->logger->debug(print_r($this->responseArray, true));
                     }catch(\Exception $ex){
                         $this->logger->debug($ex->getMessage());
                     }

@@ -24,58 +24,65 @@ class FlipabilityProperty
     /**
      * @var int|null
      *
-     * @ORM\Column(name="bedrooms", type="integer", nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="bedrooms", type="integer", nullable=true)
      */
-    private $bedrooms = NULL;
+    private $bedrooms;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="url", type="text", length=65535, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="url", type="text", length=65535, nullable=true)
      */
-    private $url = 'NULL';
+    private $url;
 
     /**
      * @var int|null
      *
-     * @ORM\Column(name="price", type="integer", nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="price", type="integer", nullable=true)
      */
-    private $price = NULL;
+    private $price;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="location", type="text", length=65535, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="location", type="text", length=65535, nullable=true)
      */
-    private $location = 'NULL';
+    private $location;
 
     /**
      * @var float|null
      *
-     * @ORM\Column(name="bathrooms", type="float", precision=10, scale=0, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="bathrooms", type="float", precision=10, scale=0, nullable=true)
      */
-    private $bathrooms = NULL;
+    private $bathrooms;
 
     /**
      * @var float|null
      *
-     * @ORM\Column(name="garage", type="float", precision=10, scale=0, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="garage", type="float", precision=10, scale=0, nullable=true)
      */
-    private $garage = NULL;
+    private $garage;
 
     /**
      * @var int|null
      *
-     * @ORM\Column(name="erf", type="bigint", nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="erf", type="bigint", nullable=true)
      */
-    private $erf = 'NULL';
+    private $erf;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="type", type="text", length=65535, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="type", type="text", length=65535, nullable=true)
      */
-    private $type = 'NULL';
+    private $type;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="timestamp", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $timestamp = 'CURRENT_TIMESTAMP';
 
     /**
      * @return int
@@ -192,7 +199,7 @@ class FlipabilityProperty
     /**
      * @return int|null
      */
-    public function getErf(): int|string|null
+    public function getErf(): ?int
     {
         return $this->erf;
     }
@@ -200,7 +207,7 @@ class FlipabilityProperty
     /**
      * @param int|null $erf
      */
-    public function setErf(int|string|null $erf): void
+    public function setErf(?int $erf): void
     {
         $this->erf = $erf;
     }
@@ -219,6 +226,22 @@ class FlipabilityProperty
     public function setType(?string $type): void
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTimestamp(): \DateTime|string
+    {
+        return $this->timestamp;
+    }
+
+    /**
+     * @param \DateTime $timestamp
+     */
+    public function setTimestamp(\DateTime|string $timestamp): void
+    {
+        $this->timestamp = $timestamp;
     }
 
 
