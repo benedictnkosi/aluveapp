@@ -456,7 +456,11 @@ class BirdViewApi
           <span aria-hidden="true"></span>
         </button></th>
         <th class="num"><button>
-          70% Rule
+          Max Offer
+          <span aria-hidden="true"></span>
+        </button></th>
+        <th class="num"><button>
+          Price Ratio
           <span aria-hidden="true"></span>
         </button></th>
 <th class="num"><button>
@@ -524,6 +528,16 @@ class BirdViewApi
 
                 foreach ($propertiesArray as $property) {
                     $sellingPriceToAvgPriceRatio = intval((intval($property['price'])/intval($property['avg_price']))*100);
+                    $renovationCost = intval(intval($property['avg_price']) * 0.2);
+                    $maxOfferPrice = (intval($property['avg_price']) * 0.7) - $renovationCost;
+                    $sellingPriceToMaxOfferRatio = intval((intval($maxOfferPrice)/intval($property['price']))*100);
+                    if($sellingPriceToMaxOfferRatio < 85){
+                        $priceBelowOfferClass = "over-max-offer";
+                    }else if($sellingPriceToMaxOfferRatio > 100){
+                        $priceBelowOfferClass = "under-max-offer";
+                    }else{
+                        $priceBelowOfferClass = "negotiate-offer";
+                    }
                     $htmlTable .= '
                       <tr>
                       <td>' . number_format((float)$property['score'], 2, '.', '') . '</td>
@@ -532,8 +546,9 @@ class BirdViewApi
                       <td> <a target="_blank" href="/location/' . $property['location'] . '/none/0/2/1/0/0">' . $property['count'] . '</a></td>
                       <td>' . number_format((float)$property['avg_price'], 0, '.', '') . '</td>
                       <td>' . $property['price']. '</td>
-                      <td>' . $sellingPriceToAvgPriceRatio . '</td>
-                     <td>' . number_format((float)$property['avg_erf'], 0, '.', '') . '</td>
+                      <td class="'.$priceBelowOfferClass.'">' . number_format((float)$maxOfferPrice, 0, '.', '') . '</td>
+                       <td>' . number_format((float)$sellingPriceToAvgPriceRatio, 0, '.', ''). '</td>
+                       <td>' . number_format((float)$property['avg_erf'], 0, '.', '') . '</td>
                       
                         <td>' . $property['erf'] . '</td>
                         <td>' . $property['bedrooms'] . '</td>

@@ -54,3 +54,16 @@ body.loading .overlay {
     z-index: 999;
     background: rgba(255, 255, 255, 0.8) url(../images/loader.gif) center no-repeat;
 }
+
+
+.over-max-offer{
+    background-color: orangered;
+}
+
+.over-under-offer{
+    background-color: green;
+}
+
+.negotiate-offer{
+    background-color: orange;
+}
