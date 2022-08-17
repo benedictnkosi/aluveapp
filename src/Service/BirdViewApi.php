@@ -455,6 +455,10 @@ class BirdViewApi
           Price
           <span aria-hidden="true"></span>
         </button></th>
+        <th class="num"><button>
+          70% Rule
+          <span aria-hidden="true"></span>
+        </button></th>
 <th class="num"><button>
           Avg ERF
           <span aria-hidden="true"></span>
@@ -519,6 +523,7 @@ class BirdViewApi
                 $this->logger->info("looping propertiesArray");
 
                 foreach ($propertiesArray as $property) {
+                    $sellingPriceToAvgPriceRatio = intval((intval($property['price'])/intval($property['avg_price']))*100);
                     $htmlTable .= '
                       <tr>
                       <td>' . number_format((float)$property['score'], 2, '.', '') . '</td>
@@ -527,6 +532,7 @@ class BirdViewApi
                       <td> <a target="_blank" href="/location/' . $property['location'] . '/none/0/2/1/0/0">' . $property['count'] . '</a></td>
                       <td>' . number_format((float)$property['avg_price'], 0, '.', '') . '</td>
                       <td>' . $property['price']. '</td>
+                      <td>' . $sellingPriceToAvgPriceRatio . '</td>
                      <td>' . number_format((float)$property['avg_erf'], 0, '.', '') . '</td>
                       
                         <td>' . $property['erf'] . '</td>

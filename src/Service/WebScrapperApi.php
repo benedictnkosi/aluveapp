@@ -36,7 +36,7 @@ class WebScrapperApi
         $this->logger->info("Starting Method: " . __METHOD__);
         try {
 
-            $pageLimit = 2;
+            $pageLimit = 1;
             $this->pageCounter = 0;
             while ($this->nextLinkPresent && $this->pageCounter < $pageLimit) {
                 $this->pageCounter++;
