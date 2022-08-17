@@ -307,15 +307,20 @@ class ReservationApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $now = new DateTime('today midnight');
-            $checkOutDate = $now->sub(new DateInterval("P" . $days . "D"));
+            $checkOutDate = $now->sub(new DateInterval("P" . ($days * -1) . "D"));
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            $reservations = $this->em
+            $query = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkOut = '" . $checkOutDate->format('Y-m-d') . "'
             and r.room = $roomId 
-            and r.status = " . $status->getId())
-                ->getResult();
+            and r.status = " . $status->getId());
+
+            $this->logger->debug("before query " . $query->getDQL());
+
+            $reservations = $query->getResult();
+
+
 
             if (empty($reservations)) {
                 return null;
@@ -323,7 +328,8 @@ class ReservationApi
 
             return $reservations;
 
-        } catch (Exception) {
+        } catch (Exception $ex) {
+            $this->logger->debug($ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString());
             return null;
         }
     }

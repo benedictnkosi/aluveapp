@@ -216,16 +216,26 @@ class ScheduleMessageApi
             if ($scheduleMessages !== null) {
                 foreach ($scheduleMessages as $scheduleMessage) {
                     $this->logger->debug("found schedule message " . $scheduleMessage->getId());
-                    $checkInReservations = $reservationApi->getReservationsByRoomAndDaysToCheckIn($scheduleMessage->getRoom()->getId(), $scheduleTime->getDays());
-                    $checkOutReservations = $reservationApi->getReservationsByRoomAndDaysAfterCheckOut($scheduleMessage->getRoom()->getId(), $scheduleTime->getDays());
+                    $checkInReservations = null;
+                    $checkOutReservations = null;
+                    if($scheduleTime->getDays()>-1){
+                        $checkInReservations = $reservationApi->getReservationsByRoomAndDaysToCheckIn($scheduleMessage->getRoom()->getId(), $scheduleTime->getDays());
+                    }else{
+                        $checkOutReservations = $reservationApi->getReservationsByRoomAndDaysAfterCheckOut($scheduleMessage->getRoom()->getId(), $scheduleTime->getDays());
+                    }
                     $reservations = array();
-                    foreach ($checkInReservations as $reservation) {
-                        $reservations[] = $reservation;
+                    if($checkInReservations !== null){
+                        foreach ($checkInReservations as $reservation) {
+                            $reservations[] = $reservation;
+                        }
                     }
 
-                    foreach ($checkOutReservations as $reservation) {
-                        $reservations[] = $reservation;
+                    if($checkOutReservations !== null){
+                        foreach ($checkOutReservations as $reservation) {
+                            $reservations[] = $reservation;
+                        }
                     }
+
 
                     if ($reservations !== null) {
                         foreach ($reservations as $reservation) {

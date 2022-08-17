@@ -741,7 +741,7 @@ function getMessageVariables() {
 
 function getRoomsForMessages() {
     let url = "/public/rooms/all" + "/";
-
+    $('#checkbox_rooms').html("");
     $.ajax({
         type: "get",
         url: url,

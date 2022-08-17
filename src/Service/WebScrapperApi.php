@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Goutte\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DomCrawler\Crawler;
+
 require_once(__DIR__ . '/../app/application.php');
 
 class WebScrapperApi
@@ -33,7 +34,7 @@ class WebScrapperApi
     public function scrapPage(): array
     {
         $this->logger->info("Starting Method: " . __METHOD__);
-        try{
+        try {
 
             $pageLimit = 2;
             $this->pageCounter = 0;
@@ -41,14 +42,14 @@ class WebScrapperApi
                 $this->pageCounter++;
                 $this->logger->info("Page number: " . $this->pageCounter);
 
-                $crawler = $this->client->request('GET', str_replace("page_number", $this->pageCounter,PROPERTY24_URL));
+                $crawler = $this->client->request('GET', str_replace("page_number", $this->pageCounter, PROPERTY24_URL));
 
                 $this->nextLinkPresent = false;
                 //per listing
                 $this->responseArray = array();
                 $this->listingCount = 0;
                 $crawler->filterXPath('//div[contains(@class,"js_resultTile")][not(contains(@class,"p24_development"))][not(contains(@class,"p24_promotedTile"))]')->each(function (Crawler $parentCrawler, $i) {
-                    try{
+                    try {
                         $this->logger->debug("iterating the listing " . $this->listingCount);
                         $this->isPriceInt = false;
                         $this->isErfInt = false;
@@ -63,11 +64,11 @@ class WebScrapperApi
                             $price = str_replace("R", "", $node->text());
                             //$this->logger->debug("semi clean price is " . $price);
                             $price = intval(str_replace(" ", "", $price));
-                            if($price !== 0){
+                            if ($price !== 0) {
                                 $this->isPriceInt = true;
                             }
 
-                            if($price > MAX_FLIPABILITY_PRICE){
+                            if ($price > MAX_FLIPABILITY_PRICE) {
                                 $this->isPriceInt = false;
                             }
 
@@ -122,18 +123,18 @@ class WebScrapperApi
                             );
 
                             $property = $this->em->getRepository(FlipabilityProperty::class)->findOneBy(array('url' => $node->text()));
-                            if($property !== null){
+                            if ($property !== null) {
                                 $this->logger->debug("found duplicate url. exiting- " . $node->text());
                                 exit();
                             }
 
                             $erf = str_replace(" m²", "", $node->text());
                             $erf = intval(str_replace(" ", "", $erf));
-                            if($erf !== 0) {
+                            if ($erf !== 0) {
                                 $this->isErfInt = true;
                             }
 
-                            if($erf < MIN_FLIPABILITY_ERF) {
+                            if ($erf < MIN_FLIPABILITY_ERF) {
                                 $this->isErfInt = false;
                             }
 
@@ -149,13 +150,40 @@ class WebScrapperApi
                                 $this->em->getConfiguration()
                             );
                         }
-                        if($this->isPriceInt && $this->isErfInt){
+                        if ($this->isPriceInt && $this->isErfInt) {
                             $this->em->persist($this->property);
                             $this->em->flush($this->property);
+
+                            //send email if this meets the flipability score
+                            $birdViewApi = new BirdViewApi($this->em, $this->logger);
+                            $locationAverages = $birdViewApi->getLocationAvgERFAndPrice($this->property->getLocation(), $this->property->getBedrooms(), $this->property->getBathrooms());
+                            $averagePrice = "";
+                            $averageErf = "";
+                            foreach ($locationAverages as $locationAverage) {
+                                $averagePrice = $locationAverage['price'];
+                                $averageErf = $locationAverage['erf'];
+                            }
+
+                            $FlipabilityScore = floatval(intval($averagePrice) / intval($this->property->getPrice())) +
+                                floatval(intval($this->property->getErf()) / intval($averageErf));
+
+                            if ($FlipabilityScore > 2.3) {
+                                $communicationApi = new CommunicationApi($this->em, $this->logger);
+                                $message = "<br> Hey you, 
+<br><br>looks like we found a potential flip in " . $this->property->getLocation() . " with a score of $FlipabilityScore
+            <br>
+            <br> Price: R" . number_format((float)$this->property->getPrice(), 0, '.', ' ')  . "
+            <br> AVG Location Price: R" . number_format((float)$averagePrice, 0, '.', ' ')  . "
+            <br> ERF: " . $this->property->getErf() . "
+            <br> AVG Location ERF: " . $averageErf . "
+            <br> Link: " . $this->property->getUrl();
+                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, "nkosi.benedict@gmail.com", $message, "Flipability - New House", "Aluve Flipability");
+                            }
                         }
 
-                         $this->logger->debug(print_r($this->responseArray, true));
-                    }catch(\Exception $ex){
+
+                        $this->logger->debug(print_r($this->responseArray, true));
+                    } catch (\Exception $ex) {
                         $this->logger->debug($ex->getMessage());
                     }
 
@@ -167,12 +195,12 @@ class WebScrapperApi
                 $this->logger->debug("Sleeping now......");
                 sleep(10);
             }
-        }catch(\Exception $ex){
+        } catch (\Exception $ex) {
             $this->logger->debug($ex->getMessage());
         }
 
 
-        $responseArray[] = array("results"=>0);
+        $responseArray[] = array("results" => 0);
         return $responseArray;
     }
 

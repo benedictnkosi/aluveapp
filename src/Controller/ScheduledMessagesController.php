@@ -54,6 +54,32 @@ class ScheduledMessagesController extends AbstractController
     }
 
     /**
+     * @Route("/public/schedulemessages/dayaftercheckout")
+     */
+    public function sendScheduleMessagesDayAfterCheckOut( LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $scheduleMessageApi->sendScheduledMessages("Day after check-out");
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
+     * @Route("/public/schedulemessages/weekaftercheckout")
+     */
+    public function sendScheduleMessagesWeekAfterCheckOut( LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $scheduleMessageApi->sendScheduledMessages("Week after check-out");
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
      * @Route("/api/schedulemessages/templates")
      */
     public function getMessageTemplates(LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
