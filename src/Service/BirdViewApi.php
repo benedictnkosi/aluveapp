@@ -437,7 +437,7 @@ class BirdViewApi
     '.count($properties).' Properties match your search</h5>
   </caption>
   <thead><tr>
-<th aria-sort="descending"><button>
+<th aria-sort="descending" class="num"><button>
           Score
           <span aria-hidden="true"></span>
         </button></th>
@@ -447,32 +447,32 @@ class BirdViewApi
           <span aria-hidden="true"></span>
         </button></th>
 <th>#Properties</th>
-<th><button>
+<th class="num"><button>
           Avg Price
           <span aria-hidden="true"></span>
         </button></th>
-<th><button>
+<th class="num"><button>
           Price
           <span aria-hidden="true"></span>
         </button></th>
-<th><button>
+<th class="num"><button>
           Avg ERF
           <span aria-hidden="true"></span>
         </button></th>
     
-    <th><button>
+    <th class="num"><button>
           ERF
           <span aria-hidden="true"></span>
         </button></th>
-    <th><button>
+    <th class="num"><button>
           Bedrooms
           <span aria-hidden="true"></span>
         </button></th>
-    <th><button>
+    <th class="num"><button>
           Bathrooms
           <span aria-hidden="true"></span>
         </button></th>
-    <th>Parking</th>
+    <th class="num">Parking</th>
     
  </thead> </tr><tbody>';
 
@@ -525,8 +525,8 @@ class BirdViewApi
                       <td><a href="' . $property['url'] . '" target="_blank">Link</a></td>
                       <td><a target="_blank" href="https://www.google.com/maps/place/Gauteng ' . $property['location'] . '">' . $property['location'] . '</a></td>
                       <td> <a target="_blank" href="/location/' . $property['location'] . '/none/0/2/1/0/0">' . $property['count'] . '</a></td>
-                      <td>R' . number_format((float)$property['avg_price'], 0, '.', ' ') . '</td>
-                      <td>R' . number_format((float)$property['price'], 0, '.', ' ') . '</td>
+                      <td>' . number_format((float)$property['avg_price'], 0, '.', '') . '</td>
+                      <td>' . $property['price']. '</td>
                      <td>' . number_format((float)$property['avg_erf'], 0, '.', '') . '</td>
                       
                         <td>' . $property['erf'] . '</td>
