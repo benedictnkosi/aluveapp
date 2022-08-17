@@ -46,12 +46,12 @@ class FlipabilityController extends AbstractController
     }
 
     /**
-     * @Route("/public/properties/{type}/{value}/{bedrooms}/{bathrooms}/{erf}")
+     * @Route("/public/properties/{type}/{value}/{bedrooms}/{bathrooms}/{erf}/{excludeLocation}",  defaults={"excludeLocation" = "NONE"})
      */
-    public function propertiesView($type, $value, $bedrooms,$bathrooms, $erf, LoggerInterface $logger, BirdViewApi $birdViewApi): Response
+    public function propertiesView($type, $value, $bedrooms,$bathrooms, $erf, $excludeLocation, LoggerInterface $logger, BirdViewApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $birdViewApi->getFlipableProperties($type, $value, $bedrooms,$bathrooms, $erf);
+        $response = $birdViewApi->getFlipableProperties($type, $value, $bedrooms,$bathrooms, $erf, $excludeLocation);
         return new JsonResponse($response, 200, array());
     }
 

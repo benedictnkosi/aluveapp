@@ -19,10 +19,11 @@
     <link rel="stylesheet" href="/assets/css/tailwind.css" />
     <link rel="stylesheet" href="/assets/css/table.css" />
     <link href="//fonts.googleapis.com/css?family=Spartan:400,500,600,700,900&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="/assets/css/sortable-table.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- ==== WOW JS ==== -->
     <script src="/assets/js/wow.min.js"></script>
+    <script src="/assets/js/sortable-table.js"></script>
     <script>
       new WOW().init();
     </script>
@@ -218,6 +219,11 @@
                     <option value="0.4">40%</option>
                     <option value="0.5">50%</option>
                   </select>
+                </div>
+
+                <div class="mb-6">
+                  <label for="percentage">Exclude these locations (comma separated)</label>
+                  <input type="text" placeholder="Lenasia South, Midrand" id="exclude_location" class="bordder-[#E9EDF4] w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none transition focus:border-primary focus-visible:shadow-none">
                 </div>
 
 

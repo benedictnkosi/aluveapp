@@ -351,8 +351,8 @@ class BirdViewApi
 
             $htmlTable = '<table><tr>
 <th>Link</th>
-    <th>Price</th>
-    <th>ERF &#8593</th>
+    <th>Price &#8593</th>
+    <th>ERF</th>
     <th>Bedrooms</th>
     <th>Bathrooms</th>
     <th>Parking</th>
@@ -378,7 +378,7 @@ class BirdViewApi
                         $sort['erf'][$k] = $v['erf'];
                     }
                     # sort by event_type desc and then title asc
-                    array_multisort($sort['erf'], SORT_DESC, $sort['price'], SORT_ASC, $propertiesArray);
+                    array_multisort( $sort['price'],SORT_ASC, $sort['erf'], SORT_DESC, $propertiesArray);
 
                 }
 
@@ -421,7 +421,7 @@ class BirdViewApi
     }
 
 
-    public function getFlipableProperties($type, $percentageCheaper, $bedrooms, $bathrooms, $erf): array|string
+    public function getFlipableProperties($type, $percentageCheaper, $bedrooms, $bathrooms, $erf, $excludeLocation): array|string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -429,24 +429,52 @@ class BirdViewApi
         try {
             //get locations from table
             if (strcmp($type, 'average') === 0) {
-                $properties = $this->getPropertiesPricedLessThanAVGNoLocation($percentageCheaper, $bedrooms, $bathrooms, $erf);
+                $properties = $this->getPropertiesPricedLessThanAVGNoLocation($percentageCheaper, $bedrooms, $bathrooms, $erf, $excludeLocation);
             }
 
-            $htmlTable = '<table><tr>
-<th>Score &#8593</th>
+            $htmlTable = '<table class="sortable">
+<caption><h5>
+    '.count($properties).' Properties match your search</h5>
+  </caption>
+  <thead><tr>
+<th aria-sort="descending"><button>
+          Score
+          <span aria-hidden="true"></span>
+        </button></th>
 <th>Link</th>
-<th>Location</th>
+<th><button>
+          Location
+          <span aria-hidden="true"></span>
+        </button></th>
 <th>#Properties</th>
-<th>AVG Price</th>
-<th>Price</th>
-<th>AVG ERF</th>
+<th><button>
+          Avg Price
+          <span aria-hidden="true"></span>
+        </button></th>
+<th><button>
+          Price
+          <span aria-hidden="true"></span>
+        </button></th>
+<th><button>
+          Avg ERF
+          <span aria-hidden="true"></span>
+        </button></th>
     
-    <th>ERF</th>
-    <th>Bedrooms</th>
-    <th>Bathrooms</th>
+    <th><button>
+          ERF
+          <span aria-hidden="true"></span>
+        </button></th>
+    <th><button>
+          Bedrooms
+          <span aria-hidden="true"></span>
+        </button></th>
+    <th><button>
+          Bathrooms
+          <span aria-hidden="true"></span>
+        </button></th>
     <th>Parking</th>
     
-  </tr>';
+ </thead> </tr><tbody>';
 
             $this->logger->info("before checking property count");
             if (count($properties) > 0) {
@@ -508,7 +536,7 @@ class BirdViewApi
                         ';
                 }
                 $this->logger->info("creating response");
-                $htmlTable .= '</table > ';
+                $htmlTable .= '</tbody></table > ';
                 $responseArray[] = array(
                     'html' => $htmlTable,
                     'percentile_price' => $this->percentilePrice,
@@ -535,9 +563,22 @@ class BirdViewApi
         }
     }
 
-    public function getPropertiesPricedLessThanAVGNoLocation($percentageCheaper, $bedrooms, $bathrooms, $erf): array
+    public function getPropertiesPricedLessThanAVGNoLocation($percentageCheaper, $bedrooms, $bathrooms, $erf, $excludeLocation): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
+        $locationsArray = explode(",", $excludeLocation);
+        $stringExcludeLocation = "";
+        $i = 0;
+        foreach ($locationsArray as $location){
+            $i++;
+            $stringExcludeLocation .= "'" .trim($location) . "'";
+            if($i < count($locationsArray)){
+                $stringExcludeLocation .= ",";
+            }
+        }
+
+        $this->logger->debug("stringExcludeLocation: " . $stringExcludeLocation);
+
         $responseArray = array();
         try {
             $pricePercentage = 1 - floatval($percentageCheaper);
@@ -546,6 +587,7 @@ class BirdViewApi
             FROM App\Entity\FlipabilityProperty p
             where p.bedrooms >= " . $bedrooms . "
             and p.bathrooms >= " . $bathrooms . "
+            and p.location NOT IN ($stringExcludeLocation)
             and p.erf > (SELECT avg(p2.erf)*$erfPercentage FROM App\Entity\FlipabilityProperty p2 where p2.location = p.location)
             and p.price < (SELECT avg(p3.price)*$pricePercentage FROM App\Entity\FlipabilityProperty p3 where p3.location = p.location)");
 
