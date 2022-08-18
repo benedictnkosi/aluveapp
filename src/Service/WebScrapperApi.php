@@ -164,6 +164,11 @@ class WebScrapperApi
                                 $averageErf = $locationAverage['erf'];
                             }
 
+                            $sellingPriceToAvgPriceRatio = intval((intval($this->property->getPrice())/intval($averagePrice))*100);
+                            $renovationCost = intval(intval($averagePrice) * 0.2);
+                            $maxOfferPrice = (intval($averagePrice) * 0.7) - $renovationCost;
+                            $sellingPriceToMaxOfferRatio = intval((intval($maxOfferPrice)/intval($this->property->getPrice()))*100);
+
                             $FlipabilityScore = floatval(intval($averagePrice) / intval($this->property->getPrice())) +
                                 floatval(intval($this->property->getErf()) / intval($averageErf));
 
@@ -174,8 +179,11 @@ class WebScrapperApi
             <br>
             <br> Price: R" . number_format((float)$this->property->getPrice(), 0, '.', ' ')  . "
             <br> AVG Location Price: R" . number_format((float)$averagePrice, 0, '.', ' ')  . "
+            <br> Max Offer: R" . number_format((float)$maxOfferPrice, 0, '.', ' ')  . "
+            <br> Price To Max Offer Ratio: " . number_format((float)$sellingPriceToMaxOfferRatio, 0, '.', ' ')  . "
+            <br> Price To AVG Price Ratio: " . number_format((float)$sellingPriceToAvgPriceRatio, 0, '.', ' ')  . "
             <br> ERF: " . $this->property->getErf() . "
-            <br> AVG Location ERF: " . $averageErf . "
+            <br> AVG Location ERF: " . number_format((float)$averageErf, 0, '.', ' ') . "
             <br> Link: " . $this->property->getUrl();
                                 $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, "nkosi.benedict@gmail.com", $message, "Flipability - New House", "Aluve Flipability");
                             }
