@@ -92,7 +92,7 @@ class FlipabilityController extends AbstractController
     }
 
     /**
-     * @Route("/public/scrap/")
+     * @Route("/public/scrap")
      */
     public function scrap(LoggerInterface $logger, WebScrapperApi $webScrapperApi): Response
     {
