@@ -119,6 +119,7 @@ function calculateTotalHoldingCosts(){
 
 
 function calculateProfitAndLoss(){
+    let months_holding_property = parseInt($('#months_holding_property').find(':selected').val());
     let sellingPrice = parseInt($('#selling_price').html()) * parseFloat($('#offer_percent').find(':selected').val());
     let deposit = calculateDeposit();
     let avgSellingPrice = parseInt($('#avg_price').html()) * $('#selling_price_percent').find(':selected').val();
@@ -134,4 +135,10 @@ function calculateProfitAndLoss(){
     $('#bond_payoff').html('-R' + bond.toLocaleString('en-US'));
     let profit = avgSellingPrice - totalInvested - sellingCosts - bond;
     $('.profit').html('R' + profit.toLocaleString('en-US'));
+
+    let monthsToBuy = 3;
+    let totalMonthsInvested =monthsToBuy +months_holding_property;
+    let roiPerYear = (profit/totalInvested) * 100;
+
+    $('.roi').html(roiPerYear.toFixed() + '%');
 }
