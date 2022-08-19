@@ -127,10 +127,13 @@ function calculateProfitAndLoss(){
     let buyingCosts = calculateTotalBuyingCosts();
     let holdingCosts = calculateTotalHoldingCosts();
     let sellingCosts = calculateCommission();
+    let depositBuyingCosts = deposit + buyingCosts;
     let totalInvested = deposit + renovations + buyingCosts + holdingCosts;
     $('#selling_price_2').html( 'R' + avgSellingPrice.toLocaleString('en-US'));
     $('#total_invested').html( '-R' + totalInvested.toLocaleString('en-US'));
     $('#selling_cost').html( '-R' + sellingCosts.toLocaleString('en-US'));
+    $('#deposit_buying_costs').html( 'R' + depositBuyingCosts.toLocaleString('en-US'));
+
     let bond = sellingPrice - deposit;
     $('#bond_payoff').html('-R' + bond.toLocaleString('en-US'));
     let profit = avgSellingPrice - totalInvested - sellingCosts - bond;
