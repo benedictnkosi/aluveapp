@@ -9,8 +9,10 @@ $(document).ready(function () {
         getProperties();
     });
 
+
     $('#exclude_location').val(localStorage.getItem("exclude_location"));
     $("body").removeClass("loading");
+
 });
 
 
@@ -47,5 +49,13 @@ function getProperties() {
         for (var i = 0; i < sortableTables.length; i++) {
             new SortableTable(sortableTables[i]);
         }
+        $(".analyse_property").click(function(event) {
+            event.preventDefault();
+            let propertyUrl = event.target.getAttribute("data-property-link");
+            sessionStorage.setItem("propertyUrl", propertyUrl);
+            window.open(event.target.getAttribute("data-href"), '_blank').focus();
+        });
+
+
     });
 }

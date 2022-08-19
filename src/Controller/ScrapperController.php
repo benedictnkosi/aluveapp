@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\BirdViewApi;
+use App\Service\FlipabilityApi;
 use App\Service\WebScrapperApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

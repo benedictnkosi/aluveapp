@@ -155,7 +155,7 @@ class WebScrapperApi
                             $this->em->flush($this->property);
 
                             //send email if this meets the flipability score
-                            $birdViewApi = new BirdViewApi($this->em, $this->logger);
+                            $birdViewApi = new FlipabilityApi($this->em, $this->logger);
                             $locationAverages = $birdViewApi->getLocationAvgERFAndPrice($this->property->getLocation(), $this->property->getBedrooms(), $this->property->getBathrooms());
                             $averagePrice = "";
                             $averageErf = "";

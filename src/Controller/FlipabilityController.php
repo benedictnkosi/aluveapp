@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\BirdViewApi;
+use App\Service\FlipabilityApi;
 use App\Service\WebScrapperApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +16,7 @@ class FlipabilityController extends AbstractController
     /**
      * @Route("/flipability")
      */
-    public function home( LoggerInterface $logger, BirdViewApi $birdViewApi): Response
+    public function home(LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         return $this->render('flipability_home.html', [
@@ -27,7 +27,7 @@ class FlipabilityController extends AbstractController
     /**
      * @Route("/properties")
      */
-    public function properties( LoggerInterface $logger, BirdViewApi $birdViewApi): Response
+    public function properties(LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         return $this->render('flipability_properties.html', [
@@ -38,7 +38,7 @@ class FlipabilityController extends AbstractController
     /**
      * @Route("/public/birdview/{type}/{value}/{bedrooms}/{bathrooms}/{erf}")
      */
-    public function birdview($type, $value, $bedrooms,$bathrooms, $erf, LoggerInterface $logger, BirdViewApi $birdViewApi): Response
+    public function birdview($type, $value, $bedrooms, $bathrooms, $erf, LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $birdViewApi->getHomePageSummary($type, $value, $bedrooms,$bathrooms, $erf);
@@ -48,7 +48,7 @@ class FlipabilityController extends AbstractController
     /**
      * @Route("/public/properties/{type}/{value}/{bedrooms}/{bathrooms}/{erf}/{excludeLocation}",  defaults={"excludeLocation" = "NONE"})
      */
-    public function propertiesView($type, $value, $bedrooms,$bathrooms, $erf, $excludeLocation, LoggerInterface $logger, BirdViewApi $birdViewApi): Response
+    public function propertiesView($type, $value, $bedrooms, $bathrooms, $erf, $excludeLocation, LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $birdViewApi->getFlipableProperties($type, $value, $bedrooms,$bathrooms, $erf, $excludeLocation);
@@ -56,9 +56,28 @@ class FlipabilityController extends AbstractController
     }
 
     /**
+     * @Route("/public/property/{price}/{location}/{erf}/{bedrooms}/{bathrooms}/{numberOfProperties}/{avgPrice}/{avgErf}")
+     */
+    public function propertyView($price, $location, $erf, $bedrooms, $bathrooms, $numberOfProperties, $avgPrice, $avgErf , LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        return $this->render('flipability_property.html', [
+            'price' => $price,
+            'location' => $location,
+            'erf' => $erf,
+            'bedrooms' => $bedrooms,
+            'bathrooms' => $bathrooms,
+            'numberOfProperties' => $numberOfProperties,
+            'avgPrice' => $avgPrice,
+            'avgErf' => $avgErf,
+            'title'=>'Property Analysis'
+        ]);
+    }
+
+    /**
      * @Route("/location/{location}/{filterType}/{percentageCheaper}/{bedrooms}/{bathrooms}/{erf}/{avgErf}")
      */
-    public function location($location, $filterType, $percentageCheaper,  $bedrooms,$bathrooms ,$erf, $avgErf,LoggerInterface $logger, BirdViewApi $birdViewApi): Response
+    public function location($location, $filterType, $percentageCheaper, $bedrooms, $bathrooms , $erf, $avgErf, LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         if(strcmp($percentageCheaper, "0")!==0){

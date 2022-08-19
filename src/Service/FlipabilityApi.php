@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
-class BirdViewApi
+class FlipabilityApi
 {
 
     private $em;
@@ -481,6 +481,7 @@ class BirdViewApi
           <span aria-hidden="true"></span>
         </button></th>
     <th class="num">Parking</th>
+    <th>Analyse</th>
     
  </thead> </tr><tbody>';
 
@@ -538,6 +539,7 @@ class BirdViewApi
                     }else{
                         $priceBelowOfferClass = "negotiate-offer";
                     }
+
                     $htmlTable .= '
                       <tr>
                       <td>' . number_format((float)$property['score'], 2, '.', '') . '</td>
@@ -554,6 +556,7 @@ class BirdViewApi
                         <td>' . $property['bedrooms'] . '</td>
                         <td>' . $property['bathrooms'] . '</td>
                         <td>' . $property['parking'] . '</td>
+                        <td><a  class="analyse_property" href="javascript:void(0)" data-property-link="'.$property['url'].'" data-href="/public/property/'.$property['price'].'/'.$property['location'].'/' . $property['erf'] . '/' . $property['bedrooms'] . '/' . $property['bathrooms'] . '/' . $property['count'] . '/'.number_format((float)$property['avg_price'], 0, '.', '').'/' . number_format((float)$property['avg_erf'], 0, '.', '') . '">Analyse</a></td>
                         ';
                 }
                 $this->logger->info("creating response");
