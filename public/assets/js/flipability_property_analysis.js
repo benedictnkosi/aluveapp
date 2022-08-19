@@ -93,7 +93,7 @@ function calculateBondPayments(){
 
     let monthlyBondPayment = bond * 0.0089;
     let totalBondPayments = monthlyBondPayment * months_holding_property;
-    $('#bond_payments_cost').html(  totalBondPayments.toLocaleString('en-US') + ' (' + monthlyBondPayment + ' * ' + months_holding_property + ')');
+    $('#bond_payments_cost').html(  totalBondPayments.toLocaleString('en-US'));
     return parseInt(totalBondPayments);
 }
 

@@ -13,10 +13,7 @@
   text-align: left;
 }
 
-.property-filter p i{
-  position: absolute;
-  left: 20em;
-}
+
 
 pre {
   display: block;
@@ -529,6 +526,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   .container {
     width: 100%;
   }
+
+  .property-filter p i{
+    position: absolute;
+    left: 13em;
+  }
 }
 
 @media (min-width: 960px) {
@@ -536,6 +538,11 @@ Ensure the default browser behavior of the `hidden` attribute.
     max-width: 1050px;
     padding-right: 16px;
     padding-left: 16px;
+  }
+
+  .property-filter p i{
+    position: absolute;
+    left: 20em;
   }
 }
 
