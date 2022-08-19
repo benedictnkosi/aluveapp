@@ -542,7 +542,12 @@ Ensure the default browser behavior of the `hidden` attribute.
 
   .property-filter p i{
     position: absolute;
-    left: 20em;
+    left: 50em;
+  }
+
+  #properties_form {
+    width: 50%;
+    margin-left: 25%;
   }
 }
 
