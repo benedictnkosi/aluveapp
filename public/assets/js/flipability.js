@@ -60,8 +60,8 @@ function getProperties() {
             event.preventDefault();
             let propertyId = event.target.getAttribute("data-property-id");
             let url = "/public/properties/delete/" + propertyId;
+            $(this).closest('tr').remove();
             $.get( url, function( ) {
-                getProperties();
             });
         });
 
