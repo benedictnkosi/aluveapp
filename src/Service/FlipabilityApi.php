@@ -706,4 +706,29 @@ class FlipabilityApi
 
         return $responseArray;
     }
+
+    public function changePropertyState($propertyId, $state): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $property = $this->em->getRepository(FlipabilityProperty::class)->findOneBy(array('id' => $propertyId));
+            $property->setState($state);
+            $this->em->persist($property);
+            $this->em->flush($property);
+
+            $responseArray[] = array(
+                'result_message' => "Successfully updated property",
+                'result_code' => 0
+            );
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error("Error " . print_r($responseArray, true));
+        }
+
+        return $responseArray;
+    }
 }

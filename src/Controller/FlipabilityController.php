@@ -130,4 +130,14 @@ class FlipabilityController extends AbstractController
         return new JsonResponse($response, 200, array());
     }
 
+    /**
+     * @Route("/public/properties/state/{propertyId}/{state}")
+     */
+    public function changePropertyState($propertyId, $state, LoggerInterface $logger, FlipabilityApi $flipabilityApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $flipabilityApi->changePropertyState($propertyId, $state);
+        return new JsonResponse($response, 200, array());
+    }
+
 }
