@@ -85,6 +85,13 @@ class FlipabilityProperty
     private $timestamp = 'CURRENT_TIMESTAMP';
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="state", type="string", length=20, nullable=false, options={"default"="new"})
+     */
+    private $state = 'new';
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -242,6 +249,22 @@ class FlipabilityProperty
     public function setTimestamp(\DateTime|string $timestamp): void
     {
         $this->timestamp = $timestamp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getState(): string
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string $state
+     */
+    public function setState(string $state): void
+    {
+        $this->state = $state;
     }
 
 

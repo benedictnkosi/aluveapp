@@ -65,6 +65,14 @@ function getProperties() {
             });
         });
 
+        $(".state-dropdown").change(function (event) {
+            event.stopImmediatePropagation();
+            let propertyId = event.target.getAttribute("data-property-id");
+            let optionSelected = $(this).find("option:selected");
+            let url = "/public/properties/state/" + propertyId + "/" + optionSelected;
+            $.get( url, function( ) {
 
+            });
+        });
     });
 }

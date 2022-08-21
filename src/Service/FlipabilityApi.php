@@ -266,7 +266,6 @@ class FlipabilityApi
     <th>ERF &#8593</th>
     <th>Bedrooms</th>
     <th>Bathrooms</th>
-    <th>Parking</th>
     <th>Link</th>
   </tr>';
 
@@ -279,7 +278,6 @@ class FlipabilityApi
                         'erf' => $property->getErf(),
                         'bedrooms' => $property->getBedrooms(),
                         'bathrooms' => $property->getBathrooms(),
-                        'parking' => $property->getGarage(),
                         'url' => $property->getUrl(),
                     );
 
@@ -302,7 +300,6 @@ class FlipabilityApi
                         <td>' . $property['erf'] . '</td>
                         <td>' . $property['bedrooms'] . '</td>
                         <td>' . $property['bathrooms'] . '</td>
-                        <td>' . $property['parking'] . '</td>
                         <td><a href="' . $property['url'] . '" target="_blank">Link</a></td>';
                 }
                 $this->logger->info("creating response");
@@ -378,7 +375,7 @@ class FlipabilityApi
                         $sort['erf'][$k] = $v['erf'];
                     }
                     # sort by event_type desc and then title asc
-                    array_multisort( $sort['price'],SORT_ASC, $sort['erf'], SORT_DESC, $propertiesArray);
+                    array_multisort($sort['price'], SORT_ASC, $sort['erf'], SORT_DESC, $propertiesArray);
 
                 }
 
@@ -434,7 +431,7 @@ class FlipabilityApi
 
             $htmlTable = '<table class="sortable">
 <caption><h5>
-    '.count($properties).' Properties match your search</h5>
+    ' . count($properties) . ' Properties match your search</h5>
   </caption>
   <thead><tr>
 <th aria-sort="descending" class="num"><button>
@@ -482,6 +479,7 @@ class FlipabilityApi
         </button></th>
     <th class="num">Parking</th>
     <th>Analyse</th>
+    <th>State</th>
     <th>Delete</th>
  </thead> </tr><tbody>';
 
@@ -509,12 +507,12 @@ class FlipabilityApi
                         'erf' => $property->getErf(),
                         'bedrooms' => $property->getBedrooms(),
                         'bathrooms' => $property->getBathrooms(),
-                        'parking' => $property->getGarage(),
                         'url' => $property->getUrl(),
                         'avg_price' => $averagePrice,
                         'avg_erf' => $averageErf,
                         'count' => $numberOfProperties,
-                        'score' => $FlipabilityScore
+                        'score' => $FlipabilityScore,
+                        'state' => $property->getState()
                     );
 
                     $sort = array();
@@ -529,16 +527,39 @@ class FlipabilityApi
                 $this->logger->info("looping propertiesArray");
 
                 foreach ($propertiesArray as $property) {
-                    $sellingPriceToAvgPriceRatio = intval((intval($property['price'])/intval($property['avg_price']))*100);
+                    $sellingPriceToAvgPriceRatio = intval((intval($property['price']) / intval($property['avg_price'])) * 100);
                     $renovationCost = intval(intval($property['avg_price']) * 0.2);
                     $maxOfferPrice = (intval($property['avg_price']) * 0.7) - $renovationCost;
-                    $sellingPriceToMaxOfferRatio = intval((intval($maxOfferPrice)/intval($property['price']))*100);
-                    if($sellingPriceToMaxOfferRatio < 85){
+                    $sellingPriceToMaxOfferRatio = intval((intval($maxOfferPrice) / intval($property['price'])) * 100);
+                    if ($sellingPriceToMaxOfferRatio < 85) {
                         $priceBelowOfferClass = "over-max-offer";
-                    }else if($sellingPriceToMaxOfferRatio > 100){
+                    } else if ($sellingPriceToMaxOfferRatio > 100) {
                         $priceBelowOfferClass = "under-max-offer";
-                    }else{
+                    } else {
                         $priceBelowOfferClass = "negotiate-offer";
+                    }
+
+                    $newSelected = "";
+                    $ContactedSelected = "";
+                    $ViewedSelected = "";
+                    $OtpRequestedSelected = "";
+                    $OfferMadeSelected = "";
+                    switch ($property['state']) {
+                        case "new":
+                            $newSelected = "Selected";
+                            break;
+                        case "contacted":
+                            $ContactedSelected = "Selected";
+                            break;
+                        case "viewed":
+                            $ViewedSelected = "Selected";
+                            break;
+                        case "otp_requested":
+                            $OtpRequestedSelected = "Selected";
+                            break;
+                        case "offer_made":
+                            $OfferMadeSelected = "Selected";
+                            break;
                     }
 
                     $htmlTable .= '
@@ -548,17 +569,23 @@ class FlipabilityApi
                       <td><a target="_blank" href="https://www.google.com/maps/place/Gauteng ' . $property['location'] . '">' . $property['location'] . '</a></td>
                       <td> <a target="_blank" href="/location/' . $property['location'] . '/none/0/2/1/0/0">' . $property['count'] . '</a></td>
                       <td>' . number_format((float)$property['avg_price'], 0, '.', '') . '</td>
-                      <td>' . $property['price']. '</td>
-                      <td class="'.$priceBelowOfferClass.'">' . number_format((float)$maxOfferPrice, 0, '.', '') . '</td>
-                       <td>' . number_format((float)$sellingPriceToAvgPriceRatio, 0, '.', ''). '</td>
+                      <td>' . $property['price'] . '</td>
+                      <td class="' . $priceBelowOfferClass . '">' . number_format((float)$maxOfferPrice, 0, '.', '') . '</td>
+                       <td>' . number_format((float)$sellingPriceToAvgPriceRatio, 0, '.', '') . '</td>
                        <td>' . number_format((float)$property['avg_erf'], 0, '.', '') . '</td>
                       
                         <td>' . $property['erf'] . '</td>
                         <td>' . $property['bedrooms'] . '</td>
                         <td>' . $property['bathrooms'] . '</td>
-                        <td>' . $property['parking'] . '</td>
-                        <td><a  class="analyse_property" href="javascript:void(0)" data-property-link="'.$property['url'].'" data-href="/public/property/'.$property['price'].'/'.$property['location'].'/' . $property['erf'] . '/' . $property['bedrooms'] . '/' . $property['bathrooms'] . '/' . $property['count'] . '/'.number_format((float)$property['avg_price'], 0, '.', '').'/' . number_format((float)$property['avg_erf'], 0, '.', '') . '">Analyse</a></td>
-                        <td><a  class="delete_property" href="javascript:void(0)" data-property-id="'.$property['id'].'">Delete</a></td>
+                        <td><a  class="analyse_property" href="javascript:void(0)" data-property-link="' . $property['url'] . '" data-href="/public/property/' . $property['price'] . '/' . $property['location'] . '/' . $property['erf'] . '/' . $property['bedrooms'] . '/' . $property['bathrooms'] . '/' . $property['count'] . '/' . number_format((float)$property['avg_price'], 0, '.', '') . '/' . number_format((float)$property['avg_erf'], 0, '.', '') . '">Analyse</a></td>
+                        <td><select data-property-id="' . $property['id'] . '" name="state" class="state-dropdown" id="property_state">
+                        <option value="new" ' . $newSelected . '>new</option>
+        <option value="contacted" ' . $ContactedSelected . '>Agent Contacted</option>
+        <option value="viewed" ' . $ViewedSelected . '>Viewed</option>
+        <option value="otp_requested" ' . $OtpRequestedSelected . '>OTP Requested</option>
+        <option value="offer_made" ' . $OfferMadeSelected . '>Offer Made</option>
+    </select></td>
+                        <td><a  class="delete_property" href="javascript:void(0)" data-property-id="' . $property['id'] . '">Delete</a></td>
 
                         ';
                 }
@@ -596,10 +623,10 @@ class FlipabilityApi
         $locationsArray = explode(",", $excludeLocation);
         $stringExcludeLocation = "";
         $i = 0;
-        foreach ($locationsArray as $location){
+        foreach ($locationsArray as $location) {
             $i++;
-            $stringExcludeLocation .= "'" .trim($location) . "'";
-            if($i < count($locationsArray)){
+            $stringExcludeLocation .= "'" . trim($location) . "'";
+            if ($i < count($locationsArray)) {
                 $stringExcludeLocation .= ",";
             }
         }
