@@ -56,6 +56,15 @@ function getProperties() {
             window.open(event.target.getAttribute("data-href"), '_blank').focus();
         });
 
+        $(".delete_property").click(function(event) {
+            event.preventDefault();
+            let propertyId = event.target.getAttribute("data-property-id");
+            let url = "/public/properties/delete/" + propertyId;
+            $.get( url, function( ) {
+                getProperties();
+            });
+        });
+
 
     });
 }

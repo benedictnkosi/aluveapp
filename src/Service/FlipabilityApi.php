@@ -482,7 +482,7 @@ class FlipabilityApi
         </button></th>
     <th class="num">Parking</th>
     <th>Analyse</th>
-    
+    <th>Delete</th>
  </thead> </tr><tbody>';
 
             $this->logger->info("before checking property count");
@@ -503,6 +503,7 @@ class FlipabilityApi
                         floatval(intval($property->getErf()) / intval($averageErf));
 
                     $propertiesArray[] = array(
+                        'id' => $property->getId(),
                         'location' => $property->getLocation(),
                         'price' => $property->getPrice(),
                         'erf' => $property->getErf(),
@@ -557,6 +558,8 @@ class FlipabilityApi
                         <td>' . $property['bathrooms'] . '</td>
                         <td>' . $property['parking'] . '</td>
                         <td><a  class="analyse_property" href="javascript:void(0)" data-property-link="'.$property['url'].'" data-href="/public/property/'.$property['price'].'/'.$property['location'].'/' . $property['erf'] . '/' . $property['bedrooms'] . '/' . $property['bathrooms'] . '/' . $property['count'] . '/'.number_format((float)$property['avg_price'], 0, '.', '').'/' . number_format((float)$property['avg_erf'], 0, '.', '') . '">Analyse</a></td>
+                        <td><a  class="delete_property" href="javascript:void(0)" data-property-id="'.$property['id'].'">Delete</a></td>
+
                         ';
                 }
                 $this->logger->info("creating response");
@@ -642,6 +645,30 @@ class FlipabilityApi
              and p.bathrooms >= " . $bathrooms . "
             GROUP BY p.location");
             return $query->getResult();
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error("Error " . print_r($responseArray, true));
+        }
+
+        return $responseArray;
+    }
+
+    public function deleteProperty($propertyId): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $property = $this->em->getRepository(FlipabilityProperty::class)->findOneBy(array('id' => $propertyId));
+            $this->em->remove($property);
+            $this->em->flush($property);
+
+            $responseArray[] = array(
+                'result_message' => "Successfully removed property",
+                'result_code' => 0
+            );
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),

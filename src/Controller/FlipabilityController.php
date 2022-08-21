@@ -119,4 +119,15 @@ class FlipabilityController extends AbstractController
         $responseArray = $webScrapperApi->scrapPage();
         return new JsonResponse( $responseArray, 200, array());
     }
+
+    /**
+     * @Route("/public/properties/delete/{propertyId}")
+     */
+    public function deleteProperty($propertyId, LoggerInterface $logger, FlipabilityApi $flipabilityApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $flipabilityApi->deleteProperty($propertyId);
+        return new JsonResponse($response, 200, array());
+    }
+
 }
