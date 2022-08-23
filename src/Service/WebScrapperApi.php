@@ -114,6 +114,14 @@ class WebScrapperApi
                                 'link' => "https://www.property24.com" . $node->attr('href')
                             );
                             $this->property->setUrl("https://www.property24.com" . $node->attr('href'));
+
+                            $property = $this->em->getRepository(FlipabilityProperty::class)->findOneBy(array('url' => "https://www.property24.com" . $node->attr('href')));
+                            if ($property !== null) {
+                                $this->logger->debug("found duplicate url. exiting- " . $node->text());
+                                exit();
+                            }else{
+                                $this->logger->debug("property not found - " . $node->text());
+                            }
                         });
 
                         //erf
@@ -121,14 +129,6 @@ class WebScrapperApi
                             $this->responseArray[] = array(
                                 'Erf Size' => str_replace(" m²", "", $node->text())
                             );
-
-                            $property = $this->em->getRepository(FlipabilityProperty::class)->findOneBy(array('url' => $node->text()));
-                            if ($property !== null) {
-                                $this->logger->debug("found duplicate url. exiting- " . $node->text());
-                                exit();
-                            }else{
-                                $this->logger->debug("property not found - " . $node->text());
-                            }
 
                             $erf = str_replace(" m²", "", $node->text());
                             $erf = intval(str_replace(" ", "", $erf));
