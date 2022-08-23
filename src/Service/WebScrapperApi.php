@@ -117,10 +117,10 @@ class WebScrapperApi
 
                             $property = $this->em->getRepository(FlipabilityProperty::class)->findOneBy(array('url' => "https://www.property24.com" . $node->attr('href')));
                             if ($property !== null) {
-                                $this->logger->debug("found duplicate url. exiting- " . $node->text());
+                                $this->logger->debug("found duplicate url. exiting- " . $node->attr('href'));
                                 exit();
                             }else{
-                                $this->logger->debug("property not found - " . $node->text());
+                                $this->logger->debug("property not found - " . $node->attr('href'));
                             }
                         });
 
