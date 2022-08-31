@@ -174,7 +174,7 @@ class WebScrapperApi
                             $FlipabilityScore = floatval(intval($averagePrice) / intval($this->property->getPrice())) +
                                 floatval(intval($this->property->getErf()) / intval($averageErf));
 
-                            if ($FlipabilityScore >= 2.2) {
+                            if ($sellingPriceToAvgPriceRatio < 70) {
                                 $communicationApi = new CommunicationApi($this->em, $this->logger);
                                 $message = "<br> Hey you, 
 <br><br>looks like we found a potential flip in " . $this->property->getLocation() . " with a score of $FlipabilityScore
