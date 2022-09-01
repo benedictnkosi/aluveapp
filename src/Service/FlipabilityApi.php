@@ -477,7 +477,6 @@ class FlipabilityApi
           Bathrooms
           <span aria-hidden="true"></span>
         </button></th>
-    <th class="num">Parking</th>
     <th>Analyse</th>
     <th>State</th>
     <th>Delete</th>
