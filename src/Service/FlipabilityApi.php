@@ -486,13 +486,13 @@ class FlipabilityApi
             if (count($properties) > 0) {
                 $this->logger->info("count is greater than zero");
                 foreach ($properties as $property) {
-                    $locationAverages = $this->getLocationAvgERFAndPrice($property->getLocation(), $bedrooms, $bathrooms);
+                    $locationAverages = $this->getLocationAvgERFAndPrice($property->getLocation(), $bedrooms, $bathrooms, $property->getErf());
                     $averagePrice = "";
                     $averageErf = "";
                     $numberOfProperties = "";
                     foreach ($locationAverages as $locationAverage) {
-                        $averagePrice = $locationAverage['price'];
-                        $averageErf = $locationAverage['erf'];
+                        $averagePrice = $locationAverage['avg_price'];
+                        $averageErf = $locationAverage['avg_erf'];
                         $numberOfProperties = $locationAverage['count'];
                     }
 
@@ -659,18 +659,40 @@ class FlipabilityApi
     }
 
 
-    public function getLocationAvgERFAndPrice($location, $bedrooms, $bathrooms): array
+    public function getLocationAvgERFAndPrice($location, $bedrooms, $bathrooms, $erf): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $query = $this->em->createQuery("SELECT p, avg(p.price) as price, avg(p.erf) as erf, count(p.id) as count
+            $maxErfSize = intval($erf) * 1.2;
+
+            $query = $this->em->createQuery("SELECT p
             FROM App\Entity\FlipabilityProperty p
             where  p.location = '" . $location . "' 
+            and p.erf < " . $maxErfSize . "
             and p.bedrooms >= " . $bedrooms . "
-             and p.bathrooms >= " . $bathrooms . "
-            GROUP BY p.location");
-            return $query->getResult();
+             and p.bathrooms >= " . $bathrooms . " order by p.price ASC");
+
+            $properties =  $query->getResult();
+            $this->logger->info("found properties " . count($properties));
+            $totalPrice = 0;
+            $totalErf = 0;
+            $count = 0;
+            foreach($properties as $property){
+                //exclude the 20 percent of most expesinve properties from the avg
+                if($count < count($properties) * 0.8){
+                    $totalPrice += $property->getPrice();
+                    $totalErf  += $property->getErf();
+                    $count++;
+                }
+            }
+            if(count($properties) > 0 ){
+                $responseArray[] = array(
+                    'avg_price' => $totalPrice / $count,
+                    'avg_erf' => $totalErf / $count,
+                    'count' => $count
+                );
+            }
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
@@ -678,7 +700,7 @@ class FlipabilityApi
             );
             $this->logger->error("Error " . print_r($responseArray, true));
         }
-
+        $this->logger->error("array " . print_r($responseArray, true));
         return $responseArray;
     }
 

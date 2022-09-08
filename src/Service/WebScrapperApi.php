@@ -158,39 +158,41 @@ class WebScrapperApi
 
                             //send email if this meets the flipability score
                             $birdViewApi = new FlipabilityApi($this->em, $this->logger);
-                            $locationAverages = $birdViewApi->getLocationAvgERFAndPrice($this->property->getLocation(), $this->property->getBedrooms(), $this->property->getBathrooms());
+                            $locationAverages = $birdViewApi->getLocationAvgERFAndPrice($this->property->getLocation(), $this->property->getBedrooms(), $this->property->getBathrooms(), $this->property->getErf());
                             $averagePrice = "";
                             $averageErf = "";
                             foreach ($locationAverages as $locationAverage) {
-                                $averagePrice = $locationAverage['price'];
-                                $averageErf = $locationAverage['erf'];
+                                $averagePrice = $locationAverage['avg_price'];
+                                $averageErf = $locationAverage['avg_erf'];
                             }
 
-                            $sellingPriceToAvgPriceRatio = intval((intval($this->property->getPrice()) / intval($averagePrice)) * 100);
-                            $renovationCost = intval(intval($averagePrice) * 0.2);
-                            $maxOfferPrice = (intval($averagePrice) * 0.7) - $renovationCost;
-                            $sellingPriceToMaxOfferRatio = intval((intval($maxOfferPrice) / intval($this->property->getPrice())) * 100);
-
-                            $FlipabilityScore = floatval(intval($averagePrice) / intval($this->property->getPrice())) +
-                                floatval(intval($this->property->getErf()) / intval($averageErf));
-
-                            if ($sellingPriceToAvgPriceRatio < 70) {
-                                $communicationApi = new CommunicationApi($this->em, $this->logger);
-                                $message = "<br> Hey you, 
-<br><br>looks like we found a potential flip in " . $this->property->getLocation() . " with a score of $FlipabilityScore
-            <br>
-            <br> Price: R" . number_format((float)$this->property->getPrice(), 0, '.', ' ') . "
-            <br> AVG Location Price: R" . number_format((float)$averagePrice, 0, '.', ' ') . "
-            <br> Max Offer: R" . number_format((float)$maxOfferPrice, 0, '.', ' ') . "
-            <br> Price To Max Offer Ratio: " . number_format((float)$sellingPriceToMaxOfferRatio, 0, '.', ' ') . "
-            <br> Price To AVG Price Ratio: " . number_format((float)$sellingPriceToAvgPriceRatio, 0, '.', ' ') . "
-            <br> ERF: " . $this->property->getErf() . "
-            <br> AVG Location ERF: " . number_format((float)$averageErf, 0, '.', ' ') . "
-            <br> Link: " . $this->property->getUrl();
-                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, "nkosi.benedict@gmail.com", $message, "Flipability - New House", "Aluve Flipability");
-                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, "lethabomathabatha.m@gmail.com", $message, "Flipability - New House", "Aluve Flipability");
-
+                            if(intval($averagePrice) !== 0){
+                                $sellingPriceToAvgPriceRatio = intval((intval($this->property->getPrice()) / intval($averagePrice)) * 100);
+                                $renovationCost = intval(intval($averagePrice) * 0.2);
+                                $maxOfferPrice = (intval($averagePrice) * 0.7) - $renovationCost;
+                                $sellingPriceToMaxOfferRatio = intval((intval($maxOfferPrice) / intval($this->property->getPrice())) * 100);
+    
+                                $FlipabilityScore = floatval(intval($averagePrice) / intval($this->property->getPrice())) +
+                                    floatval(intval($this->property->getErf()) / intval($averageErf));
+    
+                                if ($sellingPriceToAvgPriceRatio < 70) {
+                                    $communicationApi = new CommunicationApi($this->em, $this->logger);
+                                    $message = "<br> Hey you, 
+    <br><br>looks like we found a potential flip in " . $this->property->getLocation() . " with a score of $FlipabilityScore
+                <br>
+                <br> Price: R" . number_format((float)$this->property->getPrice(), 0, '.', ' ') . "
+                <br> AVG Location Price: R" . number_format((float)$averagePrice, 0, '.', ' ') . "
+                <br> Max Offer: R" . number_format((float)$maxOfferPrice, 0, '.', ' ') . "
+                <br> Price To Max Offer Ratio: " . number_format((float)$sellingPriceToMaxOfferRatio, 0, '.', ' ') . "
+                <br> Price To AVG Price Ratio: " . number_format((float)$sellingPriceToAvgPriceRatio, 0, '.', ' ') . "
+                <br> ERF: " . $this->property->getErf() . "
+                <br> AVG Location ERF: " . number_format((float)$averageErf, 0, '.', ' ') . "
+                <br> Link: " . $this->property->getUrl();
+                                    $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, "nkosi.benedict@gmail.com", $message, "Flipability - New House", "Aluve Flipability");
+                                    $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, "lethabomathabatha.m@gmail.com", $message, "Flipability - New House", "Aluve Flipability");
+                                }
                             }
+                        
                         }
                         $this->logger->debug(print_r($this->responseArray, true));
                     } catch (\Exception $ex) {
