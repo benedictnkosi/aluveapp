@@ -664,7 +664,7 @@ class FlipabilityApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $query = $this->em->createQuery("SELECT p, avg(p.price) as price, avg(p.erf) as erf, count(p.id) as count
+            $query = $this->em->createQuery("SELECT p, mean(p.price) as price, avg(p.erf) as erf, count(p.id) as count
             FROM App\Entity\FlipabilityProperty p
             where  p.location = '" . $location . "' 
             and p.bedrooms >= " . $bedrooms . "

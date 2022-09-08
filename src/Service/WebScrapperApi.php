@@ -187,11 +187,9 @@ class WebScrapperApi
             <br> ERF: " . $this->property->getErf() . "
             <br> AVG Location ERF: " . number_format((float)$averageErf, 0, '.', ' ') . "
             <br> Link: " . $this->property->getUrl();
-                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, "nkosi.benedict@gmail.com", $message, "Flipability - New House", "Aluve Flipability");
+                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, "nkosi.benedict@gmail.com;lethabomathabatha.m@gmail.com", $message, "Flipability - New House", "Aluve Flipability");
                             }
                         }
-
-
                         $this->logger->debug(print_r($this->responseArray, true));
                     } catch (\Exception $ex) {
                         $this->logger->debug($ex->getMessage());
