@@ -91,11 +91,12 @@ function calculateMunicipalRates(){
     return parseInt(totalRates);
 }
 
-function calculateCommission(){
+function calculateSellingCost(){
     let avgSellingPrice = parseInt($('#avg_price').html()) * $('#selling_price_percent').find(':selected').val();
-    let commission = ((avgSellingPrice - 200000) * 0.03);
-    $('#commission_cost').html(  commission.toLocaleString('en-US'));
-    return commission;
+    //commission and staging cost
+    let commission = (avgSellingPrice * 0.03);
+    $('#commission_cost').html( commission.toLocaleString('en-US'));
+    return (avgSellingPrice * 0.03) + 20000;
 }
 
 function calculateTotalBuyingCosts(){
@@ -126,7 +127,7 @@ function calculateProfitAndLoss(){
     let renovations = calculateRenovations();
     let buyingCosts = calculateTotalBuyingCosts();
     let holdingCosts = calculateTotalHoldingCosts();
-    let sellingCosts = calculateCommission();
+    let sellingCosts = calculateSellingCost();
     let depositBuyingCosts = deposit + buyingCosts;
     let totalInvested = deposit + renovations + buyingCosts + holdingCosts;
     $('#selling_price_2').html( 'R' + avgSellingPrice.toLocaleString('en-US'));
