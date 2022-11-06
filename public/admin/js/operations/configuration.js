@@ -1022,7 +1022,7 @@ function initialiseImageUpload(roomId) {
         maxFilesize: 5,
         addRemoveLinks: true,
         uploadMultiple: false,
-        maxFiles: 10,
+        maxFiles: 20,
 
         // on initialize get the images on the
         // server for the partner
