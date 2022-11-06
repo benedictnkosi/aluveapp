@@ -246,7 +246,7 @@ class RoomApi
                 } else {
                     $propertyId = $_SESSION['PROPERTY_ID'];
                 }
-                $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId));
+                $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId, 'status' => 1));
             } else {
                 $rooms = $this->em->getRepository(Rooms::class)->findBy(array('id' => $roomId));
             }
