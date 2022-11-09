@@ -297,7 +297,7 @@ class ReservationApi
 
             return $reservations;
 
-        } catch (Exception) {
+        } catch (Exception $exception) {
             return null;
         }
     }
@@ -383,7 +383,7 @@ class ReservationApi
             }
 
             return $reservations;
-        } catch (Exception) {
+        } catch (Exception $exception) {
             return null;
         }
     }

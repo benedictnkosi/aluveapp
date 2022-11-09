@@ -19,6 +19,7 @@ class SMSHelper
     function sendMessage ($phoneNumber, $message): bool
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
+        $this->logger->debug("remote server is " . $_SERVER['REMOTE_ADDR']);
         if (strcmp( $_SERVER['REMOTE_ADDR'], 'aluveapp.co.za' )===0 ) {
             //Retrieve your API Credentials
             $apiKey = SMS_API_KEY;
