@@ -121,9 +121,9 @@ class CalendarHTML
                     if ($isDateBooked) {
                         if ($isCheckInDay === true) {
                             if (strcasecmp($reservation->getCheckInStatus(), "checked_in") === 0) {
-                                $htmlString .= '<td  class="booked checked_in clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
+                                $htmlString .= '<td  class="booked checked_in clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- IN" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                             }else{
-                                $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
+                                $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- OUT" . '"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                             }
                         } else {
                             $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"></td>';
