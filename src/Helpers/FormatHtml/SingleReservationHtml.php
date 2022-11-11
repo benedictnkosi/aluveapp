@@ -396,7 +396,7 @@ class SingleReservationHtml
         // check if guest eligible for check in 1. Guest ID provided 2. guest has phone number recorded
         $this->logger->debug("HTML output - check if guest eligible for check in" . $reservation->getId());
 
-        if (strcasecmp($reservation->getCheckInStatus(), "not_checked_in") === 0
+        if (strcasecmp($reservation->getCheckInStatus(), "not checked in") === 0
             && (strcasecmp($reservation->getCheckIn()->format("Y-m-d"), $now->format("Y-m-d")) == 0)) {
             $this->logger->debug("this user is checking in today");
             $htmlString .= '<div class="right-side-action-block"><div class="NotCheckedIn" id="check_in_user_' . $reservationId . '"  reservation_id="' . $reservationId . '">Check In Guest</div></div>';
