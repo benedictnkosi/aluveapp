@@ -399,13 +399,13 @@ class SingleReservationHtml
         if (strcasecmp($reservation->getCheckInStatus(), "not checked in") === 0
             && (strcasecmp($reservation->getCheckIn()->format("Y-m-d"), $now->format("Y-m-d")) == 0)) {
             $this->logger->debug("this user is checking in today");
-            $htmlString .= '<div class="right-side-action-block"><div class="NotCheckedIn" id="check_in_user_' . $reservationId . '"  reservation_id="' . $reservationId . '">Check In Guest</div></div>';
+            $htmlString .= '<div class="right-side-action-block"><div class="ClickableButton NotCheckedIn" id="check_in_user_' . $reservationId . '"  reservation_id="' . $reservationId . '">Check In Guest</div></div>';
         }
 
         // guest checkout button
-        $this->logger->debug("HTML output - check if guest eligible for check in" . $reservation->getId());
+        $this->logger->debug("HTML output - check if guest eligible for check out" . $reservation->getId());
         if (strcasecmp($reservation->getCheckInStatus(), "checked in") === 0 && (strcasecmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d")) == 0)) {
-            $htmlString .= '<div class="right-side-action-block"><div class="NotCheckedOut" id="check_out_user_' . $reservationId . '" reservation_id="' . $reservationId . '">Check Out Guest</div></div>';
+            $htmlString .= '<div class="right-side-action-block"><div class="ClickableButton NotCheckedOut" id="check_out_user_' . $reservationId . '" reservation_id="' . $reservationId . '">Check Out Guest</div></div>';
         }
 
         //Mark room as cleaned
