@@ -119,7 +119,7 @@ class ReservationController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
 
         $reservation = $reservationApi->getReservation($reservationId);
-        $responseArray[] = array();
+        $responseArray = array();
         switch ($field) {
             case "status":
                 if(intval($newValue) !== 0){
@@ -143,7 +143,6 @@ class ReservationController extends AbstractController
                 if (strcmp($newValue, "checked_in") == 0) {
                     $logger->info("checked_in");
                     if ($reservationApi->isEligibleForCheckIn($reservation)) {
-
                         $reservation->setCheckInStatus($newValue);
                         $reservation->setCheckInTime($now->format("H:i"));
                     } else {
@@ -152,8 +151,12 @@ class ReservationController extends AbstractController
                             'result_code' => 1
                         );
                         $logger->info(print_r($responseArray, true));
-                        return $this->json($responseArray);
+                        $callback = $request->get('callback');
+                        $response = new JsonResponse($responseArray, 200, array());
+                        $response->setCallback($callback);
+                        return $response;
                     }
+
                 } else if (strcmp($newValue, "checked_out") == 0) {
                     $logger->info("checked_out");
                     $due = $reservationApi->getAmountDue($reservation);
@@ -168,7 +171,10 @@ class ReservationController extends AbstractController
                             'due' => $due
                         );
                         $logger->info(print_r($responseArray, true));
-                        return $this->json($responseArray);
+                        $callback = $request->get('callback');
+                        $response = new JsonResponse($responseArray, 200, array());
+                        $response->setCallback($callback);
+                        return $response;
                     }
                 } else {
                     $responseArray[] = array(
@@ -176,7 +182,10 @@ class ReservationController extends AbstractController
                         'result_code' => 1
                     );
                     $logger->info(print_r($responseArray, true));
-                    return $this->json($responseArray);
+                    $callback = $request->get('callback');
+                    $response = new JsonResponse($responseArray, 200, array());
+                    $response->setCallback($callback);
+                    return $response;
                 }
 
 
@@ -187,7 +196,10 @@ class ReservationController extends AbstractController
                     'result_code' => 1
                 );
                 $logger->info(print_r($responseArray, true));
-                return $this->json($responseArray);
+                $callback = $request->get('callback');
+                $response = new JsonResponse($responseArray, 200, array());
+                $response->setCallback($callback);
+                return $response;
         }
         $response = $reservationApi->updateReservation($reservation);
         $callback = $request->get('callback');

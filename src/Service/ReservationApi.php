@@ -722,12 +722,17 @@ class ReservationApi
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $isEligible = true;
-        if (strcasecmp($reservation->getGuest()->getIdImage(), "unverified.png") == 0 && strcasecmp($reservation->getOrigin(), "website") == 0) {
+        if ($reservation->getGuest()->getIdNumber() == null && strcasecmp($reservation->getOrigin(), "website") == 0) {
             $isEligible = false;
+        }else{
+            $this->logger->debug("id is not null " . $reservation->getGuest()->getIdNumber());
+            $this->logger->debug("id is not null " . $reservation->getOrigin());
         }
 
-        if (strcasecmp($reservation->getGuest()->getPhoneNumber(), "not provided") == 0) {
+        if (strcasecmp($reservation->getGuest()->getPhoneNumber(), "") == 0) {
             $isEligible = false;
+        }else{
+            $this->logger->debug("phone is not empty " . $reservation->getGuest()->getPhoneNumber());
         }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $isEligible;
@@ -781,7 +786,7 @@ class ReservationApi
 
         $responseArray = array();
         try {
-            $reservations = $this->getCheckOutReservation("website");
+            $reservations = $this->getCheckOutReservation();
             if ($reservations != null) {
                 foreach ($reservations as $reservation) {
                     //send email if provided
