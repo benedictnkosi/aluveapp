@@ -15,12 +15,12 @@ use Symfony\Component\HttpFoundation\Request;
 class PaymentController extends AbstractController
 {
     /**
-     * @Route("api/payment/{reservationId}/amount/{amount}")
+     * @Route("api/payment/{reservationId}/amount/{amount}/{paymentChannel}")
      */
-    public function addPayment($reservationId, $amount, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function addPayment($reservationId, $amount,  $paymentChannel, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->addPayment($reservationId, $amount);
+        $response = $paymentApi->addPayment($reservationId, $amount, $paymentChannel);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

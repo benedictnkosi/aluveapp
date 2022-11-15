@@ -543,16 +543,22 @@ function addPayment(event) {
     if (!$("#amount_" + article.dataset.resid).val()) {
         //hide other opened reservation inputs
         $(".reservation_input").addClass("display-none");
+        $("#div_payment").removeClass("display-none");
         $("#amount_" + article.dataset.resid).removeClass("display-none");
     } else {
         const amount = $("#amount_" + article.dataset.resid).val();
+        const paymentChannel = $("#select_payment_" + article.dataset.resid).val();
         if (isNaN(amount)) {
             showResErrorMessage(reservation, "Please provide numbers only for payment");
             return;
         }
+        if (paymentChannel.localeCompare("none") === 0) {
+            showResErrorMessage("reservation", "Please select payment channel");
+            return;
+        }
         isUserLoggedIn();
         $("body").addClass("loading");
-        let url = "/api/payment/" + id + "/amount/" + amount;
+        let url = "/api/payment/" + id + "/amount/" + amount + "/" + paymentChannel;
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
 

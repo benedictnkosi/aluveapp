@@ -352,10 +352,22 @@ class SingleReservationHtml
         // add payment
         $this->logger->debug(" HTML output - add payment" . $reservation->getId());
 
+
+        $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_payment" >
+        <select id="select_payment_' . $reservationId . '">';
+        $htmlString .= ' <option value="none">Select Payment Method</option>';
+        $htmlString .= ' <option value="cash">Cash</option>';
+        $htmlString .= ' <option value="card">Card</option>';
+        $htmlString .= ' <option value="transfer">Transfer</option>';
+
+        $htmlString .= '</select> 
+            <p>Amount</p><input id="amount_' . $reservationId . '" type="text"
+										 class="textbox  display-none block-display reservation_input" placeholder="0.00"/></p>
+            </div>';
+
         $htmlString .= '
-                <div class="right-side-action-block">
-                <input id="amount_' . $reservationId . '" type="text"
-										 class="textbox  display-none block-display reservation_input" placeholder="0.00"/><div id="add_payment_button_' . $reservationId . '" class="ClickableButton res_add_payment" data-resid="' . $reservationId . '" >Add Payment</div></div>';
+                    <div id="add_payment_button_' . $reservationId . '" class="ClickableButton res_add_payment" data-resid="' . $reservationId . '" >Add Payment</div></div>';
+
 
         // add discount
         $this->logger->debug(" HTML output - add discount" . $reservation->getId());
