@@ -134,7 +134,7 @@ class ICalApi
             }
 
             try {
-                $this->checkForCancellations($events, $roomId, $ical);
+                //$this->checkForCancellations($events, $roomId, $ical);
                 $this->logger->debug("back ");
                 $this->logger->debug("events found  " . count($events));
                 $i = 0;
