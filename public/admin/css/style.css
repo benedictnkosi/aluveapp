@@ -611,11 +611,11 @@ padding:0.3em;
 }
 
 .image_verified {
-	width: 2em;
-	height: 2em;
+	width: 4em;
+	height: 4em;
 	margin-right: 1em;
 	margin-left: 1px;
-	margin-top: -5px;
+	margin-top: -30px;
 }
 
 .information-h3 {
@@ -794,7 +794,7 @@ padding:0.3em;
 }
 
 .fa-whatsapp {
-	font-size: 2em !important;
+	font-size: 4em !important;
 }
 
 .origin_image {
@@ -858,8 +858,8 @@ padding:0.3em;
 }
 
 .delete_invoice, .edit_invoice, .changeBookingStatus, .view_quotation{
-	font-size: 2em;
-	margin-right: 1em;
+	font-size: 4em;
+	margin-right: 12px;
 	margin-left: 1px;
 }
 
