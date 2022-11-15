@@ -129,6 +129,16 @@ class GuestApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
+            //check if ID not linked to a blocked guest
+            $blockedGuest = $this->em->getRepository(Guest::class)->findOneBy(array('idNumber' => $IdNumber, 'state' => 'blocked'));
+            if($blockedGuest !== null) {
+                $responseArray[] = array(
+                    'result_code' => 1,
+                    'result_message' => 'This ID number was blocked for ' . $blockedGuest->getComments() . ". ID is linked to number " . $blockedGuest->getPhoneNumber()
+                );
+                return $responseArray;
+            }
+
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId ));
             if($guest === null) {
                 $responseArray[] = array(
