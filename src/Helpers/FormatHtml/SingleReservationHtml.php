@@ -89,13 +89,10 @@ class SingleReservationHtml
         $htmlString .= '</h4>';
 
         //room name
-        $roomDisabled = "";
-        if ($reservation->getCheckIn() < $now || (strcasecmp($reservation->getOrigin(), "website") !=0) ){
-            $roomDisabled = "Disabled";
-        }
+
 
         $htmlString .= '<p name="res-dates"><span class="glyphicon glyphicon-home glyphicon-small-icon" > 
-<select id"select_room_' . $reservationId . '" data-res-id="' . $reservationId . '" class="reservation_room_input" ' . $roomDisabled . '>';
+<select id"select_room_' . $reservationId . '" data-res-id="' . $reservationId . '" class="reservation_room_input">';
         foreach ($rooms as $roomEntity) {
             if ($roomEntity->getId() === $room->getId()) {
                 $htmlString .= '<option value="' . $roomEntity->getId() . '" selected>' . $roomEntity->getName() . '</option>';

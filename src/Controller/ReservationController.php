@@ -9,6 +9,7 @@ use App\Helpers\FormatHtml\InvoiceHTML;
 use App\Helpers\FormatHtml\ReservationHtml;
 use App\Helpers\FormatHtml\SingleReservationHtml;
 use App\Service\BlockedRoomApi;
+use App\Service\NotesApi;
 use App\Service\ReservationApi;
 use App\Service\RoomApi;
 use DateTime;
@@ -114,7 +115,7 @@ class ReservationController extends AbstractController
     /**
      * @Route("api/reservations/{reservationId}/update/{field}/{newValue}")
      */
-    public function updateReservation($reservationId, $field, $newValue, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, BlockedRoomApi $blockedRoomApi): Response
+    public function updateReservation($reservationId, $field, $newValue, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, BlockedRoomApi $blockedRoomApi,  NotesApi $notesApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
@@ -145,6 +146,7 @@ class ReservationController extends AbstractController
                     if ($reservationApi->isEligibleForCheckIn($reservation)) {
                         $reservation->setCheckInStatus($newValue);
                         $reservation->setCheckInTime($now->format("H:i"));
+                        $notesApi->addNote($reservation->getId(), "Checked In at " . $now->format("H:i"));
                     } else {
                         $responseArray[] = array(
                             'result_message' => "Please make sure the guest Id and phone number is captured",
