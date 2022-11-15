@@ -281,7 +281,7 @@ function blockGuest(event) {
         const note = $("#block_note_" + article.dataset.resid).val();
         $("body").addClass("loading");
         isUserLoggedIn();
-        let url = "/api/reservation/" + res_id + "/blockguest/" + note;
+        let url = "/api/reservations/" + res_id + "/blockguest/" + note;
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
             $("#res_message_div_" + event.target.id).removeClass("display-none");

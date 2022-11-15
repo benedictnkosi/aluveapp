@@ -66,6 +66,7 @@ class GuestController extends AbstractController
         return $response;
     }
 
+
     /**
      * @Route("/api/guests/airbnbname/{confirmationCode}/{name}")
      */

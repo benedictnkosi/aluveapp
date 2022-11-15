@@ -381,6 +381,13 @@ class SingleReservationHtml
                     <textarea id="note_' . $reservationId . '"
                         class="textbox  display-none block-display reservation_input" placeholder="e.g. 12h00 early check in"></textarea><div id="add_note_button_' . $reservationId . '" class="ClickableButton res_add_note" data-resid="' . $reservationId . '" >Add Note</div></div>';
 
+        // add notes
+        $this->logger->debug(" HTML output - block guest" . $reservation->getId());
+        $htmlString .= '
+                    <div class="right-side-action-block">
+                    <textarea id="block_note_' . $reservationId . '"
+                        class="textbox  display-none block-display reservation_input" placeholder="e.g. smoking in room"></textarea><div id="block_guest_button_' . $reservationId . '" class="ClickableButton blockGuest" data-resid="' . $reservationId . '" >Block Guest</div></div>';
+
         // add add-ons - only for confirmed booking
         if (strcmp($reservation->getStatus()->getName(), "pending") != 0) {
             $this->logger->debug(" HTML output - add add-ons" . $reservation->getId());

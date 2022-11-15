@@ -587,6 +587,13 @@ class ReservationApi
                     $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
                 }
 
+                if (strcmp($guest->getState(), "blocked") === 0) {
+                    $responseArray[] = array(
+                        'result_code' => 1,
+                        'result_message' => 'Guest blocked for ' . $guest->getComments()
+                    );
+                    return $responseArray;
+                }
                 //get room
 
                 $room = $roomApi->getRoom($roomId);
@@ -654,18 +661,6 @@ class ReservationApi
                     $blockRoomApi->blockRoom($room->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked ", $reservation->getId());
                 }
 
-
-                //add Short stay 3 hour add-on if check out is same day
-                /*$totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
-                $this->logger->debug("Date diff is $totalDays");
-                if ($totalDays === 0) {
-                    $this->logger->debug("Short Stay");
-                    $addOnsApi = new AddOnsApi($this->em, $this->logger);
-                    $addon = $addOnsApi->getAddOn("Short Stay - 3 Hours");
-                    $addOnsApi->addAdOnToReservation($reservation->getId(), $addon->getId(), 1);
-                } else {
-                    $this->logger->debug("overnight Stay");
-                }*/
 
                 if (!$isImport) {
                     //send SMS

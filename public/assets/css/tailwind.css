@@ -9,6 +9,42 @@
 2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
 */
 
+.flexible {
+  position: relative;
+  /*  background: #fff;*/
+}
+
+.display-none {
+  display: none !important;
+}
+
+.flexible h5 {
+  padding: 10px;
+  font-size: 15px;
+  color: #fc3955 !important;
+  border: 1px solid #fc3955;
+}
+
+.flex2 {
+  margin: 17px 0;
+  position: relative;
+  background: #ECECEC;
+}
+
+.flex3 {
+  position: relative;
+}
+
+.flex1 {
+  background: #ECECEC;
+}
+
+.flex1 h5, .flex3 h5 {
+  color: #07cbc9 !important;
+  border: 1px solid #07cbc9;
+}
+
+
 #properties_form {
   text-align: left;
 }

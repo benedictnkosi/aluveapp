@@ -226,8 +226,7 @@ function createReservation() {
 
     isRoomSelected = sessionStorage.getItem("isRoomSelected");
     if (isRoomSelected === null) {
-        $("#reservation_message").text("Please select a room")
-        $("#reservation_error_message_div").removeClass("display-none");
+        showResErrorMessage("reservation", "Please select a room");
         return;
     }
 
@@ -239,8 +238,7 @@ function createReservation() {
     $.getJSON(url + "?callback=?", null, function (data) {
         $("body").removeClass("loading");
         if (data[0].result_code !== 0) {
-            $("#reservation_message").text(data[0].result_message)
-            $("#reservation_error_message_div").removeClass("display-none");
+            showResErrorMessage("reservation", data[0].result_message);
         } else {
             sessionStorage.setItem("reservation_id", JSON.stringify(data[0].reservation_id));
             window.location.href = "/confirmation";
@@ -249,8 +247,7 @@ function createReservation() {
         $("body").removeClass("loading");
     })
         .fail(function () {
-            $("#reservation_message").text("Server error occurred, please try again")
-            $("#reservation_error_message_div").removeClass("display-none");
+            showResErrorMessage("reservation", "Server error occurred, please try again");
         })
         .always(function () {
             $("body").removeClass("loading");

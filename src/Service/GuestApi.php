@@ -124,8 +124,6 @@ class GuestApi
         return $responseArray;
     }
 
-
-
     public function updateGuestIdNumber($guestId, $IdNumber): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
@@ -206,12 +204,14 @@ class GuestApi
         return $responseArray;
     }
 
-    public function blockGuest($guestId, $reason): array
+    public function blockGuest($reservationId, $reason): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId));
+            $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $reservationId));
+
+            $guest = $reservation->getGuest();
             $guest->setState("blocked");
             $guest->setComments($reason);
             $this->em->persist($guest);

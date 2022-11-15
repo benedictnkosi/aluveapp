@@ -9,6 +9,7 @@ use App\Helpers\FormatHtml\InvoiceHTML;
 use App\Helpers\FormatHtml\ReservationHtml;
 use App\Helpers\FormatHtml\SingleReservationHtml;
 use App\Service\BlockedRoomApi;
+use App\Service\GuestApi;
 use App\Service\NotesApi;
 use App\Service\ReservationApi;
 use App\Service\RoomApi;
@@ -322,6 +323,17 @@ class ReservationController extends AbstractController
         return $response;
     }
 
-
+    /**
+     * @Route("api/reservations/{reservationId}/blockguest/{reason}")
+     */
+    public function blockGuest($reservationId, $reason, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $guestApi->blockGuest($reservationId, $reason);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
 
 }
