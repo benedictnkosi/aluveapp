@@ -82,7 +82,7 @@ class ICalApi
 
 
                 if (!$isReservationOnEvents) {
-                    $this->logger->debug("Reservation not found on the events");
+                    $this->logger->debug("Reservation not found on the events " . $reservation->getId() );
                     //cancel reservation if not found on events
                     $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'cancelled'));
                     $reservation->setStatus($status);

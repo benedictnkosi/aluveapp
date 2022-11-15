@@ -328,6 +328,7 @@ function markReservationAsCheckedInOut(event, status) {
         $("body").removeClass("loading");
         if (response[0].result_code === 0) {
             refreshReservations();
+            getReservationById(reservationID);
             showResSuccessMessage("reservation", response[0].result_message);
         } else {
             refreshReservations();
