@@ -334,7 +334,7 @@ class ReservationApi
         }
     }
 
-    public function getReservationsByRoomAndOrigin($roomId, $origin)
+    public function getReservationsByOriginalRoomAndOrigin($roomId, $origin)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
@@ -347,7 +347,7 @@ class ReservationApi
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
             WHERE r.checkIn > '" . $yesterdayDate->format('Y-m-d') . "'
-            and r.room = $roomId 
+            and r.originalRoom = $roomId 
             and r.origin = '" . $origin . "'
             and r.status = " . $status->getId())
                 ->getResult();
@@ -502,7 +502,7 @@ class ReservationApi
             if ($isRoomAvailable) {
                 $room = $roomApi->getRoom($roomId);
                 $reservation->setRoom($room);
-                $reservation->setAdditionalInfo("managed local");
+                $reservation->setOriginalRoom($room);
                 $this->em->persist($reservation);
                 $this->em->flush($reservation);
             } else {
@@ -616,6 +616,7 @@ class ReservationApi
 
                 $reservation = new Reservations();
                 $reservation->setRoom($room);
+                $reservation->setOriginalRoom($room);
                 $reservation->setAdditionalInfo("Guest Name is: " . $guest->getName());
                 $reservation->setCheckIn(new DateTime($checkInDate));
                 $reservation->setCheckOut(new DateTime($checkOutDate));

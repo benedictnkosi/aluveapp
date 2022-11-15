@@ -61,14 +61,9 @@ class ICalApi
         $reservationApi = new ReservationApi($this->em, $this->logger);
         $result = parse_url($url->getLink());
         $origin = $result['host'];
-        $reservations = $reservationApi->getReservationsByRoomAndOrigin($roomId, $origin);
+        $reservations = $reservationApi->getReservationsByOriginalRoomAndOrigin($roomId, $origin);
         if ($reservations !== null) {
             foreach ($reservations as $reservation) {
-                //skip reservations that are managed locally - third party reservations that the room have been changed
-                if (strcmp($reservation->getAdditionalInfo(), "managed local") === 0) {
-                    continue;
-                }
-
                 $this->logger->debug("Iterating the reservations " . $reservation->getId());
                 $res_uid = $reservation->getUid();
                 $isReservationOnEvents = false;

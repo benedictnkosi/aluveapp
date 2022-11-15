@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Reservations
  *
- * @ORM\Table(name="reservations", indexes={@ORM\Index(name="guest_id", columns={"guest_id"}), @ORM\Index(name="reservations_ibfk_3", columns={"status"}), @ORM\Index(name="room_id", columns={"room_id"})})
+ * @ORM\Table(name="reservations", indexes={@ORM\Index(name="room_id", columns={"room_id"}), @ORM\Index(name="FK_original_roomId_room", columns={"original_room_id"}), @ORM\Index(name="guest_id", columns={"guest_id"}), @ORM\Index(name="reservations_ibfk_3", columns={"status"})})
  * @ORM\Entity
  */
 class Reservations
@@ -127,7 +127,17 @@ class Reservations
     private $children;
 
     /**
-     * @var Rooms
+     * @var \Rooms
+     *
+     * @ORM\ManyToOne(targetEntity="Rooms")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="original_room_id", referencedColumnName="id")
+     * })
+     */
+    private $originalRoom;
+
+    /**
+     * @var \Rooms
      *
      * @ORM\ManyToOne(targetEntity="Rooms")
      * @ORM\JoinColumns({
@@ -137,7 +147,7 @@ class Reservations
     private $room;
 
     /**
-     * @var Guest
+     * @var \Guest
      *
      * @ORM\ManyToOne(targetEntity="Guest")
      * @ORM\JoinColumns({
@@ -147,7 +157,7 @@ class Reservations
     private $guest;
 
     /**
-     * @var ReservationStatus
+     * @var \ReservationStatus
      *
      * @ORM\ManyToOne(targetEntity="ReservationStatus")
      * @ORM\JoinColumns({
@@ -410,6 +420,22 @@ class Reservations
     public function setChildren(?int $children): void
     {
         $this->children = $children;
+    }
+
+    /**
+     * @return Rooms
+     */
+    public function getOriginalRoom(): Rooms
+    {
+        return $this->originalRoom;
+    }
+
+    /**
+     * @param Rooms $originalRoom
+     */
+    public function setOriginalRoom(Rooms $originalRoom): void
+    {
+        $this->originalRoom = $originalRoom;
     }
 
     /**
