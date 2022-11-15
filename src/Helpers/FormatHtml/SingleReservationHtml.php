@@ -186,7 +186,7 @@ class SingleReservationHtml
         //for direct bookings only
         $this->logger->debug("HTML output - for direct bookings only " . $reservation->getId());
 
-        if (strcasecmp($reservation->getOrigin(), "website") == 0 && ($reservation->getCheckIn() >= $now)) {
+        if ($reservation->getCheckIn() >= $now) {
 
             if (strcmp($reservation->getStatus()->getName(), "pending") != 0) {
                 //cancel booking
