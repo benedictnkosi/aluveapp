@@ -64,6 +64,11 @@ class ICalApi
         $reservations = $reservationApi->getReservationsByRoomAndOrigin($roomId, $origin);
         if ($reservations !== null) {
             foreach ($reservations as $reservation) {
+                //skip reservations that are managed locally - third party reservations that the room have been changed
+                if (strcmp($reservation->getAdditionalInfo(), "managed local") === 0) {
+                    continue;
+                }
+
                 $this->logger->debug("Iterating the reservations " . $reservation->getId());
                 $res_uid = $reservation->getUid();
                 $isReservationOnEvents = false;
@@ -134,7 +139,7 @@ class ICalApi
             }
 
             try {
-                //$this->checkForCancellations($events, $roomId, $ical);
+                $this->checkForCancellations($events, $roomId, $ical);
                 $this->logger->debug("back ");
                 $this->logger->debug("events found  " . count($events));
                 $i = 0;
