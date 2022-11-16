@@ -587,13 +587,7 @@ class ReservationApi
                     $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
                 }
 
-                if (strcmp($guest->getState(), "blocked") === 0) {
-                    $responseArray[] = array(
-                        'result_code' => 1,
-                        'result_message' => 'Guest blocked for ' . $guest->getComments()
-                    );
-                    return $responseArray;
-                }
+
                 //get room
 
                 $room = $roomApi->getRoom($roomId);
@@ -607,6 +601,14 @@ class ReservationApi
                         return $response;
                     } else {
                         $guest = $response[0]['guest'];
+                    }
+                }else{
+                    if (strcmp($guest->getState(), "blocked") === 0) {
+                        $responseArray[] = array(
+                            'result_code' => 1,
+                            'result_message' => 'Guest blocked for ' . $guest->getComments()
+                        );
+                        return $responseArray;
                     }
                 }
 
