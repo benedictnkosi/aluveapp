@@ -8,6 +8,7 @@
 /var/
 /vendor/
 /src/app/application.php
+/config/packages/monolog.yaml
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
