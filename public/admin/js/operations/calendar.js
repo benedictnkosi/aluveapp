@@ -7,6 +7,7 @@ $(document).ready(function() {
 
 function loadCalendarPageData(){
 	getCalendar();
+	getPropertyUid();
 }
 
 function getCalendar() {

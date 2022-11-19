@@ -294,7 +294,7 @@ class SingleReservationHtml
 
         $due = $totalPrice - $totalPayment;
 
-        if ($totalPrice > 0) {
+
             $htmlString .= '<h5 class="text-align-left">Line items</h5>';
 
             if ((strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) != 0
@@ -307,8 +307,6 @@ class SingleReservationHtml
             $htmlString .= '<h5 class="text-align-left">Paid: R' . number_format((float)$totalPayment, 2, '.', '') . '</h5>';
             $htmlString .= $paymentsHtml;
             $htmlString .= '<h5 class="text-align-left">Due R' . number_format((float)$due, 2, '.', '') . '</h5>';
-
-        }
 
         //cleanings
         $this->logger->debug("HTML output - Cleanings list " . $reservation->getId());

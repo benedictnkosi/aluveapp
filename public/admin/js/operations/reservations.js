@@ -693,7 +693,7 @@ function getPropertyUid() {
         dataType: "jsonp",
         contentType: "application/json; charset=UTF-8",
         success: function (data) {
-            $('#new_reservation_button').attr("href", "/booking?uid=" + data[0].uid );
+            $('.new-reservation-link').attr("href", "/booking?uid=" + data[0].uid );
         },
         error: function (xhr) {
             console.log("request for getPropertyUid is " + xhr.status);
