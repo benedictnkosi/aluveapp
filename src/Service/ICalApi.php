@@ -234,13 +234,15 @@ class ICalApi
                         $this->logger->debug(print_r($icalMessagesArray, true));
                     } else {
                         $this->logger->debug("booking has been imported before");
-                        $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
                         $reservation->setCheckIn(new DateTime($checkInDate));
                         $reservation->setCheckOut(new DateTime($checkOutDate));
                         $this->em->persist($reservation);
                         $this->em->flush($reservation);
 
+                        $this->logger->debug("res check in date is : " . $reservation->getCheckIn());
+                        $this->logger->debug("res check out date is : " . $reservation->getCheckIn());
                         //block connected Room
+
                         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
                         $this->logger->debug("calling block room to block " . $reservation->getRoom()->getLinkedRoom() . " for room  " . $reservation->getRoom()->getName());
                         $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked ", $reservation->getId());
