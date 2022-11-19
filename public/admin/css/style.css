@@ -5,7 +5,12 @@
 	License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
 
-
+.booked_opened_td{
+	background-color: white !important;
+}
+.opened_booking{
+	opacity: 0.2;
+}
 
 .guest-contact {
 	margin-top: 1em;

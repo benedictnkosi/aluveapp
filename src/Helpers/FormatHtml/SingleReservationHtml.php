@@ -193,16 +193,17 @@ class SingleReservationHtml
         }
 
         $blockClassName = "";
+        $openCloseTitle = "";
         if (strcasecmp($reservation->getStatus()->getName(), "confirmed") == 0) {
-
+            $openCloseTitle = "Open Room";
             $blockClassName = "glyphicon-triangle-top";
-        } else if (strcasecmp($reservation->getStatus()->getName(), "pending") == 0) {
-
+        } else if (strcasecmp($reservation->getStatus()->getName(), "opened") == 0) {
+            $openCloseTitle = "Close Room";
             $blockClassName = "glyphicon-triangle-bottom";
         }
 
         $this->logger->debug(" HTML output - open\close room " . $reservation->getId());
-        $htmlString .= '<span title="Open\Close Room" class="glyphicon ' . $blockClassName . ' changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservation->getId() . '">
+        $htmlString .= '<span title="'.$openCloseTitle.'" class="glyphicon ' . $blockClassName . ' changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservation->getId() . '">
         </span>';
 
         //whatsapp guest
@@ -431,7 +432,7 @@ class SingleReservationHtml
 
         // guest checkout button
         $this->logger->debug("HTML output - check if guest eligible for check out" . $reservation->getId());
-        if (strcasecmp($reservation->getCheckInStatus(), "checked in") === 0 && (strcasecmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d")) == 0)) {
+        if (strcasecmp($reservation->getCheckInStatus(), "checked_in") === 0) {
             $htmlString .= '<div class="right-side-action-block"><div class="ClickableButton NotCheckedOut" id="check_out_user_' . $reservationId . '" reservation_id="' . $reservationId . '">Check Out Guest</div></div>';
         }
 

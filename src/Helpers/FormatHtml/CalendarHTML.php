@@ -86,7 +86,8 @@ class CalendarHTML
                         foreach ($reservations as $reservation) {
                             $isCheckInDay = false;
                             if ($tempDate >= $reservation->getCheckIn() && $tempDate < $reservation->getCheckOut()) {
-                                if (strcasecmp($reservation->getStatus()->getName(), "confirmed") === 0) {
+                                if (strcasecmp($reservation->getStatus()->getName(), "confirmed") === 0
+                                || strcasecmp($reservation->getStatus()->getName(), "opened") === 0) {
                                     $resID = $reservation->getId();
                                     $isDateBooked = true;
                                     $guestName = $reservation->getGuest()->getName();
@@ -94,9 +95,6 @@ class CalendarHTML
                                         $this->logger->debug("Check in day is true because tempdate is " . $tempDate->format("Y-m-d") . " and res " . $reservation->getId() . " check in date is " . $reservation->getCheckIn()->format("Y-m-d"));
                                         $isCheckInDay = true;
                                     }
-                                    break;
-                                } else if (strcasecmp($reservation->getStatus()->getName(), "pending") == 0) {
-                                    $isDateBookedButOpen = true;
                                     break;
                                 }
 
@@ -118,7 +116,7 @@ class CalendarHTML
                     }
 
                     //$this->logger->debug("checking if date booked");
-                    if ($isDateBooked) {
+                    if ($isDateBooked || $isDateBookedButOpen) {
                         if ($isCheckInDay === true) {
                             if (strcasecmp($reservation->getCheckInStatus(), "checked_in") === 0) {
                                 //if one day booking and guest checked in and amount outstanding then its short stay
@@ -133,19 +131,29 @@ class CalendarHTML
                                     $htmlString .= '<td  class="booked checked_in clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- IN" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                                 }
                             }else if (strcasecmp($reservation->getCheckInStatus(), "checked_out") === 0) {
-                                $htmlString .= '<td  class="booked checked_out clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- OUT" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkedout" class="image_checkin"></td>';
+                                if (strcasecmp($reservation->getStatus()->getName(), "opened") === 0){
+                                    $htmlString .= '<td  class="booked booked_opened_td checked_out clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- OUT" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkedout" class="image_checkin opened_booking"></td>';
+                                }else{
+                                    $htmlString .= '<td  class="booked checked_out clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- OUT" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkedout" class="image_checkin"></td>';
+
+                                }
 
                             }else {
-                                $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
+                                if (strcasecmp($reservation->getStatus()->getName(), "confirmed") === 0){
+                                    $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
+
+                                }else if (strcasecmp($reservation->getStatus()->getName(), "opened") === 0){
+                                    $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin opened_booking"></td>';
+
+                                }
                             }
                         } else {
                             $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"></td>';
                         }
                     } else if ($isDateBlocked) {
                         $htmlString .= '<td class="blocked" title="' . $blockNote . '"></td>';
-                    } else if ($isDateBookedButOpen) {
-                        $htmlString .= '<td class="pending"></td>';
-                    } else {
+                    }
+                    else {
                         $htmlString .= '<td class="available"></td>';
                     }
 
