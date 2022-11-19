@@ -73,7 +73,7 @@ class SingleReservationHtml
 
         //guest name and reservation id and count of stays
         $htmlString .= '<div class="res-details"><div><div>
-						<h4 class="guest-name"><a target="_blank" href="http://'.$room->getProperty()->getServerName().'/invoice.html?id=' . $reservationId . '">' . $guest->getName() . ' - ' . $reservationId . '</a>';
+						<h4 class="guest-name"><a target="_blank" href="http://' . $room->getProperty()->getServerName() . '/invoice.html?id=' . $reservationId . '">' . $guest->getName() . ' - ' . $reservationId . '</a>';
 
         //is short stay?
         if (strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) == 0) {
@@ -105,7 +105,7 @@ class SingleReservationHtml
         //check in\out date
 
         $checkInDateDisabled = "";
-        if ($reservation->getCheckOut() < $now || (strcasecmp($reservation->getOrigin(), "website") !=0)){
+        if ($reservation->getCheckOut() < $now || (strcasecmp($reservation->getOrigin(), "website") != 0)) {
             $checkInDateDisabled = "Disabled";
         }
 
@@ -118,7 +118,7 @@ class SingleReservationHtml
         //disable check in time for some reservations
         $checkInTimeDisabled = "";
         $checkOutTimeDisabled = "";
-        if ($reservation->getCheckIn() < $now || (strcasecmp($reservation->getOrigin(), "website") !=0) ){
+        if ($reservation->getCheckIn() < $now || (strcasecmp($reservation->getOrigin(), "website") != 0)) {
             $checkInTimeDisabled = "Disabled";
             $checkOutTimeDisabled = "Disabled";
         }
@@ -145,7 +145,7 @@ class SingleReservationHtml
         //contact details
 
         $this->logger->debug("HTML output - contact details " . $reservation->getId());
-        if ($guest->getPhoneNumber() !== Null &&  !empty($guest->getPhoneNumber())) {
+        if ($guest->getPhoneNumber() !== Null && !empty($guest->getPhoneNumber())) {
             $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-earphone glyphicon-small-icon" ><a class="res-contact-link" href="tel:' . $guest->getPhoneNumber() . '">  ' . $guest->getPhoneNumber() . '</a></span></p>';
         }
 
@@ -154,11 +154,11 @@ class SingleReservationHtml
         }
 
         if ($reservation->getAdults() !== Null && $reservation->getChildren() !== Null) {
-            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-user glyphicon-small-icon"><a class="res-contact-link" href="javascript:void(0)">'.$reservation->getAdults().' Adults and ' . $reservation->getChildren() . ' Children</a></span></p>';
+            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-user glyphicon-small-icon"><a class="res-contact-link" href="javascript:void(0)">' . $reservation->getAdults() . ' Adults and ' . $reservation->getChildren() . ' Children</a></span></p>';
         }
 
         if ($guest->getIdNumber() !== Null && !empty($guest->getIdNumber())) {
-            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-user glyphicon-small-icon"><a class="res-contact-link" href="javascript:void(0)">'. $guest->getIdNumber() . '</a></span></p>';
+            $htmlString .= '<p name="guest-contact" class="guest-contact"><span class="glyphicon glyphicon-user glyphicon-small-icon"><a class="res-contact-link" href="javascript:void(0)">' . $guest->getIdNumber() . '</a></span></p>';
         }
 
         // check if room cleaned for checkout reservations only
@@ -191,6 +191,19 @@ class SingleReservationHtml
                 $htmlString .= '<span title="Cancel booking" class="glyphicon glyphicon-remove changeBookingStatus clickable" aria-hidden="true" id="cancelBooking_' . $reservationId . '"></span>';
             }
         }
+
+        $blockClassName = "";
+        if (strcasecmp($reservation->getStatus()->getName(), "confirmed") == 0) {
+
+            $blockClassName = "glyphicon-triangle-top";
+        } else if (strcasecmp($reservation->getStatus()->getName(), "pending") == 0) {
+
+            $blockClassName = "glyphicon-triangle-bottom";
+        }
+
+        $this->logger->debug(" HTML output - open\close room " . $reservation->getId());
+        $htmlString .= '<span title="Open\Close Room" class="glyphicon ' . $blockClassName . ' changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservation->getId() . '">
+        </span>';
 
         //whatsapp guest
         $this->logger->debug(" HTML output - whatsapp guest " . $reservation->getId());
@@ -271,9 +284,9 @@ class SingleReservationHtml
         $paymentsHtml = "";
         $totalPayment = 0;
         foreach ($payments as $payment) {
-            if($payment->isDiscount()){
+            if ($payment->isDiscount()) {
                 $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format("d-M") . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (Discount)</p>';
-            }else{
+            } else {
                 $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format("d-M") . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . '</p>';
             }
             $totalPayment += (intVal($payment->getAmount()));

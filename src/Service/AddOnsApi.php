@@ -11,6 +11,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Service\PaymentApi;
 
 class AddOnsApi
 {

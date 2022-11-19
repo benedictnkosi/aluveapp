@@ -114,6 +114,12 @@ function setBindings() {
         markReservationAsCheckedInOut(event, "checked_in");
     });
 
+    $('.NotCheckedOut').unbind('click')
+    $(".NotCheckedOut").click(function (event) {
+        event.stopImmediatePropagation();
+        markReservationAsCheckedInOut(event, "checked_out");
+    });
+
     $('.res_add_payment').unbind('click')
     $(".res_add_payment").click(function (event) {
         event.stopImmediatePropagation();
@@ -229,7 +235,7 @@ function changeBookingStatus(event) {
     var className = $('#' + event.target.id).attr('class');
 
     if (className.includes("glyphicon-triangle-top")) {
-        data["new_value"] = "pending";
+        data["new_value"] = "opened";
         $('#' + event.target.id).toggleClass("glyphicon-triangle-top");
         $('#' + event.target.id).toggleClass("glyphicon-triangle-bottom");
     } else if (className.includes("glyphicon-triangle-bottom")) {
@@ -325,14 +331,16 @@ function markReservationAsCheckedInOut(event, status) {
     isUserLoggedIn();
     let url = "/api/reservations/" + reservationID + "/update/check_in_status/" + status;
     $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
+
         if (response[0].result_code === 0) {
             refreshReservations();
             getReservationById(reservationID);
             showResSuccessMessage("reservation", response[0].result_message);
+            $("body").removeClass("loading");
         } else {
             refreshReservations();
             showResErrorMessage("reservation", response[0].result_message);
+            $("body").removeClass("loading");
         }
     });
 

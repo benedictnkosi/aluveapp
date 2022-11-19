@@ -502,7 +502,6 @@ class ReservationApi
             if ($isRoomAvailable) {
                 $room = $roomApi->getRoom($roomId);
                 $reservation->setRoom($room);
-                $reservation->setOriginalRoom($room);
                 $this->em->persist($reservation);
                 $this->em->flush($reservation);
             } else {
