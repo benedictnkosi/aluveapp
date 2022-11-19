@@ -240,7 +240,7 @@ class ICalApi
                         $this->em->flush($reservation);
 
                         $this->logger->debug("res check in date is : " . $reservation->getCheckIn()->format('Y-m-d H:i:s'));
-                        $this->logger->debug("res check out date is : " . $reservation->getCheckIn()->format('Y-m-d H:i:s'));
+                        $this->logger->debug("res check out date is : " . $reservation->getCheckOut()->format('Y-m-d H:i:s'));
                         //block connected Room
 
                         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
