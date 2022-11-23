@@ -115,21 +115,22 @@ class CleaningApi
         return $responseArray;
     }
 
-    public function isCleaningRequiredToday($resId): bool
+    public function isCleaningRequiredToday($reservation): bool
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $cleaning = $this->em->getRepository(Cleaning::class)->findOneBy(array('reservation' => $resId),
+        $cleaning = $this->em->getRepository(Cleaning::class)->findOneBy(array('reservation' => $reservation->getId()),
             array('date' => 'ASC'));
 
-        $lastCleanDate = new DateTime("1999/01/01");
+
+        $lastCleanDate = $reservation->getCheckIn();
         if($cleaning !== null){
             $lastCleanDate = $cleaning->getDate();
         }
 
         $now = new DateTime();
-        $totalDays = intval($now->diff($lastCleanDate)->format('%a'));
-        $this->logger->debug("days since last cleaning is " . $totalDays);
-        if($totalDays > 1){
+        $totalDaysSinceCleaning = intval($now->diff($lastCleanDate)->format('%a'));
+        $this->logger->debug("days since last cleaning is " . $totalDaysSinceCleaning);
+        if($totalDaysSinceCleaning > 1 ){
             return true;
         }else{
             return false;
