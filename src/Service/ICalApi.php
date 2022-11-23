@@ -296,6 +296,12 @@ class ICalApi
         }
 
         $ical->setLogs($icalHtmlMessage);
+        if (! $this->em->isOpen()) {
+            $this->em =  $this->em->create(
+                $this->em->getConnection(),
+                $this->em->getConfiguration()
+            );
+        }
         $this->em->persist($ical);
         $this->em->flush($ical);
         $this->logger->debug("Ending Method: " . __METHOD__);
