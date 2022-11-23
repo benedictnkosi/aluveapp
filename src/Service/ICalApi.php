@@ -234,6 +234,7 @@ class ICalApi
                         $this->logger->debug(print_r($icalMessagesArray, true));
                     } else {
                         $this->logger->debug("booking has been imported before");
+                        $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
                         $reservation->setCheckIn(new DateTime($checkInDate));
                         $reservation->setCheckOut(new DateTime($checkOutDate));
                         $this->em->persist($reservation);
