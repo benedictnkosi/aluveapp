@@ -34,6 +34,7 @@ class CalendarHTML
         $roomsApi = new RoomApi($this->em, $this->logger);
         $reservationApi = new ReservationApi($this->em, $this->logger);
         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
+        $cleaningApi = new CleaningApi($this->em, $this->logger);
         $numberOfDays = 180;
         $numberOfFirstOfMonth = 0;
 
@@ -137,7 +138,6 @@ class CalendarHTML
                                     $htmlString .= '<td  class="booked checked_out clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- OUT" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkedout" class="image_checkin"></td>';
 
                                 }
-
                             }else {
                                 if (strcasecmp($reservation->getStatus()->getName(), "confirmed") === 0){
                                     $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
@@ -148,7 +148,13 @@ class CalendarHTML
                                 }
                             }
                         } else {
-                            $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"></td>';
+                            $now = new DateTime();
+                            if($cleaningApi->isCleaningRequiredToday($resID) && (strcasecmp($tempDate->format("Y-m-d"), $now->format("Y-m-d")) === 0)){
+                                $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"><img  src="/admin/images/broom.ico"  data-res-id="' . $resID . '" alt="clean room" class="image_checkin"></td>';
+
+                            }else{
+                                $htmlString .= '<td  class="booked clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . '"></td>';
+                            }
                         }
                     } else if ($isDateBlocked) {
                         $htmlString .= '<td class="blocked" title="' . $blockNote . '"></td>';

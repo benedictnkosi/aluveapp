@@ -115,25 +115,25 @@ class CleaningApi
         return $responseArray;
     }
 
-    public function getReservationLastCleaning($resId)
+    public function isCleaningRequiredToday($resId): bool
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $responseArray = array();
-        try {
-            $cleanings = $this->em->getRepository(Cleaning::class)->findBy(array('reservation' => $resId),
-                array('date' => 'ASC'),
-            1);
-            return $cleanings;
-        } catch (Exception $ex) {
-            $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
-                'result_code' => 1
-            );
-            $this->logger->error("Error " . print_r($responseArray, true));
+        $cleaning = $this->em->getRepository(Cleaning::class)->findOneBy(array('reservation' => $resId),
+            array('date' => 'ASC'));
+
+        $lastCleanDate = new DateTime("1999/01/01");
+        if($cleaning !== null){
+            $lastCleanDate = $cleaning->getDate();
         }
 
-        $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        return $responseArray;
+        $now = new DateTime();
+        $totalDays = intval($now->diff($lastCleanDate)->format('%a'));
+        $this->logger->debug("days since last cleaning is " . $totalDays);
+        if($totalDays > 1){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public function getCleaningsByRoom($roomId)

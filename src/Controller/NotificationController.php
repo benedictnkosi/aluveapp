@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\CleaningApi;
 use App\Service\NotificationApi;
 use App\Service\OccupancyApi;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,10 +18,10 @@ class NotificationController  extends AbstractController
     /**
      * @Route("api/notifications")
      */
-    public function getNotifications( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, NotificationApi $notificationApi): Response
+    public function getNotifications( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $html = $notificationApi->getNotifications();
+        $html = $cleaningApi->isCleaningRequiredToday("28");
         $response = array(
             'html' => $html,
         );
