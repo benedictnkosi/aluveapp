@@ -234,29 +234,71 @@ function changeBookingStatus(event) {
 
     var className = $('#' + event.target.id).attr('class');
 
-    if (className.includes("glyphicon-triangle-top")) {
-        data["new_value"] = "opened";
-        $('#' + event.target.id).toggleClass("glyphicon-triangle-top");
-        $('#' + event.target.id).toggleClass("glyphicon-triangle-bottom");
-    } else if (className.includes("glyphicon-triangle-bottom")) {
-        data["new_value"] = "confirmed";
-        $('#' + event.target.id).toggleClass("glyphicon-triangle-top");
-        $('#' + event.target.id).toggleClass("glyphicon-triangle-bottom");
-    } else if (className.includes("glyphicon-remove")) {
-        data["new_value"] = "cancelled";
-        $('#' + event.target.id).toggleClass("glyphicon-remove");
-        $('#' + event.target.id).toggleClass("glyphicon-ok");
-    } else if (className.includes("glyphicon-ok")) {
-        data["new_value"] = "confirmed";
-        $('#' + event.target.id).toggleClass("glyphicon-remove");
-        $('#' + event.target.id).toggleClass("glyphicon-ok");
-    }
-
     if (className.includes("glyphicon-triangle")) {
         data["reservation_id"] = event.target.id.replace("changeBookingStatus_", "");
     } else {
         data["reservation_id"] = event.target.id.replace("cancelBooking_", "");
     }
+
+    if (className.includes("glyphicon-triangle-top")) {
+        let inputResId = prompt("Please enter reservation id to open room", "");
+        if (inputResId != null) {
+            if(inputResId.localeCompare(data["reservation_id"]) === 0){
+                data["new_value"] = "opened";
+                $('#' + event.target.id).toggleClass("glyphicon-triangle-top");
+                $('#' + event.target.id).toggleClass("glyphicon-triangle-bottom");
+            }else{
+                return;
+            }
+        }else{
+            return;
+        }
+
+    } else if (className.includes("glyphicon-triangle-bottom")) {
+        let inputResId = prompt("Please enter reservation id to close room", "");
+        if (inputResId != null) {
+            if(inputResId.localeCompare(data["reservation_id"]) === 0){
+                data["new_value"] = "confirmed";
+                $('#' + event.target.id).toggleClass("glyphicon-triangle-top");
+                $('#' + event.target.id).toggleClass("glyphicon-triangle-bottom");
+            }else{
+                return;
+            }
+        }else{
+            return;
+        }
+
+    } else if (className.includes("glyphicon-remove")) {
+        let inputResId = prompt("Please enter reservation id to delete", "");
+        if (inputResId != null) {
+            if(inputResId.localeCompare(data["reservation_id"]) === 0){
+                data["new_value"] = "cancelled";
+                $('#' + event.target.id).toggleClass("glyphicon-remove");
+                $('#' + event.target.id).toggleClass("glyphicon-ok");
+            }else{
+                return;
+            }
+        }else{
+            return;
+        }
+
+    } else if (className.includes("glyphicon-ok")) {
+        let inputResId = prompt("Please enter reservation id confirm the reservation", "");
+        if (inputResId != null) {
+            if(inputResId.localeCompare(data["reservation_id"]) === 0){
+                data["new_value"] = "confirmed";
+                $('#' + event.target.id).toggleClass("glyphicon-remove");
+                $('#' + event.target.id).toggleClass("glyphicon-ok");
+            }else{
+                return;
+            }
+        }else{
+            return;
+        }
+
+    }
+
+
 
 
     $("body").addClass("loading");
