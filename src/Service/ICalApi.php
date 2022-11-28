@@ -237,6 +237,7 @@ class ICalApi
                         $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
                         $reservation->setCheckIn(new DateTime($checkInDate));
                         $reservation->setCheckOut(new DateTime($checkOutDate));
+                        $reservation->setStatus(new DateTime($status));
                         $this->em->persist($reservation);
                         $this->em->flush($reservation);
 

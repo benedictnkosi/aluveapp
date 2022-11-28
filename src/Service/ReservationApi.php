@@ -105,7 +105,8 @@ class ReservationApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            return $this->em->getRepository(Reservations::class)->findOneBy(array('uid' => $uid));
+            $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+            return $this->em->getRepository(Reservations::class)->findOneBy(array('uid' => $uid, 'status'=> $status));
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
