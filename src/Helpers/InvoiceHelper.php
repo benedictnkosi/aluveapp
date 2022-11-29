@@ -45,7 +45,7 @@ Please email proof of payment to info@aluvegh.co.za";
             'number' => $resID,
             'items[0][name]' => $rooName,
             'items[0][quantity]' => $resaNights,
-            'items[0][description]' => "Arrival dates: " . $checkin . " \r\n  Departure date: " . $checkout,
+            'items[0][description]' => "2 Adults (No Children Allowed) \r\n Arrival dates: " . $checkin . " \r\n  Departure date: " . $checkout,
             'items[0][unit_cost]' => $price,
             //'tax_title' => "VAT",
             //'fields[tax]' => "%",
@@ -77,9 +77,7 @@ See you soon!\r\n
 No loud music\r\n
 No parties\r\n
 No smoking inside the house\r\n
-No kids under the age of 12\r\n
-Check-in cut-off is at 22:00. Please make arrangements for a later check-in\r\n
-The gate auto closes in 2 minutes, We have sensors installed and we will not be responsible for any damage caused by the gate\r\n
+No children under the age of 16\r\n
 \r\n
 Cancellation:
 \r\n
