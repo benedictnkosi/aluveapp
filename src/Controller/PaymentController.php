@@ -33,7 +33,7 @@ class PaymentController extends AbstractController
     public function addDiscount($reservationId, $amount, LoggerInterface $logger, Request $request, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->addDiscount($reservationId, $amount);
+        $response = $paymentApi->addDiscount($reservationId, $amount, "discount");
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
