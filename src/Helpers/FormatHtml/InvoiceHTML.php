@@ -152,35 +152,8 @@ class InvoiceHTML
 					<td class="no-border"> </td>
 					<td class="no-border"></td>
 				</tr>
-				<tr >
-					<td><b>Address:</b></td>
-					<td class="no-border"></td>
-					<td class="no-border"> </td>
-					<td class="no-border"></td>
-				</tr>
-				<tr>
-					<td>187 kitchener Avenue<br>
-                    kensington<br>
-                    Johannesburg 2094<br>
-                    <br></td>
-					<td class="no-border"></td>
-					<td class="no-border"> </td>
-					<td class="no-border"></td>
-				</tr>
-				<tr >
-					<td><b>Contact details:</b></td>
-					<td class="no-border"></td>
-					<td class="no-border"> </td>
-					<td class="no-border"></td>
-				</tr>
-				<tr>
-					<td>Cell: +27 79 634 7610<br>
-Alt Cell: +27 83  791 7430<br>
-Email: info@aluvegh.co.za<br></td>
-					<td class="no-border"> </td>
-					<td class="no-border"> </td>
-					<td class="no-border"></td>
-				</tr>
+				
+				
 				<tr >
 					<td><b>Guesthouse Rules:</b></td>
 					<td class="no-border"></td>
