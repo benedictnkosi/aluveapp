@@ -194,7 +194,7 @@ No parties<br>
 No smoking inside the rooms<br>
 No children under the age of 16<br>
 <br>
-Cancellation:
+<b>Cancellation:</b>
 <br>
 The guest can cancel free of charge until 7 days before arrival. The guest will be charged the total price of the reservation if they cancel in the 7 days before arrival. If the guest does not show up they will be charged the total price of the reservation.<br>
 <br></td>
