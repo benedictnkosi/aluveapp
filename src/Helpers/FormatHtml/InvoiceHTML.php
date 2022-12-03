@@ -27,7 +27,7 @@ class InvoiceHTML
         $addOnsApi = new AddOnsApi($this->em, $this->logger);
         $totalPayment = $paymentApi->getReservationPaymentsTotal($reservation->getId());
         $invoiceTitle = 'INVOICE';
-        if($totalPayment > 0){
+        if ($totalPayment > 0) {
             $invoiceTitle = 'RECIEPT';
         }
         $totalDue = $paymentApi->getTotalDue($reservation->getId());
@@ -47,11 +47,11 @@ class InvoiceHTML
 							<tr>
 								
 								<td>
-									<h1>'.$invoiceTitle.'</h1>
-									<h2>'.$propertyDetails[0]['name'].'</h2>
-									#'.$reservation->getId().'<br />
-									Created: '.$reservation->getReceivedOn()->format('Y-m-d').'<br />
-									<b>Balance Due: R'.$totalDue.'.00</b>
+									<h1>' . $invoiceTitle . '</h1>
+									<h2>' . $propertyDetails[0]['name'] . '</h2>
+									#' . $reservation->getId() . '<br />
+									Created: ' . $reservation->getReceivedOn()->format('Y-m-d') . '<br />
+									<b>Balance Due: R' . $totalDue . '.00</b>
 								</td>
 							</tr>
 						</table>
@@ -63,16 +63,16 @@ class InvoiceHTML
 						<table>
 							<tr>
 								<td>
-									Name: '.$propertyDetails[0]['name'].'<br />
-									Address:'. str_replace(",","<br />", $propertyDetails[0]['address']).'<br />
-									Tel: '.$propertyDetails[0]['phone_number'].'<br />
-									Email: '.$propertyDetails[0]['email'].'<br />
+									Name: ' . $propertyDetails[0]['name'] . '<br />
+									Address:' . str_replace(",", "<br />", $propertyDetails[0]['address']) . '<br />
+									Tel: ' . $propertyDetails[0]['phone_number'] . '<br />
+									Email: ' . $propertyDetails[0]['email'] . '<br />
 								</td>
 								<td>
 									<b>Invoice To:</b><br />
-									'.ucwords($reservation->getGuest()->getName()).'<br />
-									'.$reservation->getGuest()->getPhoneNumber().'<br />
-									'.$reservation->getGuest()->getEmail().'
+									' . ucwords($reservation->getGuest()->getName()) . '<br />
+									' . $reservation->getGuest()->getPhoneNumber() . '<br />
+									' . $reservation->getGuest()->getEmail() . '
 								</td>
 							</tr>
 						</table>
@@ -87,12 +87,12 @@ class InvoiceHTML
 				</tr>
 
 				<tr class="item">
-					<td>'.$reservation->getRoom()->getName().'<br>
-					Check-in: '.$reservation->getCheckIn()->format('Y-m-d').'<br>
-						Check-out: '.$reservation->getCheckOut()->format('Y-m-d').'<br></td>
-					<td>'.$totalDays.'</td>
-					<td>R'.$reservation->getRoom()->getPrice().'.00</td>
-					<td>'.$totalPriceForAccommodation.'</td>
+					<td>' . $reservation->getRoom()->getName() . '<br>
+					Check-in: ' . $reservation->getCheckIn()->format('Y-m-d') . '<br>
+						Check-out: ' . $reservation->getCheckOut()->format('Y-m-d') . '<br></td>
+					<td>' . $totalDays . '</td>
+					<td>R' . $reservation->getRoom()->getPrice() . '.00</td>
+					<td>' . $totalPriceForAccommodation . '</td>
 				</tr>
 
 				<tr class="heading">
@@ -102,13 +102,13 @@ class InvoiceHTML
 					<td></td>
 				</tr>
 
-				'.$addOnsApi->getAddOnsForInvoice($reservation_id).'
+				' . $addOnsApi->getAddOnsForInvoice($reservation_id) . '
 
 				<tr class="total">
 					<td></td>
 					<td></td>
 					<td><b>Total:</b> </td>
-					<td><b>R' . number_format((float)$totalForAll, 2, '.', '').'</b></td>
+					<td><b>R' . number_format((float)$totalForAll, 2, '.', '') . '</b></td>
 				</tr>
 
 				<tr class="heading">
@@ -118,20 +118,20 @@ class InvoiceHTML
 					<td></td>
 				</tr>
 
-				'.$paymentApi->getReservationPaymentsHtml($reservation_id).'
+				' . $paymentApi->getReservationPaymentsHtml($reservation_id) . '
 
 				<tr class="total">
 					<td></td>
 					<td></td>
 					<td><b>Total Payments:</b> </td>
-					<td><b>'. number_format((float)$totalPayments, 2, '.', '').'</b></td>
+					<td><b>' . number_format((float)$totalPayments, 2, '.', '') . '</b></td>
 				</tr>
 
 				<tr class="total">
 					<td></td>
 					<td></td>
 					<td><b>Balance Due:</b> </td>
-					<td><b>'. number_format((float)$paymentApi->getTotalDue($reservation_id), 2, '.', '').'</b></td>
+					<td><b>' . number_format((float)$paymentApi->getTotalDue($reservation_id), 2, '.', '') . '</b></td>
 				</tr>
 
 				<tr >
@@ -145,10 +145,60 @@ class InvoiceHTML
 						Account Type:<br>
 						Account Number:<br>
 						Branch Code: <br></td>
-					<td class="no-border">'.$propertyDetails[0]['bank_name'].'<br>
-						'.$propertyDetails[0]['bank_account_type'].'<br>
-						'.$propertyDetails[0]['bank_account_number'].'<br>
-						'.$propertyDetails[0]['bank_branch_number'].'<br></td>
+					<td class="no-border">' . $propertyDetails[0]['bank_name'] . '<br>
+						' . $propertyDetails[0]['bank_account_type'] . '<br>
+						' . $propertyDetails[0]['bank_account_number'] . '<br>
+						' . $propertyDetails[0]['bank_branch_number'] . '<br></td>
+					<td class="no-border"> </td>
+					<td class="no-border"></td>
+				</tr>
+				<tr >
+					<td><b>Address:</b></td>
+					<td class="no-border"></td>
+					<td class="no-border"> </td>
+					<td class="no-border"></td>
+				</tr>
+				<tr>
+					<td>187 kitchener Avenue<br>
+                    kensington<br>
+                    Johannesburg 2094<br>
+                    <br></td>
+					<td class="no-border"></td>
+					<td class="no-border"> </td>
+					<td class="no-border"></td>
+				</tr>
+				<tr >
+					<td><b>Contact details:</b></td>
+					<td class="no-border"></td>
+					<td class="no-border"> </td>
+					<td class="no-border"></td>
+				</tr>
+				<tr>
+					<td>Cell: +27 79 634 7610<br>
+Alt Cell: +27 83  791 7430<br>
+Email: info@aluvegh.co.za<br>/td>
+					<td class="no-border"> </td>
+					<td class="no-border"> </td>
+					<td class="no-border"></td>
+				</tr>
+				<tr >
+					<td><b>Guesthouse Rules:</b></td>
+					<td class="no-border"></td>
+					<td class="no-border"> </td>
+					<td class="no-border"></td>
+				</tr>
+				<tr>
+					<td>No noise at all times<br>
+No loud music<br>
+No parties<br>
+No smoking inside the rooms<br>
+No children under the age of 16<br>
+<br>
+Cancellation:
+<br>
+The guest can cancel free of charge until 7 days before arrival. The guest will be charged the total price of the reservation if they cancel in the 7 days before arrival. If the guest does not show up they will be charged the total price of the reservation.<br>
+<br></td>
+					<td class="no-border"> </td>
 					<td class="no-border"> </td>
 					<td class="no-border"></td>
 				</tr>
