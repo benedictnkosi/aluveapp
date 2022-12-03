@@ -66,7 +66,7 @@ class InvoiceHTML
 									Name: ' . $propertyDetails[0]['name'] . '<br />
 									Address:' . str_replace(",", "<br />", $propertyDetails[0]['address']) . '<br />
 									Tel: ' . $propertyDetails[0]['phone_number'] . '<br />
-									Email: ' . $propertyDetails[0]['email'] . '<br />
+									Email: ' . $propertyDetails[0]['email'] . '<br/>
 								</td>
 								<td>
 									<b>Invoice To:</b><br />
@@ -176,7 +176,7 @@ class InvoiceHTML
 				<tr>
 					<td>Cell: +27 79 634 7610<br>
 Alt Cell: +27 83  791 7430<br>
-Email: info@aluvegh.co.za<br>/td>
+Email: info@aluvegh.co.za<br></td>
 					<td class="no-border"> </td>
 					<td class="no-border"> </td>
 					<td class="no-border"></td>
