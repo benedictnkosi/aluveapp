@@ -64,7 +64,7 @@ class ICalApi
         $reservations = $reservationApi->getReservationsByOriginalRoomAndOrigin($roomId, $origin);
         if ($reservations !== null) {
             foreach ($reservations as $reservation) {
-                $this->logger->debug("Iterating the reservations " . $reservation->getId());
+                    $this->logger->debug("Iterating the reservations " . $reservation->getId());
                 $res_uid = $reservation->getUid();
                 $isReservationOnEvents = false;
                 try {
