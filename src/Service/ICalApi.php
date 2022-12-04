@@ -251,7 +251,7 @@ class ICalApi
                                 "SUCCESS: Successfully imported reservation $uid"
                             );
                         }
-                        $this->logger->debug(print_r($icalMessagesArray, true));
+                        $this->logger->info(print_r($icalMessagesArray, true));
                     } else {
                         $this->logger->debug("booking has been imported before");
                         $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
@@ -273,7 +273,7 @@ class ICalApi
                             "SUCCESS: Successfully updated reservation $uid"
                         );
                     }
-                    $this->logger->debug(print_r($icalMessagesArray, true));
+                    $this->logger->info(print_r($icalMessagesArray, true));
                     $this->updateIcalLogs($ical, $icalMessagesArray);
                 }
 
