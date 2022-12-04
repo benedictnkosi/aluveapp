@@ -614,6 +614,8 @@ class ReservationApi
 
 
                             $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+
                         }
                         return $response;
                     } else {
@@ -636,6 +638,8 @@ class ReservationApi
                             $emailBody .= "<br>Origin:  " . $origin;
                             $emailBody .= "<br>Uid:  " . $uid;
                             $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+
                         }
 
                         return $responseArray;
@@ -661,6 +665,8 @@ class ReservationApi
                         $emailBody .= "<br>Origin:  " . $origin;
                         $emailBody .= "<br>Uid:  " . $uid;
                         $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+
                     }
 
                     return $responseArray;
@@ -763,6 +769,8 @@ class ReservationApi
                 $emailBody .= "<br>Origin:  " . $origin;
                 $emailBody .= "<br>Uid:  " . $uid;
                 $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+
             }
         }
 
