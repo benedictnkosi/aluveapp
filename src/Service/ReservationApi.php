@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\FailedUids;
 use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
 use App\Helpers\SMSHelper;
@@ -603,18 +604,18 @@ class ReservationApi
 
                         if ($isImport) {
                             //email admin person
-                            $communicationApi = new CommunicationApi($this->em, $this->logger);
-                            $emailBody = "There was a problem creating a reservation. failed to create guest entity";
-                            $emailBody .= "<br>Room Name:  " . $room->getName();
-                            $emailBody .= "<br>Check In:  " . $checkInDate;
-                            $emailBody .= "<br>Check Out:  " . $checkOutDate;
-                            $emailBody .= "<br>Origin:  " . $origin;
-                            $emailBody .= "<br>Uid:  " . $uid;
+                            if (!$this->isFailedUidRecorded($uid)) {
+                                $communicationApi = new CommunicationApi($this->em, $this->logger);
+                                $emailBody = "There was a problem creating a reservation. failed to create guest entity";
+                                $emailBody .= "<br>Room Name:  " . $room->getName();
+                                $emailBody .= "<br>Check In:  " . $checkInDate;
+                                $emailBody .= "<br>Check Out:  " . $checkOutDate;
+                                $emailBody .= "<br>Origin:  " . $origin;
+                                $emailBody .= "<br>Uid:  " . $uid;
 
-
-
-                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
-                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                            }
 
                         }
                         return $response;
@@ -630,16 +631,17 @@ class ReservationApi
 
                         if ($isImport) {
                             //email admin person
-                            $communicationApi = new CommunicationApi($this->em, $this->logger);
-                            $emailBody = "There was a problem creating a reservation. Guest Blocked";
-                            $emailBody .= "<br>Room Name:  " . $room->getName();
-                            $emailBody .= "<br>Check In:  " . $checkInDate;
-                            $emailBody .= "<br>Check Out:  " . $checkOutDate;
-                            $emailBody .= "<br>Origin:  " . $origin;
-                            $emailBody .= "<br>Uid:  " . $uid;
-                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
-                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
-
+                            if (!$this->isFailedUidRecorded($uid)) {
+                                $communicationApi = new CommunicationApi($this->em, $this->logger);
+                                $emailBody = "There was a problem creating a reservation. Guest Blocked";
+                                $emailBody .= "<br>Room Name:  " . $room->getName();
+                                $emailBody .= "<br>Check In:  " . $checkInDate;
+                                $emailBody .= "<br>Check Out:  " . $checkOutDate;
+                                $emailBody .= "<br>Origin:  " . $origin;
+                                $emailBody .= "<br>Uid:  " . $uid;
+                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                            }
                         }
 
                         return $responseArray;
@@ -657,15 +659,18 @@ class ReservationApi
 
                     if ($isImport) {
                         //email admin person
-                        $communicationApi = new CommunicationApi($this->em, $this->logger);
-                        $emailBody = "There was a problem creating a reservation. Room Not Available";
-                        $emailBody .= "<br>Room Name:  " . $room->getName();
-                        $emailBody .= "<br>Check In:  " . $checkInDate;
-                        $emailBody .= "<br>Check Out:  " . $checkOutDate;
-                        $emailBody .= "<br>Origin:  " . $origin;
-                        $emailBody .= "<br>Uid:  " . $uid;
-                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
-                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                        if (!$this->isFailedUidRecorded($uid)) {
+                            $communicationApi = new CommunicationApi($this->em, $this->logger);
+                            $emailBody = "There was a problem creating a reservation. Room Not Available";
+                            $emailBody .= "<br>Room Name:  " . $room->getName();
+                            $emailBody .= "<br>Check In:  " . $checkInDate;
+                            $emailBody .= "<br>Check Out:  " . $checkOutDate;
+                            $emailBody .= "<br>Origin:  " . $origin;
+                            $emailBody .= "<br>Uid:  " . $uid;
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+
+                        }
 
                     }
 
@@ -761,15 +766,17 @@ class ReservationApi
             $this->logger->debug(print_r($responseArray, true));
             if ($isImport) {
                 //email admin person
-                $communicationApi = new CommunicationApi($this->em, $this->logger);
-                $emailBody = "There was an exception creation a reservation: " . $ex->getMessage();
-                $emailBody .= "<br>Room Name:  " . $room->getRoom()->getName();
-                $emailBody .= "<br>Check In:  " . $checkInDate;
-                $emailBody .= "<br>Check Out:  " . $checkOutDate;
-                $emailBody .= "<br>Origin:  " . $origin;
-                $emailBody .= "<br>Uid:  " . $uid;
-                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
-                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+                if (!$this->isFailedUidRecorded($uid)) {
+                    $communicationApi = new CommunicationApi($this->em, $this->logger);
+                    $emailBody = "There was an exception creation a reservation: " . $ex->getMessage();
+                    $emailBody .= "<br>Room Name:  " . $room->getRoom()->getName();
+                    $emailBody .= "<br>Check In:  " . $checkInDate;
+                    $emailBody .= "<br>Check Out:  " . $checkOutDate;
+                    $emailBody .= "<br>Origin:  " . $origin;
+                    $emailBody .= "<br>Uid:  " . $uid;
+                    $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+                    $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+                }
 
             }
         }
@@ -778,6 +785,25 @@ class ReservationApi
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
+
+    public function recordFailedUid($uid)
+    {
+        $failedUid = new FailedUids();
+        $failedUid->setUid($uid);
+        $this->em->persist($failedUid);
+        $this->em->flush($failedUid);
+    }
+
+    public function isFailedUidRecorded($uid)
+    {
+        $failedUid = $this->em->getRepository(FailedUids::class)->findOneBy(array('uid' => $uid));
+        if ($failedUid === null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     public function isEligibleForCheckIn($reservation): bool
     {

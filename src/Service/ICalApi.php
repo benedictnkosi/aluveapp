@@ -101,7 +101,6 @@ class ICalApi
                         $this->logger->debug("Reservation successfully cancelled");
                     } catch (Exception $ex) {
                         $this->logger->error("Error looping events " . $ex->getMessage());
-
                         //email admin person
                         $communicationApi = new CommunicationApi($this->em, $this->logger);
                         $emailBody = "There was a problem cancelling a reservation: " . $ex->getMessage();
