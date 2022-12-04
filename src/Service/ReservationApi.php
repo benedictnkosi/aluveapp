@@ -605,6 +605,7 @@ class ReservationApi
                         if ($isImport) {
                             //email admin person
                             if (!$this->isFailedUidRecorded($uid)) {
+                                $this->recordFailedUid($uid);
                                 $communicationApi = new CommunicationApi($this->em, $this->logger);
                                 $emailBody = "There was a problem creating a reservation. failed to create guest entity";
                                 $emailBody .= "<br>Room Name:  " . $room->getName();
@@ -632,6 +633,7 @@ class ReservationApi
                         if ($isImport) {
                             //email admin person
                             if (!$this->isFailedUidRecorded($uid)) {
+                                $this->recordFailedUid($uid);
                                 $communicationApi = new CommunicationApi($this->em, $this->logger);
                                 $emailBody = "There was a problem creating a reservation. Guest Blocked";
                                 $emailBody .= "<br>Room Name:  " . $room->getName();
@@ -660,6 +662,7 @@ class ReservationApi
                     if ($isImport) {
                         //email admin person
                         if (!$this->isFailedUidRecorded($uid)) {
+                            $this->recordFailedUid($uid);
                             $communicationApi = new CommunicationApi($this->em, $this->logger);
                             $emailBody = "There was a problem creating a reservation. Room Not Available";
                             $emailBody .= "<br>Room Name:  " . $room->getName();
@@ -767,6 +770,7 @@ class ReservationApi
             if ($isImport) {
                 //email admin person
                 if (!$this->isFailedUidRecorded($uid)) {
+                    $this->recordFailedUid($uid);
                     $communicationApi = new CommunicationApi($this->em, $this->logger);
                     $emailBody = "There was an exception creation a reservation: " . $ex->getMessage();
                     $emailBody .= "<br>Room Name:  " . $room->getRoom()->getName();
