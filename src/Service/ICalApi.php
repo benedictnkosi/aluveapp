@@ -84,7 +84,12 @@ class ICalApi
 
 
                 if (!$isReservationOnEvents) {
-                    $this->logger->debug("Reservation not found on the events " . $reservation->getId());
+                    $logMessage = "\r\nReservation Id:  " . $reservation->getId();
+                    $logMessage .= "\r\nRoom Name:  " . $reservation->getRoom()->getName();
+                    $logMessage .= "\r\nCheck In:  " . $reservation->getCheckIn()->format("d M Y");
+                    $logMessage .= "\r\nCheck Out:  " . $reservation->getCheckOut()->format("d M Y");
+
+                    $this->logger->info("Reservation not found on the events, cancelling " . $logMessage);
                     try {
                         $blockedRoomApi = new BlockedRoomApi($this->em, $this->logger);
                         $blockedRoomApi->deleteBlockedRoomByReservation($reservation->getId());
@@ -100,10 +105,7 @@ class ICalApi
                         //email admin person
                         $communicationApi = new CommunicationApi($this->em, $this->logger);
                         $emailBody = "There was a problem cancelling a reservation: " . $ex->getMessage();
-                        $emailBody .= "\r\nReservation Id:  " . $reservation->getId();
-                        $emailBody .= "\r\nRoom Name:  " . $reservation->getRoom()->getName();
-                        $emailBody .= "\r\nCheck In:  " . $reservation->getCheckIn()->format("d M Y");
-                        $emailBody .= "\r\nCheck Out:  " . $reservation->getCheckOut()->format("d M Y");
+                        $emailBody .= $logMessage;
 
                         $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getRoom()->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
 
