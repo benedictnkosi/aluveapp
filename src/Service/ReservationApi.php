@@ -36,7 +36,7 @@ class ReservationApi
             return $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -90,7 +90,7 @@ class ReservationApi
             return $responseArray;
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -106,10 +106,10 @@ class ReservationApi
         $responseArray = array();
         try {
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
-            return $this->em->getRepository(Reservations::class)->findOneBy(array('uid' => $uid, 'status'=> $status));
+            return $this->em->getRepository(Reservations::class)->findOneBy(array('uid' => $uid, 'status' => $status));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -140,7 +140,7 @@ class ReservationApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -187,7 +187,7 @@ class ReservationApi
                 ->getResult();
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -222,7 +222,7 @@ class ReservationApi
                 ->getResult();
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -265,7 +265,7 @@ class ReservationApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -323,7 +323,6 @@ class ReservationApi
             $reservations = $query->getResult();
 
 
-
             if (empty($reservations)) {
                 return null;
             }
@@ -331,7 +330,7 @@ class ReservationApi
             return $reservations;
 
         } catch (Exception $ex) {
-            $this->logger->debug($ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString());
+            $this->logger->debug($ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString());
             return null;
         }
     }
@@ -410,7 +409,7 @@ class ReservationApi
 
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -441,7 +440,7 @@ class ReservationApi
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
             );
             $this->logger->error(print_r($responseArray, true));
         }
@@ -485,7 +484,7 @@ class ReservationApi
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
             );
             $this->logger->error(print_r($responseArray, true));
         }
@@ -523,7 +522,7 @@ class ReservationApi
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
             );
             $this->logger->error(print_r($responseArray, true));
         }
@@ -551,7 +550,7 @@ class ReservationApi
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
             );
             $this->logger->error(print_r($responseArray, true));
         }
@@ -566,6 +565,7 @@ class ReservationApi
         $this->logger->debug("room ids" . $roomIds);
         $responseArray = array();
         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
+        $room = null;
         try {
             //get property Id
             $roomIds = str_replace('[', "", $roomIds);
@@ -581,8 +581,8 @@ class ReservationApi
                 $guest = null;
                 if (strcmp($origin, "airbnb.com") === 0) {
                     $guest = $guestApi->getGuestByName("Airbnb Guest");
-                }elseif (strcmp($origin, "booking.com") === 0) {
-                    if(!empty($phoneNumber)){
+                } elseif (strcmp($origin, "booking.com") === 0) {
+                    if (!empty($phoneNumber)) {
                         $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
                     }
                 } elseif (strlen($phoneNumber) > 1) {
@@ -597,19 +597,47 @@ class ReservationApi
                 if ($guest == null) {
                     $this->logger->debug("guest not found, creating a new guest");
                     //create guest
-                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $origin,$room->getProperty()->getId());
+                    $response = $guestApi->createGuest($guestName, $phoneNumber, $email, $origin, $room->getProperty()->getId());
                     if ($response[0]['result_code'] != 0) {
                         $this->logger->debug(print_r($response, true));
+
+                        if ($isImport) {
+                            //email admin person
+                            $communicationApi = new CommunicationApi($this->em, $this->logger);
+                            $emailBody = "There was a problem creating a reservation. failed to create guest entity";
+                            $emailBody .= "<br>Room Name:  " . $room->getName();
+                            $emailBody .= "<br>Check In:  " . $checkInDate;
+                            $emailBody .= "<br>Check Out:  " . $checkOutDate;
+                            $emailBody .= "<br>Origin:  " . $origin;
+                            $emailBody .= "<br>Uid:  " . $uid;
+
+
+
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                        }
                         return $response;
                     } else {
                         $guest = $response[0]['guest'];
                     }
-                }else{
+                } else {
                     if (strcmp($guest->getState(), "blocked") === 0) {
                         $responseArray[] = array(
                             'result_code' => 1,
                             'result_message' => 'Guest blocked for ' . $guest->getComments()
                         );
+
+                        if ($isImport) {
+                            //email admin person
+                            $communicationApi = new CommunicationApi($this->em, $this->logger);
+                            $emailBody = "There was a problem creating a reservation. Guest Blocked";
+                            $emailBody .= "<br>Room Name:  " . $room->getName();
+                            $emailBody .= "<br>Check In:  " . $checkInDate;
+                            $emailBody .= "<br>Check Out:  " . $checkOutDate;
+                            $emailBody .= "<br>Origin:  " . $origin;
+                            $emailBody .= "<br>Uid:  " . $uid;
+                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                        }
+
                         return $responseArray;
                     }
                 }
@@ -620,8 +648,21 @@ class ReservationApi
                 if (!$isRoomAvailable) {
                     $responseArray[] = array(
                         'result_code' => 1,
-                        'result_message' => 'Tried to create\import a reservation. Room not available for selected dates ' . $checkInDate . " - " .  $checkOutDate
+                        'result_message' => 'Tried to create\import a reservation. Room not available for selected dates ' . $checkInDate . " - " . $checkOutDate
                     );
+
+                    if ($isImport) {
+                        //email admin person
+                        $communicationApi = new CommunicationApi($this->em, $this->logger);
+                        $emailBody = "There was a problem creating a reservation. Room Not Available";
+                        $emailBody .= "<br>Room Name:  " . $room->getName();
+                        $emailBody .= "<br>Check In:  " . $checkInDate;
+                        $emailBody .= "<br>Check Out:  " . $checkOutDate;
+                        $emailBody .= "<br>Origin:  " . $origin;
+                        $emailBody .= "<br>Uid:  " . $uid;
+                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                    }
+
                     return $responseArray;
                 }
 
@@ -709,9 +750,20 @@ class ReservationApi
         (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
             );
             $this->logger->debug(print_r($responseArray, true));
+            if ($isImport) {
+                //email admin person
+                $communicationApi = new CommunicationApi($this->em, $this->logger);
+                $emailBody = "There was an exception creation a reservation: " . $ex->getMessage();
+                $emailBody .= "<br>Room Name:  " . $room->getRoom()->getName();
+                $emailBody .= "<br>Check In:  " . $checkInDate;
+                $emailBody .= "<br>Check Out:  " . $checkOutDate;
+                $emailBody .= "<br>Origin:  " . $origin;
+                $emailBody .= "<br>Uid:  " . $uid;
+                $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+            }
         }
 
 
@@ -725,14 +777,14 @@ class ReservationApi
         $isEligible = true;
         if ($reservation->getGuest()->getIdNumber() == null && strcasecmp($reservation->getOrigin(), "website") == 0) {
             $isEligible = false;
-        }else{
+        } else {
             $this->logger->debug("id is not null " . $reservation->getGuest()->getIdNumber());
             $this->logger->debug("id is not null " . $reservation->getOrigin());
         }
 
         if (strcasecmp($reservation->getGuest()->getPhoneNumber(), "") == 0) {
             $isEligible = false;
-        }else{
+        } else {
             $this->logger->debug("phone is not empty " . $reservation->getGuest()->getPhoneNumber());
         }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
@@ -793,7 +845,7 @@ class ReservationApi
                     //send email if provided
                     if (!empty($reservation->getGuest()->getEmail())) {
                         $this->sendReviewEmail($reservation);
-                    }else{
+                    } else {
                         //send sms
                         if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
                             $this->logger->debug("this is a south african number " . $reservation->getGuest()->getPhoneNumber());
@@ -809,7 +861,7 @@ class ReservationApi
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
             );
             $this->logger->error(print_r($responseArray, true));
         }

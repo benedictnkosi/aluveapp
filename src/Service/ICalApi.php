@@ -6,6 +6,7 @@ use App\Entity\Config;
 use App\Entity\Ical;
 use App\Entity\ReservationStatus;
 use App\Entity\Rooms;
+use App\Entity\RoomStatus;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,7 +36,8 @@ class ICalApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $rooms = $this->em->getRepository(Rooms::class)->findAll();
+            $status = $this->em->getRepository(RoomStatus::class)->findOneBy(array('name' => 'live'));
+            $rooms = $this->em->getRepository(Rooms::class)->findBy(array('status' => $status));
             foreach ($rooms as $room) {
                 $this->logger->debug("Starting import for room: " . $room->getName());
                 $this->importIcalForRoom($room->getId());
@@ -46,7 +48,7 @@ class ICalApi
             );
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -64,7 +66,7 @@ class ICalApi
         $reservations = $reservationApi->getReservationsByOriginalRoomAndOrigin($roomId, $origin);
         if ($reservations !== null) {
             foreach ($reservations as $reservation) {
-                    $this->logger->debug("Iterating the reservations " . $reservation->getId());
+                $this->logger->debug("Iterating the reservations " . $reservation->getId());
                 $res_uid = $reservation->getUid();
                 $isReservationOnEvents = false;
                 try {
@@ -82,15 +84,31 @@ class ICalApi
 
 
                 if (!$isReservationOnEvents) {
-                    $this->logger->debug("Reservation not found on the events " . $reservation->getId() );
-                    //cancel reservation if not found on events
-                    $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'cancelled'));
-                    $reservation->setStatus($status);
-                    $this->em->persist($reservation);
-                    $this->em->flush($reservation);
-                    $blockedRoomApi = new BlockedRoomApi($this->em, $this->logger);
-                    $blockedRoomApi->deleteBlockedRoomByReservation($reservation->getId());
-                    $this->logger->debug("Reservation successfully cancelled");
+                    $this->logger->debug("Reservation not found on the events " . $reservation->getId());
+                    try {
+                        $blockedRoomApi = new BlockedRoomApi($this->em, $this->logger);
+                        $blockedRoomApi->deleteBlockedRoomByReservation($reservation->getId());
+
+                        //cancel reservation if not found on events
+                        $this->em->remove($reservation);
+                        $this->em->flush($reservation);
+
+                        $this->logger->debug("Reservation successfully cancelled");
+                    } catch (Exception $ex) {
+                        $this->logger->error("Error looping events " . $ex->getMessage());
+
+                        //email admin person
+                        $communicationApi = new CommunicationApi($this->em, $this->logger);
+                        $emailBody = "There was a problem cancelling a reservation: " . $ex->getMessage();
+                        $emailBody .= "\r\nReservation Id:  " . $reservation->getId();
+                        $emailBody .= "\r\nRoom Name:  " . $reservation->getRoom()->getName();
+                        $emailBody .= "\r\nCheck In:  " . $reservation->getCheckIn()->format("d M Y");
+                        $emailBody .= "\r\nCheck Out:  " . $reservation->getCheckOut()->format("d M Y");
+
+                        $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $reservation->getRoom()->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+
+                    }
+
                 }
             }
         }
@@ -114,17 +132,17 @@ class ICalApi
             $count = 0;
             while (!$fileGetPassed && $count < 5) {
                 $count++;
-                try{
+                try {
                     $events = VObject\Reader::read(
                         file_get_contents($ical->getLink())
                     );
                     $fileGetPassed = true;
-                }catch(Exception $ex){
+                } catch (Exception $ex) {
                     $this->logger->debug("Exception Occurred and the count is $count " . $ex->getMessage());
                 }
             }
 
-            if(!$fileGetPassed){
+            if (!$fileGetPassed) {
                 $icalMessagesArray[] = array(
                     "ERROR: Failed to get content for link "
                 );
@@ -139,7 +157,7 @@ class ICalApi
                 $this->logger->debug("events found  " . count($events));
                 $i = 0;
 
-                if($events->VEVENT === null){
+                if ($events->VEVENT === null) {
                     $icalMessagesArray[] = array(
                         "SUCCESS: No events found for link"
                     );
@@ -280,25 +298,26 @@ class ICalApi
         return $responseArray;
     }
 
-    function updateIcalLogs($ical, $icalMessagesArray){
+    function updateIcalLogs($ical, $icalMessagesArray)
+    {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $this->logger->debug("icalMessagesArray: " . print_r($icalMessagesArray, true));
         $icalHtmlMessage = "";
         $now = new DateTime();
-        foreach($icalMessagesArray as $icalMessage){
+        foreach ($icalMessagesArray as $icalMessage) {
             $this->logger->debug("icalMessage: " . print_r($icalMessage, true));
             $class = "logs-success";
-            if(str_contains($icalMessage[0], "ERROR")){
+            if (str_contains($icalMessage[0], "ERROR")) {
                 $class = 'logs-error';
-            }elseif(str_contains($icalMessage[0], "WARNING")){
+            } elseif (str_contains($icalMessage[0], "WARNING")) {
                 $class = 'logs-warning';
             }
-            $icalHtmlMessage .= '<p class="'.$class.'">' . $now->format('Y-m-d H:i:s') . ' - ' . $icalMessage[0] . '</p>';
+            $icalHtmlMessage .= '<p class="' . $class . '">' . $now->format('Y-m-d H:i:s') . ' - ' . $icalMessage[0] . '</p>';
         }
 
         $ical->setLogs($icalHtmlMessage);
-        if (! $this->em->isOpen()) {
-            $this->em =  $this->em->create(
+        if (!$this->em->isOpen()) {
+            $this->em = $this->em->create(
                 $this->em->getConnection(),
                 $this->em->getConfiguration()
             );
@@ -358,7 +377,7 @@ class ICalApi
             return $this->em->getRepository(Ical::class)->findBy(array('room' => $roomId));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -415,8 +434,8 @@ class ICalApi
 
 
                     $icalString .= "BEGIN:VEVENT\r\n";
-                    $icalString .= "UID:". $uid . "\r\n";
-                    $icalString .= "DTSTAMP:" .  $now->format('Ymd') . 'T100058Z' . "\r\n";
+                    $icalString .= "UID:" . $uid . "\r\n";
+                    $icalString .= "DTSTAMP:" . $now->format('Ymd') . 'T100058Z' . "\r\n";
                     $icalString .= "DTSTART:" . $event_start . "\r\n";
                     $icalString .= "DTEND:" . $event_end . "\r\n";
                     $icalString .= "LOCATION:none\r\n";
@@ -448,8 +467,8 @@ class ICalApi
                     // create the event within the ical object
 
                     $icalString .= "BEGIN:VEVENT\r\n";
-                    $icalString .= "UID:". $uid . "\r\n";
-                    $icalString .= "DTSTAMP:" .  $now->format('Ymd') . 'T100058Z' . "\r\n";
+                    $icalString .= "UID:" . $uid . "\r\n";
+                    $icalString .= "DTSTAMP:" . $now->format('Ymd') . 'T100058Z' . "\r\n";
                     $icalString .= "DTSTART:" . $event_start . "\r\n";
                     $icalString .= "DTEND:" . $event_end . "\r\n";
                     $icalString .= "LOCATION:none\r\n";
@@ -473,17 +492,18 @@ class ICalApi
         return $icalString;
     }
 
-    function format_ical_string( $s ) {
+    function format_ical_string($s)
+    {
         $r = wordwrap(
             preg_replace(
-                array( '/,/', '/;/', '/[\r\n]/' ),
-                array( '\,', '\;', '\n' ),
+                array('/,/', '/;/', '/[\r\n]/'),
+                array('\,', '\;', '\n'),
                 $s
             ), 73, "\n", TRUE
         );
 
         // Indent all lines but first:
-        $r = preg_replace( '/\n/', "\n  ", $r );
+        $r = preg_replace('/\n/', "\n  ", $r);
 
         return $r;
     }
@@ -503,7 +523,7 @@ class ICalApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -566,7 +586,7 @@ class ICalApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -584,7 +604,7 @@ class ICalApi
             return $this->em->getRepository(Ical::class)->findBy(array('room' => $roomId));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -615,7 +635,7 @@ class ICalApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));

@@ -59,6 +59,13 @@ class Property
     /**
      * @var string
      *
+     * @ORM\Column(name="admin_email", type="string", length=100, nullable=false)
+     */
+    private $adminEmail;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="server_name", type="string", length=100, nullable=false)
      */
     private $serverName;
@@ -206,6 +213,22 @@ class Property
     public function setEmailAddress(string $emailAddress): void
     {
         $this->emailAddress = $emailAddress;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdminEmail(): string
+    {
+        return $this->adminEmail;
+    }
+
+    /**
+     * @param string $adminEmail
+     */
+    public function setAdminEmail(string $adminEmail): void
+    {
+        $this->adminEmail = $adminEmail;
     }
 
     /**
