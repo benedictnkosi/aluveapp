@@ -119,7 +119,7 @@ class CleaningApi
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $cleaning = $this->em->getRepository(Cleaning::class)->findOneBy(array('reservation' => $reservation->getId()),
-            array('date' => 'ASC'));
+            array('date' => 'DESC'));
 
 
         $lastCleanDate = $reservation->getCheckIn();
