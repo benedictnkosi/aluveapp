@@ -239,7 +239,7 @@ class ReservationApi
         return $reservations;
     }
 
-    public function getCheckOutReservation($origin = null)
+    public function getCheckOutReservation($propertyId)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $reservations = null;
@@ -247,19 +247,14 @@ class ReservationApi
             $datetime = new DateTime();
             $status = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
 
-            $originFilter = "";
-            if ($origin !== null) {
-                $originFilter = "and r.origin = $origin";
-            }
 
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
                 JOIN a.property p
-            where p.id = " . $_SESSION['PROPERTY_ID'] . "
+            where p.id = " . $propertyId . "
             and r.checkOut = '" . $datetime->format('Y-m-d') . "'
             and r.status = '" . $status->getId() . "'
-            $originFilter
             order by r.checkOut desc")
                 ->getResult();
 
@@ -871,13 +866,13 @@ class ReservationApi
     }
 
 
-    public function sendReviewRequest(): array
+    public function sendReviewRequest($propertyId): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
 
         $responseArray = array();
         try {
-            $reservations = $this->getCheckOutReservation();
+            $reservations = $this->getCheckOutReservation($propertyId);
             if ($reservations != null) {
                 foreach ($reservations as $reservation) {
                     //send email if provided

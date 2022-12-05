@@ -310,13 +310,13 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("public/reviews/send")
+     * @Route("public/reviews/send/{propertyId}")
      * @throws \Exception
      */
-    public function sendReviewRequest(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function sendReviewRequest($propertyId, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $reservationApi->sendReviewRequest();
+        $response = $reservationApi->sendReviewRequest($propertyId);
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);

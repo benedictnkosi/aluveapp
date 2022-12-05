@@ -71,3 +71,11 @@ delete from add_ons where id > 0;
 delete from employee where id > 0;
 delete from message_template where id > 0;
 delete from schedule_messages where id > 0;
+
+
+numbers by origin
+
+SELECT SUM(DATEDIFF(`check_in`,`check_out`)),`origin`,check_in, check_out FROM `reservations`
+where `check_in` > '2022-11-06'
+and `check_out` < '2022-12-05'
+GROUP BY origin

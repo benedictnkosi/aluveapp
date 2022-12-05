@@ -61,6 +61,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
           type="text/css" />
 
     <style>
+        .alert-dismissible .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 2;
+            padding: 0.75rem 1.25rem;
+            color: inherit;
+        }
         table {
             border-collapse: separate;
             border-spacing: 0;
@@ -104,6 +112,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
           type="text/css" />
 </head>
 <body>
+<div class="alert alert-success alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Success!</strong> This alert box could indicate a successful or positive action.
+</div>
+
 <nav class="navbar">
     <!-- LOGO -->
     <div class="logo">Aluve Hotel Manager</div>
