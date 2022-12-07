@@ -439,8 +439,8 @@ class SingleReservationHtml
         //Mark room as cleaned
         $this->logger->debug("HTML output - Mark room as cleaned " . $reservation->getId());
         $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_mark_cleaned_' . $reservationId . '" ><select id="select_employee_' . $reservationId . '">';
-        $htmlString .= ' <option value="today">Today</option>';
-        $htmlString .= ' <option value="yesterday">Yesterday</option>';
+        $htmlString .= ' <option value="today">Cleaned Today</option>';
+        $htmlString .= ' <option value="yesterday">Cleaned Yesterday</option>';
 
         $htmlString .= '</select> 
             </div>';
