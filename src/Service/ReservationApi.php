@@ -808,18 +808,14 @@ class ReservationApi
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $isEligible = true;
-        if ($reservation->getGuest()->getIdNumber() == null && strcasecmp($reservation->getOrigin(), "website") == 0) {
+        if ($reservation->getGuest()->getIdNumber() == null) {
             $isEligible = false;
-        } else {
-            $this->logger->debug("id is not null " . $reservation->getGuest()->getIdNumber());
-            $this->logger->debug("id is not null " . $reservation->getOrigin());
         }
 
         if (strcasecmp($reservation->getGuest()->getPhoneNumber(), "") == 0) {
             $isEligible = false;
-        } else {
-            $this->logger->debug("phone is not empty " . $reservation->getGuest()->getPhoneNumber());
         }
+
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $isEligible;
     }
