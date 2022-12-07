@@ -26,16 +26,22 @@ class CleaningApi
         }
     }
 
-    public function addCleaningToReservation($resId, $employeeId): array
+    public function addCleaningToReservation($resId, $day): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
-            $employee = $this->em->getRepository(Employee::class)->findOneBy(array('id' => $employeeId));
+            $employee = $this->em->getRepository(Employee::class)->findOneBy(array('id' => 1));
 
             $cleaning = new Cleaning();
-            $now = new DateTime('today midnight');
+            if(strcmp($day, "today") == 0){
+                $now = new DateTime('today');
+            }else{
+                $now = new DateTime('yesterday');
+            }
+
+            $cleaning->setReservation($reservation);
 
             $cleaning->setReservation($reservation);
             $cleaning->setCleaner($employee);
