@@ -5,6 +5,9 @@ namespace App\Service;
 use App\Entity\Cleaning;
 use App\Entity\Employee;
 use App\Entity\Reservations;
+use App\Entity\Rooms;
+use App\Entity\RoomStatus;
+use App\Helpers\DatabaseHelper;
 use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -20,8 +23,8 @@ class CleaningApi
     {
         $this->em = $entityManager;
         $this->logger = $logger;
-        if(session_id() === ''){
-            $logger->info("Session id is empty". __METHOD__ );
+        if (session_id() === '') {
+            $logger->info("Session id is empty" . __METHOD__);
             session_start();
         }
     }
@@ -35,9 +38,9 @@ class CleaningApi
             $employee = $this->em->getRepository(Employee::class)->findOneBy(array('id' => 1));
 
             $cleaning = new Cleaning();
-            if(strcmp($day, "today") == 0){
+            if (strcmp($day, "today") == 0) {
                 $now = new DateTime('today');
-            }else{
+            } else {
                 $now = new DateTime('yesterday');
             }
 
@@ -56,7 +59,7 @@ class CleaningApi
             $this->logger->debug("no errors adding cleaning for reservation $resId. cleaner $employee->getId()");
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error("Error " . print_r($responseArray, true));
@@ -86,14 +89,14 @@ class CleaningApi
                         'cleaned_by' => $cleaning->getCleaner()->getName()
                     );
                 }
-            }else{
+            } else {
                 $responseArray[] = array(
                     'cleaned' => false
                 );
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error("Error " . print_r($responseArray, true));
@@ -111,7 +114,7 @@ class CleaningApi
             return $this->em->getRepository(Cleaning::class)->findBy(array('reservation' => $resId));
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error("Error " . print_r($responseArray, true));
@@ -129,16 +132,16 @@ class CleaningApi
 
 
         $lastCleanDate = $reservation->getCheckIn();
-        if($cleaning !== null){
+        if ($cleaning !== null) {
             $lastCleanDate = $cleaning->getDate();
         }
 
         $now = new DateTime();
         $totalDaysSinceCleaning = intval($now->diff($lastCleanDate)->format('%a'));
         $this->logger->debug("days since last cleaning is " . $totalDaysSinceCleaning);
-        if($totalDaysSinceCleaning > 1 ){
+        if ($totalDaysSinceCleaning > 1) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -149,25 +152,25 @@ class CleaningApi
         $responseArray = array();
         try {
             $htmlResponse = "";
-            $reservations  =  $this->em->getRepository(Reservations::class)->findBy(array('room' => $roomId),
+            $reservations = $this->em->getRepository(Reservations::class)->findBy(array('room' => $roomId),
                 array('checkOut' => 'desc'));
             $cleaningsFound = false;
-            foreach($reservations  as $reservation){
+            foreach ($reservations as $reservation) {
                 $cleanings = $this->em->getRepository(Cleaning::class)->findBy(
                     array('reservation' => $reservation->getId()),
-                array('date' => 'desc'),
+                    array('date' => 'desc'),
                     100
                 );
-                foreach($cleanings  as $cleaning){
+                foreach ($cleanings as $cleaning) {
                     $date = $cleaning->getDate()->format("Y-m-d");
                     $room = $reservation->getRoom()->getName();
                     $cleanerName = $cleaning->getCleaner()->getName();
-                    $htmlResponse .= '<h5 class="em1-top-padding">'.$date.' -  ' . $cleanerName .' cleaned '. $room .'</h5>';
+                    $htmlResponse .= '<h5 class="em1-top-padding">' . $date . ' -  ' . $cleanerName . ' cleaned ' . $room . '</h5>';
                     $cleaningsFound = true;
                 }
             }
 
-            if(!$cleaningsFound){
+            if (!$cleaningsFound) {
                 return "<h5>No cleanings found for this room</h5>";
             }
 
@@ -177,6 +180,62 @@ class CleaningApi
         }
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $htmlResponse;
+    }
+
+    public function getOutstandingCleaningsForToday()
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $htmlResponse = "<tr><th>Room Name</th><th>Reason</th></tr>";
+
+            //get check-outs without cleaning
+            $now = new DateTime('today');
+            $twoDaysAgo = date("Y-m-d", strtotime("-2 day"));
+
+            $this->logger->debug("date 2 days " . $twoDaysAgo);
+
+            $checkOutsWithoutCleaningSQL = "SELECT `reservations`.id, name FROM `reservations`, rooms
+WHERE reservations.room_id = rooms.id
+and check_out = '" . $now->format("Y-m-d") . "'
+and `reservations`.status =1
+and `reservations`.id not IN (Select reservation_id from cleaning where date = '" . $now->format("Y-m-d") . "');";
+
+            $this->logger->debug($checkOutsWithoutCleaningSQL);
+
+            $stayOversWithoutCleaningSQL = "SELECT `reservations` .id, name FROM `reservations` , rooms
+WHERE `reservations`.`room_id` = rooms.id
+and check_out > '" . $now->format("Y-m-d") . "'
+and check_in < '" . $now->format("Y-m-d") . "'
+and `reservations`.status =1
+and `reservations`.id not IN (Select reservation_id from cleaning where date > '" . $twoDaysAgo . "');
+";
+
+
+            $databaseHelper = new DatabaseHelper($this->logger);
+            $result = $databaseHelper->queryDatabase($checkOutsWithoutCleaningSQL);
+
+            if ($result) {
+                while ($results = $result->fetch_assoc()) {
+                    $htmlResponse .= "<tr><td>".$results["name"]."</td><td>Guest checked out</td></tr>";
+                }
+            }
+
+            $result = $databaseHelper->queryDatabase($stayOversWithoutCleaningSQL);
+
+            if ($result) {
+                while ($results = $result->fetch_assoc()) {
+                    $htmlResponse .= "<tr><td>".$results["name"]."</td><td>Not cleaned in 2 days</td></tr>";
+                }
+            }
+
+            $this->logger->debug(print_r($responseArray));
+
+        } catch (Exception $ex) {
+            $this->logger->error("Error " . $ex->getMessage());
+        }
+
         return $htmlResponse;
     }
 

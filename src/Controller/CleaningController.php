@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Helpers\FormatHtml\CalendarHTML;
 use App\Service\CleaningApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,17 +30,38 @@ class CleaningController extends AbstractController
         return $response;
     }
 
+
     /**
-     * @Route("api/cleaning/{reservationId}/cleaner/{cleanerId}")
+     * @Route("api/outstandingcleanings/today")
      */
-    public function addCleanerToReservation($reservationId, $cleanerId, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
+    public function getOutstandingCleaningsForToday(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $cleaningApi->addCleaningToReservation($reservationId,$cleanerId);
+        $html = $cleaningApi->getOutstandingCleaningsForToday();
+        $response = array(
+            'html' => $html,
+        );
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
     }
+
+    /**
+     * @Route("api/cleaning/{reservationId}/cleaner/{cleanerId}")
+     */
+    public function addCleaningToReservation($reservationId, $cleanerId, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $html = $cleaningApi->addCleaningToReservation($reservationId,$cleanerId);
+        $response = array(
+            'html' => $html,
+        );
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
 
 }

@@ -204,22 +204,22 @@ pre{
 	border: none !important;
 }
 
-#scheduled_messages_table {
+#scheduled_messages_table, #not-cleaned-rooms-table {
 	font-family: Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
 	width: 100%;
 }
 
-#scheduled_messages_table td, #scheduled_messages_table th {
+#scheduled_messages_table td, #scheduled_messages_table th, #not-cleaned-rooms-table td, #not-cleaned-rooms-table th {
 	border: 1px solid #ddd;
 	padding: 8px;
 }
 
-#scheduled_messages_table tr:nth-child(even){background-color: #f2f2f2;}
+#scheduled_messages_table tr:nth-child(even), #not-cleaned-rooms-table tr:nth-child(even){background-color: #f2f2f2;}
 
 #scheduled_messages_table tr:hover {background-color: #ddd;}
 
-#scheduled_messages_table th {
+#scheduled_messages_table th, #not-cleaned-rooms-table th {
 	padding-top: 12px;
 	padding-bottom: 12px;
 	text-align: left;
