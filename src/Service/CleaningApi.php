@@ -208,7 +208,7 @@ and `reservations`.id not IN (Select reservation_id from cleaning where date = '
             $stayOversWithoutCleaningSQL = "SELECT `reservations` .id, name FROM `reservations` , rooms
 WHERE `reservations`.`room_id` = rooms.id
 and check_out > '" . $now->format("Y-m-d") . "'
-and check_in < '" . $oneDaysAgo->format("Y-m-d") . "'
+and check_in < '" . $oneDaysAgo . "'
 and `reservations`.status =1
 and `reservations`.id not IN (Select reservation_id from cleaning where date > '" . $twoDaysAgo . "');
 ";
