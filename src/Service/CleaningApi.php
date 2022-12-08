@@ -193,6 +193,7 @@ class CleaningApi
             //get check-outs without cleaning
             $now = new DateTime('today');
             $twoDaysAgo = date("Y-m-d", strtotime("-2 day"));
+            $oneDaysAgo = date("Y-m-d", strtotime("-2 day"));
 
             $this->logger->debug("date 2 days " . $twoDaysAgo);
 
@@ -207,7 +208,7 @@ and `reservations`.id not IN (Select reservation_id from cleaning where date = '
             $stayOversWithoutCleaningSQL = "SELECT `reservations` .id, name FROM `reservations` , rooms
 WHERE `reservations`.`room_id` = rooms.id
 and check_out > '" . $now->format("Y-m-d") . "'
-and check_in < '" . $now->format("Y-m-d") . "'
+and check_in < '" . $oneDaysAgo->format("Y-m-d") . "'
 and `reservations`.status =1
 and `reservations`.id not IN (Select reservation_id from cleaning where date > '" . $twoDaysAgo . "');
 ";
