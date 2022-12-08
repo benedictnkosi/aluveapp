@@ -472,6 +472,7 @@ function markAsCleaned(event) {
             if (response[0].result_code === 0) {
                 getReservationById(sessionStorage.getItem("reservation_id"));
                 showResSuccessMessage("reservation", response[0].result_message);
+                getRoomsNotCleaned();
             } else {
                 showResErrorMessage("reservation", response[0].result_message);
             }
