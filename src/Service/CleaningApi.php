@@ -211,7 +211,7 @@ and check_in < '" . $now->format("Y-m-d") . "'
 and `reservations`.status =1
 and `reservations`.id not IN (Select reservation_id from cleaning where date > '" . $twoDaysAgo . "');
 ";
-
+            $this->logger->debug($stayOversWithoutCleaningSQL);
 
             $databaseHelper = new DatabaseHelper($this->logger);
             $result = $databaseHelper->queryDatabase($checkOutsWithoutCleaningSQL);
