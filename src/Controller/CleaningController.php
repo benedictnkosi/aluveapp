@@ -53,10 +53,7 @@ class CleaningController extends AbstractController
     public function addCleaningToReservation($reservationId, $cleanerId, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $html = $cleaningApi->addCleaningToReservation($reservationId,$cleanerId);
-        $response = array(
-            'html' => $html,
-        );
+        $response = $cleaningApi->addCleaningToReservation($reservationId,$cleanerId);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
