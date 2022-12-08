@@ -229,9 +229,6 @@ and `reservations`.id not IN (Select reservation_id from cleaning where date > '
                     $htmlResponse .= "<tr><td>".$results["name"]."</td><td>Not cleaned in 2 days</td></tr>";
                 }
             }
-
-            $this->logger->debug(print_r($responseArray));
-
         } catch (Exception $ex) {
             $this->logger->error("Error " . $ex->getMessage());
         }
