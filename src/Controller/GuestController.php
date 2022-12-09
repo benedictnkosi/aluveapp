@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Helpers\SMSHelper;
+use App\Service\CommunicationApi;
 use App\Service\GuestApi;
 use App\Service\PropertyApi;
 use App\Service\ReservationApi;
@@ -34,6 +36,8 @@ class GuestController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $guestApi->updateGuestPhoneNumber($guestId, $phoneNumber);
+        $guestApi->sendBookDirectSMS($guestId);
+
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

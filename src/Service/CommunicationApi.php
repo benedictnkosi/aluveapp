@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Guest;
 use App\Entity\Property;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,6 +30,7 @@ class CommunicationApi
             session_start();
         }
     }
+
 
     public function sendEmailViaGmail($emailFrom, $emailTo, $messageBody, $subject, $propertyName = "Aluve App", $replyTo = null): array
     {

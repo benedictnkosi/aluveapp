@@ -40,6 +40,7 @@ class ScheduledMessagesController extends AbstractController
         return $response;
     }
 
+
     /**
      * @Route("/public/schedulemessages/weekbefore")
      */

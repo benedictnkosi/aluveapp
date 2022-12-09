@@ -155,7 +155,7 @@ class InvoiceHTML
 				
 				
 				<tr >
-					<td><b>Guesthouse Rules:</b></td>
+					<td><b>Guesthouse Rules:</b><br></td>
 					<td class="no-border"></td>
 					<td class="no-border"> </td>
 					<td class="no-border"></td>

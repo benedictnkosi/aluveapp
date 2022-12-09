@@ -385,6 +385,16 @@ class ReservationApi
         }
     }
 
+    public function getReservationsByGuest($guestId)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        try {
+            return $this->em->getRepository(Reservations::class)->findOneBy(array('guest' => $guestId));
+        } catch (Exception) {
+            return null;
+        }
+    }
+
 
     public function getStayOversReservations()
     {

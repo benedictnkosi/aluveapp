@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Property;
 use App\Entity\Reservations;
+use App\Helpers\SMSHelper;
 use Exception;
 use phpDocumentor\Reflection\Types\Void_;
 use Psr\Log\LoggerInterface;
@@ -314,7 +315,6 @@ class GuestApi
         $guest = null;
         $responseArray = array();
         try {
-            $propertyApi = new PropertyApi($this->em, $this->logger);
             $propertyId =   $_SESSION['PROPERTY_ID'];
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('name' => $name, 'property' => $propertyId));
         } catch (Exception $exception) {
@@ -329,6 +329,24 @@ class GuestApi
         return $guest;
     }
 
+    public function getGuestById($guestId)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $guest = null;
+        $responseArray = array();
+        try {
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId));
+        } catch (Exception $exception) {
+            $responseArray[] = array(
+                'result_message' => $exception->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $guest;
+    }
 
     function startsWith($haystack, $needle): bool
     {
@@ -410,5 +428,35 @@ class GuestApi
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
+
+    public function sendBookDirectSMS($guestId)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $guest = null;
+        $responseArray = array();
+        try {
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId));
+            //get room price
+            $reservationApi = new ReservationApi($this->em, $this->logger);
+
+            $reservation = $reservationApi->getReservationsByGuest($guestId);
+            $roomPrice = $reservation->getRoom()->getPrice();
+
+            $SMSHelper = new SMSHelper($this->logger);
+            $message = "Aluve Guesthouse got your number :)  Book directly with us and pay only R$roomPrice per night. Book online aluvegh.co.za or call +27796347610.";
+            $SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
+
+        } catch (Exception $exception) {
+            $responseArray[] = array(
+                'result_message' => $exception->getMessage(),
+                'result_code' => 1
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $guest;
+    }
+
 
 }
