@@ -189,7 +189,7 @@ class CleaningApi
             //get check-outs without cleaning
             $now = new DateTime('today');
             $twoDaysAgo = date("Y-m-d", strtotime("-2 day"));
-            $oneDaysAgo = date("Y-m-d", strtotime("-2 day"));
+            $oneDaysAgo = date("Y-m-d", strtotime("-1 day"));
 
             $this->logger->debug("date 2 days " . $twoDaysAgo);
 
