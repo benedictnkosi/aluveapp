@@ -308,8 +308,8 @@ class PaymentApi
 
             $sql = "SELECT SUM(amount) as totalCash FROM `payments`
             WHERE channel = 'cash'
-            and  `date` > '" . $startDate . "'
-            and date < '" . $endDate . "'";
+            and  `date` >= '" . $startDate . "'
+            and date <= '" . $endDate . "'";
 
             $this->logger->info($sql);
 
