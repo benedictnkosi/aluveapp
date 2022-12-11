@@ -41,18 +41,17 @@ $(document).ready(function () {
     });
 
     let date = new Date();
-    let endDate = new Date(date.getTime());
-    const strToday = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-    const strTomorrow = endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getDate();
-    sessionStorage.setItem('checkInDate', strToday);
-    sessionStorage.setItem('checkOutDate', strTomorrow);
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
 
+    let endDate = new Date(date.getTime());
+    getTotalCash(firstDay.getFullYear() + "-" +( firstDay.getMonth() + 1) + "-" + firstDay.getDate(),
+        date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
     //date picker
     $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
         $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
 
             $('#cashReportDate').daterangepicker({
-                startDate: date,
+                startDate: firstDay,
                 endDate: endDate,
                 opens: 'left',
                 autoApply: true
@@ -67,6 +66,11 @@ $(document).ready(function () {
     });
 
 });
+
+function getFirstDayOfMonth(year, month) {
+    return new Date(year, month, 1);
+}
+
 
 function loadMoreTabPageData() {
     //blocked
