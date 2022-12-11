@@ -11,7 +11,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CT2DSHVCQV"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
         gtag('js', new Date());
 
         gtag('config', 'G-CT2DSHVCQV');
@@ -58,7 +62,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
     <link rel="stylesheet" href="/admin/css/mobile-menu.css"/>
     <link href="/admin/css/dropzone.css" media="all" rel="stylesheet"
-          type="text/css" />
+          type="text/css"/>
 
     <style>
         .alert-dismissible .close {
@@ -69,6 +73,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             padding: 0.75rem 1.25rem;
             color: inherit;
         }
+
         table {
             border-collapse: separate;
             border-spacing: 0;
@@ -105,11 +110,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
     </style>
     <link href="/admin/css/dropzone.css" media="all" rel="stylesheet"
-          type="text/css" />
+          type="text/css"/>
     <link href="/admin/css/dropzone-style.css" media="all" rel="stylesheet"
-          type="text/css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css" media="all" rel="stylesheet"
-          type="text/css" />
+          type="text/css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css"
+          media="all" rel="stylesheet"
+          type="text/css"/>
 </head>
 <body>
 
@@ -219,14 +225,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="col-md-7 profile-top-right">
                     <h5 id="reservations-heading">Upcoming Reservations</h5>
                     <a href="javascript:void(0)" class="new-reservation-link" id="new_reservation_button"
-                       ><img class="menu_icon_image"
-                                            src="/admin/images/add.png">New
+                    ><img class="menu_icon_image"
+                          src="/admin/images/add.png">New
                         Reservation</img><i
                                 class="desktopOnlyMenu"></i></a>
                     <a href="javascript:void(0)" class="refresh_items_link" id="refresh_reservations_button"
-                       ><img class="menu_icon_image-5em"
-                                            src="/admin/images/refresh.png"></img><i
-                                class="desktopOnlyMenu"></i></a>
+                    ><img class="menu_icon_image-5em"
+                          src="/admin/images/refresh.png"></img><i
+                            class="desktopOnlyMenu"></i></a>
                 </div>
                 <div class="clearfix"></div>
             </div>
@@ -397,7 +403,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
                         <label>Beds</label>
                         <div>
-                            <input type="text" class="form-control" id="beds_tokenfield" value="" />
+                            <input type="text" class="form-control" id="beds_tokenfield" value=""/>
                         </div>
 
                         <label>TV</label>
@@ -423,7 +429,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <h5>Manage Calendar Sync</h5>
                         <a href="javascript:void(0)" class="refresh_items_link" id="refresh_ical_button"
                         ><img class="menu_icon_image-5em"
-                              src="/admin/images/refresh.png"  title="Import Calendar"></img><i
+                              src="/admin/images/refresh.png" title="Import Calendar"></img><i
                                 class="desktopOnlyMenu"></i></a>
                         <h5 id="room_export_link"></h5>
 
@@ -439,7 +445,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                             </div>
 
                             <div>
-                                <span><input type="submit" value="Add Channel" id="ical_submit" class="button-50"></span>
+                                <span><input type="submit" value="Add Channel" id="ical_submit"
+                                             class="button-50"></span>
                             </div>
                         </form>
                     </div>
@@ -486,7 +493,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <h3>Create New Employee</h3>
                     <div class="addon-left-div">
                         <label>Name</label>
-                        <input type="text" id="employee_name" name="employee_name" placeholder="e.g. Benedict" maxlength="50"
+                        <input type="text" id="employee_name" name="employee_name" placeholder="e.g. Benedict"
+                               maxlength="50"
                                required/>
                     </div>
                     <div>
@@ -516,7 +524,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <textarea id="template_message" name="template_message" maxlength="500" rows="5">Hi guest_name, ....
                     </textarea>
                     <div>
-                        <span><input type="submit" value="Create Template" id="create_template_submit" class="button-50"></span>
+                        <span><input type="submit" value="Create Template" id="create_template_submit"
+                                     class="button-50"></span>
                     </div>
                 </form>
                 <hr>
@@ -538,7 +547,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     </div>
 
                     <div>
-                        <span><input type="submit" value="Schedule Message" id="messages_submit" class="button-50"></span>
+                        <span><input type="submit" value="Schedule Message" id="messages_submit"
+                                     class="button-50"></span>
                     </div>
                 </form>
             </div>
@@ -579,30 +589,36 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 
             <div class="profile-ser">
-                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                <div class="profile-ser-grids-15 filter-other-tabs clickable"
                      id="view_blocked_rooms_tab">
                     <img class="menu_icon_image" src="/admin/images/menu_blocked.png" title="Block Room"></img>
                     <i class="desktopOnlyMenu">Blocked Rooms</i>
                 </div>
-                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                <div class="profile-ser-grids-15 filter-other-tabs clickable"
                      id="block_a_room_tab">
                     <img class="menu_icon_image" src="/admin/images/menu_block_room.png" title="Block A room"></img><i
                         class="desktopOnlyMenu">Block A Room</i>
                 </div>
-                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                <div class="profile-ser-grids-15 filter-other-tabs clickable"
                      id="cleaning_tab">
                     <img class="menu_icon_image" src="/admin/images/menu_cleaning.png" title="Cleaning"></img><i
                         class="desktopOnlyMenu">Cleaning</i>
                 </div>
-                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                <div class="profile-ser-grids-15 filter-other-tabs clickable"
                      id="whatsapp_tab">
                     <img class="menu_icon_image" src="/admin/images/whatsapp.png" title="Whatsapp"></img><i
                         class="desktopOnlyMenu">Whatsapp</i>
                 </div>
-                <div class="profile-ser-grids-20 filter-other-tabs clickable"
+                <div class="profile-ser-grids-15 filter-other-tabs clickable"
                      id="occupancy_tab">
                     <img class="menu_icon_image" src="/admin/images/menu_stats.png" title="Occupancy"></img><i
                         class="desktopOnlyMenu">Occupancy</i>
+                </div>
+                <div class="profile-ser-grids-15 filter-other-tabs clickable"
+                     id="cash_report_tab">
+                    <img class="menu_icon_image" src="/admin/images/Iconsmind-Outline-Money-2.ico"
+                         title="Cash Report"></img><i
+                        class="desktopOnlyMenu">Cash Report</i>
                 </div>
 
                 <div class="clearfix"></div>
@@ -618,6 +634,29 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <div id="block_error_message_div" class="flex2 display-none">
                         <h5 id="block_error_message"></h5>
                     </div>
+                </div>
+            </div>
+
+            <div class="profile-w3layouts other_feature_tab display-none reservations_div"
+                 id="div-cash-report">
+                <div class="profile-top">
+                    <div class="col-md-7 profile-top-right">
+                        <h5>
+                            Cash Report
+                        </h5>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+
+                <div class="profile-ser " id="cash_report_div">
+                    <h5>Start and End Date</h5>
+                    <span class="glyphicon glyphicon-calendar glyphicon-small-icon">
+						                <input id="cashReportDate" type="text" name="cashReportDate"
+                                               class="input-as-text date-picker check_in_date_input">
+						            </span>
+                    <h1 id="total_cash_amount_h1">R0.00</h1>
+
                 </div>
             </div>
 
@@ -659,7 +698,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     </div>
                 </div>
             </div>
-
 
 
             <div class="profile-w3layouts other_feature_tab display-none reservations_div"

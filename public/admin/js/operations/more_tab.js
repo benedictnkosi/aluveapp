@@ -39,6 +39,33 @@ $(document).ready(function () {
             '_blank' // <- This is what makes it open in a new window.
         );
     });
+
+    let date = new Date();
+    let endDate = new Date(date.getTime());
+    const strToday = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+    const strTomorrow = endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getDate();
+    sessionStorage.setItem('checkInDate', strToday);
+    sessionStorage.setItem('checkOutDate', strTomorrow);
+
+    //date picker
+    $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
+        $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
+
+            $('#cashReportDate').daterangepicker({
+                startDate: date,
+                endDate: endDate,
+                opens: 'left',
+                autoApply: true
+            }, function (start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
+
+            $('#cashReportDate').on('apply.daterangepicker', function (event, picker) {
+                getTotalCash(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
+            });
+        });
+    });
+
 });
 
 function loadMoreTabPageData() {
@@ -76,6 +103,9 @@ function filterOtherTabs(event) {
             break;
         case "occupancy_tab":
             $('#div-occupancy').removeClass("display-none");
+            break;
+        case "cash_report_tab":
+            $('#div-cash-report').removeClass("display-none");
             break;
         default:
         // code block
@@ -321,3 +351,31 @@ function getOccupancyPerRoom(period) {
 }
 
 
+
+function getTotalCash(startDate, endDate) {
+    isUserLoggedIn();
+    let url = "/api/payment/total/cash/" + startDate + "/" + endDate;
+    $.ajax({
+        type: "GET",
+        url: url,
+        processData: true,
+        data: {},
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "origin, content-type, accept"
+        },
+        dataType: "jsonp",
+        success: function (data) {
+            $("body").removeClass("loading");
+            $("#total_cash_amount_h1").text("R" + data[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            console.log("request for getTotalCash is " + xhr.status);
+            if (!isRetry("getTotalCash")) {
+                return;
+            }
+            getTotalCash(startDate, endDate);
+        }
+    });
+}

@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Payments;
 use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
+use App\Helpers\DatabaseHelper;
 use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -296,5 +297,56 @@ class PaymentApi
             $this->logger->error($ex->getMessage());
             return 0;
         }
+    }
+
+    public function getCashReport($startDate, $endDate)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+
+        try {
+
+            $sql = "SELECT SUM(amount) as totalCash FROM `payments`
+            WHERE channel = 'cash'
+            and  `date` > '" . $startDate . "'
+            and date < '" . $endDate . "'";
+
+            $this->logger->info($sql);
+
+            //echo $sql;
+            $databaseHelper = new DatabaseHelper($this->logger);
+            $result = $databaseHelper->queryDatabase($sql);
+
+
+            if (!$result) {
+                $responseArray[] = array(
+                    'result_message' => 0,
+                    'result_code' => 0
+                );
+            } else {
+                $amount = 0;
+                while ($results = $result->fetch_assoc()) {
+                    if($results["totalCash"] !== null){
+                        $amount = $results["totalCash"];
+                    }
+
+                    $this->logger->info("amount is " . $results["totalCash"]);
+                }
+                $responseArray[] = array(
+                    'result_message' => number_format($amount,2),
+                    'result_code' => 0
+                );
+            }
+            return $responseArray;
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error("failed to get occupancy " . print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
     }
 }
