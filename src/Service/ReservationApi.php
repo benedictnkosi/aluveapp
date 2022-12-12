@@ -939,10 +939,11 @@ class ReservationApi
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $roomApi = new RoomApi($this->em, $this->logger);
-        $now = new DateTime('today midnight');
+
 
         $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId, 'status'=>1));
         foreach ($rooms as $room) {
+            $now = new DateTime();
             if ($roomApi->isRoomAvailable($room->getId(), $now->format('Y-m-d'), $now->add(new DateInterval("P1D"))->format('Y-m-d'))) {
                 return false;
             }

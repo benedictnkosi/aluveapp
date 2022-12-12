@@ -41,7 +41,7 @@ class NotificationApi
         }
     }
 
-    public function updateAdsNotificationAction($name, $action)
+    public function updateAdsNotificationAction($name, $action): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
