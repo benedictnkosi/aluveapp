@@ -18,10 +18,23 @@ class NotificationController  extends AbstractController
     /**
      * @Route("api/notifications")
      */
-    public function getNotifications( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
+    public function getNotifications( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, NotificationApi $notificationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $html = $cleaningApi->isCleaningRequiredToday("28");
+        $notifications = $notificationApi->getNotificationsToAction();
+        $callback = $request->get('callback');
+        $response = new JsonResponse($notifications , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
+     * @Route("api/notifications/ads/{propertyUid}")
+     */
+    public function updateAdsNotification($propertyUid, LoggerInterface $logger, Request $request, NotificationApi $notificationApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $html = $notificationApi->updateAdsNotification($propertyUid, $request);
         $response = array(
             'html' => $html,
         );
@@ -30,4 +43,22 @@ class NotificationController  extends AbstractController
         $response->setCallback($callback);
         return $response;
     }
+
+
+    /**
+     * @Route("api/notifications/action/{name}")
+     */
+    public function updateNotificationAsActioned($name, LoggerInterface $logger, Request $request, NotificationApi $notificationApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $html = $notificationApi->updateAdsNotificationAction($name, true);
+        $response = array(
+            'html' => $html,
+        );
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
 }

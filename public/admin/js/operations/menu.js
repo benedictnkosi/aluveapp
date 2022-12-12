@@ -63,9 +63,6 @@ function loadDataOnMenuClick(selectedDiv) {
         case 'calendar':
             loadCalendarPageData();
             break;
-        case 'notifications':
-            loadNotificationsPageData();
-            break;
         case 'upcoming-reservations':
             loadReservationsPageData();
             break;

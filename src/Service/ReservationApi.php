@@ -725,6 +725,9 @@ class ReservationApi
                     $blockRoomApi->blockRoom($room->getLinkedRoom(), $checkInDate, $checkOutDate, "Connected Room Booked ", $reservation->getId());
                 }
 
+                //check google ads notification
+                $notificationApi = new NotificationApi($this->em, $this->logger);
+                $notificationApi->updateAdsNotification($room->getProperty()->getUid(),$request);
 
                 if (!$isImport) {
                     //send SMS
@@ -930,5 +933,16 @@ class ReservationApi
             return false;
         }
     }
+
+    public function isAllRoomsBooked($propertyId, $request)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $roomApi = new RoomApi($this->em, $this->logger);
+        $now = new DateTime('today midnight');
+        $availableRooms = $roomApi->getAvailableRooms($now->format('Y-m-d'), $now->add(new DateInterval("P1D"))->format('Y-m-d'), $request, $propertyId);
+        return sizeof($availableRooms) < 1;
+    }
+
+
 
 }
