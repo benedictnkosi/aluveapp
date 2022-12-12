@@ -55,7 +55,7 @@ function addNotificationToBody(notificationName, message, linkText, url) {
 
 function markNotificationAsActioned(notificationName) {
     $("body").addClass("loading");
-    let url = "api/notifications/action/" + notificationName;
+    let url = "/api/notifications/action/" + notificationName;
     $.ajax({
         type: "get",
         url: url,
