@@ -288,14 +288,16 @@ class GuestApi
         return $responseArray;
     }
 
-    public function getGuestByPhoneNumber($phoneNumber, $request)
+    public function getGuestByPhoneNumber($phoneNumber, $request, $propertyId = null)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $guest = null;
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            $propertyId = $propertyApi->getPropertyIdByHost($request);
+            if($propertyId === null){
+                $propertyId = $propertyApi->getPropertyIdByHost($request);
+            }
             $guest = $this->em->getRepository(Guest::class)->findOneBy(array('phoneNumber' => str_replace("+27", "0", trim($phoneNumber)), 'property' => $propertyId));
         } catch (Exception $exception) {
             $responseArray[] = array(

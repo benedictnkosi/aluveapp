@@ -585,20 +585,20 @@ class ReservationApi
                 //get guest
                 $guestApi = new GuestApi($this->em, $this->logger);
                 $guest = null;
+                //get room
+
+                $room = $roomApi->getRoom($roomId);
+
                 if (strcmp($origin, "airbnb.com") === 0) {
                     $guest = $guestApi->getGuestByName("Airbnb Guest");
                 } elseif (strcmp($origin, "booking.com") === 0) {
                     if (!empty($phoneNumber)) {
-                        $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
+                        $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request, $room->getProperty()->getId());
                     }
                 } elseif (strlen($phoneNumber) > 1) {
-                    $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request);
+                    $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request, $room->getProperty()->getId());
                 }
 
-
-                //get room
-
-                $room = $roomApi->getRoom($roomId);
 
                 if ($guest == null) {
                     $this->logger->debug("guest not found, creating a new guest");

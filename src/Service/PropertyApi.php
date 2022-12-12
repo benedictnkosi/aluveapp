@@ -116,6 +116,26 @@ class PropertyApi
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
+
+    public function getPropertyByUid($uid): ?array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            return $this->em->getRepository(Property::class)->findOneBy(
+                array("uid" =>$uid));
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return null;
+    }
+
     public function getPropertyUid(): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
