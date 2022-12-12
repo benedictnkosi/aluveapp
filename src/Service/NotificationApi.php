@@ -22,12 +22,12 @@ class NotificationApi
         }
     }
 
-    public function updateAdsNotification($propertyUid, $request)
+    public function updateAdsNotification($propertyId)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             $reservationApi = new ReservationApi($this->em, $this->logger);
-            $isAllRoomsBooked = $reservationApi->isAllRoomsBooked($propertyUid, $request);
+            $isAllRoomsBooked = $reservationApi->isAllRoomsBooked($propertyId);
             if ($isAllRoomsBooked) {
                 $notification = $this->em->getRepository(Notification::class)->findOneBy(array('name' => 'Stop Google Ads'));
                 $notification->setActioned(false);

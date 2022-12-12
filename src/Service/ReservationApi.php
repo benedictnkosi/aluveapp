@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\FailedUids;
 use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
+use App\Entity\Rooms;
 use App\Helpers\SMSHelper;
 use DateInterval;
 use DateTime;
@@ -934,13 +935,19 @@ class ReservationApi
         }
     }
 
-    public function isAllRoomsBooked($propertyId, $request)
+    public function isAllRoomsBooked($propertyId): bool
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $roomApi = new RoomApi($this->em, $this->logger);
         $now = new DateTime('today midnight');
-        $availableRooms = $roomApi->getAvailableRooms($now->format('Y-m-d'), $now->add(new DateInterval("P1D"))->format('Y-m-d'), $request, $propertyId);
-        return sizeof($availableRooms) < 1;
+
+        $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId, 'status'=>1));
+        foreach ($rooms as $room) {
+            if ($roomApi->isRoomAvailable($room->getId(), $now->format('Y-m-d'), $now->add(new DateInterval("P1D"))->format('Y-m-d'))) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

@@ -29,12 +29,12 @@ class NotificationController  extends AbstractController
     }
 
     /**
-     * @Route("api/notifications/ads/{propertyUid}")
+     * @Route("api/notifications/ads/{propertyId}")
      */
-    public function updateAdsNotification($propertyUid, LoggerInterface $logger, Request $request, NotificationApi $notificationApi): Response
+    public function updateAdsNotification($propertyId, LoggerInterface $logger, Request $request, NotificationApi $notificationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $html = $notificationApi->updateAdsNotification($propertyUid, $request);
+        $html = $notificationApi->updateAdsNotification($propertyId);
         $response = array(
             'html' => $html,
         );

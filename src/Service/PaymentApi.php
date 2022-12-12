@@ -117,6 +117,10 @@ class PaymentApi
                         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
                         $blockRoomApi->blockRoom($reservation->getRoom()->getLinkedRoom(), $reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d"), "Connected Room Booked ", $reservation->getId());
 
+                        //check google ads notification
+                        $notificationApi = new NotificationApi($this->em, $this->logger);
+                        $notificationApi->updateAdsNotification($reservation->getRoom()->getProperty()->getId());
+
                         $this->sendEmailToGuest($reservation, $amountPerReservation);
                         $responseArray[] = array(
                             'result_code' => 0,
