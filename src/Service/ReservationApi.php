@@ -727,8 +727,12 @@ class ReservationApi
                 }
 
                 //check google ads notification
-                $notificationApi = new NotificationApi($this->em, $this->logger);
-                $notificationApi->updateAdsNotification($room->getProperty()->getUid(),$request);
+                $now = new DateTime();
+                if (strcmp($reservation->getCheckIn()->format("Y-m-d"), $now->format("Y-m-d")) === 0) {
+                    $notificationApi = new NotificationApi($this->em, $this->logger);
+                    $notificationApi->updateAdsNotification($room->getProperty()->getId());
+                }
+
 
                 if (!$isImport) {
                     //send SMS

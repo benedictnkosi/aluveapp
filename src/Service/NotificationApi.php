@@ -29,7 +29,7 @@ class NotificationApi
             $reservationApi = new ReservationApi($this->em, $this->logger);
             $isAllRoomsBooked = $reservationApi->isAllRoomsBooked($propertyId);
             if ($isAllRoomsBooked) {
-                $notification = $this->em->getRepository(Notification::class)->findOneBy(array('name' => 'Stop Google Ads'));
+                $notification = $this->em->getRepository(Notification::class)->findOneBy(array('name' => 'Pause Google Ads'));
                 $notification->setActioned(false);
                 $this->em->persist($notification);
                 $this->em->flush($notification);
