@@ -1,0 +1,7 @@
+.checked_in{
+    background-color: coral !important;
+}
+
+.checked_out{
+    background-color: white !important;
+}

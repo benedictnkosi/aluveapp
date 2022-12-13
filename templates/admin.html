@@ -122,7 +122,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <body>
 <div id="notifications-div"></div>
 
-
 <nav class="navbar">
     <!-- LOGO -->
     <div class="logo">Aluve Hotel Manager</div>
@@ -274,13 +273,20 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </div>
             </div>
             <div id="future-list" class='reservations_tabs reservations_div'>
-
             </div>
             <div id="past-list" class='reservations_tabs reservations_div display-none'></div>
             <div id="pending-list" class='reservations_tabs reservations_div display-none'></div>
 
             <div id="reservation-details" class='reservations_tabs reservations_details_div display-none'></div>
-
+            <div class="confirm-box-overlay" id="keyCollectedConfirmBox" hidden>
+                <div class="confirm-box">
+                    <div onclick="closeConfirmBox()" class="close">&#10006;</div>
+                    <h2>Confirmation</h2>
+                    <p>Did you collect the key from the guest?</p>
+                    <button onclick="markReservationAsCheckedInOut('checked_out')">Yes</button>
+                    <button onclick="closeConfirmBox()">No</button>
+                </div>
+            </div>
         </div>
 
 

@@ -431,7 +431,7 @@ class SingleReservationHtml
         }
 
         // guest checkout button
-        $this->logger->debug("HTML output - check if guest eligible for check out" . $reservation->getId());
+        $this->logger->debug("HTML output - check if guest eligible for check out" . $reservation->getId() . " - " . $reservation->getCheckInStatus());
         if (strcasecmp($reservation->getCheckInStatus(), "checked_in") === 0) {
             $htmlString .= '<div class="right-side-action-block"><div class="ClickableButton NotCheckedOut" id="check_out_user_' . $reservationId . '" reservation_id="' . $reservationId . '">Check Out Guest</div></div>';
         }

@@ -369,8 +369,15 @@ function filterReservations(event) {
 
 function markReservationAsCheckedInOut(event, status) {
     let reservationID = event.target.getAttribute("reservation_id");
-    $("body").addClass("loading");
+
     isUserLoggedIn();
+    isUserLoggedIn();
+    if(status.localeCompare('checked_out')===0){
+        if (confirm("Did you collect the key from the guest? Select OK if key collected from the guest") === false) {
+            return;
+        }
+    }
+    $("body").addClass("loading");
     let url = "/api/reservations/" + reservationID + "/update/check_in_status/" + status;
     $.getJSON(url + "?callback=?", null, function (response) {
 
