@@ -34,6 +34,7 @@ class NotificationController  extends AbstractController
     public function updateAdsNotification($propertyId, LoggerInterface $logger, Request $request, NotificationApi $notificationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        $notificationApi->updateAdsNotificationAction("Pause Google Ads", true);
         $html = $notificationApi->updateAdsNotification($propertyId);
         $response = array(
             'html' => $html,
