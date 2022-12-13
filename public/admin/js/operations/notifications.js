@@ -34,12 +34,13 @@ function getNotifications() {
 }
 
 function addNotificationToBody(notificationName, message, linkText, url) {
+    $('.notifications_alerts').remove();
     let linkHtml = ""
     if(url.length > 0){
         linkHtml = ' <a href="'+url+'" target="_blank" >'+linkText+'</a>';
     }
 
-    const notificationHtml = '<div class="alert warning">\n' +
+    const notificationHtml = '<div class="alert warning notifications_alerts">\n' +
         '    <span class="closebtn close_notification" data-notification="' + notificationName + '">Done</span>\n' +
         '    <strong>Warning! </strong>' + message + linkHtml +
         '</div>';

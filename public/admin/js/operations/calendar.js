@@ -13,6 +13,7 @@ function loadCalendarPageData(){
 	getCalendar();
 	getPropertyUid();
 	getRoomsNotCleaned();
+	getNotifications();
 }
 
 function getCalendar() {
