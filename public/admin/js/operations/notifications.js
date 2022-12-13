@@ -48,17 +48,23 @@ function addNotificationToBody(notificationName, message, linkText, url) {
     $(notificationHtml).appendTo('#notifications-div');
 
     $(".close_notification").click(function(event){
-        markNotificationAsActioned(event.target.getAttribute('data-notification'))
-        $(event.target).parent().remove();
+        markNotificationAsActioned(event)
+
     });
 
 }
 
-function markNotificationAsActioned(notificationName) {
+function markNotificationAsActioned(event) {
     let confirm = prompt('Please enter "yes" to confirm'  , "");
     if (confirm == null) {
         return
     }
+
+    if(confirm.localeCompare("yes") !== 0){
+        return
+    }
+    let notificationName = event.target.getAttribute('data-notification');
+
     $("body").addClass("loading");
     let url = "/api/notifications/action/" + notificationName;
     $.ajax({
@@ -70,6 +76,7 @@ function markNotificationAsActioned(notificationName) {
         contentType: "application/json; charset=UTF-8",
         success: function (data) {
             $("body").removeClass("loading");
+            $(event.target).parent().remove();
         },
         error: function (xhr) {
             $("body").removeClass("loading");
