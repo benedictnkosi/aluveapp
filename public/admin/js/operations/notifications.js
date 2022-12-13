@@ -55,6 +55,10 @@ function addNotificationToBody(notificationName, message, linkText, url) {
 }
 
 function markNotificationAsActioned(notificationName) {
+    let confirm = prompt('Please enter "yes" to confirm'  , "");
+    if (confirm == null) {
+        return
+    }
     $("body").addClass("loading");
     let url = "/api/notifications/action/" + notificationName;
     $.ajax({
