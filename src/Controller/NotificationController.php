@@ -29,7 +29,7 @@ class NotificationController  extends AbstractController
     }
 
     /**
-     * @Route("api/notifications/ads/{propertyId}")
+     * @Route("public/notifications/ads/{propertyId}")
      */
     public function updateAdsNotification($propertyId, LoggerInterface $logger, Request $request, NotificationApi $notificationApi): Response
     {
