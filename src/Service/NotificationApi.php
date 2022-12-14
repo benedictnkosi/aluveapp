@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Notification;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -29,8 +30,10 @@ class NotificationApi
             $reservationApi = new ReservationApi($this->em, $this->logger);
             $isAllRoomsBooked = $reservationApi->isAllRoomsBooked($propertyId);
             if ($isAllRoomsBooked) {
+                $now = new DateTime();
                 $notification = $this->em->getRepository(Notification::class)->findOneBy(array('name' => 'Pause Google Ads'));
                 $notification->setActioned(false);
+                $notification->setDate($now);
                 $this->em->persist($notification);
                 $this->em->flush($notification);
                 return "Successfully updated ads notification";
@@ -45,8 +48,10 @@ class NotificationApi
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
+            $now = new DateTime();
             $notification = $this->em->getRepository(Notification::class)->findOneBy(array('name' => $name));
             $notification->setActioned($action);
+            $notification->setDate($now);
             $this->em->persist($notification);
             $this->em->flush($notification);
             return "Successfully updated ads notification";
