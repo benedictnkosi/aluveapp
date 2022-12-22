@@ -622,6 +622,8 @@ class ReservationApi
 
                                 $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
                                 $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+                                $communicationApi->send(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
+
                             }
 
                         }
@@ -793,6 +795,9 @@ class ReservationApi
                     $emailBody .= "<br>Uid:  " . $uid;
                     $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
                     $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $reservation->getRoom()->getProperty()->getName(), $reservation->getRoom()->getProperty()->getEmailAddress());
+                    $message = "Failed to import booking - " . $origin . " - " . $room->getRoom()->getName() . " - " . $checkInDate;
+                    $SMSHelper = new SMSHelper($this->logger);
+                    $SMSHelper->sendMessage($room->getProperty()->getPhoneNumber(), $message);
                 }
 
             }
