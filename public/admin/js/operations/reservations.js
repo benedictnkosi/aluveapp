@@ -635,7 +635,7 @@ function addPayment(event) {
 
         isUserLoggedIn();
         $("body").addClass("loading");
-        let url = "/api/payment/" + id + "/amount/" + amount + "/" + paymentChannel;
+        let url = "/api/payment/" + id + "/amount/" + amount + "/" + paymentChannel + "/" + paymentReference.replaceAll("/", "_");
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
 

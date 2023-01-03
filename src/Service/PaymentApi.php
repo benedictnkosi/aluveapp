@@ -73,7 +73,7 @@ class PaymentApi
         }
     }
 
-    public function addPayment($resId, $amount, $channel = null): array
+    public function addPayment($resId, $amount, $reference, $channel = null): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -93,6 +93,7 @@ class PaymentApi
                 $payment->setAmount($amountPerReservation);
                 $payment->setDate($now);
                 $payment->setChannel($channel);
+                $payment->SetReference($reference);
 
                 $this->logger->debug("reservation status is " . $reservation->getStatus()->getName());
 

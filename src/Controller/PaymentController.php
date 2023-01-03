@@ -15,12 +15,12 @@ use Symfony\Component\HttpFoundation\Request;
 class PaymentController extends AbstractController
 {
     /**
-     * @Route("api/payment/{reservationId}/amount/{amount}/{paymentChannel}")
+     * @Route("api/payment/{reservationId}/amount/{amount}/{paymentChannel}/{reference}")
      */
-    public function addPayment($reservationId, $amount,  $paymentChannel, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function addPayment($reservationId, $amount,  $paymentChannel, $reference, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->addPayment($reservationId, $amount, $paymentChannel);
+        $response = $paymentApi->addPayment($reservationId, $amount, $reference, $paymentChannel);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -51,7 +51,7 @@ class PaymentController extends AbstractController
         $reservationId = $request->get('item_description');
         $amount = $request->get('amount_gross');
 
-        $response = $paymentApi->addPayment($reservationId, $amount, "payfast");
+        $response = $paymentApi->addPayment($reservationId, $amount, "payfast", "payfast");
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
@@ -68,7 +68,7 @@ class PaymentController extends AbstractController
         $reservationId = "[74,75]";
         $amount = "10.00";
 
-        $response = $paymentApi->addPayment($reservationId, $amount, "payfast");
+        $response = $paymentApi->addPayment($reservationId, $amount, "payfast", "payfast");
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);

@@ -50,6 +50,13 @@ class Payments
     private $discount = '0';
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="reference", type="string", length=100, nullable=false)
+     */
+    private $reference;
+
+    /**
      * @var Reservations
      *
      * @ORM\ManyToOne(targetEntity="Reservations")
@@ -137,6 +144,22 @@ class Payments
     public function setDiscount(bool|string $discount): void
     {
         $this->discount = $discount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReference(): string
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param string $reference
+     */
+    public function setReference(string $reference): void
+    {
+        $this->reference = $reference;
     }
 
     /**
