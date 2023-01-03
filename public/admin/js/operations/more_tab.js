@@ -55,24 +55,36 @@ $(document).ready(function () {
                 startDate: date,
                 endDate: endDate,
                 opens: 'left',
-                autoApply: true
+                autoApply: true,
+                locale: {
+                    format: 'YYYY-MM-DD',
+                    separator: " to "
+                },
             }, function (start, end, label) {
                 console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
             });
 
             $('#cashReportDate').on('apply.daterangepicker', function (event, picker) {
                 getTotalIncome(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
+                getCashTransactionsTable(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
                 sessionStorage.setItem("income_report_start_date",picker.startDate.format("YYYY-MM-DD") );
                 sessionStorage.setItem("income_report_end_date",picker.endDate.format("YYYY-MM-DD") );
             });
         });
     });
 
-    getTotalIncomeByDay();
+    getCashTransactionsTable(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
+        date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
 
     $("#select-payment-channel").change(function (event) {
-        getTotalIncomeByDay();
+        getCashTransactionsTable(sessionStorage.getItem("income_report_start_date"),
+            sessionStorage.getItem("income_report_end_date"));
         getTotalIncome(sessionStorage.getItem("income_report_start_date"),
+            sessionStorage.getItem("income_report_end_date"));
+    });
+
+    $("#groupPayments").change(function (event) {
+        getCashTransactionsTable(sessionStorage.getItem("income_report_start_date"),
             sessionStorage.getItem("income_report_end_date"));
     });
 
@@ -93,12 +105,16 @@ function loadMoreTabPageData() {
     getOverallOccupancy("30", "overall-30-occupancy");
     getOverallOccupancy(date, "overall-month-occupancy");
     getOccupancyPerRoom("30");
-    getTotalIncomeByDay();
+
 
     date = new Date();
     let endDate = new Date(date.getTime());
     getTotalIncome(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
         date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
+
+    getCashTransactionsTable(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
+        date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
+
     //date picker
     $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
         $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
@@ -107,13 +123,18 @@ function loadMoreTabPageData() {
                 startDate: firstDay,
                 endDate: endDate,
                 opens: 'left',
-                autoApply: true
+                autoApply: true,
+                locale: {
+                    format: 'YYYY-MM-DD',
+                    separator: " to "
+                },
             }, function (start, end, label) {
                 console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
             });
 
             $('#cashReportDate').on('apply.daterangepicker', function (event, picker) {
                 getTotalIncome(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
+                getCashTransactionsTable(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
             });
         });
     });
@@ -172,6 +193,10 @@ function bindBlockedRoomsEvents(){
                     autoApply: true,
                     minDate: date,
                     autoUpdateInput: false,
+                    locale: {
+                        format: 'YYYY-MM-DD',
+                        separator: " to "
+                    },
                 }, function (start, end, label) {
                     console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
                 });
@@ -415,10 +440,15 @@ function getTotalIncome(startDate, endDate) {
     });
 }
 
-function getTotalIncomeByDay() {
+function getCashTransactionsTable(startDate, endDate) {
     isUserLoggedIn();
     $("body").addClass("loading");
-    let url =  "/api/payment/total/cashbyday" + "/" + $('#select-payment-channel').val();
+    let isChecked = "false"
+    if(document.getElementById('groupPayments').checked) {
+        isChecked = "true";
+    }
+
+    let url =  "/api/payment/total/cashtransactions/" + startDate + "/" + endDate  + "/" + $('#select-payment-channel').val() + "/" + isChecked;
     $.ajax({
         type: "get",
         url: url,
@@ -432,11 +462,11 @@ function getTotalIncomeByDay() {
         },
         error: function (xhr) {
             $("body").removeClass("loading");
-            console.log("request for getTotalIncomeByDay is " + xhr.status);
-            if (!isRetry("getTotalIncomeByDay")) {
+            console.log("request for getCashTransactionsTable is " + xhr.status);
+            if (!isRetry("getCashTransactionsTable")) {
                 return;
             }
-            getTotalIncomeByDay();
+            getCashTransactionsTable();
         }
     });
 }

@@ -89,12 +89,16 @@ class PaymentController extends AbstractController
     }
 
     /**
-     * @Route("api/payment/total/cashbyday/{channel}")
+     * @Route("api/payment/total/cashtransactions/{startDate}/{endDate}/{channel}/{isGroup}")
      */
-    public function getTotalCashPaymentByDay($channel, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function getTotalCashPaymentByDay($startDate, $endDate,$channel, $isGroup, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->getCashReportByDay($channel);
+        if (strcmp($isGroup, "true") === 0) {
+            $response = $paymentApi->getCashReportByDay($startDate, $endDate, $channel);
+        }else{
+            $response = $paymentApi->getCashReportAllTransactions($startDate, $endDate, $channel);
+        }
 
         $response = array(
             'html' => $response,

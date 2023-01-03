@@ -359,16 +359,17 @@ class PaymentApi
         return $responseArray;
     }
 
-    public function getCashReportByDay($channel)
+    public function getCashReportByDay($startDate, $endDate,$channel): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $responseArray = array();
         $htmlResponse = "<tr><th>Date</th><th>Amount</th></tr>";
 
         try {
 
             $sql = "SELECT SUM(amount) as totalCash, LEFT( date, 10 ) as day FROM `payments`
             WHERE channel = '".$channel."'
+            and   DATE(`date`) >= '" . $startDate . "'
+            and  DATE(`date`) <= '" . $endDate . "'
 GROUP BY LEFT( date, 10 ) 
 order by date desc";
 
@@ -381,6 +382,39 @@ order by date desc";
             if ($result) {
                 while ($results = $result->fetch_assoc()) {
                     $htmlResponse .= "<tr><td>".$results["day"] ."</td><td>".$results["totalCash"]."</td></tr>";
+                }
+            }
+            return $htmlResponse;
+        } catch (Exception $ex) {
+
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $htmlResponse;
+    }
+
+    public function getCashReportAllTransactions($startDate, $endDate,$channel): string
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $htmlResponse = "<tr><th>Date</th><th>Amount</th><th>Reference</th></tr>";
+
+        try {
+
+            $sql = "SELECT amount, date, reference FROM `payments`
+            WHERE channel = '".$channel."'
+            and   DATE(`date`) >= '" . $startDate . "'
+            and  DATE(`date`) <= '" . $endDate . "'
+order by date desc";
+
+            $this->logger->info($sql);
+
+            //echo $sql;
+            $databaseHelper = new DatabaseHelper($this->logger);
+            $result = $databaseHelper->queryDatabase($sql);
+
+            if ($result) {
+                while ($results = $result->fetch_assoc()) {
+                    $htmlResponse .= "<tr><td>".$results["date"] ."</td><td>".$results["amount"]."</td><td>".$results["reference"]."</td></tr>";
                 }
             }
             return $htmlResponse;
