@@ -20,7 +20,7 @@ class PaymentController extends AbstractController
     public function addPayment($reservationId, $amount,  $paymentChannel, $reference, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->addPayment($reservationId, $amount, $reference, $paymentChannel);
+        $response = $paymentApi->addPayment($reservationId, $amount, str_replace("_","/",$reference), $paymentChannel);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
