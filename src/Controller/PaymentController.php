@@ -88,5 +88,23 @@ class PaymentController extends AbstractController
         return $response;
     }
 
+    /**
+     * @Route("api/payment/total/cashbyday")
+     */
+    public function getTotalCashPaymentByDay(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $paymentApi->getCashReportByDay();
+
+        $response = array(
+            'html' => $response,
+        );
+
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
 
 }

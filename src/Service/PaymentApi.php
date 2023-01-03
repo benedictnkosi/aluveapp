@@ -86,7 +86,7 @@ class PaymentApi
             foreach ($reservationIdsArray as $resId) {
                 $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
                 $payment = new Payments();
-                $now = new DateTime('today midnight');
+                $now = new DateTime();
 
                 $payment->setReservation($reservation);
                 $amountPerReservation = intval($amount) / intval($numberOfReservations);
@@ -316,8 +316,8 @@ class PaymentApi
 
             $sql = "SELECT SUM(amount) as totalCash FROM `payments`
             WHERE channel = 'cash'
-            and  `date` >= '" . $startDate . "'
-            and date <= '" . $endDate . "'";
+            and   DATE(`date`) >= '" . $startDate . "'
+            and  DATE(`date`) <= '" . $endDate . "'";
 
             $this->logger->info($sql);
 
@@ -356,5 +356,38 @@ class PaymentApi
 
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
+    }
+
+    public function getCashReportByDay()
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        $htmlResponse = "<tr><th>Date</th><th>Amount</th></tr>";
+
+        try {
+
+            $sql = "SELECT SUM(amount) as totalCash, LEFT( date, 10 ) as day FROM `payments`
+            WHERE channel = 'cash'
+GROUP BY LEFT( date, 10 ) 
+order by date desc";
+
+            $this->logger->info($sql);
+
+            //echo $sql;
+            $databaseHelper = new DatabaseHelper($this->logger);
+            $result = $databaseHelper->queryDatabase($sql);
+
+            if ($result) {
+                while ($results = $result->fetch_assoc()) {
+                    $htmlResponse .= "<tr><td>".$results["day"] ."</td><td>".$results["totalCash"]."</td></tr>";
+                }
+            }
+            return $htmlResponse;
+        } catch (Exception $ex) {
+
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $htmlResponse;
     }
 }

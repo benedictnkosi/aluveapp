@@ -41,10 +41,53 @@ $(document).ready(function () {
     });
 
     let date = new Date();
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
 
     let endDate = new Date(date.getTime());
-    getTotalCash(firstDay.getFullYear() + "-" +( firstDay.getMonth() + 1) + "-" + firstDay.getDate(),
+    getTotalCash(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
+        date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
+    //date picker
+    $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
+        $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
+
+            $('#cashReportDate').daterangepicker({
+                startDate: date,
+                endDate: endDate,
+                opens: 'left',
+                autoApply: true
+            }, function (start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
+
+            $('#cashReportDate').on('apply.daterangepicker', function (event, picker) {
+                getTotalCash(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
+            });
+        });
+    });
+
+    getTotalCashByDay();
+
+});
+
+
+function loadMoreTabPageData() {
+    //blocked
+    $("body").addClass("loading");
+    getBlockedRooms();
+    getBlockRooms();
+    bindBlockedRoomsEvents();
+    //cleaning
+    getRooms("cleaning_rooms_select");
+    //occupancy
+    const d = new Date();
+    let date = d.getDate();
+    getOverallOccupancy("30", "overall-30-occupancy");
+    getOverallOccupancy(date, "overall-month-occupancy");
+    getOccupancyPerRoom("30");
+    getTotalCashByDay();
+
+    date = new Date();
+    let endDate = new Date(date.getTime());
+    getTotalCash(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
         date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
     //date picker
     $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
@@ -64,28 +107,6 @@ $(document).ready(function () {
             });
         });
     });
-
-});
-
-function getFirstDayOfMonth(year, month) {
-    return new Date(year, month, 1);
-}
-
-
-function loadMoreTabPageData() {
-    //blocked
-    $("body").addClass("loading");
-    getBlockedRooms();
-    getBlockRooms();
-    bindBlockedRoomsEvents();
-    //cleaning
-    getRooms("cleaning_rooms_select");
-    //occupancy
-    const d = new Date();
-    const date = d.getDate();
-    getOverallOccupancy("30", "overall-30-occupancy");
-    getOverallOccupancy(date, "overall-month-occupancy");
-    getOccupancyPerRoom("30");
 }
 
 function filterOtherTabs(event) {
@@ -380,6 +401,32 @@ function getTotalCash(startDate, endDate) {
                 return;
             }
             getTotalCash(startDate, endDate);
+        }
+    });
+}
+
+function getTotalCashByDay() {
+    isUserLoggedIn();
+    $("body").addClass("loading");
+    let url =  "/api/payment/total/cashbyday";
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
+            $("#cash-report-by-day").html(data.html);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            console.log("request for getTotalCashByDay is " + xhr.status);
+            if (!isRetry("getTotalCashByDay")) {
+                return;
+            }
+            getTotalCashByDay();
         }
     });
 }
