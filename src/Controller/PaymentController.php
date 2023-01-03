@@ -76,12 +76,12 @@ class PaymentController extends AbstractController
     }
 
     /**
-     * @Route("api/payment/total/cash/{startDate}/{endDate}")
+     * @Route("api/payment/total/cash/{startDate}/{endDate}/{channel}")
      */
-    public function getTotalCashPayment($startDate, $endDate, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function getTotalCashPayment($startDate, $endDate, $channel, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->getCashReport($startDate, $endDate);
+        $response = $paymentApi->getCashReport($startDate, $endDate, $channel);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -89,12 +89,12 @@ class PaymentController extends AbstractController
     }
 
     /**
-     * @Route("api/payment/total/cashbyday")
+     * @Route("api/payment/total/cashbyday/{channel}")
      */
-    public function getTotalCashPaymentByDay(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function getTotalCashPaymentByDay($channel, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->getCashReportByDay();
+        $response = $paymentApi->getCashReportByDay($channel);
 
         $response = array(
             'html' => $response,

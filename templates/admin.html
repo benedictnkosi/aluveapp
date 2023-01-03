@@ -626,8 +626,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="profile-ser-grids-15 filter-other-tabs clickable"
                      id="cash_report_tab">
                     <img class="menu_icon_image" src="/admin/images/Iconsmind-Outline-Money-2.ico"
-                         title="Cash Report"></img><i
-                        class="desktopOnlyMenu">Cash Report</i>
+                         title="Income Report"></img><i
+                        class="desktopOnlyMenu">Income Report</i>
                 </div>
 
                 <div class="clearfix"></div>
@@ -651,7 +651,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="profile-top">
                     <div class="col-md-7 profile-top-right">
                         <h5>
-                            Cash Report
+                            Income Report
                         </h5>
                     </div>
                     <div class="clearfix"></div>
@@ -659,6 +659,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 
                 <div class="profile-ser " id="cash_report_div">
+
+                    <div>
+                        <select name="select-payment-channel" id="select-payment-channel">
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
+                            <option value="transfer">Transfer</option>
+                            <option value="payfast">Payfast</option>
+                        </select>
+                    </div>
+
                     <h5>Start and End Date</h5>
                     <span class="glyphicon glyphicon-calendar glyphicon-small-icon">
 						                <input id="cashReportDate" type="text" name="cashReportDate"

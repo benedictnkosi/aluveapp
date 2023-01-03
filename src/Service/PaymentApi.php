@@ -307,7 +307,7 @@ class PaymentApi
         }
     }
 
-    public function getCashReport($startDate, $endDate)
+    public function getCashReport($startDate, $endDate, $channel)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -315,7 +315,7 @@ class PaymentApi
         try {
 
             $sql = "SELECT SUM(amount) as totalCash FROM `payments`
-            WHERE channel = 'cash'
+            WHERE channel = '".$channel."'
             and   DATE(`date`) >= '" . $startDate . "'
             and  DATE(`date`) <= '" . $endDate . "'";
 
@@ -358,7 +358,7 @@ class PaymentApi
         return $responseArray;
     }
 
-    public function getCashReportByDay()
+    public function getCashReportByDay($channel)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -367,7 +367,7 @@ class PaymentApi
         try {
 
             $sql = "SELECT SUM(amount) as totalCash, LEFT( date, 10 ) as day FROM `payments`
-            WHERE channel = 'cash'
+            WHERE channel = '".$channel."'
 GROUP BY LEFT( date, 10 ) 
 order by date desc";
 

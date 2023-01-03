@@ -11,6 +11,8 @@ $(document).ready(function () {
         loadMoreTabPageData();
     });
 
+
+
     //cleaning
     $("#cleaning_rooms_select").change(function(event) {
         getCleaning(event.target.value);
@@ -43,7 +45,7 @@ $(document).ready(function () {
     let date = new Date();
 
     let endDate = new Date(date.getTime());
-    getTotalCash(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
+    getTotalIncome(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
         date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
     //date picker
     $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
@@ -59,12 +61,18 @@ $(document).ready(function () {
             });
 
             $('#cashReportDate').on('apply.daterangepicker', function (event, picker) {
-                getTotalCash(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
+                getTotalIncome(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
             });
         });
     });
 
-    getTotalCashByDay();
+    getTotalIncomeByDay();
+
+    $("#select-payment-channel").change(function (event) {
+        getTotalIncomeByDay();
+        getTotalIncome(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
+            date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
+    });
 
 });
 
@@ -83,11 +91,11 @@ function loadMoreTabPageData() {
     getOverallOccupancy("30", "overall-30-occupancy");
     getOverallOccupancy(date, "overall-month-occupancy");
     getOccupancyPerRoom("30");
-    getTotalCashByDay();
+    getTotalIncomeByDay();
 
     date = new Date();
     let endDate = new Date(date.getTime());
-    getTotalCash(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
+    getTotalIncome(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
         date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
     //date picker
     $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
@@ -103,7 +111,7 @@ function loadMoreTabPageData() {
             });
 
             $('#cashReportDate').on('apply.daterangepicker', function (event, picker) {
-                getTotalCash(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
+                getTotalIncome(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
             });
         });
     });
@@ -377,9 +385,9 @@ function getOccupancyPerRoom(period) {
 
 
 
-function getTotalCash(startDate, endDate) {
+function getTotalIncome(startDate, endDate) {
     isUserLoggedIn();
-    let url = "/api/payment/total/cash/" + startDate + "/" + endDate;
+    let url = "/api/payment/total/cash/" + startDate + "/" + endDate + "/" + $('#select-payment-channel').val();
     $.ajax({
         type: "GET",
         url: url,
@@ -396,19 +404,19 @@ function getTotalCash(startDate, endDate) {
         },
         error: function (xhr) {
             $("body").removeClass("loading");
-            console.log("request for getTotalCash is " + xhr.status);
-            if (!isRetry("getTotalCash")) {
+            console.log("request for getTotalIncome is " + xhr.status);
+            if (!isRetry("getTotalIncome")) {
                 return;
             }
-            getTotalCash(startDate, endDate);
+            getTotalIncome(startDate, endDate);
         }
     });
 }
 
-function getTotalCashByDay() {
+function getTotalIncomeByDay() {
     isUserLoggedIn();
     $("body").addClass("loading");
-    let url =  "/api/payment/total/cashbyday";
+    let url =  "/api/payment/total/cashbyday" + "/" + $('#select-payment-channel').val();
     $.ajax({
         type: "get",
         url: url,
@@ -422,11 +430,11 @@ function getTotalCashByDay() {
         },
         error: function (xhr) {
             $("body").removeClass("loading");
-            console.log("request for getTotalCashByDay is " + xhr.status);
-            if (!isRetry("getTotalCashByDay")) {
+            console.log("request for getTotalIncomeByDay is " + xhr.status);
+            if (!isRetry("getTotalIncomeByDay")) {
                 return;
             }
-            getTotalCashByDay();
+            getTotalIncomeByDay();
         }
     });
 }
