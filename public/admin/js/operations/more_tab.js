@@ -62,6 +62,8 @@ $(document).ready(function () {
 
             $('#cashReportDate').on('apply.daterangepicker', function (event, picker) {
                 getTotalIncome(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
+                sessionStorage.setItem("income_report_start_date",picker.startDate.format("YYYY-MM-DD") );
+                sessionStorage.setItem("income_report_end_date",picker.endDate.format("YYYY-MM-DD") );
             });
         });
     });
@@ -70,8 +72,8 @@ $(document).ready(function () {
 
     $("#select-payment-channel").change(function (event) {
         getTotalIncomeByDay();
-        getTotalIncome(date.getFullYear() + "-" +( date.getMonth() + 1) + "-" + date.getDate(),
-            date.getFullYear() + "-" + (date.getMonth() + 1 )+ "-" + date.getDate());
+        getTotalIncome(sessionStorage.getItem("income_report_start_date"),
+            sessionStorage.getItem("income_report_end_date"));
     });
 
 });
