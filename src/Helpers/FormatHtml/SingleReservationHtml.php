@@ -371,7 +371,9 @@ class SingleReservationHtml
 
         $htmlString .= '</select> 
             <p>Amount</p><input id="amount_' . $reservationId . '" type="text"
-										 class="textbox  display-none block-display reservation_input" placeholder="0.00"/></p>
+										 class="textbox  display-none block-display reservation_input" placeholder="0.00"/>
+										 <p>Payment Reference</p><input id="payment_reference_' . $reservationId . '" type="text"
+										 class="textbox display-none block-display reservation_input payment_reference" placeholder="e.g. 2023/01/000037"/>
             </div>';
 
         $htmlString .= '

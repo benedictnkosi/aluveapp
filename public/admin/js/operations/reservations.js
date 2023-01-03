@@ -10,7 +10,7 @@ $(document).ready(function () {
     });
 });
 
-function loadReservationsPageData(){
+function loadReservationsPageData() {
     refreshReservations();
     window.setTimeout(hideLoader, 5000);
 }
@@ -25,7 +25,7 @@ function refreshReservations() {
 
 function getReservationsByPeriod(period) {
     isUserLoggedIn();
-    let url = "/api/reservations/" +period;
+    let url = "/api/reservations/" + period;
     $.ajax({
         type: "get",
         url: url,
@@ -44,14 +44,14 @@ function getReservationsByPeriod(period) {
             });
         },
         error: function (xhr) {
-            console.log("request for "+period+" is " + xhr.status);
-            if (!isRetry(""+period+"")) {
+            console.log("request for " + period + " is " + xhr.status);
+            if (!isRetry("" + period + "")) {
                 return;
             }
             getReservationsByPeriod(period);
         },
         done: function (xhr) {
-            console.log("request for "+period+" is " + xhr.status);
+            console.log("request for " + period + " is " + xhr.status);
         }
     });
 }
@@ -67,30 +67,30 @@ function setBindings() {
         $('.time-picker').timepicker({
             'showDuration': false,
             'timeFormat': 'H:mm',
-            change: function(time) {
+            change: function (time) {
                 updateCheckInOutTime();
             }
         });
     });
 
-        $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
-            $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
-                $('input[name="check_in_date"]').daterangepicker({
-                    opens: 'left',
-                    autoApply: true
-                }, function (start, end, label) {
-                    console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-                });
-
-                $('input[name="check_in_date"]').on('apply.daterangepicker', function (event, picker) {
-                    updateCheckInDate(event, picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
-                });
-
-                $('input[name="check_in_date"]').on('show.daterangepicker', function (event, picker) {
-                    sessionStorage.setItem('original_check_in_date', picker.startDate.format('MM/DD/YYYY'));
-                    sessionStorage.setItem('original_check_out_date', picker.endDate.format('MM/DD/YYYY'));
-                });
+    $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
+        $.getScript("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js", function () {
+            $('input[name="check_in_date"]').daterangepicker({
+                opens: 'left',
+                autoApply: true
+            }, function (start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
             });
+
+            $('input[name="check_in_date"]').on('apply.daterangepicker', function (event, picker) {
+                updateCheckInDate(event, picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
+            });
+
+            $('input[name="check_in_date"]').on('show.daterangepicker', function (event, picker) {
+                sessionStorage.setItem('original_check_in_date', picker.startDate.format('MM/DD/YYYY'));
+                sessionStorage.setItem('original_check_out_date', picker.endDate.format('MM/DD/YYYY'));
+            });
+        });
 
     });
 
@@ -181,7 +181,7 @@ function setBindings() {
     });
 }
 
-function getReservationById(reservation_id){
+function getReservationById(reservation_id) {
     sessionStorage.setItem("reservation_id", reservation_id);
     updateView('upcoming-reservations');
     $('.reservations_tabs').addClass("display-none");
@@ -213,14 +213,15 @@ function getReservationById(reservation_id){
         }
     });
 }
+
 function showRightDivForMobile(event) {
     let reservationID = event.target.getAttribute("data-res-id");
     $('.right-div').css("display", "none");
 
-    if(event.target.innerHTML.localeCompare("more...") === 0){
+    if (event.target.innerHTML.localeCompare("more...") === 0) {
         $('#right-div-' + reservationID).css("display", "block");
         event.target.innerHTML = "less...";
-    }else{
+    } else {
         $('#right-div-' + reservationID).css("display", "none");
         event.target.innerHTML = "more...";
     }
@@ -243,62 +244,60 @@ function changeBookingStatus(event) {
     if (className.includes("glyphicon-triangle-top")) {
         let inputResId = prompt("Please enter reservation id to open room", "");
         if (inputResId != null) {
-            if(inputResId.localeCompare(data["reservation_id"]) === 0){
+            if (inputResId.localeCompare(data["reservation_id"]) === 0) {
                 data["new_value"] = "opened";
                 $('#' + event.target.id).toggleClass("glyphicon-triangle-top");
                 $('#' + event.target.id).toggleClass("glyphicon-triangle-bottom");
-            }else{
+            } else {
                 return;
             }
-        }else{
+        } else {
             return;
         }
 
     } else if (className.includes("glyphicon-triangle-bottom")) {
         let inputResId = prompt("Please enter reservation id to close room", "");
         if (inputResId != null) {
-            if(inputResId.localeCompare(data["reservation_id"]) === 0){
+            if (inputResId.localeCompare(data["reservation_id"]) === 0) {
                 data["new_value"] = "confirmed";
                 $('#' + event.target.id).toggleClass("glyphicon-triangle-top");
                 $('#' + event.target.id).toggleClass("glyphicon-triangle-bottom");
-            }else{
+            } else {
                 return;
             }
-        }else{
+        } else {
             return;
         }
 
     } else if (className.includes("glyphicon-remove")) {
         let inputResId = prompt("Please enter reservation id to delete", "");
         if (inputResId != null) {
-            if(inputResId.localeCompare(data["reservation_id"]) === 0){
+            if (inputResId.localeCompare(data["reservation_id"]) === 0) {
                 data["new_value"] = "cancelled";
                 $('#' + event.target.id).toggleClass("glyphicon-remove");
                 $('#' + event.target.id).toggleClass("glyphicon-ok");
-            }else{
+            } else {
                 return;
             }
-        }else{
+        } else {
             return;
         }
 
     } else if (className.includes("glyphicon-ok")) {
         let inputResId = prompt("Please enter reservation id confirm the reservation", "");
         if (inputResId != null) {
-            if(inputResId.localeCompare(data["reservation_id"]) === 0){
+            if (inputResId.localeCompare(data["reservation_id"]) === 0) {
                 data["new_value"] = "confirmed";
                 $('#' + event.target.id).toggleClass("glyphicon-remove");
                 $('#' + event.target.id).toggleClass("glyphicon-ok");
-            }else{
+            } else {
                 return;
             }
-        }else{
+        } else {
             return;
         }
 
     }
-
-
 
 
     $("body").addClass("loading");
@@ -372,7 +371,7 @@ function markReservationAsCheckedInOut(event, status) {
 
     isUserLoggedIn();
     isUserLoggedIn();
-    if(status.localeCompare('checked_out')===0){
+    if (status.localeCompare('checked_out') === 0) {
         if (confirm("Did you collect the key from the guest? Select OK if key collected from the guest") === false) {
             return;
         }
@@ -604,9 +603,11 @@ function addPayment(event) {
         $(".reservation_input").addClass("display-none");
         $("#div_payment").removeClass("display-none");
         $("#amount_" + article.dataset.resid).removeClass("display-none");
+        $("#payment_reference_" + article.dataset.resid).removeClass("display-none");
     } else {
         const amount = $("#amount_" + article.dataset.resid).val();
         const paymentChannel = $("#select_payment_" + article.dataset.resid).val();
+        const paymentReference = $("#payment_reference_" + article.dataset.resid).val();
         if (isNaN(amount)) {
             showResErrorMessage(reservation, "Please provide numbers only for payment");
             return;
@@ -615,6 +616,23 @@ function addPayment(event) {
             showResErrorMessage("reservation", "Please select payment channel");
             return;
         }
+
+        if (paymentChannel.localeCompare("card") === 0) {
+            if (paymentReference.length !== 14
+                || paymentReference.indexOf("/") !== 4
+                || paymentReference.lastIndexOf("/") !== 7) {
+                showResErrorMessage("reservation", "Yoco reference incorrect e.g 2023/01/000037");
+                return;
+            }
+        }
+
+        if (paymentChannel.localeCompare("transfer") === 0) {
+            if (paymentReference.length < 1) {
+                showResErrorMessage("reservation", "Payment reference incorrect e.g Sibusiso M");
+                return;
+            }
+        }
+
         isUserLoggedIn();
         $("body").addClass("loading");
         let url = "/api/payment/" + id + "/amount/" + amount + "/" + paymentChannel;
@@ -743,7 +761,7 @@ function getPropertyUid() {
         dataType: "jsonp",
         contentType: "application/json; charset=UTF-8",
         success: function (data) {
-            $('.new-reservation-link').attr("href", "/booking?uid=" + data[0].uid );
+            $('.new-reservation-link').attr("href", "/booking?uid=" + data[0].uid);
         },
         error: function (xhr) {
             console.log("request for getPropertyUid is " + xhr.status);
