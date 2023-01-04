@@ -163,9 +163,11 @@ class ReservationController extends AbstractController
                 } else if (strcmp($newValue, "checked_out") == 0) {
                     $logger->info("checked_out");
                     $due = $reservationApi->getAmountDue($reservation);
+                    $now = new DateTime();
                     if ($due == 0) {
                         $reservation->setCheckInStatus($newValue);
                         $reservation->setCheckOutTime($now->format("H:i"));
+                        $notesApi->addNote($reservation->getId(), "Checked-Out at " . $now->format("H:i"));
                     } else {
                         $logger->info($due);
                         $responseArray[] = array(
