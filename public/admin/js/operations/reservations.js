@@ -607,7 +607,7 @@ function addPayment(event) {
     } else {
         const amount = $("#amount_" + article.dataset.resid).val();
         const paymentChannel = $("#select_payment_" + article.dataset.resid).val();
-        const paymentReference = $("#payment_reference_" + article.dataset.resid).val();
+        let paymentReference = $("#payment_reference_" + article.dataset.resid).val();
         if (isNaN(amount)) {
             showResErrorMessage(reservation, "Please provide numbers only for payment");
             return;
@@ -631,6 +631,10 @@ function addPayment(event) {
                 showResErrorMessage("reservation", "Payment reference incorrect e.g Sibusiso M");
                 return;
             }
+        }
+
+        if (paymentChannel.localeCompare("cash") === 0) {
+            paymentReference = "cash";
         }
 
         isUserLoggedIn();

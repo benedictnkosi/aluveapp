@@ -60,14 +60,30 @@ $(document).ready(function () {
             });
 
             $('#checkindate').on('apply.daterangepicker', function (event, picker) {
-                getAvailableRooms(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
-                sessionStorage.setItem('checkInDate', picker.startDate.format("YYYY-MM-DD"));
-                sessionStorage.setItem('checkOutDate', picker.endDate.format("YYYY-MM-DD"));
-
                 let checkInDate = new Date(picker.startDate.format("YYYY-MM-DD"));
                 let checkOutDate = new Date(picker.endDate.format("YYYY-MM-DD"))
                 let difference = checkOutDate - checkInDate;
                 let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
+                if (totalDays < 1) {
+                    showResErrorMessage("reservation", "Check-in and check-out date can not be the same");
+                    $('#checkindate').daterangepicker({
+                        startDate: date,
+                        endDate: endDate,
+                        opens: 'left',
+                        autoApply: true,
+                        minDate: minDate
+                    }, function (start, end, label) {
+                        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                    });
+                    return;
+                }
+
+                getAvailableRooms(picker.startDate.format("YYYY-MM-DD"), picker.endDate.format("YYYY-MM-DD"));
+                sessionStorage.setItem('checkInDate', picker.startDate.format("YYYY-MM-DD"));
+                sessionStorage.setItem('checkOutDate', picker.endDate.format("YYYY-MM-DD"));
+
+
+
                 console.log("date diff is " + totalDays);
                 sessionStorage.setItem('numberOfNights', totalDays);
             });
