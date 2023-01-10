@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Cleaning;
 use App\Entity\Employee;
 use App\Entity\Reservations;
+use App\Entity\ReservationStatus;
 use App\Entity\Rooms;
 use App\Entity\RoomStatus;
 use App\Helpers\DatabaseHelper;
@@ -48,11 +49,19 @@ class CleaningApi
 
             $this->em->persist($cleaning);
             $this->em->flush($cleaning);
+
+            //open room if its a short stay
+            if(strcmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d") == 0)){
+                $status =  $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => "Opened"));
+                $reservation->setStatus($status);
+                $this->em->persist($reservation);
+                $this->em->flush($reservation);
+            }
             $responseArray[] = array(
                 'result_code' => 0,
                 'result_message' => 'Successfully added cleaning to reservation'
             );
-            $this->logger->debug("no errors adding cleaning for reservation $resId. cleaner $employee->getId()");
+
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),

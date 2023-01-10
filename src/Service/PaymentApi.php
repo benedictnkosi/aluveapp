@@ -200,6 +200,7 @@ class PaymentApi
             $payment->setDate($now);
             $payment->setChannel($channel);
             $payment->setDiscount(true);
+            $payment->setReference("none");
 
             //commit the payment changes
             $this->em->persist($payment);
