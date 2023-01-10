@@ -397,11 +397,11 @@ order by date desc";
     public function getCashReportAllTransactions($startDate, $endDate,$channel): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $htmlResponse = "<tr><th>Date</th><th>Amount</th><th>Reference</th></tr>";
+        $htmlResponse = "<tr><th>Date</th><th>Amount</th><th>Reference</th><th>Reservation</th></tr>";
 
         try {
 
-            $sql = "SELECT amount, date, reference FROM `payments`
+            $sql = "SELECT amount, date, reservation_id, reference FROM `payments`
             WHERE channel = '".$channel."'
             and   DATE(`date`) >= '" . $startDate . "'
             and  DATE(`date`) <= '" . $endDate . "'
@@ -415,7 +415,7 @@ order by date desc";
 
             if ($result) {
                 while ($results = $result->fetch_assoc()) {
-                    $htmlResponse .= "<tr><td>".$results["date"] ."</td><td>".$results["amount"]."</td><td>".$results["reference"]."</td></tr>";
+                    $htmlResponse .= "<tr><td>".$results["date"] ."</td><td>".$results["amount"]."</td><td>".$results["reference"]."</td><td>".$results["reservation_id"]."</td></tr>";
                 }
             }
             return $htmlResponse;
