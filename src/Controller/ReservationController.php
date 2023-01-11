@@ -122,8 +122,10 @@ class ReservationController extends AbstractController
 
         $reservation = $reservationApi->getReservation($reservationId);
         $responseArray = array();
+        $now = new DateTime();
         switch ($field) {
             case "status":
+                $notesApi->addNote($reservation->getId(), "Status Changed to " .$newValue. " at " . $now->format("Y-m-d H:i"));
                 if(intval($newValue) !== 0){
                     $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('id' => $newValue));
                 }else{
@@ -141,7 +143,7 @@ class ReservationController extends AbstractController
                 $reservation->SetCheckOutTime($newValue);
                 break;
             case "check_in_status":
-                $now = new DateTime();
+
                 if (strcmp($newValue, "checked_in") == 0) {
                     $logger->info("checked_in");
                     if ($reservationApi->isEligibleForCheckIn($reservation)) {
