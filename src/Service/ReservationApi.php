@@ -168,7 +168,6 @@ class ReservationApi
             $datetime = new DateTime();
             $maxFutureDate = $datetime->add(new DateInterval('P180D'));
             $confirmedStatus = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
-            $openedStatus = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'opened'));
 
             $excludeStayOverSql = "and r.checkIn >= '" . $now->format('Y-m-d') . "'";
             if ($includeStayOvers) {
@@ -184,7 +183,7 @@ class ReservationApi
             and r.checkOut >= '" . $now->format('Y-m-d') . "'
             $excludeStayOverSql 
             $roomFilter  
-            and (r.status = '" . $confirmedStatus->getId() . "' or r.status = '" . $openedStatus->getId() . "' )
+            and (r.status = '" . $confirmedStatus->getId() . "')
             order by r.checkIn asc ")
                 ->getResult();
         } catch (Exception $ex) {
