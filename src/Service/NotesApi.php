@@ -31,11 +31,10 @@ class NotesApi
         try{
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id'=>$resId));
             $reservationNotes = new ReservationNotes();
-            $now = new DateTime('today midnight');
 
             $reservationNotes->setReservation($reservation);
             $reservationNotes->setNote($note);
-            $reservationNotes->setDate($now);
+            $reservationNotes->setDate(new DateTime());
             $this->em->persist($reservationNotes);
             $this->em->flush($reservationNotes);
             $responseArray[] = array(

@@ -144,16 +144,25 @@ class AddOnsApi
                 return $responseArray;
             }
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => intval($resId)));
-            $now = new DateTime('today midnight');
 
             $resAddOn = new ReservationAddOns();
             $resAddOn->setAddOn($addOn);
             $resAddOn->setQuantity(intval($quantity));
             $resAddOn->setReservation($reservation);
-            $resAddOn->setDate($now);
+            $resAddOn->setDate(new DateTime());
 
             $this->em->persist($resAddOn);
             $this->em->flush($resAddOn);
+
+            //update add-on quantity
+            if($addOn->getQuantity() !== 0){
+                $currentQuantity = $addOn->getQuantity();
+                $newQuantity = $currentQuantity - intval($quantity);
+                $addOn->setQuantity($newQuantity);
+                $this->em->persist($addOn);
+                $this->em->flush($addOn);
+            }
+
 
             $responseArray[] = array(
                 'result_message' => 'Successfully added add on to the reservation',

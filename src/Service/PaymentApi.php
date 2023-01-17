@@ -193,11 +193,10 @@ class PaymentApi
         try {
             $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
             $payment = new Payments();
-            $now = new DateTime('today midnight');
 
             $payment->setReservation($reservation);
             $payment->setAmount($amount);
-            $payment->setDate($now);
+            $payment->setDate(new DateTime());
             $payment->setChannel($channel);
             $payment->setDiscount(true);
             $payment->setReference("none");

@@ -43,6 +43,13 @@ class AddOns
     private $status = 'live';
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="quantity", type="integer", nullable=false)
+     */
+    private $quantity = '0';
+
+    /**
      * @var Property
      *
      * @ORM\ManyToOne(targetEntity="Property")
@@ -114,6 +121,22 @@ class AddOns
     public function setStatus(string $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity(): int|string
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @param int $quantity
+     */
+    public function setQuantity(int|string $quantity): void
+    {
+        $this->quantity = $quantity;
     }
 
     /**
