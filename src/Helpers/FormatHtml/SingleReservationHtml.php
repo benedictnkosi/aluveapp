@@ -204,7 +204,8 @@ class SingleReservationHtml
 
 
         $this->logger->debug(" HTML output - open\close room " . $reservation->getId());
-        if (strcmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d") !== 0)) {
+
+        if (strcmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d")) != 0) {
             $htmlString .= '<span title="' . $openCloseTitle . '" class="glyphicon ' . $blockClassName . ' changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservation->getId() . '">
         </span>';
         }
