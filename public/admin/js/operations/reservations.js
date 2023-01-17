@@ -633,6 +633,15 @@ function addPayment(event) {
             }
         }
 
+        if (paymentChannel.localeCompare("card") !== 0) {
+            if (paymentReference.length == 14
+                & paymentReference.indexOf("/") == 4
+                & paymentReference.lastIndexOf("/") == 7) {
+                showResErrorMessage("reservation", "Looks like you are capturing a card reference for a " + paymentChannel + " payment");
+                return;
+            }
+        }
+
         if (paymentChannel.localeCompare("cash") === 0) {
             paymentReference = "cash";
         }
