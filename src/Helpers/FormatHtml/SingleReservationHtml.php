@@ -202,9 +202,13 @@ class SingleReservationHtml
             $blockClassName = "glyphicon-triangle-bottom";
         }
 
+
         $this->logger->debug(" HTML output - open\close room " . $reservation->getId());
-        $htmlString .= '<span title="'.$openCloseTitle.'" class="glyphicon ' . $blockClassName . ' changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservation->getId() . '">
+        if (strcmp($reservation->getCheckOut()->format("Y-m-d"), $now->format("Y-m-d") !== 0)) {
+            $htmlString .= '<span title="' . $openCloseTitle . '" class="glyphicon ' . $blockClassName . ' changeBookingStatus clickable" aria-hidden="true" id="changeBookingStatus_' . $reservation->getId() . '">
         </span>';
+        }
+
 
         //whatsapp guest
         $this->logger->debug(" HTML output - whatsapp guest " . $reservation->getId());
@@ -296,18 +300,18 @@ class SingleReservationHtml
         $due = $totalPrice - $totalPayment;
 
 
-            $htmlString .= '<h5 class="text-align-left">Line items</h5>';
+        $htmlString .= '<h5 class="text-align-left">Line items</h5>';
 
-            if ((strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) != 0
-                && strcasecmp($reservation->getOrigin(), "website") === 0)) {
-                $htmlString .= '<p class="small-font-italic">' . $totalDays . "x nights @ R" . $roomPrice . "</p>";
-            }
+        if ((strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) != 0
+            && strcasecmp($reservation->getOrigin(), "website") === 0)) {
+            $htmlString .= '<p class="small-font-italic">' . $totalDays . "x nights @ R" . $roomPrice . "</p>";
+        }
 
-            $htmlString .= $addOnsHTml;
-            $htmlString .= '<h5 class="text-align-left">Total: R' . number_format((float)$totalPrice, 2, '.', '') . '</h5>';
-            $htmlString .= '<h5 class="text-align-left">Paid: R' . number_format((float)$totalPayment, 2, '.', '') . '</h5>';
-            $htmlString .= $paymentsHtml;
-            $htmlString .= '<h5 class="text-align-left">Due R' . number_format((float)$due, 2, '.', '') . '</h5>';
+        $htmlString .= $addOnsHTml;
+        $htmlString .= '<h5 class="text-align-left">Total: R' . number_format((float)$totalPrice, 2, '.', '') . '</h5>';
+        $htmlString .= '<h5 class="text-align-left">Paid: R' . number_format((float)$totalPayment, 2, '.', '') . '</h5>';
+        $htmlString .= $paymentsHtml;
+        $htmlString .= '<h5 class="text-align-left">Due R' . number_format((float)$due, 2, '.', '') . '</h5>';
 
         //cleanings
         $this->logger->debug("HTML output - Cleanings list " . $reservation->getId());
