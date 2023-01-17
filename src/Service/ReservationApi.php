@@ -155,7 +155,7 @@ class ReservationApi
         return $reservations;
     }
 
-    public function getUpComingReservations($roomId = 0, $includeStayOvers = false)
+    public function getUpComingReservations($roomId = 0, $includeOpened = false, $includeStayOvers = false)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $reservations = null;
@@ -168,12 +168,17 @@ class ReservationApi
             $datetime = new DateTime();
             $maxFutureDate = $datetime->add(new DateInterval('P180D'));
             $confirmedStatus = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+            $openedStatus = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'opened'));
 
             $excludeStayOverSql = "and r.checkIn >= '" . $now->format('Y-m-d') . "'";
             if ($includeStayOvers) {
                 $excludeStayOverSql = "";
             }
 
+            $includeOpenedSql = "and (r.status = '" . $confirmedStatus->getId() . "') ";
+            if($includeOpened){
+                $includeOpenedSql = "and (r.status = '" . $confirmedStatus->getId() . "' or r.status = '" . $openedStatus->getId() . "' ) ";
+            }
             $reservations = $this->em
                 ->createQuery("SELECT r FROM App\Entity\Reservations r 
                 JOIN r.room a
@@ -183,7 +188,7 @@ class ReservationApi
             and r.checkOut >= '" . $now->format('Y-m-d') . "'
             $excludeStayOverSql 
             $roomFilter  
-            and (r.status = '" . $confirmedStatus->getId() . "')
+            $includeOpenedSql
             order by r.checkIn asc ")
                 ->getResult();
         } catch (Exception $ex) {
