@@ -643,11 +643,11 @@ function addPayment(event) {
         }
 
         if (paymentChannel.localeCompare("cash") === 0) {
-            paymentReference = "cash";
             if (paymentReference.length > 1) {
                 showResErrorMessage("reservation", "Cash payments do not have a reference");
                 return;
             }
+            paymentReference = "cash";
         }
 
         isUserLoggedIn();
