@@ -129,6 +129,10 @@ class CalendarHTML
                                 $this->logger->info("half room price: " . $halfRoomPrice);
                                 $this->logger->info("amount due: " . $amountDue);
 
+                                if($amountDue > $halfRoomPrice){
+                                    $this->logger->info("amount due is greater than half the price ");
+                                }
+
                                 if($totalDays < 2
                                     && ($amountDue > $halfRoomPrice || $amountDue == $halfRoomPrice)
                                     && (strcasecmp($reservation->getOrigin(), "website") === 0)){

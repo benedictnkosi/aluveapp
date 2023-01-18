@@ -847,7 +847,7 @@ class ReservationApi
         return $isEligible;
     }
 
-    public function getAmountDue($reservation)
+    public function getAmountDue($reservation): float|int
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
 
