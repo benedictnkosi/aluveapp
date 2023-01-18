@@ -123,10 +123,14 @@ class CalendarHTML
                                 //if one day booking and guest checked in and amount outstanding then its short stay
                                 $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
                                 $amountDue = $reservationApi->getAmountDue($reservation);
+                                $halfRoomPrice = $reservation->getRoom()->getPrice()/2;
                                 $this->logger->debug("Total days: " . $totalDays);
                                 $this->logger->debug("amount due: " . $amountDue);
 
-                                if($totalDays < 2 && $amountDue > 0 && (strcasecmp($reservation->getOrigin(), "website") === 0)){
+
+                                if($totalDays < 2
+                                    && ($amountDue > $halfRoomPrice || $amountDue == $halfRoomPrice)
+                                    && (strcasecmp($reservation->getOrigin(), "website") === 0)){
                                     $htmlString .= '<td  class="booked checked_in clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- IN" .'"><img  src="/admin/images/timer.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                                 }else{
                                     $htmlString .= '<td  class="booked checked_in clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- IN" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
