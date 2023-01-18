@@ -126,7 +126,8 @@ class CalendarHTML
                                 $halfRoomPrice = $reservation->getRoom()->getPrice()/2;
                                 $this->logger->debug("Total days: " . $totalDays);
                                 $this->logger->debug("amount due: " . $amountDue);
-
+                                $this->logger->info("half room price: " . $halfRoomPrice);
+                                $this->logger->info("amount due: " . $amountDue);
 
                                 if($totalDays < 2
                                     && ($amountDue > $halfRoomPrice || $amountDue == $halfRoomPrice)
