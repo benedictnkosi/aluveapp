@@ -308,6 +308,22 @@ class PaymentApi
         }
     }
 
+    public function getReservationDiscountTotal($resId): int
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        try {
+            $payments = $this->em->getRepository(Payments::class)->findBy(array('reservation' => $resId, 'channel' => 'discount'));
+            $totalPayment = 0;
+            foreach ($payments as $payment) {
+                $totalPayment += (intVal($payment->getAmount()));
+            }
+            return $totalPayment;
+        } catch (Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            return 0;
+        }
+    }
+
     public function getCashReport($startDate, $endDate, $channel)
     {
         $this->logger->debug("Starting Method: " . __METHOD__);

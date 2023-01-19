@@ -35,6 +35,8 @@ class CalendarHTML
         $reservationApi = new ReservationApi($this->em, $this->logger);
         $blockRoomApi = new BlockedRoomApi($this->em, $this->logger);
         $cleaningApi = new CleaningApi($this->em, $this->logger);
+        $paymentApi = new PaymentApi($this->em, $this->logger);
+
         $numberOfDays = 180;
         $numberOfFirstOfMonth = 0;
 
@@ -123,18 +125,18 @@ class CalendarHTML
                                 //if one day booking and guest checked in and amount outstanding then its short stay
                                 $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
                                 $amountDue = $reservationApi->getAmountDue($reservation);
+                                $totalDiscount = $paymentApi->getReservationDiscountTotal($reservation->getId());
                                 $halfRoomPrice = $reservation->getRoom()->getPrice()/2;
                                 $this->logger->debug("Total days: " . $totalDays);
                                 $this->logger->debug("amount due: " . $amountDue);
-                                $this->logger->info("half room price: " . $halfRoomPrice);
-                                $this->logger->info("amount due: " . $amountDue);
+
 
                                 if($amountDue > $halfRoomPrice){
                                     $this->logger->info("amount due is greater than half the price ");
                                 }
 
                                 if($totalDays < 2
-                                    && ($amountDue > $halfRoomPrice || $amountDue == $halfRoomPrice)
+                                    && ($totalDiscount > 1)
                                     && (strcasecmp($reservation->getOrigin(), "website") === 0)){
                                     $htmlString .= '<td  class="booked checked_in clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- IN" .'"><img  src="/admin/images/timer.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                                 }else{
