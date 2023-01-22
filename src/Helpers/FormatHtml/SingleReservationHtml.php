@@ -291,9 +291,9 @@ class SingleReservationHtml
         $totalPayment = 0;
         foreach ($payments as $payment) {
             if ($payment->isDiscount()) {
-                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format("d-M H:i") . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ') (Discount)</p>';
+                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ') (Discount)</p>';
             } else {
-                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format("d-M H:i") . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ')</p>';
+                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ')</p>';
             }
             $totalPayment += (intVal($payment->getAmount()));
         }
