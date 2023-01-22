@@ -149,7 +149,7 @@ class ReservationController extends AbstractController
                     if ($reservationApi->isEligibleForCheckIn($reservation)) {
                         $reservation->setCheckInStatus($newValue);
                         $reservation->setCheckInTime($now->format("H:i"));
-                        $notesApi->addNote($reservation->getId(), "Checked In at " . $now->format("H:i"));
+                        $notesApi->addNote($reservation->getId(), "Checked-in at " . $now->format("H:i"));
                     } else {
                         $responseArray[] = array(
                             'result_message' => "Please make sure the guest Id and phone number is captured",
@@ -168,6 +168,7 @@ class ReservationController extends AbstractController
                     if ($due == 0) {
                         $reservation->setCheckInStatus($newValue);
                         $reservation->setCheckOutTime($now->format("H:i"));
+                        $notesApi->addNote($reservation->getId(), "Checked-out at " . $now->format("H:i"));
                     } else {
                         $logger->info($due);
                         $responseArray[] = array(

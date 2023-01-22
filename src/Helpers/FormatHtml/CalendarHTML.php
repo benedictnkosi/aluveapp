@@ -147,7 +147,6 @@ class CalendarHTML
                                     $htmlString .= '<td  class="booked booked_opened_td checked_out clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- OUT" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkedout" class="image_checkin opened_booking"></td>';
                                 }else{
                                     $htmlString .= '<td  class="booked checked_out clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- OUT" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkedout" class="image_checkin"></td>';
-
                                 }
                             }else {
                                 if (strcasecmp($reservation->getStatus()->getName(), "confirmed") === 0){
