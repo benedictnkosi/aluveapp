@@ -121,16 +121,15 @@ class CalendarHTML
                     //$this->logger->debug("checking if date booked");
                     if ($isDateBooked || $isDateBookedButOpen) {
                         if ($isCheckInDay === true) {
+                            $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
+                            $amountDue = $reservationApi->getAmountDue($reservation);
+                            $totalDiscount = $paymentApi->getReservationDiscountTotal($reservation->getId());
+                            $halfRoomPrice = $reservation->getRoom()->getPrice()/2;
+                            $this->logger->debug("Total days: " . $totalDays);
+                            $this->logger->debug("amount due: " . $amountDue);
+
                             if (strcasecmp($reservation->getCheckInStatus(), "checked_in") === 0) {
                                 //if one day booking and guest checked in and amount outstanding then its short stay
-                                $totalDays = intval($reservation->getCheckIn()->diff($reservation->getCheckOut())->format('%a'));
-                                $amountDue = $reservationApi->getAmountDue($reservation);
-                                $totalDiscount = $paymentApi->getReservationDiscountTotal($reservation->getId());
-                                $halfRoomPrice = $reservation->getRoom()->getPrice()/2;
-                                $this->logger->debug("Total days: " . $totalDays);
-                                $this->logger->debug("amount due: " . $amountDue);
-
-
                                 if($amountDue > $halfRoomPrice){
                                     $this->logger->info("amount due is greater than half the price ");
                                 }
@@ -143,7 +142,11 @@ class CalendarHTML
                                     $htmlString .= '<td  class="booked checked_in clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- IN" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
                                 }
                             }else if (strcasecmp($reservation->getCheckInStatus(), "checked_out") === 0) {
-                                if (strcasecmp($reservation->getStatus()->getName(), "opened") === 0){
+                                if($totalDays < 2
+                                    && ($totalDiscount > 1)
+                                    && (strcasecmp($reservation->getOrigin(), "website") === 0)){
+                                    $htmlString .= '<td  class="booked checked_out clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- Out" .'"><img  src="/admin/images/timer.png"  data-res-id="' . $resID . '" alt="checkin" class="image_checkin"></td>';
+                                }else if (strcasecmp($reservation->getStatus()->getName(), "opened") === 0){
                                     $htmlString .= '<td  class="booked booked_opened_td checked_out clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- OUT" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkedout" class="image_checkin opened_booking"></td>';
                                 }else{
                                     $htmlString .= '<td  class="booked checked_out clickable open-reservation-details" data-res-id="' . $resID . '" title="' . $guestName . "- OUT" .'"><img  src="/admin/images/' . $reservation->getOrigin() . '.png"  data-res-id="' . $resID . '" alt="checkedout" class="image_checkin"></td>';
