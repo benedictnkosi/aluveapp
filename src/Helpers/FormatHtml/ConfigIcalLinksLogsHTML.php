@@ -23,18 +23,21 @@ class ConfigIcalLinksLogsHTML
         $html = '';
         $rooms = $roomsApi->getRoomsEntities();
 
-        foreach($rooms as $room){
+        foreach ($rooms as $room) {
             //output last export date for Airbnb and Booking.com
-            $html .= '<h5>Airbnb Last Export : '.$room->getAirbnbLastExport()->format("Y-m-d H:i").'</h5>';
-            $html .= '<h5>Booking.com Last Export : '.$room->getBdcLastExport()->format("Y-m-d H:i").'</h5>';
-           $icalLinks =  $icalApi->getIcalLinks($room);
-           if($icalLinks != null){
-               $html .= '<h4>'.$room->getName().'</h4>';
-           }
-           foreach ($icalLinks as $icalLink){
-               $html .= '<h5>'.$icalLink->getLink().'</h5>';
-               $html .= '<pre>'.$icalLink->getLogs().'</pre>';
-           }
+
+            $icalLinks = $icalApi->getIcalLinks($room);
+            if ($icalLinks != null) {
+                $html .= '<h4>' . $room->getName() . '</h4>';
+            }
+
+            $html .= '<h5>Airbnb Last Export : ' . $room->getAirbnbLastExport()->format("Y-m-d H:i") . '</h5>';
+            $html .= '<h5>Booking.com Last Export : ' . $room->getBdcLastExport()->format("Y-m-d H:i") . '</h5>';
+
+            foreach ($icalLinks as $icalLink) {
+                $html .= '<h5>' . $icalLink->getLink() . '</h5>';
+                $html .= '<pre>' . $icalLink->getLogs() . '</pre>';
+            }
             $html .= '<hr>';
         }
 
