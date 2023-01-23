@@ -50,6 +50,13 @@ class AddOns
     private $quantity = '0';
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="minimum", type="integer", nullable=false)
+     */
+    private $minimum = '0';
+
+    /**
      * @var Property
      *
      * @ORM\ManyToOne(targetEntity="Property")
@@ -137,6 +144,22 @@ class AddOns
     public function setQuantity(int|string $quantity): void
     {
         $this->quantity = $quantity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinimum(): int|string
+    {
+        return $this->minimum;
+    }
+
+    /**
+     * @param int $minimum
+     */
+    public function setMinimum(int|string $minimum): void
+    {
+        $this->minimum = $minimum;
     }
 
     /**

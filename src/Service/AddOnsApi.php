@@ -6,6 +6,7 @@ use App\Entity\AddOns;
 use App\Entity\Property;
 use App\Entity\ReservationAddOns;
 use App\Entity\Reservations;
+use App\Helpers\SMSHelper;
 use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -161,6 +162,14 @@ class AddOnsApi
                 $addOn->setQuantity($newQuantity);
                 $this->em->persist($addOn);
                 $this->em->flush($addOn);
+
+                if($newQuantity < $addOn->getMinimum() || $newQuantity == $addOn->getMinimum()){
+                    $messageBody = "Stock low for " . $addOn->getName() . ". Quantity: ". $newQuantity;
+                    $SMSHelper = new SMSHelper($this->logger);
+                    $SMSHelper->sendMessage("+27837917430", $messageBody);
+                }else{
+                    $this->logger->error("quantity is above minimum");
+                }
             }
 
 
