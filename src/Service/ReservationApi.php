@@ -795,6 +795,7 @@ class ReservationApi
     {
         $failedUid = new FailedUids();
         $failedUid->setUid($uid);
+        $failedUid->setDate(new DateTime());
         $this->em->persist($failedUid);
         $this->em->flush($failedUid);
     }
