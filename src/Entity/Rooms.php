@@ -71,14 +71,18 @@ class Rooms
     private $description;
 
     /**
-     * @var RoomTv
+     * @var \DateTime
      *
-     * @ORM\ManyToOne(targetEntity="RoomTv")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="tv", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="airbnb_last_export", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $tv;
+    private $airbnbLastExport = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="bdc_last_export", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $bdcLastExport = 'CURRENT_TIMESTAMP';
 
     /**
      * @var RoomStatus
@@ -109,6 +113,16 @@ class Rooms
      * })
      */
     private $bed;
+
+    /**
+     * @var RoomTv
+     *
+     * @ORM\ManyToOne(targetEntity="RoomTv")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="tv", referencedColumnName="id")
+     * })
+     */
+    private $tv;
 
     /**
      * @return int
@@ -239,19 +253,35 @@ class Rooms
     }
 
     /**
-     * @return RoomTv
+     * @return \DateTime
      */
-    public function getTv(): RoomTv
+    public function getAirbnbLastExport(): \DateTime|string
     {
-        return $this->tv;
+        return $this->airbnbLastExport;
     }
 
     /**
-     * @param RoomTv $tv
+     * @param \DateTime $airbnbLastExport
      */
-    public function setTv(RoomTv $tv): void
+    public function setAirbnbLastExport(\DateTime|string $airbnbLastExport): void
     {
-        $this->tv = $tv;
+        $this->airbnbLastExport = $airbnbLastExport;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getBdcLastExport(): \DateTime|string
+    {
+        return $this->bdcLastExport;
+    }
+
+    /**
+     * @param \DateTime $bdcLastExport
+     */
+    public function setBdcLastExport(\DateTime|string $bdcLastExport): void
+    {
+        $this->bdcLastExport = $bdcLastExport;
     }
 
     /**
@@ -301,4 +331,22 @@ class Rooms
     {
         $this->bed = $bed;
     }
+
+    /**
+     * @return RoomTv
+     */
+    public function getTv(): RoomTv
+    {
+        return $this->tv;
+    }
+
+    /**
+     * @param RoomTv $tv
+     */
+    public function setTv(RoomTv $tv): void
+    {
+        $this->tv = $tv;
+    }
+
+
 }

@@ -51,7 +51,7 @@ class ICalController extends AbstractController
     public function exportIcalReservations($roomId, LoggerInterface $logger, Request $request, ICalApi $iCalApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $ical = $iCalApi->exportIcalForRoom($roomId);
+        $ical = $iCalApi->exportIcalForRoom($roomId, $request);
         $response = new Response($ical);
         $response->headers->add(array('Content-type' => 'text/calendar; charset=utf-8', 'Content-Disposition' => 'inline; filename=aluve_' . $roomId . '.ics'));
         return $response;

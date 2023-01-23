@@ -389,7 +389,7 @@ class ICalApi
         return $responseArray;
     }
 
-    function exportIcalForRoom($roomId): string
+    function exportIcalForRoom($roomId, $request): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
@@ -486,6 +486,15 @@ class ICalApi
             }
 
             $icalString .= "END:VCALENDAR\r\n";
+
+            //update last export timestamp for room
+            if (str_contains($request->getUri(), 'airbnb')) {
+                $room->setAirbnbLastExport(new DateTime());
+            }else{
+                $room->setBdcLastExport(new DateTime());
+            }
+            $this->em->persist($room);
+            $this->em->flush($room);
 
         } catch (Exception $ex) {
             $this->logger->error($ex->getMessage());
@@ -646,7 +655,6 @@ class ICalApi
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $responseArray;
     }
-
 
     /**
      * @throws \Google\Exception
