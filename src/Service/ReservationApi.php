@@ -675,16 +675,11 @@ class ReservationApi
                         //email admin person
                         if (!$this->isFailedUidRecorded($uid)) {
                             $this->recordFailedUid($uid);
-                            $communicationApi = new CommunicationApi($this->em, $this->logger);
-                            $emailBody = "There was a problem creating a reservation. Room Not Available";
-                            $emailBody .= "<br>Room Name:  " . $room->getName();
-                            $emailBody .= "<br>Check In:  " . $checkInDate;
-                            $emailBody .= "<br>Check Out:  " . $checkOutDate;
-                            $emailBody .= "<br>Origin:  " . $origin;
-                            $emailBody .= "<br>Uid:  " . $uid;
-                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getAdminEmail(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
-                            $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, $room->getProperty()->getEmailAddress(), $emailBody, 'Aluve - Failed To Import', $room->getProperty()->getName(), $room->getProperty()->getEmailAddress());
 
+                            $messageBody = "There was a problem importing a reservation. " . $checkInDate . " - " . $room->getName() ;
+                            $SMSHelper = new SMSHelper($this->logger);
+                            $SMSHelper->sendMessage("+27837917430", $messageBody);
+                            $SMSHelper->sendMessage(str_replace(" ", "", $room->getProperty()->getPhoneNumber()) , $messageBody);
                         }
 
                     }

@@ -29,6 +29,13 @@ class FailedUids
     private $uid;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $date = 'CURRENT_TIMESTAMP';
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -58,6 +65,22 @@ class FailedUids
     public function setUid(string $uid): void
     {
         $this->uid = $uid;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDate(): \DateTime|string
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param \DateTime $date
+     */
+    public function setDate(\DateTime|string $date): void
+    {
+        $this->date = $date;
     }
 
 
