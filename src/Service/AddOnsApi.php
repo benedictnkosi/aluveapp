@@ -200,6 +200,9 @@ class AddOnsApi
                     case "name":
                         $addOn->setName($newValue);
                         break;
+                    case "quantity":
+                        $addOn->setQuantity($newValue);
+                        break;
                     default:
                         $responseArray[] = array(
                             'result_message' => "field not found",

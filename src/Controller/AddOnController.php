@@ -84,6 +84,7 @@ class AddOnController extends AbstractController
         return $response;
     }
 
+
     /**
      * @Route("api/addon/update/{addOnId}/{field}/{newValue}")
      */

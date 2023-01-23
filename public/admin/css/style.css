@@ -266,7 +266,7 @@ input[type="checkbox"]{
 	width: auto;
 }
 
-.remove_employee_button, .remove_addon_button, .remove_link_button{
+.remove_employee_button, .remove_addon_button, .remove_link_button, .update_addon_button{
 	display: inline !important;
 }
 
@@ -357,14 +357,14 @@ input[type="checkbox"]{
 
 	.addon-left-div{
 		float: left;
-		width: 50%;
+		width: 33%;
 		padding: 1em;
 		background: #fff;
 	}
 
 	.addon-right-div{
 		float: right;
-		width: 50%;
+		width: 33%;
 		padding: 1em;
 		background: #fff;
 	}

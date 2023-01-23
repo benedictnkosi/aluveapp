@@ -506,6 +506,7 @@ function getAddOns() {
                 event.stopImmediatePropagation();
                 deleteAddOn(event);
             });
+
         },
         error: function (xhr) {
             console.log("request for getAddOns is " + xhr.status);
@@ -517,21 +518,6 @@ function getAddOns() {
     });
 }
 
-function updateAddOn(event) {
-    let addOnId = event.target.getAttribute("data-addon-id");
-    let fieldName = event.target.getAttribute("data-addon-field");
-    $("body").addClass("loading");
-    isUserLoggedIn();
-    let url = "/api/addon/update/" + addOnId + "/" + fieldName;
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        if (response[0].result_code === 0) {
-            showResSuccessMessage("configuration", response[0].result_message);
-        } else {
-            showResErrorMessage("configuration", response[0].result_message);
-        }
-    });
-}
 
 function createAddOn() {
     const addon_name = $("#addon_name").val().trim();
@@ -566,6 +552,25 @@ function deleteAddOn(event) {
         }
     });
 }
+
+function updateAddOn(event) {
+    let addOnId = event.target.getAttribute("data-addon-id");
+    let field = event.target.getAttribute("data-addon-field");
+    const newValue = $(event.target).val().trim();
+    $("body").addClass("loading");
+    isUserLoggedIn();
+    let url = "/api/addon/update/" +addOnId+"/"+field+"/" + newValue ;
+    $.getJSON(url + "?callback=?", null, function (response) {
+        $("body").removeClass("loading");
+        if (response[0].result_code === 0) {
+            getAddOns();
+            showResSuccessMessage("configuration", response[0].result_message);
+        } else {
+            showResErrorMessage("configuration", response[0].result_message);
+        }
+    });
+}
+
 
 function getEmployees() {
     isUserLoggedIn();

@@ -183,6 +183,7 @@ function bindBlockedRoomsEvents(){
 
     $("#block-form").submit(function (event) {
         event.preventDefault();
+        event.stopImmediatePropagation();
         blockRoom();
     });
         $.getScript("https://cdn.jsdelivr.net/momentjs/latest/moment.min.js", function () {
