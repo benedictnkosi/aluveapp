@@ -58,7 +58,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("api/ical/links/{roomId}/{link}")
+     * @Route("admin_api/ical/links/{roomId}/{link}")
      */
     public function addNewChannel($roomId, $link, LoggerInterface $logger, Request $request, ICalApi $iCalApi): Response
     {
@@ -71,7 +71,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("api/ical/remove/{linkId}")
+     * @Route("admin_api/ical/remove/{linkId}")
      */
     public function removeChannel($linkId, LoggerInterface $logger, Request $request, ICalApi $iCalApi): Response
     {

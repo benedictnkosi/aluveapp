@@ -136,7 +136,7 @@ class ScheduledMessagesController extends AbstractController
     }
 
     /**
-     * @Route("/api/schedulemessages/createtemplate/{name}/{message}")
+     * @Route("/admin_api/schedulemessages/createtemplate/{name}/{message}")
      */
     public function createMessageTemplate( $name, $message,Request $request,LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
     {
@@ -165,7 +165,7 @@ class ScheduledMessagesController extends AbstractController
     }
 
     /**
-     * @Route("/api/schedulemessages/delete/{scheduleMessageId}")
+     * @Route("/admin_api/schedulemessages/delete/{scheduleMessageId}")
      */
     public function deleteScheduledMessages($scheduleMessageId, Request $request,LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
     {

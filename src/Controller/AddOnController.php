@@ -57,7 +57,7 @@ class AddOnController extends AbstractController
     }
 
     /**
-     * @Route("api/createaddon/{addOnName}/{addOnPrice}")
+     * @Route("admin_api/createaddon/{addOnName}/{addOnPrice}")
      */
     public function createAddon($addOnName, $addOnPrice, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
@@ -71,7 +71,7 @@ class AddOnController extends AbstractController
     }
 
     /**
-     * @Route("api/addon/delete/{addOnId}")
+     * @Route("admin_api/addon/delete/{addOnId}")
      */
     public function deleteAddOn($addOnId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
@@ -86,7 +86,7 @@ class AddOnController extends AbstractController
 
 
     /**
-     * @Route("api/addon/update/{addOnId}/{field}/{newValue}")
+     * @Route("admin_api/addon/update/{addOnId}/{field}/{newValue}")
      */
     public function updateAddOn($addOnId, $field, $newValue, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {

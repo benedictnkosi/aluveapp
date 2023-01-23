@@ -35,7 +35,7 @@ class EmployeeController extends AbstractController
     }
 
     /**
-     * @Route("api/createemployee/{name}")
+     * @Route("admin_api/createemployee/{name}")
      */
     public function createEmployee($name,  LoggerInterface $logger, Request $request,EmployeeApi $employeeApi): Response
     {
@@ -49,7 +49,7 @@ class EmployeeController extends AbstractController
 
 
     /**
-     * @Route("api/employee/delete/{employeeId}")
+     * @Route("admin_api/employee/delete/{employeeId}")
      */
     public function deleteEmployee($employeeId, LoggerInterface $logger, Request $request,EmployeeApi $employeeApi): Response
     {
@@ -62,7 +62,7 @@ class EmployeeController extends AbstractController
     }
 
     /**
-     * @Route("api/employee/update/{employeeId}/{newValue}")
+     * @Route("admin_api/employee/update/{employeeId}/{newValue}")
      */
     public function updateEmployees($employeeId, $newValue, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, EmployeeApi $employeeApi): Response
     {

@@ -209,7 +209,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{beds}/{stairs}/{tv}/{description}")
+     * @Route("/admin_api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{beds}/{stairs}/{tv}/{description}")
      */
     public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs, $tv, $description, Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {

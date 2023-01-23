@@ -327,7 +327,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("api/reservations/{reservationId}/blockguest/{reason}")
+     * @Route("admin_api/reservations/{reservationId}/blockguest/{reason}")
      */
     public function blockGuest($reservationId, $reason, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
     {

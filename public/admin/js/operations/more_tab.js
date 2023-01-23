@@ -411,8 +411,6 @@ function getOccupancyPerRoom(period) {
     });
 }
 
-
-
 function getTotalIncome(startDate, endDate) {
     isUserLoggedIn();
     let url = "/api/payment/total/cash/" + startDate + "/" + endDate + "/" + $('#select-payment-channel').val();

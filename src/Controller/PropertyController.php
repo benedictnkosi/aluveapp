@@ -28,7 +28,7 @@ class PropertyController extends AbstractController
     }
 
     /**
-     * @Route("api/property/terms/update/{terms}")
+     * @Route("admin_api/property/terms/update/{terms}")
      */
     public function updatePropertyTerms( $terms, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
     {
