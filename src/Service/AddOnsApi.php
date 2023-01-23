@@ -167,8 +167,6 @@ class AddOnsApi
                     $messageBody = "Stock low for " . $addOn->getName() . ". Quantity: ". $newQuantity;
                     $SMSHelper = new SMSHelper($this->logger);
                     $SMSHelper->sendMessage("+27837917430", $messageBody);
-                }else{
-                    $this->logger->error("quantity is above minimum");
                 }
             }
 
