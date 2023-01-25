@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Mail;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,13 +42,10 @@ class EmailService
                 $this->logger->info("1localhost");
                 return true;
             } else {
-                if (mail($toEmail, $subject, $body, $headers)) {
-                    $this->logger->info("Email Sent");
-                    return true;
-                } else {
-                    $this->logger->info("Email Not Sent");
-                    return false;
-                }
+                $mail = new Mail();
+                $mail->send($toEmail, $headers, $body);
+                $this->logger->info("Email Sent");
+                return true;
             }
         } catch (Exception $e) {
             $this->logger->info($e->getMessage());
