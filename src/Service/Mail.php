@@ -54,7 +54,7 @@ require_once 'PEAR.php';
  * @version $Revision: 294747 $
  * @package Mail
  */
-class mail
+class Mail
 {
     /**
      * Line terminator used for separating header lines.
