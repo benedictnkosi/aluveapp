@@ -24,8 +24,7 @@ class MailerController extends AbstractController
             ->from('info@aluvegh.co.za')
             ->to('admin@aluvegh.co.za')
             ->subject('Time for Symfony Mailer!')
-            ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
+            ->text('Sending emails is fun again!');
 
         try {
 
