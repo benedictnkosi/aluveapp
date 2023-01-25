@@ -38,12 +38,12 @@ class EmailService
 
             $headers .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
 
-            if (strcasecmp($_SERVER['SERVER_NAME'], "1localhost") == 0) {
-                $this->logger->info("1localhost");
+            if (strcasecmp($_SERVER['SERVER_NAME'], "localhost") == 0) {
+                $this->logger->info("localhost");
                 return true;
             } else {
                 $mail = new Mail();
-                $mail->send($toEmail, $headers, $body);
+                $mail->send($toEmail, (array)$headers, $body);
                 $this->logger->info("Email Sent");
                 return true;
             }
