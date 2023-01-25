@@ -2,14 +2,9 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Annotation\Route;
+
 
 class EmailService
 {
@@ -21,7 +16,7 @@ class EmailService
     }
 
 
-    function sendEmail($messageBody)
+    function sendEmail($messageBody, $toEmail, $subject): bool
     {
         $this->logger->info("Starting Method: " . __METHOD__);
 
@@ -37,11 +32,11 @@ class EmailService
 
             $headers .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
 
-            if (strcasecmp($_SERVER['SERVER_NAME'], "1localhost") == 0) {
-                $this->logger->info("1localhost");
+            if (strcasecmp($_SERVER['SERVER_NAME'], "localhost") == 0) {
+                $this->logger->info("localhost");
                 return true;
             } else {
-                if (mail(EMAIL_ADDRESS, "Rooms Not Cleaned - " . date("Y/m/d"), $body, $headers)) {
+                if (mail($toEmail, $subject, $body, $headers)) {
                     $this->logger->info("Email Sent");
                     return true;
                 } else {

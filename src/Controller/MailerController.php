@@ -22,7 +22,7 @@ class MailerController extends AbstractController
 
         try {
             $logger->info("calling sendEmail ");
-            $emailService->sendEmail("testing from code");
+            $emailService->sendEmail("testing from code", "admin@aluvegh.co.za", "Testing this Ish");
 
             $responseArray[] = array(
                 'result_message' => "Success",
