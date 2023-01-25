@@ -34,7 +34,7 @@ class MailerController extends AbstractController
                 'result_message' => "Success",
                 'result_code'=> 0
             );
-        } catch (\Exception $e) {
+        } catch (\Exception|TransportExceptionInterface $e) {
             $responseArray[] = array(
                 'result_message' =>"Fail",
                 'result_code'=> 1
