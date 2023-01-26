@@ -72,19 +72,19 @@ class SingleReservationHtml
         $addOns = $addOnsApi->getReservationAddOns($reservationId);
 
         //guest name and reservation id and count of stays
+        $stayCount = $guestApi->getGuestStaysCount($guest->getId());
         $htmlString .= '<div class="res-details"><div><div>
 						<h4 class="guest-name"><a target="_blank" href="http://' . $room->getProperty()->getServerName() . '/invoice.html?id=' . $reservationId . '">' . $guest->getName() . ' - ' . $reservationId . '</a>';
-
-        //is short stay?
-        if (strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) == 0) {
-            $htmlString .= '<img src="/admin/images/clock.ico" class="icon-small-image" title="Short Stay"/>';
-        }
-
 
         //reservation origin
         $this->logger->debug("HTML output - reservation origin " . $reservation->getId());
 
         $htmlString .= '<img title="' . $reservation->getOrigin() . '" src="/admin/images/' . $reservation->getOrigin() . '.png" class="icon-small-image"></img>';
+
+        if (strcasecmp($reservation->getOrigin(), "website") === 0) {
+            $htmlString .= '<div class="stays-div">'.$stayCount.'</div>';
+        }
+
 
         $htmlString .= '</h4>';
 

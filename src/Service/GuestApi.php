@@ -356,26 +356,20 @@ class GuestApi
         return substr($haystack, 0, $length) === $needle;
     }
 
-    public function getGuestStaysCount($guestId): array
+    public function getGuestStaysCount($guestId): int
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
             $stays = $this->em->getRepository(Reservations::class)->findBy(array('guest' => $guestId,
                 'status' => 'confirmed'));
-            $responseArray[] = array(
-                'result_message' => count($stays),
-                'result_code' => 0
-            );
+            return count($stays);
         } catch (Exception $exception) {
-            $responseArray = array(
-                'result_message' => $exception->getMessage(),
-                'result_code' => 1
-            );
+            return 0;
             $this->logger->error(print_r($responseArray, true));
         }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        return $responseArray;
+        return 0;
     }
 
     public function getGuestPreviousRooms($guestId): array
