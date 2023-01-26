@@ -174,6 +174,18 @@ function setBindings() {
         addAddOn(event);
     });
 
+    $('.delete_addon_link').unbind('click')
+    $(".delete_addon_link").click(function (event) {
+        event.stopImmediatePropagation();
+        removeAddOnFromBooking(event);
+    });
+
+    $('.delete_payment_link').unbind('click')
+    $(".delete_payment_link").click(function (event) {
+        event.stopImmediatePropagation();
+        removePayment(event);
+    });
+
     $('.reservations_actions_link').unbind('click')
     $(".reservations_actions_link").click(function (event) {
         event.stopImmediatePropagation();
@@ -209,7 +221,7 @@ function getReservationById(reservation_id) {
             if (!isRetry("getReservationById")) {
                 return;
             }
-            getReservationById();
+            getReservationById(reservation_id);
         }
     });
 }
@@ -515,6 +527,41 @@ function addAddOn(event) {
         });
 
     }
+}
+
+
+function removeAddOnFromBooking(event) {
+    const add_on_id = event.target.getAttribute("data-addon-id");
+
+    isUserLoggedIn();
+    $("body").addClass("loading");
+    let url = "/admin_api/reservation_addon/" + add_on_id + "/delete";
+    $.getJSON(url + "?callback=?", null, function (response) {
+        $("body").removeClass("loading");
+        if (response[0].result_code === 0) {
+            getReservationById(sessionStorage.getItem("reservation_id"));
+            showResSuccessMessage("reservation", response[0].result_message);
+        } else {
+            showResErrorMessage("reservation", response[0].result_message);
+        }
+    });
+}
+
+function removePayment(event) {
+    const payment_id = event.target.getAttribute("data-payment-id");
+
+    isUserLoggedIn();
+    $("body").addClass("loading");
+    let url = "/admin_api/payment/" + payment_id + "/delete";
+    $.getJSON(url + "?callback=?", null, function (response) {
+        $("body").removeClass("loading");
+        if (response[0].result_code === 0) {
+            getReservationById(sessionStorage.getItem("reservation_id"));
+            showResSuccessMessage("reservation", response[0].result_message);
+        } else {
+            showResErrorMessage("reservation", response[0].result_message);
+        }
+    });
 }
 
 function addGuestPhone(event) {

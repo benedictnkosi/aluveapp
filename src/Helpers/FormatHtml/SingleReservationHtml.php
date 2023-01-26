@@ -278,7 +278,7 @@ class SingleReservationHtml
         $totalPriceForAllAdOns = 0;
         $addOnsHTml = "";
         foreach ($addOns as $addOn) {
-            $addOnsHTml .= '<p class="small-font-italic">' . $addOn->getDate()->format("d-M") . " - " . $addOn->getQuantity() . " x " . $addOn->getAddOn()->getName() . " @ R " . $addOn->getAddOn()->getPrice() . '</p>';
+            $addOnsHTml .= '<p class="small-font-italic">' . $addOn->getDate()->format("d-M") . " - " . $addOn->getQuantity() . " x " . $addOn->getAddOn()->getName() . " @ R " . $addOn->getAddOn()->getPrice() . ' <a href="javascript:void(0)" data-addon-id="' . $addOn->getId() . '" class="delete_addon_link">delete</a</p>';
             $totalPriceForAllAdOns += (intVal($addOn->getAddOn()->getPrice()) * intval($addOn->getQuantity()));
         }
         $totalPrice = intval($roomPrice) * $totalDays;
@@ -291,9 +291,9 @@ class SingleReservationHtml
         $totalPayment = 0;
         foreach ($payments as $payment) {
             if ($payment->isDiscount()) {
-                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ') (Discount)</p>';
+                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ') (Discount) <a href="javascript:void(0)" data-payment-id="' . $payment->getId() . '" class="delete_payment_link">delete</a></p>';
             } else {
-                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ')</p>';
+                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ') <a href="javascript:void(0)" data-payment-id="' . $payment->getId() . '" class="delete_payment_link">delete</a></p>';
             }
             $totalPayment += (intVal($payment->getAmount()));
         }

@@ -8,9 +8,11 @@ use App\Helpers\FormatHtml\CalendarHTML;
 use App\Helpers\FormatHtml\InvoiceHTML;
 use App\Helpers\FormatHtml\ReservationHtml;
 use App\Helpers\FormatHtml\SingleReservationHtml;
+use App\Service\AddOnsApi;
 use App\Service\BlockedRoomApi;
 use App\Service\GuestApi;
 use App\Service\NotesApi;
+use App\Service\PaymentApi;
 use App\Service\ReservationApi;
 use App\Service\RoomApi;
 use DateTime;
@@ -333,6 +335,19 @@ class ReservationController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $guestApi->blockGuest($reservationId, $reason);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
+     * @Route("admin_api/reservation_addon/{addOnId}/delete")
+     */
+    public function removeAddOnFromReservation($addOnId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $addOnsApi->removeAddOnFromReservation($addOnId);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

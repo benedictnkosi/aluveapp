@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Helpers\FormatHtml\ConfigAddonsHTML;
 use App\Service\AddOnsApi;
+use App\Service\PaymentApi;
 use App\Service\SecurityApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -97,5 +98,7 @@ class AddOnController extends AbstractController
         $response->setCallback($callback);
         return $response;
     }
+
+
 
 }

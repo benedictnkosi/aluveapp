@@ -441,4 +441,31 @@ order by date desc";
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
         return $htmlResponse;
     }
+
+
+    public function removePayment($paymentId): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $payment = $this->em->getRepository(Payments::class)->findOneBy(array('id' => $paymentId));
+            $this->em->remove($payment);
+            $this->em->flush($payment);
+
+            $responseArray[] = array(
+                'result_message' => "Successfully removed payment",
+                'result_code' => 0
+            );
+
+        } catch (Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            $responseArray[] = array(
+                'result_message' =>$ex->getMessage(),
+                'result_code' => 1
+            );
+        }
+
+        return $responseArray;
+    }
+
 }

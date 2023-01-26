@@ -28,6 +28,19 @@ class PaymentController extends AbstractController
     }
 
     /**
+     * @Route("admin_api/payment/{paymentId}/delete")
+     */
+    public function removePayment($paymentId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $response = $paymentApi->removePayment($paymentId);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response , 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
+    /**
      * @Route("api/discount/{reservationId}/amount/{amount}")
      */
     public function addDiscount($reservationId, $amount, LoggerInterface $logger, Request $request, PaymentApi $paymentApi): Response

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\AddOns;
+use App\Entity\Payments;
 use App\Entity\Property;
 use App\Entity\ReservationAddOns;
 use App\Entity\Reservations;
@@ -354,4 +355,31 @@ class AddOnsApi
             return 0;
         }
     }
+
+
+    public function removeAddOnFromReservation($addOnId): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $reservationAddOn = $this->em->getRepository(ReservationAddOns::class)->findOneBy(array('id' => $addOnId));
+            $this->em->remove($reservationAddOn);
+            $this->em->flush($reservationAddOn);
+
+            $responseArray[] = array(
+                'result_message' => "Successfully removed reservation Add-on",
+                'result_code' => 0
+            );
+
+        } catch (Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            $responseArray[] = array(
+                'result_message' =>$ex->getMessage(),
+                'result_code' => 1
+            );
+        }
+
+        return $responseArray;
+    }
+
 }
