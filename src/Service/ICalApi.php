@@ -658,7 +658,7 @@ class ICalApi
         return $responseArray;
     }
 
-    function updateAirbnbGuestUsingGmail($emailReaderApi): array
+    function updateAirbnbGuestUsingEmail($emailReaderApi): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();

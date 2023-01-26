@@ -673,9 +673,9 @@ class ReservationApi
                             $SMSHelper->sendMessage(str_replace(" ", "", $room->getProperty()->getPhoneNumber()), $messageBody);
                         }
 
+                    }else{
+                        return $responseArray;
                     }
-
-                    return $responseArray;
                 }
 
                 $reservation = new Reservations();
