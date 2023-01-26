@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Config;
 use App\Entity\Ical;
+use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
 use App\Entity\Rooms;
 use App\Entity\RoomStatus;
@@ -11,6 +12,7 @@ use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Google\Service\AdMob\Date;
 use Psr\Log\LoggerInterface;
 use Sabre\VObject;
 
@@ -656,55 +658,51 @@ class ICalApi
         return $responseArray;
     }
 
-    /**
-     * @throws \Google\Exception
-     */
-    function updateAirbnbGuestUsingGmail($guestApi): array
+    function updateAirbnbGuestUsingGmail($emailReaderApi): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
 
-        $communicationApi = new CommunicationApi($this->em, $this->logger);
-        $emails = $communicationApi->getAirbnbConfirmationEmails();
+        //get today bookings without a name
+        $reservations = $this->em->getRepository(Reservations::class)->findBy(array('additionalInfo' => 'Guest Name is: '
+        ,'origin' => 'www.airbnb.co.za',
+            'receivedOn' => new DateTime()));
 
-        if ($emails) {
-            foreach ($emails as $email) {
-                $emailSubject = $email['subject'];
-                echo "found emails";
+        $midnight = new DateTime('today midnight');
+        $reservations = $this->em
+            ->createQuery("SELECT r FROM App\Entity\Reservations r 
+            WHERE r.additionalInfo = 'Guest Name is: '
+            and r.origin >= 'www.airbnb.co.za'
+            and r.receivedOn > '" . $midnight->format('Y-m-d')  . "'")
+            ->getResult();
 
-                $this->logger->debug("Email subject is " . $emailSubject);
-                try {
-                    $pos = strpos($emailSubject, 'Reservation confirmed');
-                    if ($pos !== false) {
-                        $bodyText = $email['body'];
-                        $messageThreadId = trim($this->getStringByBoundary($bodyText, 'hosting/thread/', '?'));
-                        $this->logger->debug("message thread is " . $messageThreadId);
-                        //$bodyText = quoted_printable_decode($bodyText);
-                        $guestName = trim($this->getStringByBoundary($emailSubject, 'Reservation confirmed - ', ' arrives '));
-                        $confirmationCode = trim($this->getStringByBoundary($bodyText, 'reservations/details/', '?'));
-                        $result = $guestApi->createAirbnbGuest($confirmationCode, $guestName);
-                        $responseArray = array(
-                            'result_code' => 0,
-                            'result_description' => $result
-                        );
-                        $this->logger->debug(print_r($responseArray, true));
-                    }
-                } catch (\Throwable $e) {
-                    $responseArray = array(
-                        'result_code' => 1,
-                        'result_description' => $e->getMessage()
-                    );
+        foreach ($reservations as $reservation) {
+            $this->logger->debug("found reservation " . $reservation->getId());
+            $guestName = $emailReaderApi->getAirbnbGuestName($reservation->getOriginUrl());
 
-                    $this->logger->debug(print_r($responseArray, true));
-                }
+            if($guestName !== null){
+                $this->logger->debug("Guest Name is: $guestName");
+                $reservation->setAdditionalInfo("Guest Name is: $guestName");
+                $guest = $reservation->getGuest();
+                $guest->setName($guestName);
+
+                $this->em->persist($reservation);
+                $this->em->flush($reservation);
+
+                $this->em->persist($guest);
+                $this->em->flush($guest);
+
+                $responseArray[] = array(
+                    'result_message' => 'Successfully updated guest name',
+                    'result_code' => 0
+                );
+            }else{
+                $this->logger->debug("Guest Name not found");
+                $responseArray[] = array(
+                    'result_message' => 'Guest name not found on email for reservation : ' . $reservation->getId(),
+                    'result_code' => 0
+                );
             }
-        } else {
-            $responseArray = array(
-                'result_code' => 0,
-                'result_description' => "no emails found"
-            );
-
-            $this->logger->debug(print_r($responseArray, true));
         }
 
         return $responseArray;

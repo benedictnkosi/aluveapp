@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\EmailReaderApi;
 use App\Service\EmailService;
 use App\Helpers\FormatHtml\BlockedRoomsHTML;
 use App\Helpers\FormatHtml\ConfigIcalLinksLogsHTML;
@@ -102,12 +103,16 @@ class ICalController extends AbstractController
 
     /**
      * @Route("/public/updateairbnbguest")
+     * @throws \Google\Exception
      */
-    public function updateAirbnbGuest(ICalApi $ICalApi, GuestApi $guestApi, LoggerInterface $logger): JsonResponse
+    public function updateAirbnbGuest(ICalApi $ICalApi, GuestApi $guestApi, EmailReaderApi $emailReaderApi, LoggerInterface $logger): JsonResponse
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $ICalApi->updateAirbnbGuestUsingGmail($guestApi);
+        $response = $ICalApi->updateAirbnbGuestUsingGmail($emailReaderApi);
         return new JsonResponse($response, 200, array());
     }
+
+
+
 
 }
