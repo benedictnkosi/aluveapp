@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Property;
 use App\Entity\Reservations;
+use App\Entity\ReservationStatus;
 use App\Helpers\SMSHelper;
 use Exception;
 use phpDocumentor\Reflection\Types\Void_;
@@ -359,17 +360,16 @@ class GuestApi
     public function getGuestStaysCount($guestId): int
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
-        $responseArray = array();
         try {
+            $confirmStatus = $this->em->getRepository(ReservationStatus::class)->findOneBy(array('name' => 'confirmed'));
+
             $stays = $this->em->getRepository(Reservations::class)->findBy(array('guest' => $guestId,
-                'status' => 'confirmed'));
+                'status' => $confirmStatus));
             return count($stays);
         } catch (Exception $exception) {
+            $this->logger->error($exception->getMessage());
             return 0;
-            $this->logger->error(print_r($responseArray, true));
         }
-        $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        return 0;
     }
 
     public function getGuestPreviousRooms($guestId): array
