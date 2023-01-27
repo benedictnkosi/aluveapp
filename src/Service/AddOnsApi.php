@@ -366,6 +366,18 @@ class AddOnsApi
             $this->em->remove($reservationAddOn);
             $this->em->flush($reservationAddOn);
 
+
+            //update add-on quantity
+            $addOn = $reservationAddOn->getAddOn();
+            $quantity = $reservationAddOn->getQuantity();
+            if($addOn->getQuantity() !== 0){
+                $currentQuantity = $addOn->getQuantity();
+                $newQuantity = $currentQuantity + intval($quantity);
+                $addOn->setQuantity($newQuantity);
+                $this->em->persist($addOn);
+                $this->em->flush($addOn);
+            }
+
             $responseArray[] = array(
                 'result_message' => "Successfully removed reservation Add-on",
                 'result_code' => 0
