@@ -246,6 +246,11 @@ function createReservation() {
         return;
     }
 
+    if(checkInDate === checkOutDate){
+        showResErrorMessage("reservation", "Checkin date can not be the same as check-out date");
+        return;
+    }
+
     $("body").addClass("loading");
     let url = "/public/reservations/create/" + sessionStorage.getItem("selected_rooms_array") + '/' + guestName + '/' + phoneNumber + '/' + adultGuests + '/' + childGuests + '/' + checkInDate + '/' + checkOutDate;
     if (email.length > 0) {
