@@ -278,7 +278,7 @@ class SingleReservationHtml
         $totalPriceForAllAdOns = 0;
         $addOnsHTml = "";
         foreach ($addOns as $addOn) {
-            $addOnsHTml .= '<p class="small-font-italic">' . $addOn->getDate()->format("d-M") . " - " . $addOn->getQuantity() . " x " . $addOn->getAddOn()->getName() . " @ R " . $addOn->getAddOn()->getPrice() . ' <a href="javascript:void(0)" data-addon-id="' . $addOn->getId() . '" class="delete_addon_link">delete</a</p>';
+            $addOnsHTml .= '<p class="small-font-italic">' . $addOn->getDate()->format("d-M") . " - " . $addOn->getQuantity() . " x " . $addOn->getAddOn()->getName() . " @ R " . $addOn->getAddOn()->getPrice() . ' <a href="javascript:void(0)" data-addon-id="' . $addOn->getId() . '" class="delete_addon_link">delete</a></p>';
             $totalPriceForAllAdOns += (intVal($addOn->getAddOn()->getPrice()) * intval($addOn->getQuantity()));
         }
         $totalPrice = intval($roomPrice) * $totalDays;
