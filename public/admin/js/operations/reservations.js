@@ -177,7 +177,7 @@ function setBindings() {
     $('.delete_addon_link').unbind('click')
     $(".delete_addon_link").click(function (event) {
         event.stopImmediatePropagation();
-        removeAddOnFromBooking(event);
+        //removeAddOnFromBooking(event);
     });
 
     $('.delete_payment_link').unbind('click')
