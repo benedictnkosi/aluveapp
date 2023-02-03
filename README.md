@@ -89,3 +89,4 @@ when copying thr files zip the content of aluve_backend and upload that first an
 then zip vendor and unzip that on server
 update the .env with database
 DATABASE_URL="mysql://aluvejsl_user:yo_BBm_QfDVe@127.0.0.1:3306/aluvejsl_aluveapp?serverVersion=mariadb-{slq_server_version}&charset=utf8mb4"
+500 error means that some files are missing. zip again and upload without any disk space error
