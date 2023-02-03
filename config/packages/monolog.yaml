@@ -7,7 +7,7 @@ when@dev:
         handlers:
             main:
                 type: stream
-                path: php://stderr
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: info
                 channels: ["!event"]
             # uncomment to get logging in your browser
