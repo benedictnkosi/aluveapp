@@ -36,6 +36,8 @@ Database
 
 Add entry in .env
 DATABASE_URL="mysql://root:@127.0.0.1:3306/new_aluve_db?serverVersion=mariadb-{slq_server_version}&charset=utf8mb4"
+DATABASE_URL="mysql://aluvejsl_user:yo_BBm_QfDVe@127.0.0.1:3306/aluvejsl_aluveapp?serverVersion=mariadb-{slq_server_version}&charset=utf8mb4"
+
 Comment out the postgres connection string 
 
 make sure routes.yml is empty
@@ -79,3 +81,11 @@ SELECT SUM(DATEDIFF(`check_in`,`check_out`)),`origin`,check_in, check_out FROM `
 where `check_in` > '2022-11-06'
 and `check_out` < '2022-12-05'
 GROUP BY origin
+
+
+migrating to server
+root folder should be /backend/public
+when copying thr files zip the content of aluve_backend and upload that first and unzip on server
+then zip vendor and unzip that on server
+update the .env with database
+DATABASE_URL="mysql://aluvejsl_user:yo_BBm_QfDVe@127.0.0.1:3306/aluvejsl_aluveapp?serverVersion=mariadb-{slq_server_version}&charset=utf8mb4"
