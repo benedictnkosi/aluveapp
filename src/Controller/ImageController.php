@@ -60,7 +60,7 @@ class ImageController extends AbstractController
      */
     public function getFile($fileName): Response
     {
-        $uploadDir = __DIR__ . '/../../public/rooms_images/';
+        $uploadDir = __DIR__ . '/../../public/image/';
         return new BinaryFileResponse($uploadDir . $fileName);
     }
 
@@ -78,7 +78,7 @@ class ImageController extends AbstractController
                 Response::HTTP_UNPROCESSABLE_ENTITY, ['content-type' => 'text/plain']);
         }
 
-        $uploadDir = __DIR__ . '/../../public/rooms_images/';
+        $uploadDir = __DIR__ . '/../../public/image/';
         $uploader   =   new FileUploaderApi($logger);
         $uploader->setDir($uploadDir);
         $uploader->setExtensions(array('jpg','jpeg','png','gif'));  //allowed extensions list//
