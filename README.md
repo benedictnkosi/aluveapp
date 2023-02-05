@@ -84,9 +84,16 @@ GROUP BY origin
 
 
 migrating to server
-root folder should be /backend/public
-when copying thr files zip the content of aluve_backend and upload that first and unzip on server
-then zip vendor and unzip that on server
-update the .env with database
+1. backup .env and /backend/src/app folder
+2. back up backend/public/room/image
+3. delete the /backend folder
+4. clone the repo 
+5. restore .env and /backend/src/app folder
+6. restore backend/public/room/image
+7. change the permissions for the folder backend to 777
+8. update the /home/aluvejsl/backend/public/php.ini session.save_path to /tmp
+9. go to MultiPHP Manager, make sure PHP version is latest - PHP 8.1 (ea-php81))
+
+
 DATABASE_URL="mysql://aluvejsl_user:yo_BBm_QfDVe@127.0.0.1:3306/aluvejsl_aluveapp?serverVersion=mariadb-{slq_server_version}&charset=utf8mb4"
 500 error means that some files are missing. zip again and upload without any disk space error

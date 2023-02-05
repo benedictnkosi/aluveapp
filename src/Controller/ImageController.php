@@ -60,7 +60,7 @@ class ImageController extends AbstractController
      */
     public function getFile($fileName): Response
     {
-        $uploadDir = __DIR__ . '/../../public/image/';
+        $uploadDir = __DIR__ . '/../../public/room/image/';
         return new BinaryFileResponse($uploadDir . $fileName);
     }
 
