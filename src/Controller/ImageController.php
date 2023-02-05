@@ -78,7 +78,7 @@ class ImageController extends AbstractController
                 Response::HTTP_UNPROCESSABLE_ENTITY, ['content-type' => 'text/plain']);
         }
 
-        $uploadDir = __DIR__ . '/../../public/image/';
+        $uploadDir = __DIR__ . '/../../public/room/image/';
         $uploader   =   new FileUploaderApi($logger);
         $uploader->setDir($uploadDir);
         $uploader->setExtensions(array('jpg','jpeg','png','gif'));  //allowed extensions list//
