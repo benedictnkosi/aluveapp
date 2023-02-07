@@ -29,10 +29,10 @@ $(document).ready(function () {
             customerName: "required",
             phoneNumber: "required",
             email: {
-                required: false,
-                email: true
-            },
-            hotel_name: "required"
+                required: false
+                // email: true
+            }
+           // hotel_name: "required"
         },
         submitHandler: function () {
             newTrialMessage();
@@ -74,7 +74,7 @@ function newTrialMessage() {
     $.get(url, function(data){
         if (data[0].result_code === 0) {
             $("#success_message_div").removeClass("display-none");
-            $("#success_message").text(data[0].result_message)
+            //$("#success_message").text(data[0].result_message)
         }else{
             $("#error_message_div").removeClass("display-none");
             $("#error_message").text(data[0].result_message)

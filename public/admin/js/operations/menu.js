@@ -1,7 +1,7 @@
 $(document).ready(function () {
     window.setTimeout(hideLoader, 3000);
     if (sessionStorage.getItem("current_page") === null) {
-        updateView('calendar');
+        updateView('configuration');
     } else {
         updateView(sessionStorage.getItem("current_page"));
     }

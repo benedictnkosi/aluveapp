@@ -506,6 +506,11 @@ class RoomApi
                 $successMessage = "Successfully created room";
             } else {
                 $successMessage = "Successfully updated room";
+                $responseArray[] = array(
+                    'result_message' => "Server Error 500",
+                    'result_code' => 1
+                );
+                return $responseArray;
             }
             $beds = urldecode($beds);
             $beds = trim($beds);
@@ -603,7 +608,7 @@ class RoomApi
                 } else {
                     $roomImage->setStatus("removed");
                     $this->em->persist($roomImage);
-                    $this->em->flush($roomImage);
+                    //$this->em->flush($roomImage);
 
                     $responseArray[] = array(
                         'result_message' => "Successfully removed image",
