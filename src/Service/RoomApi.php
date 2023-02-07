@@ -529,6 +529,13 @@ class RoomApi
             $propertyId = $_SESSION['PROPERTY_ID'];
             $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $propertyId));
 
+            if(strlen($description) > 200){
+                $responseArray[] = array(
+                    'result_message' => "Description too long",
+                    'result_code' => 1
+                );
+                return $responseArray;
+            }
             $room->setName($name);
             $room->setPrice($price);
             $room->setSleeps($sleeps);
