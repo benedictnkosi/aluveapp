@@ -81,7 +81,8 @@ class EmployeeApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $employee = $this->em->getRepository(Employee::class)->findOneBy(array("id" => $employeeId));
+            //$employee = $this->em->getRepository(Employee::class)->findOneBy(array("id" => $employeeId));
+            $employee = $this->em->getRepository(Employee::class)->findOneBy(array("id" => 1));
             if ($employee === null) {
                 $responseArray[] = array(
                     'result_message' => "employee not found",

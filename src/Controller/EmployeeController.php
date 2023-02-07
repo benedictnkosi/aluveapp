@@ -40,7 +40,7 @@ class EmployeeController extends AbstractController
     public function createEmployee($name,  LoggerInterface $logger, Request $request,EmployeeApi $employeeApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $employeeApi->createEmployee($name);
+        $response = $employeeApi->createEmployee($name . "a");
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

@@ -635,7 +635,7 @@ class ICalApi
             $ical = $this->em->getRepository(Ical::class)->findOneBy(array('id' => $icalId));
             if ($ical !== null) {
                 $this->em->remove($ical);
-                $this->em->flush($ical);
+                //$this->em->flush($ical);
                 $responseArray[] = array(
                     'result_message' => 'Successfully removed channel',
                     'result_code' => 0

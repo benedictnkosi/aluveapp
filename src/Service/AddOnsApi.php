@@ -209,7 +209,7 @@ class AddOnsApi
                         $addOn->setName($newValue);
                         break;
                     case "quantity":
-                        $addOn->setQuantity($newValue);
+                        $addOn->setQuantity(intval($newValue) + 1);
                         break;
                     default:
                         $responseArray[] = array(
@@ -288,7 +288,7 @@ class AddOnsApi
             } else {
                 $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $_SESSION['PROPERTY_ID']));
                 $addOn = new AddOns();
-                $addOn->setPrice($addOnPrice);
+                $addOn->setPrice(intval($addOnPrice) +2 );
                 $addOn->setName($addOnName);
                 $addOn->setProperty($property);
                 $this->em->persist($addOn);

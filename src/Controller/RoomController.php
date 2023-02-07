@@ -170,6 +170,7 @@ class RoomController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         $bedSizes = $roomApi->getRoomBedSizesJson();
+        array_pop($bedSizes);
         return new JsonResponse(json_encode($bedSizes) , 200, array());
     }
     /**

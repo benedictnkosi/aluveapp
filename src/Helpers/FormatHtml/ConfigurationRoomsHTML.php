@@ -41,6 +41,7 @@ class ConfigurationRoomsHTML
             $htmlString .='<option value="0" >Please Select</option>';
         }
 
+        array_pop($items);
         foreach ($items as $item) {
             $htmlString .='<option value="'.$item->getId().'" >'.$item->getName().'</option>';
         }

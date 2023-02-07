@@ -500,17 +500,20 @@ class RoomApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
+            /*if(intval($sleeps) < 0){
+                $responseArray[] = array(
+                    'result_message' => "Room sleeps can not be less than 0",
+                    'result_code' => 1
+                );
+                return $responseArray;
+            }*/
+
             $room = $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $id));
             if ($room == null) {
                 $room = new Rooms();
                 $successMessage = "Successfully created room";
             } else {
                 $successMessage = "Successfully updated room";
-                $responseArray[] = array(
-                    'result_message' => "Server Error 500",
-                    'result_code' => 1
-                );
-                return $responseArray;
             }
             $beds = urldecode($beds);
             $beds = trim($beds);
@@ -532,7 +535,7 @@ class RoomApi
             $room->setStatus($roomStatus);
             $room->setLinkedRoom($linkedRoom);
             $room->setSize($size);
-            $room->setStairs($stairs);
+            $room->setStairs("yes");
             $room->setDescription($description);
             $room->setProperty($property);
             $room->setTv($tvType);
@@ -608,7 +611,7 @@ class RoomApi
                 } else {
                     $roomImage->setStatus("removed");
                     $this->em->persist($roomImage);
-                    //$this->em->flush($roomImage);
+                    $this->em->flush($roomImage);
 
                     $responseArray[] = array(
                         'result_message' => "Successfully removed image",
@@ -652,7 +655,7 @@ class RoomApi
 
                 $roomImage->setStatus("default");
                 $this->em->persist($roomImage);
-                $this->em->flush($roomImage);
+                //$this->em->flush($roomImage);
 
                 $responseArray[] = array(
                     'result_message' => "Successfully marked image as default",
