@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Helpers\FormatHtml\BlockedRoomsHTML;
 use App\Service\BlockedRoomApi;
+use App\Service\ReservationApi;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -58,5 +60,20 @@ class BlockedRoomController extends AbstractController
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
+    }
+
+    /**
+     * @Route("api/json/blockedroom/{id}")
+     */
+    public function getGetBlockedRoomJson( $id, LoggerInterface $logger, BlockedRoomApi $blockedRoomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $blockedRoom = $blockedRoomApi->getBlockedRoom($id);
+
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($blockedRoom, 'json');
+
+        $logger->info($jsonContent);
+        return new JsonResponse($jsonContent , 200, array(), true);
     }
 }

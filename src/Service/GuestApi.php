@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Employee;
 use App\Entity\Property;
 use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
 use App\Helpers\SMSHelper;
+use DateTime;
 use Exception;
 use phpDocumentor\Reflection\Types\Void_;
 use Psr\Log\LoggerInterface;
@@ -93,6 +95,39 @@ class GuestApi
         return $responseArray;
     }
 
+    public function updateGuestName($guestId, $name): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId ));
+            if($guest === null){
+                $responseArray[] = array(
+                    'result_code' => 1,
+                    'result_message' => 'Guest not found for id ' . $guestId
+                );
+            }else{
+                $guest->setName($name);
+                $this->em->persist($guest);
+                $this->em->flush($guest);
+                $responseArray[] = array(
+                    'result_code' => 0,
+                    'result_message' => 'Successfully updated guest phone number'
+                );
+            }
+
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_code' => 1,
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
     public function updateGuestEmail($guestId, $email): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
@@ -126,6 +161,38 @@ class GuestApi
         return $responseArray;
     }
 
+    public function updateGuestRewards($guestId, $flag): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            $guest = $this->em->getRepository(Guest::class)->findOneBy(array('id' => $guestId ));
+            if($guest === null){
+                $responseArray[] = array(
+                    'result_code' => 1,
+                    'result_message' => 'Guest not found for id ' . $guestId
+                );
+            }else{
+                $guest->setRewards(intval($flag));
+                $this->em->persist($guest);
+                $this->em->flush($guest);
+                $responseArray[] = array(
+                    'result_code' => 0,
+                    'result_message' => 'Successfully updated guest rewards flag'
+                );
+            }
+
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_code' => 1,
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
     public function updateGuestIdNumber($guestId, $IdNumber): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
@@ -365,7 +432,15 @@ class GuestApi
 
             $stays = $this->em->getRepository(Reservations::class)->findBy(array('guest' => $guestId,
                 'status' => $confirmStatus));
-            return count($stays);
+
+            $numberOfStays = 0;
+            $now = new DateTime('tomorrow midnight');
+            foreach ($stays as $stay) {
+                if($stay->getCheckIn() < $now){
+                    $numberOfStays++;
+                }
+            }
+            return $numberOfStays;
         } catch (Exception $exception) {
             $this->logger->error($exception->getMessage());
             return 0;
@@ -454,5 +529,32 @@ class GuestApi
         return $guest;
     }
 
+    public function getConfigGuests($nameFilter): array
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+
+            if(strcmp($nameFilter, "*") === 0){
+                $nameFilter = "";
+            }
+
+            return $this->em
+                ->createQuery("SELECT g FROM App\Entity\Guest g 
+            WHERE g.property = " . $_SESSION['PROPERTY_ID'] . "
+            and g.comments = 'website'
+            and g.name like '%".$nameFilter."%'
+            order by g.name asc")
+                ->getResult();
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
 
 }

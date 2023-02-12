@@ -42,7 +42,6 @@ class AddOnsApi
                     'result_code' => 1
                 );
             } else {
-                $propertyApi = new PropertyApi($this->em, $this->logger);
                 $propertyId =   $_SESSION['PROPERTY_ID'];
                 return $this->em->getRepository(AddOns::class)->findOneBy(
                     array("name" => $addOnName,

@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Helpers\FormatHtml\ConfigAddonsHTML;
 use App\Service\AddOnsApi;
+use App\Service\GuestApi;
 use App\Service\PaymentApi;
 use App\Service\SecurityApi;
+use JMS\Serializer\SerializerBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -99,6 +101,21 @@ class AddOnController extends AbstractController
         return $response;
     }
 
+
+    /**
+     * @Route("api/json/addOn/{name}")
+     */
+    public function getAddOnJson( $name, LoggerInterface $logger, AddOnsApi $addOnsApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $addOn = $addOnsApi->getAddOn($name);
+
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($addOn, 'json');
+
+        $logger->info($jsonContent);
+        return new JsonResponse($jsonContent , 200, array(), true);
+    }
 
 
 }

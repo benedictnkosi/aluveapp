@@ -18,6 +18,7 @@
         "fabpot/goutte": "^4.0",
         "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^7.4",
+        "jms/serializer": "^3.22",
         "kigkonsult/icalcreator": "^2.41",
         "php-imap/php-imap": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.3",

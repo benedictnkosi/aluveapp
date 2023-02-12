@@ -6,7 +6,7 @@ use App\Entity\Reservations;
 use App\Entity\ReservationStatus;
 use App\Helpers\FormatHtml\CalendarHTML;
 use App\Helpers\FormatHtml\InvoiceHTML;
-use App\Helpers\FormatHtml\ReservationHtml;
+use App\Helpers\FormatHtml\ReservationsHtml;
 use App\Helpers\FormatHtml\SingleReservationHtml;
 use App\Service\AddOnsApi;
 use App\Service\BlockedRoomApi;
@@ -16,6 +16,7 @@ use App\Service\PaymentApi;
 use App\Service\ReservationApi;
 use App\Service\RoomApi;
 use DateTime;
+use JMS\Serializer\SerializerBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,6 +45,20 @@ class ReservationController extends AbstractController
         return $response;
     }
 
+
+    /**
+     * @Route("public/reservations/checkout/json/{propertyId}")
+     */
+    public function getJsonCheckOutReservations($propertyId,  LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $reservations = $reservationApi->getCheckOutReservation($propertyId);
+        $logger->info("back from other call");
+        $logger->info("reservations count " . sizeof($reservations) );
+        return new JsonResponse(print_r($reservations), 200, array());
+
+    }
+
     /**
      * @Route("api/reservations/{period}")
      */
@@ -70,7 +85,7 @@ class ReservationController extends AbstractController
             default:
         }
 
-        $reservationHtml = new ReservationHtml($entityManager, $logger);
+        $reservationHtml = new ReservationsHtml($entityManager, $logger);
         $html = $reservationHtml->formatHtml($reservations, $period);
         $response = array(
             'html' => $html,
@@ -103,7 +118,7 @@ class ReservationController extends AbstractController
 
 
     /**
-     * @Route("api/reservation/{reservationId}")
+     * @Route("public/reservation/{reservationId}")
      */
     public function getReservationById($reservationId, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
@@ -352,6 +367,21 @@ class ReservationController extends AbstractController
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
+    }
+
+    /**
+     * @Route("api/json/reservation/{id}")
+     */
+    public function getReservationJson( $id, LoggerInterface $logger, ReservationApi $api): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $reservation = $api->getReservation($id);
+
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($reservation, 'json');
+
+        $logger->info($jsonContent);
+        return new JsonResponse($jsonContent , 200, array(), true);
     }
 
 }

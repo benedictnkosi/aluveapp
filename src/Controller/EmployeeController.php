@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Helpers\FormatHtml\ConfigEmployeesHTML;
 use App\Service\AddOnsApi;
 use App\Service\EmployeeApi;
+use App\Service\ReservationApi;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -72,5 +74,20 @@ class EmployeeController extends AbstractController
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
+    }
+
+    /**
+     * @Route("api/json/employee/{id}")
+     */
+    public function getPaymentJson( $id, LoggerInterface $logger, EmployeeApi $employeeApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $employee = $employeeApi->getEmployee($id);
+
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($employee, 'json');
+
+        $logger->info($jsonContent);
+        return new JsonResponse($jsonContent , 200, array(), true);
     }
 }

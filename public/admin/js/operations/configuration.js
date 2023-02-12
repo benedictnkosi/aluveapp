@@ -15,7 +15,7 @@ $(document).ready(function () {
     createBedsTokenField("");
 });
 
-function createBedsTokenField(selectedRooms){
+function createBedsTokenField(selectedRooms) {
     $('#beds_tokenfield').tokenfield('destroy');
     $('#beds_tokenfield').val(selectedRooms);
     $('#beds_tokenfield').tokenfield({
@@ -48,6 +48,7 @@ function loadConfigurationPageData() {
     getConfigRoomBedSizesDropDown();
     getAddOns();
     getEmployees();
+    getGuests();
     getScheduledMessages();
     getMessageSchedules();
     getMessageVariables();
@@ -73,9 +74,14 @@ function bindConfigElements() {
     $("#config_room_form").validate({
         // Specify validation rules
         rules: {
-            room_name: "required", room_description: "required",  room_sleeps: "required", beds_tokenfield: "required", room_price: {
+            room_name: "required",
+            room_description: "required",
+            room_sleeps: "required",
+            beds_tokenfield: "required",
+            room_price: {
                 required: true, digits: true
-            }, room_size: {
+            },
+            room_size: {
                 required: true, digits: true
             },
         }, submitHandler: function () {
@@ -110,6 +116,19 @@ function bindConfigElements() {
             createEmployee();
         }
     });
+
+    $("#config_guest_form").submit(function (event) {
+        event.preventDefault();
+    });
+    $("#config_guest_form").validate({
+        // Specify validation rules
+        rules: {
+            guest_name: "required",
+        }, submitHandler: function () {
+            getGuests($('#guest_name').val().trim());
+        }
+    });
+
 
     $('#messages_submit').unbind('click')
     $("#messages_submit").click(function (event) {
@@ -169,13 +188,12 @@ function createUpdateRoom() {
     const room_size = $('#room_size').val().trim();
     const select_room_status = $('#select_room_status').find(":selected").val();
     const select_linked_room = $('#select_linked_room').find(":selected").val();
-    const input_bed =  $('#beds_tokenfield').tokenfield('getTokensList', ',');
+    const input_bed = $('#beds_tokenfield').tokenfield('getTokensList', ',');
     const select_Stairs = $('#select_Stairs').find(":selected").val();
     const select_tv = $('#select_tv').find(":selected").val();
 
-    if(input_bed.length < 1){
+    if (input_bed.length < 1) {
         $('#beds_tokenfield').form();
-
     }
 
     $("body").addClass("loading");
@@ -218,6 +236,9 @@ function filterConfiguration(event) {
             break;
         case "configuration_employees":
             $('#configuration-employees-list').removeClass("display-none");
+            break;
+        case "configuration_guests":
+            $('#configuration-guests-list').removeClass("display-none");
             break;
         case "configuration_messages":
             $('#configuration-messages').removeClass("display-none");
@@ -525,16 +546,29 @@ function createAddOn() {
     $("body").addClass("loading");
     isUserLoggedIn();
     let url = "/admin_api/createaddon/" + addon_name + "/" + addon_price;
-    $.getJSON(url + "?callback=?", null, function (data) {
-        $("body").removeClass("loading");
-        const jsonObj = data[0];
-        if (jsonObj.result_code === 0) {
-            showResSuccessMessage("configuration", jsonObj.result_message)
+
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
             getAddOns();
-        } else {
-            showResErrorMessage("configuration", jsonObj.result_message)
+            showResSuccessMessage("configuration", data[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
         }
     });
+
 }
 
 function deleteAddOn(event) {
@@ -542,13 +576,26 @@ function deleteAddOn(event) {
     $("body").addClass("loading");
     isUserLoggedIn();
     let url = "/admin_api/addon/delete/" + addOnId;
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        if (response[0].result_code === 0) {
+
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
             getAddOns();
-            showResSuccessMessage("configuration", response[0].result_message);
-        } else {
-            showResErrorMessage("configuration", response[0].result_message);
+            showResSuccessMessage("configuration", data[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
         }
     });
 }
@@ -559,14 +606,26 @@ function updateAddOn(event) {
     const newValue = $(event.target).val().trim();
     $("body").addClass("loading");
     isUserLoggedIn();
-    let url = "/admin_api/addon/update/" +addOnId+"/"+field+"/" + newValue ;
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        if (response[0].result_code === 0) {
+    let url = "/admin_api/addon/update/" + addOnId + "/" + field + "/" + newValue;
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
             getAddOns();
-            showResSuccessMessage("configuration", response[0].result_message);
-        } else {
-            showResErrorMessage("configuration", response[0].result_message);
+            showResSuccessMessage("configuration", data[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
         }
     });
 }
@@ -606,14 +665,90 @@ function getEmployees() {
     });
 }
 
+function getGuests(filter = "*") {
+    isUserLoggedIn();
+    let url = "/api/config/guests/" + filter;
+    $("body").addClass("loading");
+
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
+            $("#guest_div").html(data.html);
+            $('.guest_field').unbind('click')
+            $(".guest_field").change(function (event) {
+                updateGuest(event);
+            });
+
+            $('.remove_guest_button').unbind('click')
+            $(".remove_guest_button").click(function (event) {
+                event.stopImmediatePropagation();
+                deleteGuest(event);
+            });
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            console.log("request for getGuests is " + xhr.status);
+            if (!isRetry("getGuests")) {
+                return;
+            }
+            getGuests();
+        }
+    });
+}
+
 function updateEmployee(event) {
     let employeeId = event.target.getAttribute("data-employee-id");
     $("body").addClass("loading");
     isUserLoggedIn();
     let url = "/admin_api/employee/update/" + employeeId + "/" + event.target.value;
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
+            showResSuccessMessage("configuration", data[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
+        }
+    });
+}
+
+function updateGuest(event) {
+    let guestId = event.target.getAttribute("data-guest-id");
+    let field = event.target.getAttribute("data-guest-field");
+    let newValue = $(event.target).val().trim();
+    if (field.localeCompare("rewards") === 0) {
+        if ($("#rewards_" + guestId).is(':checked')) {
+            newValue = "1";
+        } else {
+            newValue = "0";
+        }
+    }
+
+
+    $("body").addClass("loading");
+    isUserLoggedIn();
+    let url = "/api/guest/update/" + guestId + "/" + field + "/" + newValue;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
         if (response[0].result_code === 0) {
+            getGuests();
             showResSuccessMessage("configuration", response[0].result_message);
         } else {
             showResErrorMessage("configuration", response[0].result_message);
@@ -627,14 +762,26 @@ function createEmployee() {
     isUserLoggedIn();
     let url = "/admin_api/createemployee/" + employee_name;
 
-    $.getJSON(url + "?callback=?", null, function (data) {
-        $("body").removeClass("loading");
-        const jsonObj = data[0];
-        if (jsonObj.result_code === 0) {
-            showResSuccessMessage("configuration", jsonObj.result_message)
+
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
+            showResSuccessMessage("configuration", data[0].result_message);
             getEmployees();
-        } else {
-            showResErrorMessage("configuration", jsonObj.result_message)
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
         }
     });
 }
@@ -644,13 +791,54 @@ function deleteEmployee(event) {
     $("body").addClass("loading");
     isUserLoggedIn();
     let url = "/admin_api/employee/delete/" + employeeId;
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        if (response[0].result_code === 0) {
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
+            showResSuccessMessage("configuration", data[0].result_message);
             getEmployees();
-            showResSuccessMessage("configuration", response[0].result_message);
-        } else {
-            showResErrorMessage("configuration", response[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
+        }
+    });
+}
+
+function deleteGuest(event) {
+    let guestId = event.target.getAttribute("data-guest-id");
+    $("body").addClass("loading");
+    isUserLoggedIn();
+    let url = "/admin_api/guest/delete/" + guestId;
+
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
+            showResSuccessMessage("configuration", data[0].result_message);
+            getGuests();
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
         }
     });
 }
@@ -839,14 +1027,25 @@ function deleteScheduledMessage(event) {
     isUserLoggedIn();
     let url = "/admin_api/schedulemessages/delete/" + scheduleMessageId;
 
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        var jsonObj = response[0];
-        if (jsonObj.result_code === 0) {
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
+            showResSuccessMessage("configuration", data[0].result_message);
             getScheduledMessages();
-            showResSuccessMessage("configuration", response[0].result_message);
-        } else {
-            showResErrorMessage("configuration", response[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
         }
     });
 }
@@ -857,14 +1056,26 @@ function createMessageTemplate() {
     const message = $("#template_message").val().trim();
     isUserLoggedIn();
     let url = "/admin_api/schedulemessages/createtemplate/" + name + "/" + encodeURIComponent(message);
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        var jsonObj = response[0];
-        if (jsonObj.result_code === 0) {
+
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
+            showResSuccessMessage("configuration", data[0].result_message);
             getMessageTemplates();
-            showResSuccessMessage("configuration", response[0].result_message);
-        } else {
-            showResErrorMessage("configuration", response[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
         }
     });
 }
@@ -984,14 +1195,27 @@ function removeChannel(event) {
     $("body").addClass("loading");
     isUserLoggedIn();
     let url = "/admin_api/ical/remove/" + channelId;
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        if (response[0].result_code === 0) {
+
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
             const parent = $(event.target).parent();
             parent.remove();
-            showResSuccessMessage("configuration", response[0].result_message);
-        } else {
-            showResErrorMessage("configuration", response[0].result_message);
+            $("body").removeClass("loading");
+            showResSuccessMessage("configuration", data[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("configuration", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("configuration", "Server Error");
+            }
         }
     });
 }

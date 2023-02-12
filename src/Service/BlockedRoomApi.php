@@ -243,4 +243,24 @@ class BlockedRoomApi
         return $responseArray;
     }
 
+
+    public function getBlockedRoom($blockedRoomId)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__ );
+        $responseArray = array();
+        try{
+            return $this->em->getRepository(BlockedRooms::class)->findOneBy(array('id' => $blockedRoomId));
+        }catch(Exception $exception){
+            $responseArray[] = array(
+                'result_message' => $exception->getMessage(),
+                'result_code'=> 1
+            );
+            $this->logger->debug(print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__ );
+        return $responseArray;
+    }
+
+
 }

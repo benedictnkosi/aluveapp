@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Service\EmployeeApi;
 use App\Service\PaymentApi;
 use App\Service\ReservationApi;
+use JMS\Serializer\SerializerBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -121,6 +123,21 @@ class PaymentController extends AbstractController
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
+    }
+
+    /**
+     * @Route("api/json/payment/{id}")
+     */
+    public function getPaymentJson( $id, LoggerInterface $logger, PaymentApi $api): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $payment = $api->getPayment($id);
+
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($payment, 'json');
+
+        $logger->info($jsonContent);
+        return new JsonResponse($jsonContent , 200, array(), true);
     }
 
 

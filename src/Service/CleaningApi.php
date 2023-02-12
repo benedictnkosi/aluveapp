@@ -235,5 +235,23 @@ and `reservations`.id not IN (Select reservation_id from cleaning where date > '
         return $htmlResponse;
     }
 
+    public function getCleaningById($id)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            return  $this->em->getRepository(Cleaning::class)->findOneBy(
+                array('id' => $id)
+            );
+        } catch (Exception $ex) {
+            $this->logger->error("Error " . $ex->getMessage());
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+
+
 
 }

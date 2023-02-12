@@ -17,7 +17,7 @@ use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 
-class ReservationHtml
+class ReservationsHtml
 {
 
     private $em;
@@ -31,7 +31,9 @@ class ReservationHtml
 
     public function formatHtml($reservations, $period): string
     {
+
         $this->logger->debug("Starting Method: " . __METHOD__);
+        $this->createCSV($reservations, $period);
         $htmlString = "";
         $todayHeadingWritten = false;
         //if no reservations found
@@ -51,9 +53,12 @@ class ReservationHtml
 												<h5 id="res_div_error_message_' . $period . '"></h5>
 											</div>
 										</div>
-									</div>';
+									</div>
+									
+									<a href="/'.$period . '_reservations.csv" >Download CSV</a>
+									';
 
-        if(strcmp($period, 'past')===0){
+        if (strcmp($period, 'past') === 0) {
             $numberOfDays = 180;
             for ($x = 0; $x <= $numberOfDays; $x++) {
                 $todayDate = new DateTime();
@@ -61,15 +66,15 @@ class ReservationHtml
                 $tempDate = $todayDate->sub(new DateInterval('P' . $x . 'D'));
                 $htmlString .= $this->helper($tempDate, $reservations);
             }
-        }else{
+        } else {
             $numberOfDays = 180;
             for ($x = 1; $x <= $numberOfDays; $x++) {
                 $todayDate = new DateTime();
                 $todayDate->add(DateInterval::createFromDateString('yesterday'));
                 $tempDate = $todayDate->add(new DateInterval('P' . $x . 'D'));
-                if(strcmp($period, 'pending')===0){
+                if (strcmp($period, 'pending') === 0) {
                     $htmlString .= $this->helper($tempDate, $reservations, false);
-                }else{
+                } else {
                     $htmlString .= $this->helper($tempDate, $reservations);
                 }
 
@@ -86,7 +91,8 @@ class ReservationHtml
 
         $todayCheckIns = array();
         $todayCheckOuts = array();
-        $htmlString = "";
+        $htmlString = '';
+
         foreach ($reservations as $reservation) {
 
             if (strcmp($reservation->getCheckIn()->format("Y-m-d"), $tempDate->format("Y-m-d")) == 0) {
@@ -105,27 +111,27 @@ class ReservationHtml
         }
 
         foreach ($todayCheckIns as $todayCheckIn) {
-            $htmlString .= '<div class="reservation-item" data-res-id="'.$todayCheckIn->getId().'">
-                         <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckIn->getId().'">
-                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkin.png" data-res-id="'.$todayCheckIn->getId().'"></img>
-                        <img class="listing-image-origin" src="/admin/images/'.$todayCheckIn->getOrigin().'.png" data-res-id="'.$todayCheckIn->getId().'"></img>
-                        <div class="listing-description-text" data-res-id="'.$todayCheckIn->getId().'">'
+            $htmlString .= '<div class="reservation-item" data-res-id="' . $todayCheckIn->getId() . '">
+                         <div class="listing-description clickable open-reservation-details" data-res-id="' . $todayCheckIn->getId() . '">
+                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkin.png" data-res-id="' . $todayCheckIn->getId() . '"></img>
+                        <img class="listing-image-origin" src="/admin/images/' . $todayCheckIn->getOrigin() . '.png" data-res-id="' . $todayCheckIn->getId() . '"></img>
+                        <div class="listing-description-text" data-res-id="' . $todayCheckIn->getId() . '">'
                 . $todayCheckIn->getGuest()->getName() . ' is expected to check-in 
-                         <span class="listing-room-name" data-res-id="'.$todayCheckIn->getId().'"> ' . $todayCheckIn->getRoom()->getName() . ' #'.$todayCheckIn->getId().'</span>
+                         <span class="listing-room-name" data-res-id="' . $todayCheckIn->getId() . '"> ' . $todayCheckIn->getRoom()->getName() . ' #' . $todayCheckIn->getId() . '</span>
                         </div>
                         </div>
                     </div>';
         }
 
-        if($outputCheckOuts){
+        if ($outputCheckOuts) {
             foreach ($todayCheckOuts as $todayCheckOut) {
-                $htmlString .= '<div class="reservation-item" data-res-id="'.$todayCheckOut->getId().'">
-                         <div class="listing-description clickable open-reservation-details" data-res-id="'.$todayCheckOut->getId().'">
-                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkout.png" data-res-id="'.$todayCheckOut->getId().'"></img>
-                        <img class="listing-image-origin" src="/admin/images/'.$todayCheckOut->getOrigin().'.png" data-res-id="'.$todayCheckOut->getId().'"></img>
-                        <div class="listing-description-text" data-res-id="'.$todayCheckOut->getId().'">'
+                $htmlString .= '<div class="reservation-item" data-res-id="' . $todayCheckOut->getId() . '">
+                         <div class="listing-description clickable open-reservation-details" data-res-id="' . $todayCheckOut->getId() . '">
+                          <img class="listing-checkin-image listing-image" src="/admin/images/listing-checkout.png" data-res-id="' . $todayCheckOut->getId() . '"></img>
+                        <img class="listing-image-origin" src="/admin/images/' . $todayCheckOut->getOrigin() . '.png" data-res-id="' . $todayCheckOut->getId() . '"></img>
+                        <div class="listing-description-text" data-res-id="' . $todayCheckOut->getId() . '">'
                     . $todayCheckOut->getGuest()->getName() . ' is expected to check-out 
-                         <span class="listing-room-name" data-res-id="'.$todayCheckOut->getId().'"> ' . $todayCheckOut->getRoom()->getName() . ' #'.$todayCheckOut->getId().' </span>
+                         <span class="listing-room-name" data-res-id="' . $todayCheckOut->getId() . '"> ' . $todayCheckOut->getRoom()->getName() . ' #' . $todayCheckOut->getId() . ' </span>
                         </div>
                         </div>
                     </div>';
@@ -134,5 +140,36 @@ class ReservationHtml
 
 
         return $htmlString;
+    }
+
+    function createCSV($reservations, $fileName): void
+    {
+        try {
+            $cfile = fopen($fileName . '_reservations.csv', 'w');
+
+//Inserting the table headers
+            $header_data = array('id', 'room_name', 'check_in', 'check_out', 'guest_name', 'phone_number');
+            fputcsv($cfile, $header_data);
+
+//Data to be inserted
+            $allReservations = array();
+
+            foreach ($reservations as $reservation) {
+                $row = array($reservation->GetId(), $reservation->getRoom()->getName(), $reservation->getCheckIn()->format('Y-m-d'), $reservation->getCheckOut()->format('Y-m-d'), $reservation->getGuest()->getName(), $reservation->getGuest()->getPhoneNumber());
+                $allReservations[] = $row;
+            }
+
+// save each row of the data
+            foreach ($allReservations as $row) {
+                fputcsv($cfile, $row);
+            }
+
+// Closing the file
+            fclose($cfile);
+        } catch (\Exception $exception) {
+            $this->logger->debug($exception->getMessage());
+        }
+
+
     }
 }

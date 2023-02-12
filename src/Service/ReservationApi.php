@@ -272,9 +272,6 @@ class ReservationApi
             $this->logger->error(print_r($responseArray, true));
         }
         $this->logger->debug("Ending Method before the return: " . __METHOD__);
-        if (empty($reservations)) {
-            return null;
-        }
 
         return $reservations;
     }

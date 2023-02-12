@@ -109,6 +109,9 @@ class SingleReservationHtml
             $checkInDateDisabled = "Disabled";
         }
 
+        $this->logger->debug(" debug1 - checkin  " . $reservation->getCheckIn()->format("Y-m-d"));
+        $this->logger->debug(" debug1 - checkout  " . $reservation->getCheckOut()->format("Y-m-d"));
+
         $htmlString .= '<p name="res-dates"><span class="glyphicon glyphicon-calendar glyphicon-small-icon" > 
 						 <input id="checkindate_' . $reservationId . '" data-res-id="' . $reservationId . '" type="text"  name="check_in_date" class="input-as-text date-picker check_in_date_input" value="' . $reservation->getCheckIn()->format("m/d/Y") .
             ' - ' . $reservation->getCheckOut()->format("m/d/Y") . '" ' . $checkInDateDisabled . '/>
@@ -281,7 +284,36 @@ class SingleReservationHtml
             $addOnsHTml .= '<p class="small-font-italic">' . $addOn->getDate()->format("d-M") . " - " . $addOn->getQuantity() . " x " . $addOn->getAddOn()->getName() . " @ R " . $addOn->getAddOn()->getPrice() . ' <a href="javascript:void(0)" data-addon-id="' . $addOn->getId() . '" class="delete_addon_link">delete</a></p>';
             $totalPriceForAllAdOns += (intVal($addOn->getAddOn()->getPrice()) * intval($addOn->getQuantity()));
         }
+        //add addOn for the weekend nights
+        $numberOfWeekendNights = $this->getNumberOfWeekendNights($reservation->getCheckIn(), $reservation->getCheckOut());
+        $addOnsHTml .= '<p class="small-font-italic">' . $now->format("d-M") . " - " . $numberOfWeekendNights . " x Weekend nights @ R " . "50.00" . '</p>';
+        $totalPriceForAllAdOns += (50 * $numberOfWeekendNights);
+
+
+        //discount based on number of days booked
+        if($totalDays > 6 && $totalDays < 28 ){
+            $roomPrice = $roomPrice * 0.9;
+        }elseif($totalDays > 27){
+            $roomPrice = $roomPrice * 0.7;
+        }
+
+        //apply discount based on loyalty rewards
+        if($guest->isRewards()){
+            //apply discount based on number of stays
+            if($stayCount < 10){
+                $roomPrice = $roomPrice * 0.9;
+            }elseif($stayCount < 20){
+                $roomPrice = $roomPrice * 0.8;
+            }else{
+                $roomPrice = $roomPrice * 0.7;
+            }
+        }
+
+
+
+
         $totalPrice = intval($roomPrice) * $totalDays;
+
         $totalPrice += $totalPriceForAllAdOns;
 
         //payments
@@ -302,11 +334,14 @@ class SingleReservationHtml
 
 
         $htmlString .= '<h5 class="text-align-left">Line items</h5>';
+        $this->logger->debug(" debug - checkin  " . $reservation->getCheckIn()->format("Y-m-d"));
+        $this->logger->debug(" debug - checkout  " . $reservation->getCheckOut()->format("Y-m-d"));
 
-        if ((strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) != 0
+        if ((strcmp($reservation->getCheckIn()->format("Y-m-d"), $reservation->getCheckOut()->format("Y-m-d")) !== 0
             && strcasecmp($reservation->getOrigin(), "website") === 0)) {
             $htmlString .= '<p class="small-font-italic">' . $totalDays . "x nights @ R" . $roomPrice . "</p>";
         }
+
 
         $htmlString .= $addOnsHTml;
         $htmlString .= '<h5 class="text-align-left">Total: R' . number_format((float)$totalPrice, 2, '.', '') . '</h5>';
@@ -484,5 +519,32 @@ class SingleReservationHtml
 					</div>';
 
         return $htmlString;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    function getNumberOfWeekendNights($checkIn, $checkOut): int
+    {
+        $numberOfWeekendDays = 0;
+        $numberOfDays = 0;
+        $newCheckIn = new DateTime($checkIn->format("m/d/Y"));
+        while(strcmp( $newCheckIn->format("m/d/Y"),  $checkOut->format("m/d/Y")) !== 0 && $numberOfDays < 10){
+            $numberOfDays ++;
+             $newCheckIn->modify('+1 day');
+            $this->logger->debug("new check in date" . $newCheckIn->format("m/d/Y"));
+            $this->logger->debug("checkout date" . $checkOut->format("m/d/Y"));
+
+            if($this->isWeekend($checkOut)){
+                $numberOfWeekendDays++;
+            }
+        }
+
+        return $numberOfWeekendDays;
+    }
+
+    function isWeekend($date): bool
+    {
+        return true;
     }
 }

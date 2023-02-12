@@ -71,6 +71,13 @@ class Guest
     private $idNumber;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="rewards", type="boolean", nullable=false)
+     */
+    private $rewards = '0';
+
+    /**
      * @var Property
      *
      * @ORM\ManyToOne(targetEntity="Property")
@@ -206,6 +213,22 @@ class Guest
     public function setIdNumber(?string $idNumber): void
     {
         $this->idNumber = $idNumber;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRewards(): bool|string
+    {
+        return $this->rewards;
+    }
+
+    /**
+     * @param bool $rewards
+     */
+    public function setRewards(bool|string $rewards): void
+    {
+        $this->rewards = $rewards;
     }
 
     /**

@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Helpers\FormatHtml\CalendarHTML;
 use App\Service\CleaningApi;
+use App\Service\ReservationApi;
+use JMS\Serializer\SerializerBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,6 +60,22 @@ class CleaningController extends AbstractController
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
+    }
+
+
+    /**
+     * @Route("api/json/cleaning/{id}")
+     */
+    public function getCleaningJson( $id, LoggerInterface $logger, CleaningApi $api): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $cleaning = $api->getCleaningById($id);
+
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($cleaning, 'json');
+
+        $logger->info($jsonContent);
+        return new JsonResponse($jsonContent , 200, array(), true);
     }
 
 

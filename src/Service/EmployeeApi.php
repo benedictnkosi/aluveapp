@@ -28,9 +28,26 @@ class EmployeeApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
-            $propertyApi = new PropertyApi($this->em, $this->logger);
             $propertyId =   $_SESSION['PROPERTY_ID'];
             return $this->em->getRepository(Employee::class)->findBy(array('property' => $propertyId));
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error(print_r($responseArray, true));
+        }
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
+
+    public function getEmployee($id)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            return $this->em->getRepository(Employee::class)->findOneBy(array('id' => $id));
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),

@@ -67,7 +67,7 @@ class ImageController extends AbstractController
     /**
      * @Route("api/configuration/image/upload")
      */
-    public function uploadImage(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, FileUploaderApi $fileUploaderApi, RoomApi $roomApi): Response
+    public function uploadImage(LoggerInterface $logger, Request $request, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $file = $request->files->get('file');

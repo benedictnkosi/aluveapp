@@ -341,15 +341,27 @@ function blockGuest(event) {
         $("body").addClass("loading");
         isUserLoggedIn();
         let url = "/admin_api/reservations/" + res_id + "/blockguest/" + note;
-        $.getJSON(url + "?callback=?", null, function (response) {
-            $("body").removeClass("loading");
-            $("#res_message_div_" + event.target.id).removeClass("display-none");
 
-            if (response[0].result_code === 0) {
+
+        $.ajax({
+            type: "get",
+            url: url,
+            crossDomain: true,
+            cache: false,
+            dataType: "jsonp",
+            contentType: "application/json; charset=UTF-8",
+            success: function (data) {
                 refreshReservations();
-                showResSuccessMessage("reservation", response[0].result_message);
-            } else {
-                showResErrorMessage("reservation", response[0].result_message);
+                $("body").removeClass("loading");
+                showResSuccessMessage("reservation", data[0].result_message);
+            },
+            error: function (xhr) {
+                $("body").removeClass("loading");
+                if (xhr.status === 404) {
+                    showResErrorMessage("reservation", "Unauthorised to use this function");
+                }else{
+                    showResErrorMessage("reservation", "Server Error");
+                }
             }
         });
     }
@@ -442,6 +454,7 @@ function updateCheckInDate(event, checkInDate, checkOutDate) {
         var jsonObj = response[0];
         if (jsonObj.result_code === 0) {
             refreshReservations();
+            getReservationById(sessionStorage.getItem("reservation_id"));
             showResSuccessMessage("reservation", response[0].result_message);
         } else {
             refreshReservations();
@@ -459,6 +472,7 @@ function updateReservationRoom(event, roomId) {
         $("body").removeClass("loading");
         var jsonObj = response[0];
         if (jsonObj.result_code === 0) {
+            getReservationById(sessionStorage.getItem("reservation_id"));
             refreshReservations();
             showResSuccessMessage("reservation", response[0].result_message);
         } else {
@@ -536,13 +550,26 @@ function removeAddOnFromBooking(event) {
     isUserLoggedIn();
     $("body").addClass("loading");
     let url = "/admin_api/reservation_addon/" + add_on_id + "/delete";
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        if (response[0].result_code === 0) {
+
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
             getReservationById(sessionStorage.getItem("reservation_id"));
-            showResSuccessMessage("reservation", response[0].result_message);
-        } else {
-            showResErrorMessage("reservation", response[0].result_message);
+            showResSuccessMessage("reservation", data[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("reservation", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("reservation", "Server Error");
+            }
         }
     });
 }
@@ -553,15 +580,29 @@ function removePayment(event) {
     isUserLoggedIn();
     $("body").addClass("loading");
     let url = "/admin_api/payment/" + payment_id + "/delete";
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        if (response[0].result_code === 0) {
+
+    $.ajax({
+        type: "get",
+        url: url,
+        crossDomain: true,
+        cache: false,
+        dataType: "jsonp",
+        contentType: "application/json; charset=UTF-8",
+        success: function (data) {
+            $("body").removeClass("loading");
             getReservationById(sessionStorage.getItem("reservation_id"));
-            showResSuccessMessage("reservation", response[0].result_message);
-        } else {
-            showResErrorMessage("reservation", response[0].result_message);
+            showResSuccessMessage("reservation", data[0].result_message);
+        },
+        error: function (xhr) {
+            $("body").removeClass("loading");
+            if (xhr.status === 404) {
+                showResErrorMessage("reservation", "Unauthorised to use this function");
+            }else{
+                showResErrorMessage("reservation", "Server Error");
+            }
         }
     });
+
 }
 
 function addGuestPhone(event) {

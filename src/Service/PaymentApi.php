@@ -48,6 +48,25 @@ class PaymentApi
         return $responseArray;
     }
 
+
+    public function getPayment($paymentId)
+    {
+        $this->logger->debug("Starting Method: " . __METHOD__);
+        $responseArray = array();
+        try {
+            return $this->em->getRepository(Payments::class)->findOneBy(array('id' => $paymentId));
+        } catch (Exception $ex) {
+            $responseArray[] = array(
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
+                'result_code' => 1
+            );
+            $this->logger->error("failed to get payments " . print_r($responseArray, true));
+        }
+
+        $this->logger->debug("Ending Method before the return: " . __METHOD__);
+        return $responseArray;
+    }
+
     public function getReservationPaymentsHtml($resId): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);

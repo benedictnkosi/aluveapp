@@ -6,9 +6,11 @@ use App\Helpers\FormatHtml\BookingPageAvailableRoomsHTML;
 use App\Helpers\FormatHtml\ConfigurationRoomsHTML;
 use App\Helpers\FormatHtml\RoomImagesHTML;
 use App\Helpers\FormatHtml\RoomsPageHTML;
+use App\Service\AddOnsApi;
 use App\Service\PropertyApi;
 use App\Service\RoomApi;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -237,5 +239,20 @@ class RoomController extends AbstractController
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
         return $response;
+    }
+
+    /**
+     * @Route("api/json/room/{id}")
+     */
+    public function getAddOnJson( $id, LoggerInterface $logger, RoomApi $roomApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $room = $roomApi->getRoom($id);
+
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($room, 'json');
+
+        $logger->info($jsonContent);
+        return new JsonResponse($jsonContent , 200, array(), true);
     }
 }

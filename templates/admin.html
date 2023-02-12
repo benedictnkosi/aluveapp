@@ -327,6 +327,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </div>
                 <div
                         class="profile-ser-grids-15 agileinfo  filter-configuration clickable"
+                        id="configuration_guests">
+                    <img class="menu_icon_image" src="/admin/images/employee.png" title="Guests"></img><i
+                        class="desktopOnlyMenu">Guests</i>
+                </div>
+                <div
+                        class="profile-ser-grids-15 agileinfo  filter-configuration clickable"
                         id="configuration_messages">
                     <img class="menu_icon_image" src="/admin/images/messages.jpg" title="Messages"></img><i
                         class="desktopOnlyMenu">Messages</i>
@@ -513,6 +519,27 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <div>
                         <span><input type="submit" value="Submit" id="config_employee_submit" class="button-50"></span>
                     </div>
+                </form>
+
+            </div>
+            <div id="configuration-guests-list" class='configuration_tabs display-none reservations_div'>
+                <form class="contact-form" id="config_guest_form" action="#">
+                    <h3>Manage Guests</h3>
+
+                    <h4>Search for Guest</h4>
+                    <div class="addon-left-div">
+                        <label>Guest Name</label>
+                        <input type="text" id="guest_name" name="guest_name" placeholder="e.g. Benedict"
+                               maxlength="50"
+                               required/>
+                    </div>
+                    <div>
+                        <span><input type="submit" value="Search" id="config_guest_submit" class="button-50"></span>
+                    </div>
+
+                    <div id="guest_div"></div>
+                    <hr>
+
                 </form>
 
             </div>
