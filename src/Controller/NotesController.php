@@ -14,15 +14,18 @@ use Symfony\Component\HttpFoundation\Request;
 class NotesController extends AbstractController
 {
     /**
-     * @Route("api/note/{reservationId}/text/{text}")
+     * @Route("api/note/add")
      */
-    public function addNote($reservationId, $text, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, NotesApi $notesApi): Response
+    public function addNote(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, NotesApi $notesApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $notesApi->addNote($reservationId, str_replace("+", "", $text));
+        if (!$request->isMethod('post')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+
+        $response = $notesApi->addNote($request->get('id'), str_replace("+", "", $request->get('note')));
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
-        $response->setCallback($callback);
         return $response;
     }
 }

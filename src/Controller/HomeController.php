@@ -52,9 +52,12 @@ class HomeController extends AbstractController
 
     #[Route('/signup', name: 'app_signup')]
     public function signup(): Response
-    {
 
-     return $this->render("signup.html");
+    {
+        return $this->render('signup.html', [
+            'error' => "",
+        ]);
+
     }
 
     #[Route('/booking', name: 'booking')]

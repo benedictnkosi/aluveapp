@@ -137,6 +137,10 @@ class ReservationController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
 
+        if (!$request->isMethod('put')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+
         $reservation = $reservationApi->getReservation($reservationId);
         $responseArray = array();
         $now = new DateTime();
@@ -297,13 +301,25 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("public/reservations/create/{roomIds}/{guestName}/{phoneNumber}/{adultGuests}/{childGuests}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
+     * @Route("public/reservations/create")
      * @throws \Exception
      */
-    public function creatReservation($roomIds, $guestName, $phoneNumber, $adultGuests, $childGuests, $checkInDate, $checkOutDate, $email, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
+    public function creatReservation( Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $reservationApi->createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $request, $adultGuests, $childGuests);
+        if (!$request->isMethod('post')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+
+        $nowDate = new DateTime($request->get('date'));
+        $now = new DateTime();
+
+        if(strcmp($nowDate->format("Y-m-d"), $now->format("Y-m-d")) !== 0){
+            return new JsonResponse("Date must be today" , 500, array());
+        }
+
+        $response = $reservationApi->createReservation($request->get('room_ids'), $request->get('name'), $request->get('phone_number'),
+            $request->get('email'), $request->get('check_in_date'), $request->get('check_out_date'), $request, $request->get('adult_guests'), $request->get('child_guests'));
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
@@ -349,6 +365,9 @@ class ReservationController extends AbstractController
     public function blockGuest($reservationId, $reason, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        if (!$request->isMethod('put')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
         $response = $guestApi->blockGuest($reservationId, $reason);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());

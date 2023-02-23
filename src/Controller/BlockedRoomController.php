@@ -18,13 +18,15 @@ class BlockedRoomController extends AbstractController
 {
 
     /**
-     * @Route("/api/blockroom/{room}/{fromDate}/{toDate}/{comments}")
+     * @Route("/api/blockroom")
      */
-    public function blockRoom($room, $fromDate, $toDate, $comments , LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, BlockedRoomApi $blockedRoomApi): Response
+    public function blockRoom(LoggerInterface $logger,Request $request,EntityManagerInterface $entityManager, BlockedRoomApi $blockedRoomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-
-        $response = $blockedRoomApi->blockRoom($room,  $fromDate, $toDate, urldecode($comments));
+        if (!$request->isMethod('post')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+        $response = $blockedRoomApi->blockRoom($request->get('room'),  $request->get('start_date'), $request->get('end_date'), urldecode($request->get('note')));
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

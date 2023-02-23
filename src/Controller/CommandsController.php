@@ -17,6 +17,38 @@ require_once(__DIR__ . '/../app/application.php');
 class CommandsController extends AbstractController
 {
 
+    /**
+     * @Route("public/soap/client")
+     */
+    public function mySoapClient(LoggerInterface $logger)
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $client = new \SoapClient('web_url');
+
+        $result = $client->call('hello', array('name' => 'Scott'));
+        $logger->info("soap response is: " . $result);
+        $response = new Response();
+        return $response;
+    }
+
+    /**
+     * @Route("public/soap")
+     */
+    public function mySoapServer(LoggerInterface $logger)
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        $server = new SoapServer('/path/to/hello.wsdl');
+        $server->setObject($this->get('hello_service'));
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/xml; charset=ISO-8859-1');
+
+        ob_start();
+        $server->handle();
+        $response->setContent(ob_get_clean());
+
+        return $response;
+    }
 
     /**
      * @Route("public/runcommand/clear")

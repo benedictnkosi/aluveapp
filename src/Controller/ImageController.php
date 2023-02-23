@@ -82,7 +82,7 @@ class ImageController extends AbstractController
         $uploader   =   new FileUploaderApi($logger);
         $uploader->setDir($uploadDir);
         $uploader->setExtensions(array('jpg','jpeg','png','gif'));  //allowed extensions list//
-        $uploader->setMaxSize(5);                          //set max file size to be allowed in MB//
+        $uploader->setMaxSize(1);                          //set max file size to be allowed in MB//
 
         if($uploader->uploadFile('file')){   //txtFile is the filebrowse element name //
             $imageName  =   $uploader->getUploadName(); //get uploaded file name, renames on upload//

@@ -40,6 +40,9 @@ class GuestController extends AbstractController
     public function updateGuestPhone($guestId, $phoneNumber, LoggerInterface $logger,Request $request,GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        if (!$request->isMethod('put')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
         $response = $guestApi->updateGuestPhoneNumber($guestId, $phoneNumber);
         $guestApi->sendBookDirectSMS($guestId);
 
@@ -55,6 +58,9 @@ class GuestController extends AbstractController
     public function updateGuestEmail($guestId, $email, LoggerInterface $logger,Request $request,GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        if (!$request->isMethod('put')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
         $response = $guestApi->updateGuestEmail($guestId, $email);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
@@ -68,6 +74,9 @@ class GuestController extends AbstractController
     public function updateGuestIdNumber($guestId, $idNumber, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        if (!$request->isMethod('put')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
         $response = $guestApi->updateGuestIdNumber($guestId, $idNumber);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
@@ -116,6 +125,9 @@ class GuestController extends AbstractController
     public function updateGuest($guestId, $field, $newValue, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, guestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        if (!$request->isMethod('put')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
         $response = match ($field) {
             "name" => $guestApi->updateGuestName($guestId, $newValue),
             "rewards" => $guestApi->updateGuestRewards($guestId, $newValue),

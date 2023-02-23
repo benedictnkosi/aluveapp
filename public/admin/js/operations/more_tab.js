@@ -304,18 +304,36 @@ function blockRoom() {
 
     $("body").addClass("loading");
     isUserLoggedIn();
-    let url = "/api/blockroom/" + block_room + "/" + sessionStorage.getItem("blockStartDate") + "/" + sessionStorage.getItem("blockEndDate") + "/" + block_note;
-    $.getJSON(url + "?callback=?", null, function (data) {
-        $("body").removeClass("loading");
-        const jsonObj = data[0];
-        if (jsonObj.result_code === 0) {
-            showResSuccessMessage("block", jsonObj.result_message)
-            getCalendar("future");
-            getBlockedRooms();
-        } else {
-            showResErrorMessage("block", jsonObj.result_message)
-        }
+    let url = "/api/blockroom";
 
+
+    const data = {
+        room: block_room,
+        start_date: sessionStorage.getItem("blockStartDate"),
+        end_date: sessionStorage.getItem("blockEndDate"),
+        note: block_note
+    };
+
+    $.ajax({
+        url : url,
+        type: "POST",
+        data : data,
+        success: function(response)
+        {
+            $("body").removeClass("loading");
+            if (response[0].result_code === 0) {
+                showResSuccessMessage("block", response[0].result_message)
+                getCalendar("future");
+                getBlockedRooms();
+            } else {
+                showResErrorMessage("block", response[0].result_message);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("block", errorThrown);
+        }
     });
 
 }

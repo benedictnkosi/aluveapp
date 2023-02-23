@@ -50,12 +50,16 @@ class CleaningController extends AbstractController
     }
 
     /**
-     * @Route("api/cleaning/{reservationId}/cleaner/{cleanerId}")
+     * @Route("api/cleaning/add")
      */
-    public function addCleaningToReservation($reservationId, $cleanerId, LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
+    public function addCleaningToReservation(LoggerInterface $logger,Request $request, EntityManagerInterface $entityManager, CleaningApi $cleaningApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $cleaningApi->addCleaningToReservation($reservationId,$cleanerId);
+        if (!$request->isMethod('post')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+
+        $response = $cleaningApi->addCleaningToReservation($request->get('id'),$request->get('employee_id'));
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

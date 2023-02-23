@@ -211,12 +211,18 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/admin_api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{beds}/{stairs}/{tv}/{description}")
+     * @Route("/admin_api/createroom")
      */
-    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs, $tv, $description, Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function updateCreateRoom(Request $request, LoggerInterface $logger,EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs,$tv, str_replace("###", "/", $description));
+        if (!$request->isMethod('post')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+        $response = $roomApi->updateCreateRoom($request->get('room_id'), $request->get('room_name'), $request->get('room_price'), $request->get('room_sleeps'),
+            $request->get('room_status'), $request->get('linked_room'), $request->get('room_size'), $request->get('bed'), $request->get('stairs'),$request->get('tv')
+            , str_replace("###", "/", $request->get('description')));
+
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

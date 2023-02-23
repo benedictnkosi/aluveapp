@@ -198,26 +198,39 @@ function createUpdateRoom() {
 
     $("body").addClass("loading");
     isUserLoggedIn();
-    let url = "/admin_api/createroom/" + room_id + "/" + room_name + "/" + room_price + "/" + room_sleeps + "/" + select_room_status + "/" + select_linked_room + "/" + room_size + "/" + input_bed + "/" + select_Stairs + "/" + select_tv + "/" + encodeURIComponent(room_description.replaceAll("/", "###"));
+    let url = "/admin_api/createroom";
+    const data = {
+        room_id: room_id,
+        room_name: room_name,
+        room_price: room_price,
+        room_sleeps: room_sleeps,
+        room_status: select_room_status,
+        linked_room: select_linked_room,
+        room_size: room_size,
+        bed: input_bed,
+        stairs: select_Stairs,
+        tv: select_tv,
+        description: encodeURIComponent(room_description.replaceAll("/", "###"))
+    };
+
     $.ajax({
-        type: "get",
-        url: url,
-        crossDomain: true,
-        cache: false,
-        dataType: "jsonp",
-        contentType: "application/json; charset=UTF-8",
-        success: function (data) {
+        url : url,
+        type: "POST",
+        data : data,
+        success: function(response)
+        {
             $("body").removeClass("loading");
-            const jsonObj = data[0];
-            if (jsonObj.result_code === 0) {
-                showResSuccessMessage("configuration", jsonObj.result_message)
+            if (response[0].result_code === 0) {
+                showResSuccessMessage("configuration", response[0].result_message);
                 getConfigRooms();
             } else {
-                showResErrorMessage("configuration", jsonObj.result_message)
+                showResErrorMessage("configuration", response[0].result_message);
             }
         },
-        error: function (xhr) {
-            showResErrorMessage("configuration", "Server error occurred")
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("configuration", errorThrown);
         }
     });
 
@@ -545,27 +558,32 @@ function createAddOn() {
     const addon_price = $("#addon_price").val().trim();
     $("body").addClass("loading");
     isUserLoggedIn();
-    let url = "/admin_api/createaddon/" + addon_name + "/" + addon_price;
+    let url = "/admin_api/createaddon";
+
+
+    const data = {
+        name: addon_name,
+        price: addon_price
+    };
 
     $.ajax({
-        type: "get",
-        url: url,
-        crossDomain: true,
-        cache: false,
-        dataType: "jsonp",
-        contentType: "application/json; charset=UTF-8",
-        success: function (data) {
+        url : url,
+        type: "POST",
+        data : data,
+        success: function(response)
+        {
             $("body").removeClass("loading");
-            getAddOns();
-            showResSuccessMessage("configuration", data[0].result_message);
-        },
-        error: function (xhr) {
-            $("body").removeClass("loading");
-            if (xhr.status === 404) {
-                showResErrorMessage("configuration", "Unauthorised to use this function");
-            }else{
-                showResErrorMessage("configuration", "Server Error");
+            if (response[0].result_code === 0) {
+                getAddOns();
+                showResSuccessMessage("configuration", response[0].result_message);
+            } else {
+                showResErrorMessage("configuration", response[0].result_message);
             }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("configuration", errorThrown);
         }
     });
 
@@ -578,24 +596,24 @@ function deleteAddOn(event) {
     let url = "/admin_api/addon/delete/" + addOnId;
 
     $.ajax({
-        type: "get",
-        url: url,
-        crossDomain: true,
-        cache: false,
-        dataType: "jsonp",
-        contentType: "application/json; charset=UTF-8",
-        success: function (data) {
+        url : url,
+        type: "REMOVE",
+        data : "",
+        success: function(response)
+        {
             $("body").removeClass("loading");
-            getAddOns();
-            showResSuccessMessage("configuration", data[0].result_message);
-        },
-        error: function (xhr) {
-            $("body").removeClass("loading");
-            if (xhr.status === 404) {
-                showResErrorMessage("configuration", "Unauthorised to use this function");
-            }else{
-                showResErrorMessage("configuration", "Server Error");
+            if (response[0].result_code === 0) {
+                getAddOns();
+                showResSuccessMessage("configuration", response[0].result_message);
+            } else {
+
+                showResErrorMessage("configuration", response[0].result_message);
             }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("configuration", errorThrown);
         }
     });
 }
@@ -607,27 +625,30 @@ function updateAddOn(event) {
     $("body").addClass("loading");
     isUserLoggedIn();
     let url = "/admin_api/addon/update/" + addOnId + "/" + field + "/" + newValue;
+
     $.ajax({
-        type: "get",
-        url: url,
-        crossDomain: true,
-        cache: false,
-        dataType: "jsonp",
-        contentType: "application/json; charset=UTF-8",
-        success: function (data) {
+        url : url,
+        type: "PUT",
+        data : "",
+        success: function(response)
+        {
             $("body").removeClass("loading");
-            getAddOns();
-            showResSuccessMessage("configuration", data[0].result_message);
-        },
-        error: function (xhr) {
-            $("body").removeClass("loading");
-            if (xhr.status === 404) {
-                showResErrorMessage("configuration", "Unauthorised to use this function");
-            }else{
-                showResErrorMessage("configuration", "Server Error");
+            if (response[0].result_code === 0) {
+                getAddOns();
+                showResSuccessMessage("configuration", data[0].result_message);
+            } else {
+
+                showResErrorMessage("configuration", response[0].result_message);
             }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("configuration", errorThrown);
         }
     });
+
+
 }
 
 
@@ -708,23 +729,22 @@ function updateEmployee(event) {
     isUserLoggedIn();
     let url = "/admin_api/employee/update/" + employeeId + "/" + event.target.value;
     $.ajax({
-        type: "get",
-        url: url,
-        crossDomain: true,
-        cache: false,
-        dataType: "jsonp",
-        contentType: "application/json; charset=UTF-8",
-        success: function (data) {
+        url : url,
+        type: "PUT",
+        data : "",
+        success: function(response)
+        {
             $("body").removeClass("loading");
-            showResSuccessMessage("configuration", data[0].result_message);
-        },
-        error: function (xhr) {
-            $("body").removeClass("loading");
-            if (xhr.status === 404) {
-                showResErrorMessage("configuration", "Unauthorised to use this function");
-            }else{
-                showResErrorMessage("configuration", "Server Error");
+            if (response[0].result_code === 0) {
+                showResSuccessMessage("configuration", data[0].result_message);
+            } else {
+                showResErrorMessage("configuration", response[0].result_message);
             }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("configuration", errorThrown);
         }
     });
 }
@@ -745,13 +765,25 @@ function updateGuest(event) {
     $("body").addClass("loading");
     isUserLoggedIn();
     let url = "/api/guest/update/" + guestId + "/" + field + "/" + newValue;
-    $.getJSON(url + "?callback=?", null, function (response) {
-        $("body").removeClass("loading");
-        if (response[0].result_code === 0) {
-            getGuests();
-            showResSuccessMessage("configuration", response[0].result_message);
-        } else {
-            showResErrorMessage("configuration", response[0].result_message);
+    $.ajax({
+        url : url,
+        type: "PUT",
+        data : "",
+        success: function(response)
+        {
+            $("body").removeClass("loading");
+            if (response[0].result_code === 0) {
+                getGuests();
+                showResSuccessMessage("configuration", response[0].result_message);
+            } else {
+
+                showResErrorMessage("configuration", response[0].result_message);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("configuration", errorThrown);
         }
     });
 }
@@ -760,30 +792,34 @@ function createEmployee() {
     const employee_name = $("#employee_name").val().trim();
     $("body").addClass("loading");
     isUserLoggedIn();
-    let url = "/admin_api/createemployee/" + employee_name;
+    let url = "/admin_api/createemployee";
 
+
+    const data = {
+        name: employee_name
+    };
 
     $.ajax({
-        type: "get",
-        url: url,
-        crossDomain: true,
-        cache: false,
-        dataType: "jsonp",
-        contentType: "application/json; charset=UTF-8",
-        success: function (data) {
+        url : url,
+        type: "POST",
+        data : data,
+        success: function(response)
+        {
             $("body").removeClass("loading");
-            showResSuccessMessage("configuration", data[0].result_message);
-            getEmployees();
-        },
-        error: function (xhr) {
-            $("body").removeClass("loading");
-            if (xhr.status === 404) {
-                showResErrorMessage("configuration", "Unauthorised to use this function");
-            }else{
-                showResErrorMessage("configuration", "Server Error");
+            if (response[0].result_code === 0) {
+                showResSuccessMessage("configuration", response[0].result_message);
+                getEmployees();
+            } else {
+                showResErrorMessage("configuration", response[0].result_message);
             }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("configuration", errorThrown);
         }
     });
+
 }
 
 function deleteEmployee(event) {
@@ -792,24 +828,24 @@ function deleteEmployee(event) {
     isUserLoggedIn();
     let url = "/admin_api/employee/delete/" + employeeId;
     $.ajax({
-        type: "get",
-        url: url,
-        crossDomain: true,
-        cache: false,
-        dataType: "jsonp",
-        contentType: "application/json; charset=UTF-8",
-        success: function (data) {
+        url : url,
+        type: "REMOVE",
+        data : "",
+        success: function(response)
+        {
             $("body").removeClass("loading");
-            showResSuccessMessage("configuration", data[0].result_message);
-            getEmployees();
-        },
-        error: function (xhr) {
-            $("body").removeClass("loading");
-            if (xhr.status === 404) {
-                showResErrorMessage("configuration", "Unauthorised to use this function");
-            }else{
-                showResErrorMessage("configuration", "Server Error");
+            if (response[0].result_code === 0) {
+                getEmployees();
+                showResSuccessMessage("configuration", response[0].result_message);
+            } else {
+
+                showResErrorMessage("configuration", response[0].result_message);
             }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("configuration", errorThrown);
         }
     });
 }

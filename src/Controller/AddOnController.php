@@ -60,13 +60,15 @@ class AddOnController extends AbstractController
     }
 
     /**
-     * @Route("admin_api/createaddon/{addOnName}/{addOnPrice}")
+     * @Route("admin_api/createaddon")
      */
-    public function createAddon($addOnName, $addOnPrice, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
+    public function createAddon(Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-
-        $response = $addOnsApi->createAddOn($addOnName, $addOnPrice);
+        if (!$request->isMethod('post')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+        $response = $addOnsApi->createAddOn($request->get('name'), $request->get('price'));
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -79,7 +81,10 @@ class AddOnController extends AbstractController
     public function deleteAddOn($addOnId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $securityApi = new SecurityApi($entityManager, $logger );
+        if (!$request->isMethod('remove')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+
         $response = $addOnsApi->deleteAddOn($addOnId);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
@@ -94,6 +99,9 @@ class AddOnController extends AbstractController
     public function updateAddOn($addOnId, $field, $newValue, Request $request,LoggerInterface $logger, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        if (!$request->isMethod('put')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
         $response = $addOnsApi->updateAddOn($addOnId, $field, $newValue);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());

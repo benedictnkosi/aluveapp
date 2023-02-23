@@ -232,6 +232,13 @@ function getAvailableRooms(checkInDate, checkOutDate) {
 function createReservation() {
     let isRoomSelected;
     $("#reservation_error_message_div").addClass("display-none");
+
+    let today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    const yyyy = today.getFullYear();
+
+    today = yyyy + "-" + mm + '-' + dd;
     const guestName = $('#guestName').val();
     const phoneNumber = $('#phoneNumber').val().trim().replaceAll(" ", "");
     const email = $('#email').val();
@@ -252,27 +259,43 @@ function createReservation() {
     }
 
     $("body").addClass("loading");
-    let url = "/public/reservations/create/" + sessionStorage.getItem("selected_rooms_array") + '/' + guestName + '/' + phoneNumber + '/' + adultGuests + '/' + childGuests + '/' + checkInDate + '/' + checkOutDate;
-    if (email.length > 0) {
-        url += "/" + email;
-    }
-    $.getJSON(url + "?callback=?", null, function (data) {
-        $("body").removeClass("loading");
-        if (data[0].result_code !== 0) {
-            showResErrorMessage("reservation", data[0].result_message);
-        } else {
-            sessionStorage.setItem("reservation_id", JSON.stringify(data[0].reservation_id));
-            window.location.href = "/confirmation";
-        }
-    }).done(function () {
-        $("body").removeClass("loading");
-    })
-        .fail(function () {
-            showResErrorMessage("reservation", "Server error occurred, please try again");
-        })
-        .always(function () {
+
+
+    let url = "/public/reservations/create";
+
+    const data = {
+        room_ids: sessionStorage.getItem("selected_rooms_array"),
+        name: guestName,
+        phone_number: phoneNumber,
+        adult_guests: adultGuests,
+        child_guests: childGuests,
+        check_in_date: checkInDate,
+        check_out_date: checkOutDate,
+        email: email,
+        date: today
+    };
+
+    $.ajax({
+        url : url,
+        type: "POST",
+        data : data,
+        success: function(response)
+        {
             $("body").removeClass("loading");
-        });
+            if (response[0].result_code === 0) {
+                showResSuccessMessage("reservation", response[0].result_message);
+                sessionStorage.setItem("reservation_id", JSON.stringify(data[0].reservation_id));
+                window.location.href = "/confirmation";
+            } else {
+                showResErrorMessage("reservation", response[0].result_message);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            $("body").removeClass("loading");
+            showResErrorMessage("reservation", errorThrown);
+        }
+    });
 
 
 }

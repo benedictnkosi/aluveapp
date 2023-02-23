@@ -567,14 +567,23 @@ class ICalApi
                 );
                 return $responseArray;
             }
+
+            if (filter_var($link, FILTER_VALIDATE_URL) === FALSE) {
+                /*$responseArray[] = array(
+                    'result_message' => 'URL is not valid ',
+                    'result_code' => 1
+                );
+                return $responseArray;*/
+            }
+
             $iCalLink = $this->em->getRepository(Ical::class)->findOneBy(array('link' => $link));
             $room = $this->em->getRepository(Rooms::class)->findOneBy(array('id' => $roomId));
-            if ($iCalLink !== null) {
+            /*if ($iCalLink !== null) {
                 $responseArray[] = array(
                     'result_message' => 'Channel with the same link already added',
                     'result_code' => 1
                 );
-            } else {
+            } else {*/
                 $ical = new Ical();
                 $result = parse_url($link);
                 if (!isset($result['host'])) {
@@ -596,7 +605,7 @@ class ICalApi
                     );
                 }
 
-            }
+           // }
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),

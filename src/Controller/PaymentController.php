@@ -17,12 +17,16 @@ use Symfony\Component\HttpFoundation\Request;
 class PaymentController extends AbstractController
 {
     /**
-     * @Route("api/payment/{reservationId}/amount/{amount}/{paymentChannel}/{reference}")
+     * @Route("api/payment/add")
      */
-    public function addPayment($reservationId, $amount,  $paymentChannel, $reference, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function addPayment(LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->addPayment($reservationId, $amount, str_replace("_","/",$reference), $paymentChannel);
+        if (!$request->isMethod('post')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+
+        $response = $paymentApi->addPayment($request->get('id'), $request->get('amount'), str_replace("_","/",$request->get('reference')), $request->get('channel'));
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);
@@ -35,6 +39,9 @@ class PaymentController extends AbstractController
     public function removePayment($paymentId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+        if (!$request->isMethod('remove')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
         $response = $paymentApi->removePayment($paymentId);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
@@ -43,12 +50,17 @@ class PaymentController extends AbstractController
     }
 
     /**
-     * @Route("api/discount/{reservationId}/amount/{amount}")
+     * @Route("api/discount/add")
      */
-    public function addDiscount($reservationId, $amount, LoggerInterface $logger, Request $request, PaymentApi $paymentApi): Response
+    public function addDiscount(LoggerInterface $logger, Request $request, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->addDiscount($reservationId, $amount, "discount");
+
+        if (!$request->isMethod('post')) {
+            return new JsonResponse("Internal server error" , 500, array());
+        }
+
+        $response = $paymentApi->addDiscount($request->get('id'), $request->get('amount'), "discount");
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

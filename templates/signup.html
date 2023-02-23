@@ -67,7 +67,7 @@
                       href="/signup"
                       class="signUpBtn rounded-lg bg-white bg-opacity-20 py-3 px-6 text-base font-medium text-white duration-300 ease-in-out hover:bg-opacity-100 hover:text-dark"
               >
-                Start Your Free Trial
+                Register Today
               </a>
             </div>
           </div>
@@ -84,7 +84,7 @@
         <div class="-mx-4 flex flex-wrap items-center">
           <div class="w-full px-4">
             <div class="text-center">
-              <h1 class="text-2xl font-semibold text-white">Start Your Free Trial</h1>
+              <h1 class="text-2xl font-semibold text-white">Register Today</h1>
             </div>
           </div>
         </div>
@@ -167,52 +167,48 @@
               data-wow-delay=".15s"
             >
 
-              <form id="trial_form">
-                <div class="flexible">
-                  <div class="flex-bottom">
-                    <div id="success_message_div"
-                         class="flex1 display-none">
-                      <h5 id="success_message"></h5>
-                    </div>
-                    <div id="error_message_div" class="flex2 display-none">
-                      <h5 id="error_message"></h5>
-                    </div>
-                  </div>
+              {% if error %}
+              <div>{{ error }}</div>
+              {% endif %}
+
+              <form action="/register" method="post">
+                <div class="mb-6">
+                  <input
+                         name="_username"
+                         type="email"
+                         placeholder="Email"
+                         class="bordder-[#E9EDF4] w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none transition focus:border-primary focus-visible:shadow-none"
+                  />
+                </div>
+                <div class="mb-6">
+                  <select name="_role">
+                    <option value="USER_ROLE">User Role</option>
+                    <option value="ADMIN_ROLE">Admin Role</option>
+                  </select>
+                </div>
+                <div class="mb-6">
+                  <input name="_password" autocomplete="off" value=""
+                         type="password"
+                         placeholder="Password"
+                         class="bordder-[#E9EDF4] w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none transition focus:border-primary focus-visible:shadow-none"
+                  />
                 </div>
 
                 <div class="mb-6">
-                  <input id="customerName"
-                          type="text"
-                          placeholder="Name"
-                          class="bordder-[#E9EDF4] w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none transition focus:border-primary focus-visible:shadow-none"
+                  <input name="_confirm_password" autocomplete="off"
+                         type="password"
+                         placeholder="Confirm Password"
+                         class="bordder-[#E9EDF4] w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none transition focus:border-primary focus-visible:shadow-none"
                   />
                 </div>
-                <div class="mb-6">
-                  <input id="phoneNumber"
-                          type="text"
-                          placeholder="Phone Number"
-                          class="bordder-[#E9EDF4] w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none transition focus:border-primary focus-visible:shadow-none"
-                  />
-                </div>
-                <div class="mb-6">
-                  <input id="email"
-                          type="email"
-                          placeholder="Email"
-                          class="bordder-[#E9EDF4] w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none transition focus:border-primary focus-visible:shadow-none"
-                  />
-                </div>
-                <div class="mb-6">
-                  <input id="hotel_name"
-                          type="text"
-                          placeholder="Hotel Name"
-                          class="bordder-[#E9EDF4] w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none transition focus:border-primary focus-visible:shadow-none"
-                  />
-                </div>
+
+
+
                 <div class="mb-10">
-                  <input id="trial-submit"
-                    type="submit"
-                    value="Sign Up"
-                    class="bordder-primary w-full cursor-pointer rounded-md border bg-primary py-3 px-5 text-base text-white transition duration-300 ease-in-out hover:shadow-md"
+                  <input
+                          type="submit"
+                          value="Sign Up"
+                          class="bordder-primary w-full cursor-pointer rounded-md border bg-primary py-3 px-5 text-base text-white transition duration-300 ease-in-out hover:shadow-md"
                   />
                 </div>
               </form>
