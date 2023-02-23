@@ -520,6 +520,7 @@ class RoomApi
             }
             $propertyId = $_SESSION['PROPERTY_ID'];
             $property = $this->em->getRepository(Property::class)->findOneBy(array('id' => $propertyId));
+            $now = new DateTime();
 
             $room->setName($name);
             $room->setPrice($price);
@@ -531,6 +532,8 @@ class RoomApi
             $room->setDescription($description);
             $room->setProperty($property);
             $room->setTv($tvType);
+            $room->setAirbnbLastExport($now);
+            $room->setBdcLastExport($now);
 
             $this->em->persist($room);
             $this->em->flush($room);
