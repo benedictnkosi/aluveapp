@@ -97,3 +97,19 @@ migrating to server
 
 DATABASE_URL="mysql://aluvejsl_user:yo_BBm_QfDVe@127.0.0.1:3306/aluvejsl_aluveapp?serverVersion=mariadb-{slq_server_version}&charset=utf8mb4"
 500 error means that some files are missing. zip again and upload without any disk space error
+
+
+Flat File format
+Reservation ID (numbers) - 5 characters
+Room Name (string) - 36 characters
+Room Price (numbers) - 9 characters
+Check In Date (string) - 10 characters
+Check Out Date(string) - 10 characters
+Guest Name (string) - 36 characters
+Guest Phone Number (string) - 18 characters
+Origin (string) - 46 characters
+OriginURL (string) - 46 characters
+Uid (string) - 26 characters
+Additional Information (string) - 108 characters
+Received On (string) - 10 characters
+

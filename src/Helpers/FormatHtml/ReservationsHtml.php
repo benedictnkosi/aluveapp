@@ -34,6 +34,8 @@ class ReservationsHtml
 
         $this->logger->debug("Starting Method: " . __METHOD__);
         $this->createCSV($reservations, $period);
+        $this->createFlatFile($reservations, $period);
+
         $htmlString = "";
         $todayHeadingWritten = false;
         //if no reservations found
@@ -56,6 +58,7 @@ class ReservationsHtml
 									</div>
 									
 									<a href="/'.$period . '_reservations.csv" >Download CSV</a>
+<a href="/'.$period . '_reservations.txt" >| Download Flat File</a>
 									';
 
         if (strcmp($period, 'past') === 0) {
@@ -172,4 +175,38 @@ class ReservationsHtml
 
 
     }
+
+    function createFlatFile($reservations, $fileName): void
+    {
+        try {
+            $cfile = fopen($fileName . '_reservations.txt', 'w');
+
+//Data to be inserted
+            $allReservations = array();
+
+            foreach ($reservations as $reservation) {
+                $reservationId = str_pad($reservation->GetId(), 5, "0", STR_PAD_LEFT);
+                $roomName = str_pad($reservation->getRoom()->getName(), 36);
+                $roomPrice = str_pad($reservation->getRoom()->getPrice(), 9,"0", STR_PAD_LEFT);
+                $checkIn = str_pad($reservation->getCheckIn()->format('Y-m-d'), 10);
+                $checkOut = str_pad($reservation->getCheckOut()->format('Y-m-d'), 10);
+                $guestName = str_pad($reservation->getGuest()->getName(), 36);
+                $guestPhoneNumber = str_pad($reservation->getGuest()->getPhoneNumber(), 18);
+                $origin = str_pad($reservation->getOrigin(), 46);
+                $originURL = str_pad($reservation->getOriginUrl(), 46);
+                $uid = str_pad($reservation->getUid(), 26);
+                $additionalInformation = str_pad($reservation->getAdditionalInfo(), 108);
+                $receivedOn = str_pad($reservation->getReceivedOn()->format('Y-m-d'), 10);
+                $row = $reservationId. $roomName . $roomPrice . $checkIn . $checkOut. $guestName. $guestPhoneNumber . $origin . $originURL . $uid . $additionalInformation.  $receivedOn . "\n";
+
+                fwrite($cfile, $row);
+            }
+
+            fclose($cfile);
+        } catch (\Exception $exception) {
+            fclose($cfile);
+            $this->logger->debug($exception->getMessage());
+        }
+    }
+
 }
