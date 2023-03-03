@@ -8,6 +8,21 @@ $(document).ready(function () {
     $("#refresh_reservations_button").click(function (event) {
         refreshReservations();
     });
+
+    //upload reservations
+    $("#upload_res_form").submit(function (event) {
+        event.preventDefault();
+    });
+    $("#upload_res_form").validate({
+        // Specify validation rules
+        rules: {
+            upload_textarea: "required",
+        }, submitHandler: function () {
+            uploadReservations();
+        }
+
+    });
+
 });
 
 function loadReservationsPageData() {
@@ -316,11 +331,10 @@ function changeBookingStatus(event) {
     let url = "/api/reservations/" + data["reservation_id"] + "/update/status/" + data["new_value"];
 
     $.ajax({
-        url : url,
+        url: url,
         type: "PUT",
-        data : "",
-        success: function(response)
-        {
+        data: "",
+        success: function (response) {
             $("body").removeClass("loading");
             if (response[0].result_code === 0) {
                 $("#" + event.target.id).val(newButtonText);
@@ -332,8 +346,7 @@ function changeBookingStatus(event) {
                 showResErrorMessage("reservation", response[0].result_message);
             }
         },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
+        error: function (jqXHR, textStatus, errorThrown) {
             $("body").removeClass("loading");
             showResErrorMessage("reservation", errorThrown);
         }
@@ -360,7 +373,7 @@ function blockGuest(event) {
         $.ajax({
             type: "PUT",
             url: url,
-            data:"",
+            data: "",
             contentType: "application/json; charset=UTF-8",
             success: function (data) {
                 refreshReservations();
@@ -371,7 +384,7 @@ function blockGuest(event) {
                 $("body").removeClass("loading");
                 if (xhr.status === 404) {
                     showResErrorMessage("reservation", "Unauthorised to use this function");
-                }else{
+                } else {
                     showResErrorMessage("reservation", "Server Error");
                 }
             }
@@ -397,6 +410,11 @@ function filterReservations(event) {
             $('#pending-list').removeClass("display-none");
             $('#reservations-heading').text("Pending Reservations");
             break;
+        case "reservations_upload_reservations":
+            $('#upload-div').removeClass("display-none");
+            $('#reservations-heading').text("Upload Reservations");
+            break;
+
         default:
         // code block
     }
@@ -416,11 +434,10 @@ function markReservationAsCheckedInOut(event, status) {
     let url = "/api/reservations/" + reservationID + "/update/check_in_status/" + status;
 
     $.ajax({
-        url : url,
+        url: url,
         type: "PUT",
-        data : "",
-        success: function(response)
-        {
+        data: "",
+        success: function (response) {
             $("body").removeClass("loading");
             if (response[0].result_code === 0) {
                 refreshReservations();
@@ -431,14 +448,11 @@ function markReservationAsCheckedInOut(event, status) {
                 showResErrorMessage("reservation", response[0].result_message);
             }
         },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
+        error: function (jqXHR, textStatus, errorThrown) {
             $("body").removeClass("loading");
             showResErrorMessage("reservation", errorThrown);
         }
     });
-
-
 
 
 }
@@ -528,11 +542,10 @@ function addCleaning(event) {
         };
 
         $.ajax({
-            url : url,
+            url: url,
             type: "POST",
-            data : data,
-            success: function(response)
-            {
+            data: data,
+            success: function (response) {
                 $("body").removeClass("loading");
                 if (response[0].result_code === 0) {
                     getReservationById(sessionStorage.getItem("reservation_id"));
@@ -542,8 +555,7 @@ function addCleaning(event) {
                     showResErrorMessage("reservation", response[0].result_message);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $("body").removeClass("loading");
                 showResErrorMessage("reservation", errorThrown);
             }
@@ -607,7 +619,7 @@ function removeAddOnFromBooking(event) {
             $("body").removeClass("loading");
             if (xhr.status === 404) {
                 showResErrorMessage("reservation", "Unauthorised to use this function");
-            }else{
+            } else {
                 showResErrorMessage("reservation", "Server Error");
             }
         }
@@ -622,11 +634,10 @@ function removePayment(event) {
     let url = "/admin_api/payment/" + payment_id + "/delete";
 
     $.ajax({
-        url : url,
+        url: url,
         type: "REMOVE",
-        data : "",
-        success: function(response)
-        {
+        data: "",
+        success: function (response) {
             $("body").removeClass("loading");
             if (response[0].result_code === 0) {
                 getReservationById(sessionStorage.getItem("reservation_id"));
@@ -636,13 +647,50 @@ function removePayment(event) {
                 showResErrorMessage("reservation", response[0].result_message);
             }
         },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
+        error: function (jqXHR, textStatus, errorThrown) {
             $("body").removeClass("loading");
             showResErrorMessage("reservation", errorThrown);
         }
     });
 
+}
+
+function uploadReservations() {
+    $("body").addClass("loading");
+    isUserLoggedIn();
+    let url = "/api/reservations/upload/";
+
+    const data = {
+        reservations: $('#upload_textarea').val(),
+    };
+
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: data,
+        success: function (response) {
+            $("body").removeClass("loading");
+            let $message;
+            if (response[0].result_code === 0) {
+                refreshReservations();
+                getCalendar();
+                showResSuccessMessage("reservation", response[0].result_message);
+            } else {
+                $message = "";
+                let z = 0;
+                for (let i in response) {
+                    z++;
+                    $message += "Row " + (z) + " - " + response[i] + "\r\n";
+                }
+                showResErrorMessage("reservation", $message);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            $("body").removeClass("loading");
+            showResErrorMessage("reservation", errorThrown);
+        }
+    });
 }
 
 function addGuestPhone(event) {
@@ -658,11 +706,10 @@ function addGuestPhone(event) {
         let url = "/api/guest/" + id + "/phone/" + phone;
 
         $.ajax({
-            url : url,
+            url: url,
             type: "PUT",
-            data : "",
-            success: function(response)
-            {
+            data: "",
+            success: function (response) {
                 $("body").removeClass("loading");
                 if (response[0].result_code === 0) {
                     getReservationById(sessionStorage.getItem("reservation_id"));
@@ -672,8 +719,7 @@ function addGuestPhone(event) {
                     showResErrorMessage("reservation", response[0].result_message);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $("body").removeClass("loading");
                 showResErrorMessage("reservation", errorThrown);
             }
@@ -681,6 +727,7 @@ function addGuestPhone(event) {
 
     }
 }
+
 
 function addGuestEmail(event) {
     const id = $('#guest_email_input').attr("data-guestid");
@@ -698,11 +745,10 @@ function addGuestEmail(event) {
         isUserLoggedIn();
         let url = "/api/guest/" + id + "/email/" + email;
         $.ajax({
-            url : url,
+            url: url,
             type: "PUT",
-            data : "",
-            success: function(response)
-            {
+            data: "",
+            success: function (response) {
                 $("body").removeClass("loading");
                 if (response[0].result_code === 0) {
                     getReservationById(sessionStorage.getItem("reservation_id"));
@@ -712,8 +758,7 @@ function addGuestEmail(event) {
                     showResErrorMessage("reservation", response[0].result_message);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $("body").removeClass("loading");
                 showResErrorMessage("reservation", errorThrown);
             }
@@ -734,11 +779,10 @@ function addGuestID(event) {
         isUserLoggedIn();
         let url = "/api/guest/" + id + "/idnumber/" + idNumber;
         $.ajax({
-            url : url,
+            url: url,
             type: "PUT",
-            data : "",
-            success: function(response)
-            {
+            data: "",
+            success: function (response) {
                 $("body").removeClass("loading");
                 if (response[0].result_code === 0) {
                     getReservationById(sessionStorage.getItem("reservation_id"));
@@ -748,8 +792,7 @@ function addGuestID(event) {
                     showResErrorMessage("reservation", response[0].result_message);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $("body").removeClass("loading");
                 showResErrorMessage("reservation", errorThrown);
             }
@@ -826,11 +869,10 @@ function addPayment(event) {
         };
 
         $.ajax({
-            url : url,
+            url: url,
             type: "POST",
-            data : data,
-            success: function(response)
-            {
+            data: data,
+            success: function (response) {
                 $("body").removeClass("loading");
                 if (response[0].result_code === 0) {
                     refreshReservations();
@@ -841,8 +883,7 @@ function addPayment(event) {
                     showResErrorMessage("reservation", response[0].result_message);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $("body").removeClass("loading");
                 showResErrorMessage("reservation", errorThrown);
             }
@@ -876,11 +917,10 @@ function addDiscount(event) {
         };
 
         $.ajax({
-            url : url,
+            url: url,
             type: "POST",
-            data : data,
-            success: function(response)
-            {
+            data: data,
+            success: function (response) {
                 $("body").removeClass("loading");
                 if (response[0].result_code === 0) {
                     getReservationById(sessionStorage.getItem("reservation_id"));
@@ -889,8 +929,7 @@ function addDiscount(event) {
                     showResErrorMessage("reservation", response[0].result_message);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $("body").removeClass("loading");
                 showResErrorMessage("reservation", errorThrown);
             }
@@ -918,11 +957,10 @@ function addNote(event) {
         };
 
         $.ajax({
-            url : url,
+            url: url,
             type: "POST",
-            data : data,
-            success: function(response)
-            {
+            data: data,
+            success: function (response) {
                 $("body").removeClass("loading");
                 if (response[0].result_code === 0) {
                     getReservationById(sessionStorage.getItem("reservation_id"));
@@ -931,8 +969,7 @@ function addNote(event) {
                     showResErrorMessage("reservation", response[0].result_message);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $("body").removeClass("loading");
                 showResErrorMessage("reservation", errorThrown);
             }

@@ -567,6 +567,39 @@ class ReservationApi
         return $responseArray;
     }
 
+    public function uploadReservations($reservationsString, $request)
+    {
+        $this->logger->info("Starting Method: " . __METHOD__);
+        $reservations = explode("\n", trim($reservationsString));
+        $this->logger->info("array lines: " . sizeof($reservations));
+        $responseArray = array();
+        foreach($reservations as $reservation) {
+            $checkIn = trim(substr($reservation,52,8));
+            $checkOut = trim(substr($reservation,62,8));
+            $guestName = trim(substr($reservation,70,36));
+            $phoneNumber = trim(substr($reservation,106,18));
+            $origin = trim(substr($reservation,124,46));
+            $originURL = trim(substr($reservation,170,46));
+            $uid = trim(substr($reservation,216,44));
+            $roomId = intval(trim(substr($reservation,379,4)));
+
+            $this->logger->info("checkIn field: " . $checkIn);
+            $this->logger->info("checkOut field: " . $checkOut);
+            $this->logger->info("guestName field: " . $guestName);
+            $this->logger->info("phoneNumber field: " . $phoneNumber);
+            $this->logger->info("origin field: " . $origin);
+            $this->logger->info("originURL field: " . $originURL);
+            $this->logger->info("uid field: " . $uid);
+            $this->logger->info("roomId field: " . $roomId);
+
+            $response = $this->createReservation($roomId, $guestName, $phoneNumber, "", $checkIn, $checkOut, $request, null, null, $uid, false, $origin, $originURL);
+            $responseArray[] = $response[0]['result_message'];
+        }
+
+        return $responseArray;
+    }
+
+
     public function createReservation($roomIds, $guestName, $phoneNumber, $email, $checkInDate, $checkOutDate, $request = null, $adultGuests = null, $childGuests = null, $uid = null, $isImport = false, $origin = "website", $originUrl = "website"): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
@@ -656,7 +689,7 @@ class ReservationApi
                 if (!$isRoomAvailable) {
                     $responseArray[] = array(
                         'result_code' => 1,
-                        'result_message' => 'Tried to create\import a reservation. Room not available for selected dates ' . $checkInDate . " - " . $checkOutDate
+                        'result_message' => 'Tried to create a reservation. Room not available for selected dates ' . $checkInDate . " - " . $checkOutDate
                     );
 
                     if ($isImport) {

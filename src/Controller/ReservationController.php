@@ -326,6 +326,25 @@ class ReservationController extends AbstractController
         return $response;
     }
 
+
+    /**
+     * @Route("/api/reservations/upload/")
+     * @throws \Exception
+     */
+    public function uploadReservations( Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    {
+        $logger->info("Starting Method: " . __METHOD__);
+        if (!$request->isMethod('post')) {
+            return new JsonResponse("Internal server errors" , 500, array());
+        }
+
+        $response = $reservationApi->uploadReservations($request->get('reservations'), $request);
+        $callback = $request->get('callback');
+        $response = new JsonResponse($response, 200, array());
+        $response->setCallback($callback);
+        return $response;
+    }
+
     /**
      * @Route("public/invoice/{reservationId}")
      * @throws \Exception

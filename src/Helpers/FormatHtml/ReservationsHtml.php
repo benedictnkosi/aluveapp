@@ -57,8 +57,8 @@ class ReservationsHtml
 										</div>
 									</div>
 									
-									<a href="/'.$period . '_reservations.csv" >Download CSV</a>
-<a href="/'.$period . '_reservations.txt" >| Download Flat File</a>
+									<a href="/'.$period . '_reservations.csv" target="_blank" >Download CSV</a>
+<a href="/'.$period . '_reservations.txt" target="_blank">| Download Flat File</a>
 									';
 
         if (strcmp($period, 'past') === 0) {
@@ -194,10 +194,11 @@ class ReservationsHtml
                 $guestPhoneNumber = str_pad($reservation->getGuest()->getPhoneNumber(), 18);
                 $origin = str_pad($reservation->getOrigin(), 46);
                 $originURL = str_pad($reservation->getOriginUrl(), 46);
-                $uid = str_pad($reservation->getUid(), 26);
+                $uid = str_pad($reservation->getUid(), 72);
                 $additionalInformation = str_pad($reservation->getAdditionalInfo(), 108);
                 $receivedOn = str_pad($reservation->getReceivedOn()->format('Y-m-d'), 10);
-                $row = $reservationId. $roomName . $roomPrice . $checkIn . $checkOut. $guestName. $guestPhoneNumber . $origin . $originURL . $uid . $additionalInformation.  $receivedOn . "\n";
+                $roomId = str_pad($reservation->getRoom()->getId(), 4, "0", STR_PAD_LEFT);
+                $row = $reservationId. $roomName . $roomPrice . $checkIn . $checkOut. $guestName. $guestPhoneNumber . $origin . $originURL . $uid . $additionalInformation.  $receivedOn . $roomId .  "\n";
 
                 fwrite($cfile, $row);
             }

@@ -244,23 +244,28 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </div>
 
             <div class="profile-ser">
-                <div class="profile-ser-grids filter-reservations clickable"
+                <div class="profile-ser-grids-25 filter-reservations clickable"
                      id="reservations_all">
                     <img class="menu_icon_image" src="/admin/images/menu_bookings.png" title="Up Coming"></img>
                     <i class="desktopOnlyMenu">Upcoming Reservations</i>
                 </div>
 
                 <div
-                        class="profile-ser-grids agileinfo  filter-reservations clickable"
+                        class="profile-ser-grids-25 agileinfo  filter-reservations clickable"
                         id="reservations_past_reservations">
                     <img class="menu_icon_image" src="/admin/images/history.png" title="History"></img><i
                         class="desktopOnlyMenu">History
                 </i>
                 </div>
-                <div class="profile-ser-grids agileinfo  filter-reservations clickable"
+                <div class="profile-ser-grids-25 agileinfo  filter-reservations clickable"
                      id="reservations_pending_reservations">
                     <img class="menu_icon_image" src="/admin/images/pending.png" title="Pending"></img><i
                         class="desktopOnlyMenu">Pending</i>
+                </div>
+                <div class="profile-ser-grids-25 agileinfo  filter-reservations clickable"
+                     id="reservations_upload_reservations">
+                    <img class="menu_icon_image" src="/admin/images/upload.png" title="Upload"></img><i
+                        class="desktopOnlyMenu">Upload</i>
                 </div>
 
                 <div class="clearfix"></div>
@@ -271,8 +276,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                          class="flex1 display-none">
                         <h5 id="reservation_success_message"></h5>
                     </div>
-                    <div id="reservation_error_message_div" class="flex2 display-none">
-                        <h5 id="reservation_error_message"></h5>
+                    <div id="reservation_error_message_div" class="flex2 display-none" >
+                        <h5 id="reservation_error_message" style="white-space: pre-wrap;"></h5>
                     </div>
                 </div>
             </div>
@@ -280,6 +285,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </div>
             <div id="past-list" class='reservations_tabs reservations_div display-none'></div>
             <div id="pending-list" class='reservations_tabs reservations_div display-none'></div>
+            <div id="upload-div" class='reservations_tabs reservations_div display-none'>
+                <form class="contact-form" id="upload_res_form" action="#">
+                    <textarea id="upload_textarea"  rows="10" wrap="off" placeholder="Paste the upload string here"></textarea>
+                    <div>
+                        <span><input type="submit" value="Submit" id="upload_res_submit" class="button-50"></span>
+                    </div>
+                </form>
+
+            </div>
 
             <div id="reservation-details" class='reservations_tabs reservations_details_div display-none'></div>
             <div class="confirm-box-overlay" id="keyCollectedConfirmBox" hidden>
