@@ -667,7 +667,7 @@ class ReservationApi
                         if (!$this->isFailedUidRecorded($uid)) {
                             $this->recordFailedUid($uid);
 
-                            $messageBody = "There was a problem importing a reservation. " . $checkInDate . " - " . $room->getName();
+                            $messageBody = "There was a problem importing a reservation. " . $checkInDate . " - " . $room->getName() . "#" . $origin;
                             $SMSHelper = new SMSHelper($this->logger);
                             $SMSHelper->sendMessage("+27837917430", $messageBody);
                             $SMSHelper->sendMessage(str_replace(" ", "", $room->getProperty()->getPhoneNumber()), $messageBody);
