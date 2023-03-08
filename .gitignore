@@ -6,7 +6,7 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
-###/vendor/
+/vendor/
 /src/app/application.php
 /config/packages/monolog.yaml
 ###< symfony/framework-bundle ###
