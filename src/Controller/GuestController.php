@@ -24,10 +24,10 @@ class GuestController extends AbstractController
     /**
      * @Route("/api/guests/{filterValue}", name="guests", defaults={"guestId": 0})
      */
-    public function getGuests($filterValue, LoggerInterface $logger, Request $request, GuestApi $guestApi, PropertyApi $propertyApi): Response
+    public function getGuest($filterValue, LoggerInterface $logger, Request $request, GuestApi $guestApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__ );
-        $response = $guestApi->getGuests($filterValue);
+        $response = $guestApi->getGuest($filterValue);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

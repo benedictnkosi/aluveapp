@@ -311,7 +311,7 @@ class GuestApi
         return $responseArray;
     }
 
-    public function getGuests($filterValue): array
+    public function getGuest($filterValue): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {

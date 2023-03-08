@@ -250,7 +250,7 @@ class RoomController extends AbstractController
     /**
      * @Route("api/json/room/{id}")
      */
-    public function getAddOnJson( $id, LoggerInterface $logger, RoomApi $roomApi): Response
+    public function getRoomJson( $id, LoggerInterface $logger, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $room = $roomApi->getRoom($id);

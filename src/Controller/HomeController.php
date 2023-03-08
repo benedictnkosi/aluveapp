@@ -22,7 +22,7 @@ class HomeController extends AbstractController
      */
     public function app_admin(LoggerInterface $logger): Response
     {
-        if($this->getUser()->getProperty()->getId()){
+        if($this->getUser() !== null){
             $logger->info("Session: " . print_r($_SESSION, true));
             $logger->info("user roles: " . print_r($this->getUser()->getRoles(), true));
             $logger->info("property name is: " . $this->getUser()->getProperty()->getId());
