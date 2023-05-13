@@ -135,7 +135,7 @@ class InvoiceHTML
 				</tr>
 
 <tr >
-					<td><b>Payment Method</b></td>
+					<td><b>Payment Method (Cashless Business. Card Payments Welcome)</b></td>
 					<td class="no-border"></td>
 					<td class="no-border"> </td>
 					<td class="no-border"></td>
@@ -143,7 +143,7 @@ class InvoiceHTML
 				<tr >
 					<td><b>Please use Payshap as this reflects immediately. Reservations will only be confirmed once the money is in our account</b>
 					</br>Payshap can be found on your banking app
-					</br>Payments from other banks to our bank (FNB) might take up to 3 working days. FNB to FNB can take from 0 to 2 hours.</td>
+					</br>Transfers from other banks to our bank (FNB) might take up to 3 working days. FNB to FNB can take from 0 to 2 hours.</td>
 					<td class="no-border"></td>
 					<td class="no-border"> </td>
 					<td class="no-border"></td>
@@ -154,7 +154,6 @@ class InvoiceHTML
 					<td class="no-border"> </td>
 					<td class="no-border"></td>
 				</tr>
-				
 				<tr >
 					<td><b>Banking Details:</b></td>
 					<td class="no-border"></td>
