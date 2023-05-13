@@ -134,6 +134,27 @@ class InvoiceHTML
 					<td><b>' . number_format((float)$paymentApi->getTotalDue($reservation_id), 2, '.', '') . '</b></td>
 				</tr>
 
+<tr >
+					<td><b>Payment Method</b></td>
+					<td class="no-border"></td>
+					<td class="no-border"> </td>
+					<td class="no-border"></td>
+				</tr>
+				<tr >
+					<td><b>Please use Payshap as this reflects immediately. Reservations will only be confirmed once the money is in our account</b>
+					</br>Payshap can be found on your banking app
+					</br>Payments from other banks to our bank (FNB) might take up to 3 working days. FNB to FNB can take from 0 to 2 hours.</td>
+					<td class="no-border"></td>
+					<td class="no-border"> </td>
+					<td class="no-border"></td>
+				</tr>
+				<tr>
+					<td>Payshap ID: 0796347610<br>
+					<td class="no-border"><br></td>
+					<td class="no-border"> </td>
+					<td class="no-border"></td>
+				</tr>
+				
 				<tr >
 					<td><b>Banking Details:</b></td>
 					<td class="no-border"></td>
