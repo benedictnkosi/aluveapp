@@ -731,7 +731,7 @@ class ReservationApi
                     if (str_starts_with($reservation->getGuest()->getPhoneNumber(), '0') || str_starts_with($reservation->getGuest()->getPhoneNumber(), '+27')) {
                         $this->logger->debug("this is a south african number " . $reservation->getGuest()->getPhoneNumber());
                         $SMSHelper = new SMSHelper($this->logger);
-                        $message = "Hi, Invoice http://" . $reservation->getRoom()->getProperty()->getServerName() . "/invoice.html?id=" . $reservation->getId() . " - Booking confirmed once payment reflects. Use Payshap for instant payments. No Cash-Children allowed";
+                        $message = "Hi, Invoice http://" . $reservation->getRoom()->getProperty()->getServerName() . "/invoice.html?id=" . $reservation->getId() . " - Booking confirmed once payment reflects. Use Payshap for instant payments. No Cash/Children allowed";
                         $SMSHelper->sendMessage($guest->getPhoneNumber(), $message);
                     }
 

@@ -89,11 +89,11 @@ class SMSHelper
             $status = $match[1];
 
             if ($status === '200') {
-                $this->logger->debug("Success: " . print_r($sendResult, true));
+                $this->logger->info("Success: " . print_r($sendResult, true));
                 return true;
             }
             else {
-                $this->logger->debug("Failed: " . print_r($sendResult, true));
+                $this->logger->error("Failed: " . print_r($sendResult, true));
                 return false;
             }
 
