@@ -20,6 +20,9 @@ class SMSHelper
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $this->logger->debug("remote server is " . $_SERVER['HTTP_HOST']);
+        $this->logger->debug("phone number " . $phoneNumber);
+        $this->logger->debug("message " . $message);
+
         if (strcmp( $_SERVER['HTTP_HOST'], 'aluveapp.co.za' )===0 ) {
             //Retrieve your API Credentials
             $apiKey = SMS_API_KEY;
