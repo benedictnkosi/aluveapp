@@ -370,7 +370,7 @@ class SingleReservationHtml
         $htmlString .= ' <div class="right-side-action-block"><div class="display-none borderAndPading block-display reservation_input" id="div_payment" >
         <select id="select_payment_' . $reservationId . '">';
         $htmlString .= ' <option value="none">Select Payment Method</option>';
-        if($stayCount > 1){
+        if($stayCount > 0){
             $htmlString .= ' <option value="cash">Cash</option>';
         }
         $htmlString .= ' <option value="card">Card</option>';
