@@ -407,6 +407,13 @@ class ICalApi
             }
             $roomName = $room->getName();
 
+            //update last export timestamp for room
+            if (str_contains($request->getUri(), 'airbnb')) {
+                $room->setAirbnbLastExport(new DateTime());
+            }else{
+                $room->setBdcLastExport(new DateTime());
+            }
+
             $reservations = $reservationApi->getReservationsByRoom($roomId);
             $blockedRooms = $blockedRoomApi->getBlockedRoomsByRoomId($room->getId());
             $now = new DateTime();
@@ -489,12 +496,7 @@ class ICalApi
 
             $icalString .= "END:VCALENDAR\r\n";
 
-            //update last export timestamp for room
-            if (str_contains($request->getUri(), 'airbnb')) {
-                $room->setAirbnbLastExport(new DateTime());
-            }else{
-                $room->setBdcLastExport(new DateTime());
-            }
+
             $this->em->persist($room);
             $this->em->flush($room);
 
