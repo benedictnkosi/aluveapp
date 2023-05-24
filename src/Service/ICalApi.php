@@ -408,6 +408,8 @@ class ICalApi
             $roomName = $room->getName();
 
             //update last export timestamp for room
+            $this->logger->debug("The export url is: " .$request->getUri());
+
             if (str_contains($request->getUri(), 'airbnb')) {
                 $room->setAirbnbLastExport(new DateTime());
             }else{
