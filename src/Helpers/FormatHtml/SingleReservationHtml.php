@@ -291,9 +291,9 @@ class SingleReservationHtml
         $totalPayment = 0;
         foreach ($payments as $payment) {
             if ($payment->isDiscount()) {
-                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ') (Discount) <a href="javascript:void(0)" data-payment-id="' . $payment->getId() . '" class="delete_payment_link">delete</a></p>';
+                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ') (Discount) - ' .$payment->getReference(). ' <a href="javascript:void(0)" data-payment-id="' . $payment->getId() . '" class="delete_payment_link">delete</a></p>';
             } else {
-                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ') <a href="javascript:void(0)" data-payment-id="' . $payment->getId() . '" class="delete_payment_link">delete</a></p>';
+                $paymentsHtml .= '<p class="small-font-italic"> ' . $payment->getDate()->format('Y-m-d H:i') . ' - R' . number_format((float)$payment->getAmount(), 2, '.', '') . ' (' . $payment->getChannel() . ') - ' .$payment->getReference(). ' <a href="javascript:void(0)" data-payment-id="' . $payment->getId() . '" class="delete_payment_link">delete</a></p>';
             }
             $totalPayment += (intVal($payment->getAmount()));
         }
