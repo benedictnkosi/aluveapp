@@ -45,12 +45,12 @@ class GuestController extends AbstractController
     }
 
     /**
-     * @Route("/api/guest/{guestId}/email/{email}")
+     * @Route("/api/guest/{guestId}/name/{email}")
      */
     public function updateGuestEmail($guestId, $email, LoggerInterface $logger,Request $request,GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $guestApi->updateGuestEmail($guestId, $email);
+        $response = $guestApi->updateGuestName($guestId, $email);
         $callback = $request->get('callback');
         $response = new JsonResponse($response , 200, array());
         $response->setCallback($callback);

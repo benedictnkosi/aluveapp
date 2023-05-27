@@ -138,10 +138,10 @@ function setBindings() {
         addGuestPhone(event);
     });
 
-    $('.res_add_guest_email').unbind('click')
-    $(".res_add_guest_email").click(function (event) {
+    $('.res_add_guest_name').unbind('click')
+    $(".res_add_guest_name").click(function (event) {
         event.stopImmediatePropagation();
-        addGuestEmail(event);
+        addGuestName(event);
     });
 
     $('.res_add_guest_id').unbind('click')
@@ -588,21 +588,17 @@ function addGuestPhone(event) {
     }
 }
 
-function addGuestEmail(event) {
-    const id = $('#guest_email_input').attr("data-guestid");
-    if (!$("#guest_email_input").val()) {
+function addGuestName(event) {
+    const id = $('#guest_name_input').attr("data-guestid");
+    if (!$("#guest_name_input").val()) {
         //hide other opened reservation inputs
         $(".reservation_input").addClass("display-none");
-        $("#guest_email_input").removeClass("display-none");
+        $("#guest_name_input").removeClass("display-none");
     } else {
-        const email = $('#guest_email_input').val();
-        if (!isEmail(email)) {
-            showResErrorMessage("reservation", 'Email address is invalid');
-            return;
-        }
+        const name = $('#guest_name_input').val();
         $("body").addClass("loading");
         isUserLoggedIn();
-        let url = "/api/guest/" + id + "/email/" + email;
+        let url = "/api/guest/" + id + "/name/" + name;
         $.getJSON(url + "?callback=?", null, function (response) {
             $("body").removeClass("loading");
 

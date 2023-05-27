@@ -593,17 +593,19 @@ class ReservationApi
                 //get room
 
                 $room = $roomApi->getRoom($roomId);
+                $this->logger->debug("origin is " . $origin);
 
-                if (strcmp($origin, "airbnb.com") === 0) {
-                    $guest = $guestApi->getGuestByName("Airbnb Guest");
-                } elseif (strcmp($origin, "booking.com") === 0) {
-                    if (!empty($phoneNumber)) {
-                        $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request, $room->getProperty()->getId());
-                    }
+                if (strpos($origin, "airbnb") > -1) {
+                    $guestName = "Airbnb Guest";
+                    $phoneNumber = "0111111111";
+                    $email = "";
+                } elseif (strpos($origin, "booking")  > -1) {
+                    $guestName = "Booking.com Guest";
+                    $phoneNumber = "0222222222";
+                    $email = "";
                 } elseif (strlen($phoneNumber) > 1) {
                     $guest = $guestApi->getGuestByPhoneNumber($phoneNumber, $request, $room->getProperty()->getId());
                 }
-
 
                 if ($guest == null) {
                     $this->logger->debug("guest not found, creating a new guest");

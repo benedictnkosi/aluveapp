@@ -93,7 +93,7 @@ class GuestApi
         return $responseArray;
     }
 
-    public function updateGuestEmail($guestId, $email): array
+    public function updateGuestName($guestId, $name): array
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
@@ -105,15 +105,14 @@ class GuestApi
                     'result_message' => 'Guest not found for id ' . $guestId
                 );
             }else{
-                $guest->setEmail($email);
+                $guest->setName($name);
                 $this->em->persist($guest);
                 $this->em->flush($guest);
                 $responseArray[] = array(
                     'result_code' => 0,
-                    'result_message' => 'Successfully updated guest email address'
+                    'result_message' => 'Successfully updated guest name'
                 );
             }
-
         } catch (Exception $ex) {
             $responseArray[] = array(
                 'result_code' => 1,

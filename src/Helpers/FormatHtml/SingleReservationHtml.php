@@ -334,24 +334,24 @@ class SingleReservationHtml
         $htmlString .= '<div id="right-div-' . $reservation->getId() . '">';
 
         // add phone number
-        if ($guest->getPhoneNumber() === null || empty($guest->getPhoneNumber())) {
+
             $this->logger->debug(" HTML output - add guest phonenumber" . $reservation->getId());
 
             $htmlString .= '
                 <div class="right-side-action-block">
                 <input id="guest_phone_input" type="text" data-guestid="' . $guest->getId() . '"
-										 class="textbox  display-none block-display reservation_input" placeholder="Phone number"/><div id="add_guest_phone_button" class="ClickableButton res_add_guest_phone" data-guestid="' . $guest->getId() . '" >Add Phone Number</div></div>';
-        }
+										 class="textbox  display-none block-display reservation_input" placeholder="Phone number"/><div id="add_guest_phone_button" class="ClickableButton res_add_guest_phone" data-guestid="' . $guest->getId() . '" >Update Phone Number</div></div>';
+
 
         // add email
-        if ($guest->getEmail() === null || empty($guest->getPhoneNumber())) {
-            $this->logger->debug(" HTML output - add guest email" . $reservation->getId());
+
+            $this->logger->debug(" HTML output - add guest name" . $reservation->getId());
 
             $htmlString .= '
                 <div class="right-side-action-block">
-                <input id="guest_email_input" type="text" data-guestid="' . $guest->getId() . '"
-										 class="textbox  display-none block-display reservation_input" placeholder="Email Address"/><div id="add_guest_email_button" class="ClickableButton res_add_guest_email" data-guestid="' . $guest->getId() . '" >Add Email</div></div>';
-        }
+                <input id="guest_name_input" type="text" data-guestid="' . $guest->getId() . '"
+										 class="textbox  display-none block-display reservation_input" placeholder="Name"/><div id="add_guest_name_button" class="ClickableButton res_add_guest_name" data-guestid="' . $guest->getId() . '" >Update Name</div></div>';
+
 
         // add Guest ID
         if ($guest->getIdNumber() === null || empty($guest->getIdNumber())) {
