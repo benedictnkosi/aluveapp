@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    //test
     $('.filter-reservations').unbind('click')
     $(".filter-reservations").click(function (event) {
         filterReservations(event);
