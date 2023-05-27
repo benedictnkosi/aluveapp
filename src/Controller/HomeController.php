@@ -27,6 +27,9 @@ class HomeController extends AbstractController
             $logger->info("user roles: " . print_r($this->getUser()->getRoles(), true));
             $logger->info("property name is: " . $this->getUser()->getProperty()->getId());
             $_SESSION["PROPERTY_ID"] = $this->getUser()->getProperty()->getId();
+            $_SESSION["Role"] = print_r($this->getUser()->getRoles(), true);
+            $logger->info("The saved role is " . $_SESSION["Role"]);
+
             $logger->info("new session: " . print_r($_SESSION, true));
             return $this->render('admin.html');
         }else{
