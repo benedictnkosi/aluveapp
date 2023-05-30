@@ -289,7 +289,7 @@ input[type="checkbox"]{
 	}
 
 
-	.reservations_div{
+	.reservations_div .container-60{
 		width: 100%;
 		display: block;
 		margin-bottom: 3px;
@@ -337,7 +337,7 @@ input[type="checkbox"]{
 
 	}
 
-	.reservations_div{
+	.reservations_div, .container-60{
 		width: 60%;
 		margin-left: 20%;
 		display: block;

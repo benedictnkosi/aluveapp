@@ -37,6 +37,27 @@ class HomeController extends AbstractController
         }
     }
 
+
+    /**
+     * @Route("/app_properties/", name="app_properties")
+     */
+    public function app_properties(LoggerInterface $logger): Response
+    {
+        if($this->getUser()->getProperty()->getId()){
+            $logger->info("Session: " . print_r($_SESSION, true));
+            $logger->info("user roles: " . print_r($this->getUser()->getRoles(), true));
+            $logger->info("property name is: " . $this->getUser()->getProperty()->getId());
+            $_SESSION["PROPERTY_ID"] = $this->getUser()->getProperty()->getId();
+            $_SESSION["Role"] = print_r($this->getUser()->getRoles(), true);
+            $logger->info("The saved role is " . $_SESSION["Role"]);
+
+            $logger->info("new session: " . print_r($_SESSION, true));
+            return $this->render('properties.html');
+        }else{
+            return $this->redirectToRoute("index");
+        }
+    }
+
     /**
      * @Route("/index.html", name="index")
      */

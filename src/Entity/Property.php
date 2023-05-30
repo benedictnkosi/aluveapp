@@ -120,6 +120,41 @@ class Property
     private $googleReviewLink;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="late_fee", type="integer", nullable=false)
+     */
+    private $lateFee;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="quickbooks_token", type="string", length=100, nullable=false)
+     */
+    private $quickbooksToken;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="rent_due_day", type="integer", nullable=false, options={"default"="1"})
+     */
+    private $rentDueDay = 1;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="rent_late_days", type="integer", nullable=false, options={"default"="7"})
+     */
+    private $rentLateDays = 7;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=45, nullable=false)
+     */
+    private $type;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -357,6 +392,86 @@ class Property
     public function setGoogleReviewLink(?string $googleReviewLink): void
     {
         $this->googleReviewLink = $googleReviewLink;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLateFee(): int
+    {
+        return $this->lateFee;
+    }
+
+    /**
+     * @param int $lateFee
+     */
+    public function setLateFee(int $lateFee): void
+    {
+        $this->lateFee = $lateFee;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuickbooksToken(): string
+    {
+        return $this->quickbooksToken;
+    }
+
+    /**
+     * @param string $quickbooksToken
+     */
+    public function setQuickbooksToken(string $quickbooksToken): void
+    {
+        $this->quickbooksToken = $quickbooksToken;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRentDueDay(): int
+    {
+        return $this->rentDueDay;
+    }
+
+    /**
+     * @param int $rentDueDay
+     */
+    public function setRentDueDay(int $rentDueDay): void
+    {
+        $this->rentDueDay = $rentDueDay;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRentLateDays(): int
+    {
+        return $this->rentLateDays;
+    }
+
+    /**
+     * @param int $rentLateDays
+     */
+    public function setRentLateDays(int $rentLateDays): void
+    {
+        $this->rentLateDays = $rentLateDays;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType(string $type): void
+    {
+        $this->type = $type;
     }
 
 

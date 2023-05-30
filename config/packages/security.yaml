@@ -20,7 +20,7 @@ security:
             form_login:
                 login_path: app_login
                 check_path: app_login
-                default_target_path: app_admin
+                default_target_path: app_properties
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 2592000
