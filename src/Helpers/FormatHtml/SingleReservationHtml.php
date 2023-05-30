@@ -103,9 +103,11 @@ class SingleReservationHtml
         $htmlString .= '</select></p>';
 
         //check in\out date
-
+        $due = intval($paymentApi->getTotalDue($reservationId));
         $checkInDateDisabled = "";
-        if ($reservation->getCheckOut() < $now || (strcasecmp($reservation->getOrigin(), "website") != 0)) {
+        if ($reservation->getCheckOut() < $now
+            || (strcasecmp($reservation->getOrigin(), "website") != 0)
+        || $due > 3999) {
             $checkInDateDisabled = "Disabled";
         }
 

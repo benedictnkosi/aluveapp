@@ -78,6 +78,8 @@ class PaymentApi
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
+
+
             $resId = str_replace("[", "", $resId);
             $resId = str_replace("]", "", $resId);
             $reservationIdsArray = explode(",", $resId);
@@ -87,6 +89,17 @@ class PaymentApi
                 $reservation = $this->em->getRepository(Reservations::class)->findOneBy(array('id' => $resId));
                 $payment = new Payments();
                 $now = new DateTime();
+
+
+                            $this->logger->debug("Status is: " . $reservation->getStatus()->getName());
+
+                if(intval($amount) < 200 && strcmp($reservation->getStatus()->getName(), "pending") == 0){
+                    $responseArray[] = array(
+                        'result_code' => 1,
+                        'result_message' => 'Payment of less than R200 not allowed for pending reservations'
+                    );
+                    return $responseArray;
+                }
 
                 $payment->setReservation($reservation);
                 $amountPerReservation = intval($amount) / intval($numberOfReservations);
