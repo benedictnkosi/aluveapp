@@ -38,26 +38,35 @@ class LoginController extends AbstractController
     {
         $logger->info("Starting Method: " . __METHOD__);
         if (!$request->isMethod('post')) {
+            $logger->error("Invalid HTTP Method");
             return $this->render('signup.html', [
-                'error' => "Internal Server Error",
+                'error' => "Invalid HTTP Method",
             ]);
         }
         try{
-            if ($request->get("_password") === null || $request->get("_password") === '') {
+            if ($request->get("_password") === null || $request->get("_password") === ''
+                || $request->get("_username") === null || $request->get("_username") === ''
+                || $request->get("_name") === null || $request->get("_name") === ''
+                || $request->get("_confirm_password") === null || $request->get("_confirm_password") === '') {
+                $logger->error("All fields are mandatory");
                 return $this->render('signup.html', [
-                    'error' => "Username and password is mandatory",
+                    'error' => "All fields are mandatory",
                 ]);
             }
 
             $pattern = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i";
 
             if (!preg_match($pattern,$request->get("_username"))) {
+                $logger->error("Username must be a valid email address");
+
                 return $this->render('signup.html', [
                     'error' => "Username must be a valid email address",
                 ]);
             }
 
             if(strcmp($request->get("_password"), $request->get("_confirm_password")) !== 0){
+                $logger->error("Passwords are not the same");
+
                 return $this->render('signup.html', [
                     'error' => "Passwords are not the same",
                 ]);
@@ -66,12 +75,15 @@ class LoginController extends AbstractController
             $passwordErrors = $this->validatePassword($request->get("_password"));
             $logger->info("Size of errors: " . sizeof($passwordErrors));
             if(sizeof($passwordErrors) > 0){
+                $logger->error($passwordErrors[0]);
+
                 return $this->render('signup.html', [
                     'error' => $passwordErrors[0],
                 ]);
             }
 
             $user = new User();
+            $user->setName($request->get("_name"));
 
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
@@ -88,9 +100,16 @@ class LoginController extends AbstractController
                 $entityManager->flush();
             }catch (Exception $exception){
                 $logger->error($exception->getMessage());
-                return $this->render('signup.html', [
-                    'error' => "Failed to register the user. please contact administrator. " . $exception->getMessage(),
-                ]);
+                if(str_contains($exception->getMessage(), "Duplicate")){
+                    return $this->render('signup.html', [
+                        'error' => "Failed to register the user. Email address already registered "
+                    ]);
+                }else{
+                    return $this->render('signup.html', [
+                        'error' => "Failed to register the user. please contact administrator. " . $exception->getMessage(),
+                    ]);
+                }
+
             }
 
             return $this->render('signup.html', [
