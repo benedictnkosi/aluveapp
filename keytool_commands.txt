@@ -1,0 +1,46 @@
+keytool -importkeystore -srckeystore plmmirevete.it.nednet.co.za.pfx -srcstoretype PKCS12 -destkeystore newcert.jks  -deststoretype JKS -srcstorepass 6oIbM33uf76prq331 -deststorepass 6oIbM33uf76prq331 -srcalias plmmirevete.it.nednet.co.za -destalias plmmirevete.it.nednet.co.za -srckeypass 6oIbM33uf76prq331 -destkeypass 6oIbM33uf76prq331 -noprompt
+
+
+keytool -importkeystore -srckeystore plmmirevete.it.nednet.co.za.pfx -srcstoretype pkcs12 -destkeystore identity.jks -deststoretype JKS
+
+
+sudo keytool -import -alias mycert -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mq2.cer
+
+
+
+plmmirevete.it.nednet.co.za
+
+keytool -export -alias plmmirevete.it.nednet.co.za -file certificate_name -keystore identity3.jks
+
+
+keytool -import -alias plmmirevete.it.nednet.co.za -file certificate_name -keystore keystore cacerts 
+
+
+-Dcom.ibm.mq.cfg.useIBMCipherMappings=false -Djavax.net.ssl.trustStore=trustore.jks -Djavax.net.ssl.trustStorePassword=password -Djavax.net.ssl.keyStore=keystore.jks -Djavax.net.ssl.keyStorePassword=password -cp  .\com.ibm.mq.allclient-9.0.4.0.jar;.\javax.jms-api-2.0.1.jar;. com.ibm.mq.samples.jms.JmsPutGet
+
+
+
+-Dcom.ibm.mq.cfg.useIBMCipherMappings=false -Djavax.net.debug=ssl:verbose -Djavax.net.ssl.trustStore=truststore -Djavax.net.ssl.trustStorePassword=6oIbM33uf76prq33 -Djavax.net.ssl.keyStore=.keystore -Djavax.net.ssl.keyStorePassword=6oIbM33uf76prq33
+
+
+
+keytool -importkeystore -srckeystore plmmirevete.it.nednet.co.za.pfx -destkeystore .keystore -srcalias plmmirevete.it.nednet.co.za -destalias plmmirevete.it.nednet.co.za -deststoretype pkcs12 -destkeypass 6oIbM33uf76prq33
+
+keytool -export -alias duke -keystore keystore -rfc -file duke.cer
+
+keytool -import -alias plmmirevete.it.nednet.co.za -file mq.cer -keystore truststore
+
+
+keytool -keystore clientTruststore.p12 -storetype pkcs12 -importcert -file plmmirevete.it.nednet.co.za.pfx -alias server-certificate
+
+
+keytool -importkeystore -srckeystore plmmirevete.it.nednet.co.za.pfx -srcstoretype pkcs12 -destkeystore clientcert.jks -deststoretype JKS
+
+
+ java -Djavax.net.ssl.trustStore=clientcertmq.jks -Djavax.net.ssl.trustStorePassword=6oIbM33uf76prq33
+
+
+keytool -keystore clientTruststore.p12 -storetype pkcs12 -importcert -file plmmirevete.it.nednet.co.za.pem -alias plmmirevete.it.nednet.co.za
+
+
+keytool -importcert -file mq.cer -keystore keystorecer.jks -alias "plmmirevete.it.nednet.co.za"
