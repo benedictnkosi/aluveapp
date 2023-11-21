@@ -105,11 +105,13 @@ class SingleReservationHtml
         //check in\out date
         $due = intval($paymentApi->getTotalDue($reservationId));
         $checkInDateDisabled = "";
-        if ($reservation->getCheckOut() < $now
-            || (strcasecmp($reservation->getOrigin(), "website") != 0)
-        || $due > 399) {
-            $checkInDateDisabled = "Disabled";
-        }
+//        if ($reservation->getCheckOut() < $now
+//            || (strcasecmp($reservation->getOrigin(), "website") != 0)
+//        || $due > 399) {
+//            $checkInDateDisabled = "Disabled";
+//        }
+
+
 
         $htmlString .= '<p name="res-dates"><span class="glyphicon glyphicon-calendar glyphicon-small-icon" > 
 						 <input id="checkindate_' . $reservationId . '" data-res-id="' . $reservationId . '" type="text"  name="check_in_date" class="input-as-text date-picker check_in_date_input" value="' . $reservation->getCheckIn()->format("m/d/Y") .

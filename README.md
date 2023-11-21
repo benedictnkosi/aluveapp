@@ -29,7 +29,7 @@ Add apache support - this creates the .htaccess file inside public folder. Xamp 
 php composer.phar require symfony/apache-pack
 
 Start the symfony server
-php composer.phar require --dev symfony/web-server-bundle
+php composer.phar require --dev symfony/web-server-bundle --with-all-dependencies
 symfony server:start
 
 Database
