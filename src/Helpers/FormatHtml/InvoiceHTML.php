@@ -181,7 +181,8 @@ class InvoiceHTML
 					<td class="no-border"></td>
 				</tr>
 				<tr>
-					<td>No noise at all times<br>
+					<td>ID or passport document required to check in<br>
+					No noise at all times<br>
 No loud music<br>
 No parties<br>
 No smoking inside the rooms<br>
