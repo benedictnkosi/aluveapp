@@ -167,7 +167,7 @@ class AddOnsApi
                 if($newQuantity < $addOn->getMinimum() || $newQuantity == $addOn->getMinimum()){
                     $messageBody = "Stock low for " . $addOn->getName() . ". Quantity: ". $newQuantity;
                     $SMSHelper = new SMSHelper($this->logger);
-                    $SMSHelper->sendMessage("+27837917430", $messageBody);
+                   // $SMSHelper->sendMessage("+27729116342", $messageBody);
                 }
             }
 

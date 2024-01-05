@@ -102,7 +102,7 @@ CREATE TABLE `guest` (
 --
 
 INSERT INTO `guest` (`id`, `name`, `id_image`, `phone_number`, `email`, `state`, `comments`, `id_number`) VALUES
-(1, 'benzo', 'Not Verified', '+27837917430', '', 'Active', NULL, NULL),
+(1, 'benzo', 'Not Verified', '+27729116342', '', 'Active', NULL, NULL),
 (2, 'werer', 'Not Verified', '12121212', '', 'Active', NULL, NULL),
 (3, 'werer', 'Not Verified', '12121212', '', 'Active', NULL, NULL),
 (4, 'werer', 'Not Verified', '12121212', '', 'Active', NULL, NULL),

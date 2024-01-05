@@ -621,7 +621,7 @@ class ReservationApi
 
                                 $messageBody = "There was a problem creating a reservation. failed to create guest entity. " . $checkInDate . " - " . $room->getName();
                                 $SMSHelper = new SMSHelper($this->logger);
-                                $SMSHelper->sendMessage("+27837917430", $messageBody);
+                                $SMSHelper->sendMessage("+27729116342", $messageBody);
                                 $SMSHelper->sendMessage(str_replace(" ", "", $room->getProperty()->getPhoneNumber()), $messageBody);
 
                             }
@@ -646,7 +646,7 @@ class ReservationApi
 
                                 $messageBody = "There was a problem creating a reservation. Guest Blocked. " . $checkInDate . " - " . $room->getName();
                                 $SMSHelper = new SMSHelper($this->logger);
-                                $SMSHelper->sendMessage("+27837917430", $messageBody);
+                                $SMSHelper->sendMessage("+27729116342", $messageBody);
                                 $SMSHelper->sendMessage(str_replace(" ", "", $room->getProperty()->getPhoneNumber()), $messageBody);
                             }
                         }
@@ -671,7 +671,7 @@ class ReservationApi
 
                             $messageBody = "There was a problem importing a reservation. " . $checkInDate . " - " . $room->getName() . "#" . $origin;
                             $SMSHelper = new SMSHelper($this->logger);
-                            $SMSHelper->sendMessage("+27837917430", $messageBody);
+                            $SMSHelper->sendMessage("+27729116342", $messageBody);
                             $SMSHelper->sendMessage(str_replace(" ", "", $room->getProperty()->getPhoneNumber()), $messageBody);
                         }
 
@@ -790,7 +790,7 @@ class ReservationApi
 
                     $messageBody = "There was an exception creation a reservation. " . $checkInDate . " - " . $room->getName() ;
                     $SMSHelper = new SMSHelper($this->logger);
-                    $SMSHelper->sendMessage("+27837917430", $messageBody);
+                    $SMSHelper->sendMessage("+27729116342", $messageBody);
                     $SMSHelper->sendMessage(str_replace(" ", "", $room->getProperty()->getPhoneNumber()) , $messageBody);
                 }
 
