@@ -548,6 +548,7 @@ function removeAddOnFromBooking(event) {
     });
 }
 
+//test comments
 function removePayment(event) {
     const payment_id = event.target.getAttribute("data-payment-id");
 
