@@ -553,7 +553,7 @@ function removePayment(event) {
 
     isUserLoggedIn();
     $("body").addClass("loading");
-    let url = "/api/payment/" + payment_id + "/delete";
+    let url = "/api/paymentdelete/" + payment_id;
     $.getJSON(url + "?callback=?", null, function (response) {
         $("body").removeClass("loading");
         if (response[0].result_code === 0) {

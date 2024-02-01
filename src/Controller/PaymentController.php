@@ -28,7 +28,7 @@ class PaymentController extends AbstractController
     }
 
     /**
-     * @Route("api/payment/{paymentId}/delete")
+     * @Route("api/paymentdelete/{paymentId}")
      */
     public function removePayment($paymentId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
