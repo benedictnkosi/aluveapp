@@ -36,7 +36,7 @@ class CommunicationApi
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $responseArray = array();
-        if(str_contains($_SERVER['SERVER_NAME'], "localhost1" )){
+        if (str_contains($_SERVER['SERVER_NAME'], "localhost1")) {
             $responseArray[] = array(
                 'result_message' => "local host not sending email",
                 'result_code' => 1
@@ -46,7 +46,7 @@ class CommunicationApi
         }
 
         try {
-            if(!empty($emailTo)){
+            if (!empty($emailTo)) {
                 $gmailService = $this->createGmailService();
                 $messageBody = $this->createMessage($emailFrom, $emailTo, $subject, $messageBody, $propertyName, $replyTo);
                 $this->sendGmailMessage($gmailService, $emailFrom, $messageBody);
@@ -56,7 +56,7 @@ class CommunicationApi
                 );
 
                 return $responseArray;
-            }else{
+            } else {
                 $responseArray[] = array(
                     'result_message' => "email not provided",
                     'result_code' => 1
@@ -65,7 +65,7 @@ class CommunicationApi
             }
         } catch (Exception $ex) {
             $responseArray[] = array(
-                'result_message' => $ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString(),
+                'result_message' => $ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString(),
                 'result_code' => 1
             );
             $this->logger->error(print_r($responseArray, true));
@@ -87,7 +87,7 @@ class CommunicationApi
         $message = new Google_Service_Gmail_Message();
         $rawMessageString = "From: $propertyName <{$sender}>\r\n";
         $rawMessageString .= "To: <{$to}>\r\n";
-        if($replyTo != null){
+        if ($replyTo != null) {
             $rawMessageString .= "Reply-To: <{$replyTo}>\r\n";
         }
         $rawMessageString .= 'Subject: =?utf-8?B?' . base64_encode($subject) . "?=\r\n";
@@ -107,14 +107,15 @@ class CommunicationApi
      * @param $message Google_Service_Gmail_Message
      * @return Google_Service_Gmail_Draft
      */
-    function createDraft($service, $user, $message) {
+    function createDraft($service, $user, $message)
+    {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $draft = new Google_Service_Gmail_Draft();
         $draft->setMessage($message);
         try {
             $draft = $service->users_drafts->create($user, $draft);
         } catch (Exception $e) {
-            $this->logger->error($e->getMessage() ." ". $e->getTraceAsString());
+            $this->logger->error($e->getMessage() . " " . $e->getTraceAsString());
         }
         $this->logger->debug("Ending Method: " . __METHOD__);
         return $draft;
@@ -126,7 +127,8 @@ class CommunicationApi
      * @param $message Google_Service_Gmail_Message
      * @return null|Google_Service_Gmail_Message
      */
-    function sendGmailMessage($service, $userId, $message) {
+    function sendGmailMessage($service, $userId, $message)
+    {
         $this->logger->debug("Starting Method: " . __METHOD__);
         try {
             return $service->users_messages->send($userId, $message);
@@ -155,37 +157,37 @@ class CommunicationApi
         $client->setApplicationName("Hello Analytics Reporting");
         $client->setAuthConfig($KEY_FILE_LOCATION);
         $client->setScopes(['https://mail.google.com/']);
-        $client->setSubject("admin@aluveapp.co.za");
+        $client->setSubject("admin@aluveapp.aluvegh.co.za");
 
         $service = new \Google_Service_Gmail($client);
         $responseArray = array();
-        try{
+        try {
 
             // Print the labels in the user's account.
             $pageToken = null;
             $messages = array();
             $opt_param = array();
 
-            do{
-                if($pageToken){
+            do {
+                if ($pageToken) {
                     $opt_param['pageToken'] = $pageToken;
                 }
                 $midnight = new DateTimeImmutable('today midnight');
                 $timestampOfMidnight = $midnight->getTimestamp();
                 $opt_param['q'] = 'subject:Reservation confirmed after:' . $timestampOfMidnight;
                 $messagesResponse = $service->users_messages->listUsersMessages("me", $opt_param);
-                if($messagesResponse->getMessages()){
-                    $messages = array_merge($messages, $messagesResponse->getMessages() );
+                if ($messagesResponse->getMessages()) {
+                    $messages = array_merge($messages, $messagesResponse->getMessages());
                     $pageToken = $messagesResponse->getNextPageToken();
                 }
-            }while ($pageToken);
+            } while ($pageToken);
 
-            foreach ($messages as $message){
-                $msg = $service->users_messages->get("admin@aluveapp.co.za",$message->getId());
+            foreach ($messages as $message) {
+                $msg = $service->users_messages->get("admin@aluveapp.aluvegh.co.za", $message->getId());
                 $headers = $msg->getPayload()->getHeaders();
                 $subject = "";
-                foreach ($headers as $header){
-                    if(strcmp($header->getName(), "Subject") === 0){
+                foreach ($headers as $header) {
+                    if (strcmp($header->getName(), "Subject") === 0) {
                         $subject = $header->getValue();
                     }
 
@@ -198,13 +200,12 @@ class CommunicationApi
                 $cleanedMessage = base64_decode($out);
                 $responseArray[] = array(
                     'id' => $message->getId(),
-                    'subject' =>$subject,
-                    'body' =>$cleanedMessage
+                    'subject' => $subject,
+                    'body' => $cleanedMessage
                 );
             }
             //$this->logger->debug("results from google is " .print_r($responseArray));
-        }
-        catch(Exception $e) {
+        } catch (Exception $e) {
             // TODO(developer) - handle error appropriately
             $this->logger->debug($e->getMessage());
             $this->logger->debug(print_r($e->getTraceAsString(), true));
@@ -227,14 +228,14 @@ class CommunicationApi
         // change the key file location if necessary.
         $KEY_FILE_LOCATION = __DIR__ . '/aluve-guesthouse-9f79c476c8c8.json';
 
-        try{
+        try {
             // Create and configure a new client object.
             $client = new Google_Client();
             $client->setApplicationName("Hello Gmail");
             $client->setAuthConfig($KEY_FILE_LOCATION);
             $client->setScopes(['https://mail.google.com/']);
-            $client->setSubject("admin@aluveapp.co.za");
-        }catch(Exception $ex){
+            $client->setSubject("admin@aluveapp.aluvegh.co.za");
+        } catch (Exception $ex) {
             $this->logger->debug($ex->getMessage() . ' - ' . $ex->getTraceAsString());
         }
 

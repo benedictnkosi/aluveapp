@@ -16,18 +16,18 @@ class SMSHelper
         $this->logger = $logger;
     }
 
-    function sendMessage ($phoneNumber, $message): bool
+    function sendMessage($phoneNumber, $message): bool
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $this->logger->debug("remote server is " . $_SERVER['HTTP_HOST']);
         $this->logger->debug("phone number " . $phoneNumber);
         $this->logger->debug("message " . $message);
 
-        if (strcmp( $_SERVER['HTTP_HOST'], 'aluveapp.co.za' )===0 ) {
+        if (strcmp($_SERVER['HTTP_HOST'], 'aluveapp.aluvegh.co.za') === 0) {
             //Retrieve your API Credentials
             $apiKey = SMS_API_KEY;
             $apiSecret = SMS_API_SECRET;
-            $accountApiCredentials = $apiKey . ':' .$apiSecret;
+            $accountApiCredentials = $apiKey . ':' . $apiSecret;
 
             // Convert to Base64 Encoding
             $base64Credentials = base64_encode($accountApiCredentials);
@@ -38,12 +38,12 @@ class SMSHelper
 
             $authOptions = array(
                 'http' => array(
-                    'header'  => $authHeader,
-                    'method'  => 'GET',
+                    'header' => $authHeader,
+                    'method' => 'GET',
                     'ignore_errors' => true
                 )
             );
-            $authContext  = stream_context_create($authOptions);
+            $authContext = stream_context_create($authOptions);
 
             $result = file_get_contents($authEndpoint, false, $authContext);
 
@@ -57,8 +57,7 @@ class SMSHelper
 
             if ($status === '200') {
                 $authToken = $authResult->{'token'};
-            }
-            else {
+            } else {
                 $this->logger->debug("Failed: " . print_r($authResult, true));
                 return false;
             }
@@ -68,17 +67,17 @@ class SMSHelper
 
             $authHeader = 'Authorization: Bearer ' . $authToken;
 
-            $sendData = '{ "messages" : [ { "content" : "'.$message.'", "destination" : "'.$phoneNumber.'" } ] }';
+            $sendData = '{ "messages" : [ { "content" : "' . $message . '", "destination" : "' . $phoneNumber . '" } ] }';
 
             $options = array(
                 'http' => array(
-                    'header'  => array("Content-Type: application/json", $authHeader),
-                    'method'  => 'POST',
+                    'header' => array("Content-Type: application/json", $authHeader),
+                    'method' => 'POST',
                     'content' => $sendData,
                     'ignore_errors' => true
                 )
             );
-            $context  = stream_context_create($options);
+            $context = stream_context_create($options);
 
             $sendResult = file_get_contents($sendUrl, false, $context);
 
@@ -91,13 +90,12 @@ class SMSHelper
             if ($status === '200') {
                 $this->logger->info("Success: " . print_r($sendResult, true));
                 return true;
-            }
-            else {
+            } else {
                 $this->logger->error("Failed: " . print_r($sendResult, true));
                 return false;
             }
 
-        }else{
+        } else {
             $this->logger->debug("Server not in white list " . $_SERVER['REMOTE_ADDR']);
             return true;
         }
