@@ -26,7 +26,7 @@ class RoomImagesHTML
             $html .= '';
             foreach ($roomImages as $roomImage) {
                 $html .= '<div class="slide">
-                <img src="' . PROTOCOL . '://' . SERVER_NAME . '/noauth/room/image/' . $roomImage->getName() . '">
+                <img src="' . PROTOCOL . '://' . SERVER_NAME . '/public/room/image/' . $roomImage->getName() . '">
             </div>';
             }
 
@@ -44,7 +44,7 @@ class RoomImagesHTML
             }
         } else {
             $html .= '<div class="slide">
-                <img src="' . PROTOCOL . '://' . SERVER_NAME . '/noauth/room/image/room_noimage.jpg">
+                <img src="' . PROTOCOL . '://' . SERVER_NAME . '/public/room/image/room_noimage.jpg">
             </div>';
         }
         return $html;
@@ -72,7 +72,7 @@ class RoomImagesHTML
 
                 $html .= '<div class="img-wrap image-thumbnail" id="image-thumbnail-' . $roomImage->getId() . '">
                             <span class="close" data-image-id="' . $roomImage->getId() . '">&times;</span>
-                            <img data-image-id="' . $roomImage->getId() . '" class="room_images ' . $imageNotDefaultClass . '" src="' . PROTOCOL . '://' . SERVER_NAME . '/noauth/room/image/thumb' . $roomImage->getName() . '">
+                            <img data-image-id="' . $roomImage->getId() . '" class="room_images ' . $imageNotDefaultClass . '" src="' . PROTOCOL . '://' . SERVER_NAME . '/public/room/image/thumb' . $roomImage->getName() . '">
                         </div>';
             }
         } else {

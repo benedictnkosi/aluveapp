@@ -60,7 +60,7 @@ class ImageController extends AbstractController
      */
     public function getFile($fileName): Response
     {
-        $uploadDir = __DIR__ . '/../../noauth/room/image/';
+        $uploadDir = __DIR__ . '/../../public/room/image/';
         return new BinaryFileResponse($uploadDir . $fileName);
     }
 
@@ -80,7 +80,7 @@ class ImageController extends AbstractController
             );
         }
 
-        $uploadDir = __DIR__ . '/../../noauth/room/image/';
+        $uploadDir = __DIR__ . '/../../public/room/image/';
         $uploader = new FileUploaderApi($logger);
         $uploader->setDir($uploadDir);
         $uploader->setExtensions(array('jpg', 'jpeg', 'png', 'gif'));  //allowed extensions list//

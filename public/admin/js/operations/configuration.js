@@ -1101,7 +1101,7 @@ function initialiseImageUpload(roomId) {
           thisDropzone.options.thumbnail.call(
             thisDropzone,
             mockFile,
-            "/noauth/room/image/" + value.name
+            "/public/room/image/" + value.name
           );
           $(".dz-details").remove();
           $(".dz-progress").remove();

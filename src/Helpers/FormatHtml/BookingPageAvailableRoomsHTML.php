@@ -28,7 +28,7 @@ class BookingPageAvailableRoomsHTML
         $numberOfRooms = 0;
         if ($availableRooms === null) {
             $htmlString .= '<option value="No Rooms Available for Selected Dates"
-                                                data-thumbnail="' . PROTOCOL . '://' . SERVER_NAME . '/noauth/room/image/noroom.jpg" data-price="0" data-roomId="0"  data-sleeps="0" data-beds="">No Rooms Available for Selected Dates
+                                                data-thumbnail="' . PROTOCOL . '://' . SERVER_NAME . '/public/room/image/noroom.jpg" data-price="0" data-roomId="0"  data-sleeps="0" data-beds="">No Rooms Available for Selected Dates
                                         </option>';
             return $htmlString;
         }
@@ -56,7 +56,7 @@ class BookingPageAvailableRoomsHTML
             $this->logger->debug("found beds string: " . $beds);
             $numberOfRooms++;
             $htmlString .= '<option value="' . $availableRoom->getName() . '"
-                                                data-thumbnail="' . PROTOCOL . '://' . SERVER_NAME . '/noauth/room/image/thumb' . $roomDefaultImage . '" data-sleeps="' . $availableRoom->getSleeps() . '" data-price="' . $availableRoom->getPrice() . '" data-roomId="' . $availableRoom->getId() . '" data-beds="' . $beds . '">' . $availableRoom->getName() . '
+                                                data-thumbnail="' . PROTOCOL . '://' . SERVER_NAME . '/public/room/image/thumb' . $roomDefaultImage . '" data-sleeps="' . $availableRoom->getSleeps() . '" data-price="' . $availableRoom->getPrice() . '" data-roomId="' . $availableRoom->getId() . '" data-beds="' . $beds . '">' . $availableRoom->getName() . '
                                         </option>';
 
         }
