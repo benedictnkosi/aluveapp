@@ -4,7 +4,7 @@
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
+/noauth/bundles/
 /var/
 /vendor/
 /src/app/application.php
@@ -19,5 +19,5 @@
 ###> symfony/phpunit-bridge ###
 ###< symfony/phpunit-bridge ###
 /src/Service/aluve-guesthouse-9f79c476c8c8.json
-/public/room/image/
+/noauth/room/image/
 /src/Entity_new/

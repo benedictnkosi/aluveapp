@@ -94,7 +94,7 @@
             "ref": "9d254a22efca7264203eea98b866f16f944b2f09"
         },
         "files": [
-            "./public/.htaccess"
+            "./noauth/.htaccess"
         ]
     },
     "symfony/console": {
@@ -147,7 +147,7 @@
             "./config/preload.php",
             "./config/routes/framework.yaml",
             "./config/services.yaml",
-            "./public/index.php",
+            "./noauth/index.php",
             "./src/Controller/.gitignore",
             "./src/Kernel.php"
         ]

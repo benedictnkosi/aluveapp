@@ -36,29 +36,29 @@ class FlipabilityController extends AbstractController
     }
 
     /**
-     * @Route("/public/birdview/{type}/{value}/{bedrooms}/{bathrooms}/{erf}")
+     * @Route("/noauth/birdview/{type}/{value}/{bedrooms}/{bathrooms}/{erf}")
      */
     public function birdview($type, $value, $bedrooms, $bathrooms, $erf, LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $birdViewApi->getHomePageSummary($type, $value, $bedrooms,$bathrooms, $erf);
+        $response = $birdViewApi->getHomePageSummary($type, $value, $bedrooms, $bathrooms, $erf);
         return new JsonResponse($response, 200, array());
     }
 
     /**
-     * @Route("/public/properties/{type}/{value}/{bedrooms}/{bathrooms}/{erf}/{excludeLocation}",  defaults={"excludeLocation" = "NONE"})
+     * @Route("/noauth/properties/{type}/{value}/{bedrooms}/{bathrooms}/{erf}/{excludeLocation}",  defaults={"excludeLocation" = "NONE"})
      */
     public function propertiesView($type, $value, $bedrooms, $bathrooms, $erf, $excludeLocation, LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $birdViewApi->getFlipableProperties($type, $value, $bedrooms,$bathrooms, $erf, $excludeLocation);
+        $response = $birdViewApi->getFlipableProperties($type, $value, $bedrooms, $bathrooms, $erf, $excludeLocation);
         return new JsonResponse($response, 200, array());
     }
 
     /**
-     * @Route("/public/property/{price}/{location}/{erf}/{bedrooms}/{bathrooms}/{numberOfProperties}/{avgPrice}/{avgErf}")
+     * @Route("/noauth/property/{price}/{location}/{erf}/{bedrooms}/{bathrooms}/{numberOfProperties}/{avgPrice}/{avgErf}")
      */
-    public function propertyView($price, $location, $erf, $bedrooms, $bathrooms, $numberOfProperties, $avgPrice, $avgErf , LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
+    public function propertyView($price, $location, $erf, $bedrooms, $bathrooms, $numberOfProperties, $avgPrice, $avgErf, LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         return $this->render('flipability_property.html', [
@@ -70,58 +70,57 @@ class FlipabilityController extends AbstractController
             'numberOfProperties' => $numberOfProperties,
             'avgPrice' => $avgPrice,
             'avgErf' => $avgErf,
-            'title'=>'Property Analysis'
+            'title' => 'Property Analysis'
         ]);
     }
 
     /**
      * @Route("/location/{location}/{filterType}/{percentageCheaper}/{bedrooms}/{bathrooms}/{erf}/{avgErf}")
      */
-    public function location($location, $filterType, $percentageCheaper, $bedrooms, $bathrooms , $erf, $avgErf, LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
+    public function location($location, $filterType, $percentageCheaper, $bedrooms, $bathrooms, $erf, $avgErf, LoggerInterface $logger, FlipabilityApi $birdViewApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        if(strcmp($percentageCheaper, "0")!==0){
-            $responseArray = $birdViewApi->getLocationFlipableProperties($location, $filterType, $percentageCheaper, $bedrooms,$bathrooms, $erf, $avgErf);
-        }else{
-            $responseArray = $birdViewApi->getLocationProperties($location, $bedrooms,$bathrooms);
+        if (strcmp($percentageCheaper, "0") !== 0) {
+            $responseArray = $birdViewApi->getLocationFlipableProperties($location, $filterType, $percentageCheaper, $bedrooms, $bathrooms, $erf, $avgErf);
+        } else {
+            $responseArray = $birdViewApi->getLocationProperties($location, $bedrooms, $bathrooms);
         }
 
         $logger->info("response array" . print_r($responseArray, true));
-        $percentageCheaper = floatval($percentageCheaper) *100;
-        if(strcmp($filterType, 'average')===0){
+        $percentageCheaper = floatval($percentageCheaper) * 100;
+        if (strcmp($filterType, 'average') === 0) {
             $summaryMessage = "Showing properties that are $percentageCheaper% cheaper than the average price
             <br> Only showing property  with <b>$bedrooms+</b> bedrooms and  <b>$bathrooms+</b> bathrooms
-            <br> The price for the average house is <b>R" . number_format((float)$responseArray[0]['average_price'], 0, '.', ' ') . "</b>
-            <br> The stand size for the average house is <b>" . number_format((float)$responseArray[0]['average_erf'], 0, '.', '') . "m2</b>";
-        }elseif (strcmp($percentageCheaper, "0")===0) {
+            <br> The price for the average house is <b>R" . number_format((float) $responseArray[0]['average_price'], 0, '.', ' ') . "</b>
+            <br> The stand size for the average house is <b>" . number_format((float) $responseArray[0]['average_erf'], 0, '.', '') . "m2</b>";
+        } elseif (strcmp($percentageCheaper, "0") === 0) {
             $summaryMessage = "Only showing property  with <b>$bedrooms+</b> bedrooms and  <b>$bathrooms+</b> bathrooms";
-        }
-        else {
+        } else {
             $summaryMessage = "Showing properties that are <b>$percentageCheaper%</b> cheaper than the  <b>$filterType%</b> most expensive houses
             <br> Only showing property  with <b>$bedrooms+</b> bedrooms and  <b>$bathrooms+</b> bathrooms
-            <br> The price for the <b>$filterType% (".$responseArray[0]['percentile_count'] . " Properties)</b> most expensive houses start at <b>R" . number_format((float)$responseArray[0]['percentile_price'], 0, '.', ' ') . "</b>
-            <br> The average stand size for the <b>$filterType% (".$responseArray[0]['percentile_count'] . " Properties)</b> most expensive houses is <b>" . number_format((float)$responseArray[0]['average_erf'], 0, '.', '') . "m2</b>";
+            <br> The price for the <b>$filterType% (" . $responseArray[0]['percentile_count'] . " Properties)</b> most expensive houses start at <b>R" . number_format((float) $responseArray[0]['percentile_price'], 0, '.', ' ') . "</b>
+            <br> The average stand size for the <b>$filterType% (" . $responseArray[0]['percentile_count'] . " Properties)</b> most expensive houses is <b>" . number_format((float) $responseArray[0]['average_erf'], 0, '.', '') . "m2</b>";
         }
 
         return $this->render('flipability_location.html', [
-            'location_summary_table' => $responseArray[0]['html'] ,
+            'location_summary_table' => $responseArray[0]['html'],
             'title' => $location,
             'summary' => $summaryMessage
         ]);
     }
 
     /**
-     * @Route("/public/scrap")
+     * @Route("/noauth/scrap")
      */
     public function scrap(LoggerInterface $logger, WebScrapperApi $webScrapperApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $responseArray = $webScrapperApi->scrapPage();
-        return new JsonResponse( $responseArray, 200, array());
+        return new JsonResponse($responseArray, 200, array());
     }
 
     /**
-     * @Route("/public/properties/delete/{propertyId}")
+     * @Route("/noauth/properties/delete/{propertyId}")
      */
     public function deleteProperty($propertyId, LoggerInterface $logger, FlipabilityApi $flipabilityApi): Response
     {
@@ -131,7 +130,7 @@ class FlipabilityController extends AbstractController
     }
 
     /**
-     * @Route("/public/properties/state/{propertyId}/{state}")
+     * @Route("/noauth/properties/state/{propertyId}/{state}")
      */
     public function changePropertyState($propertyId, $state, LoggerInterface $logger, FlipabilityApi $flipabilityApi): Response
     {

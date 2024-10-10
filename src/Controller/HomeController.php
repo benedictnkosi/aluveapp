@@ -22,7 +22,7 @@ class HomeController extends AbstractController
      */
     public function app_admin(LoggerInterface $logger): Response
     {
-        if($this->getUser()->getProperty()->getId()){
+        if ($this->getUser()->getProperty()->getId()) {
             $logger->info("Session: " . print_r($_SESSION, true));
             $logger->info("user roles: " . print_r($this->getUser()->getRoles(), true));
             $logger->info("property name is: " . $this->getUser()->getProperty()->getId());
@@ -32,7 +32,7 @@ class HomeController extends AbstractController
 
             $logger->info("new session: " . print_r($_SESSION, true));
             return $this->render('admin.html');
-        }else{
+        } else {
             return $this->redirectToRoute("index");
         }
     }
@@ -57,7 +57,7 @@ class HomeController extends AbstractController
     public function signup(): Response
     {
 
-     return $this->render("signup.html");
+        return $this->render("signup.html");
     }
 
     #[Route('/booking', name: 'booking')]
@@ -99,18 +99,18 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/public/userloggedin")
+     * @Route("/noauth/userloggedin")
      */
     public function isUserLoggedIn(LoggerInterface $logger, Request $request, GuestApi $guestApi): Response
     {
-        $logger->info("Starting Method: " . __METHOD__ );
-        if(isset($_SESSION["PROPERTY_ID"])){
+        $logger->info("Starting Method: " . __METHOD__);
+        if (isset($_SESSION["PROPERTY_ID"])) {
             $response = array("logged_in" => "true");
-        }else{
+        } else {
             $response = array("logged_in" => "false");
         }
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }

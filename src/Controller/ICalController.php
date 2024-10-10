@@ -87,11 +87,11 @@ class ICalController extends AbstractController
     /**
      * @Route("api/ical/logs")
      */
-    public function getIcalSynchLogs( LoggerInterface $logger, EntityManagerInterface $entityManager, Request $request, ICalApi $iCalApi, RoomApi $roomApi): Response
+    public function getIcalSynchLogs(LoggerInterface $logger, EntityManagerInterface $entityManager, Request $request, ICalApi $iCalApi, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $configIcalLinksLogsHTML = new ConfigIcalLinksLogsHTML($entityManager, $logger);
-        $html = $configIcalLinksLogsHTML->formatHtml( $roomApi, $iCalApi);
+        $html = $configIcalLinksLogsHTML->formatHtml($roomApi, $iCalApi);
         $response = array(
             'html' => $html,
         );
@@ -102,7 +102,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("/public/updateairbnbguest")
+     * @Route("/noauth/updateairbnbguest")
      * @throws \Google\Exception
      */
     public function updateAirbnbGuest(ICalApi $ICalApi, GuestApi $guestApi, EmailReaderApi $emailReaderApi, LoggerInterface $logger): JsonResponse

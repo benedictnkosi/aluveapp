@@ -15,67 +15,67 @@ use Symfony\Component\HttpFoundation\Request;
 class ScheduledMessagesController extends AbstractController
 {
     /**
-     * @Route("/public/schedulemessages/checkin")
+     * @Route("/noauth/schedulemessages/checkin")
      */
-    public function sendScheduleMessagesDayOfCheckIn( LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function sendScheduleMessagesDayOfCheckIn(LoggerInterface $logger, Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->sendScheduledMessages("Day of check-in");
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
 
     /**
-     * @Route("/public/schedulemessages/daybefore")
+     * @Route("/noauth/schedulemessages/daybefore")
      */
-    public function sendScheduleMessagesDayBeforeCheckIn(LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function sendScheduleMessagesDayBeforeCheckIn(LoggerInterface $logger, Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->sendScheduledMessages("Day before check-in");
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
 
 
     /**
-     * @Route("/public/schedulemessages/weekbefore")
+     * @Route("/noauth/schedulemessages/weekbefore")
      */
-    public function sendScheduleMessagesWeekBeforeCheckIn( LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function sendScheduleMessagesWeekBeforeCheckIn(LoggerInterface $logger, Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->sendScheduledMessages("Week before check-in");
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
 
     /**
-     * @Route("/public/schedulemessages/dayaftercheckout")
+     * @Route("/noauth/schedulemessages/dayaftercheckout")
      */
-    public function sendScheduleMessagesDayAfterCheckOut( LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function sendScheduleMessagesDayAfterCheckOut(LoggerInterface $logger, Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->sendScheduledMessages("Day after check-out");
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
 
     /**
-     * @Route("/public/schedulemessages/weekaftercheckout")
+     * @Route("/noauth/schedulemessages/weekaftercheckout")
      */
-    public function sendScheduleMessagesWeekAfterCheckOut( LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function sendScheduleMessagesWeekAfterCheckOut(LoggerInterface $logger, Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->sendScheduledMessages("Week after check-out");
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -83,7 +83,7 @@ class ScheduledMessagesController extends AbstractController
     /**
      * @Route("/api/schedulemessages/templates")
      */
-    public function getMessageTemplates(LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function getMessageTemplates(LoggerInterface $logger, Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $html = $scheduleMessageApi->getScheduleTemplates();
@@ -91,7 +91,7 @@ class ScheduledMessagesController extends AbstractController
             'html' => $html,
         );
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -99,12 +99,12 @@ class ScheduledMessagesController extends AbstractController
     /**
      * @Route("/api/schedulemessages/schedules")
      */
-    public function getMessageSchedules(LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function getMessageSchedules(LoggerInterface $logger, Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->getScheduleTimes();
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -112,12 +112,12 @@ class ScheduledMessagesController extends AbstractController
     /**
      * @Route("/api/schedulemessages/variables")
      */
-    public function getMessageVariables(LoggerInterface $logger, Request $request,ScheduleMessageApi $scheduleMessageApi): Response
+    public function getMessageVariables(LoggerInterface $logger, Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->getMessageVariables();
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -125,12 +125,12 @@ class ScheduledMessagesController extends AbstractController
     /**
      * @Route("/api/schedulemessages/create/{messageId}/{scheduleId}/{rooms}")
      */
-    public function createScheduleMessage($messageId, $scheduleId, $rooms, Request $request,LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
+    public function createScheduleMessage($messageId, $scheduleId, $rooms, Request $request, LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->createScheduleMessage($messageId, $scheduleId, $rooms);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -138,12 +138,12 @@ class ScheduledMessagesController extends AbstractController
     /**
      * @Route("/admin_api/schedulemessages/createtemplate/{name}/{message}")
      */
-    public function createMessageTemplate( $name, $message,Request $request,LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
+    public function createMessageTemplate($name, $message, Request $request, LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->createMessageTemplate($name, $message);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -151,7 +151,7 @@ class ScheduledMessagesController extends AbstractController
     /**
      * @Route("/api/schedulemessages")
      */
-    public function getScheduledMessages( LoggerInterface $logger,Request $request, ScheduleMessageApi $scheduleMessageApi): Response
+    public function getScheduledMessages(LoggerInterface $logger, Request $request, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $html = $scheduleMessageApi->getScheduledMessages();
@@ -159,7 +159,7 @@ class ScheduledMessagesController extends AbstractController
             'html' => $html,
         );
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -167,12 +167,12 @@ class ScheduledMessagesController extends AbstractController
     /**
      * @Route("/admin_api/schedulemessages/delete/{scheduleMessageId}")
      */
-    public function deleteScheduledMessages($scheduleMessageId, Request $request,LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
+    public function deleteScheduledMessages($scheduleMessageId, Request $request, LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->deleteScheduledMessages($scheduleMessageId);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -180,12 +180,12 @@ class ScheduledMessagesController extends AbstractController
     /**
      * @Route("/api/schedulemessages/template/{templateId}")
      */
-    public function getTemplateMessage($templateId, Request $request,LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
+    public function getTemplateMessage($templateId, Request $request, LoggerInterface $logger, ScheduleMessageApi $scheduleMessageApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $scheduleMessageApi->getTemplateMessage($templateId);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }

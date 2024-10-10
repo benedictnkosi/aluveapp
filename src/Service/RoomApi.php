@@ -44,20 +44,21 @@ class RoomApi
         $responseArray = array();
         try {
             $propertyApi = new PropertyApi($this->em, $this->logger);
-            if($propertyUid === 0){
+            if ($propertyUid === 0) {
                 $propertyId = $_SESSION['PROPERTY_ID'] ?? $propertyApi->getPropertyIdByHost($request);
-            }else{
+            } else {
                 $property = $this->em->getRepository(Property::class)->findOneBy(
-                    array("uid" =>$propertyUid));
-                if($property !== null){
+                    array("uid" => $propertyUid)
+                );
+                if ($property !== null) {
                     $propertyId = $property->getId();
-                }else{
+                } else {
                     $this->logger->error("Property id not found");
                     return null;
                 }
             }
 
-            $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId, 'status'=>1));
+            $rooms = $this->em->getRepository(Rooms::class)->findBy(array('property' => $propertyId, 'status' => 1));
             foreach ($rooms as $room) {
                 if ($this->isRoomAvailable($room->getId(), $checkInDate, $checkOutDate)) {
                     $responseArray[] = $room;
@@ -195,7 +196,7 @@ class RoomApi
                         'tv' => $room->getTv()->getId(),
                         'tv_name' => $room->getTv()->getName(),
                         'ical_links' => $icalFormattedHtml,
-                        'export_link' => "https://" . SERVER_NAME . "/public/ical/export/" . $room->GetId(),
+                        'export_link' => "https://" . SERVER_NAME . "/noauth/ical/export/" . $room->GetId(),
                         'result_code' => 0
                     );
                 }
@@ -269,7 +270,8 @@ class RoomApi
         $responseArray = array();
         try {
             $room = $this->em->getRepository(Rooms::class)->findOneBy(
-                array('id' => $roomId));
+                array('id' => $roomId)
+            );
             if ($room === null) {
                 $this->logger->debug("room is null");
                 return null;
@@ -277,8 +279,11 @@ class RoomApi
 
             //get room images
             $roomImages = $this->em->getRepository(RoomImages::class)->findBy(
-                array('room' => $roomId,
-                    'status' => array("active", "default")));
+                array(
+                    'room' => $roomId,
+                    'status' => array("active", "default")
+                )
+            );
 
             $this->logger->debug("Ending Method before the return: " . __METHOD__);
             return $roomImages;
@@ -300,7 +305,8 @@ class RoomApi
         $responseArray = array();
         try {
             $room = $this->em->getRepository(Rooms::class)->findOneBy(
-                array('id' => $roomId));
+                array('id' => $roomId)
+            );
             if ($room === null) {
                 $this->logger->debug("room is null");
                 return null;
@@ -308,7 +314,8 @@ class RoomApi
 
             //get room images
             $roomBeds = $this->em->getRepository(RoomBeds::class)->findBy(
-                array('room' => $roomId));
+                array('room' => $roomId)
+            );
 
             $this->logger->debug("Ending Method before the return: " . __METHOD__);
             if ($roomBeds !== null) {
@@ -338,7 +345,8 @@ class RoomApi
         $responseArray = array();
         try {
             $room = $this->em->getRepository(Rooms::class)->findOneBy(
-                array('id' => $roomId));
+                array('id' => $roomId)
+            );
             if ($room === null) {
                 $this->logger->debug("room is null");
                 return null;
@@ -346,8 +354,11 @@ class RoomApi
 
             //get room images
             $roomImages = $this->em->getRepository(RoomImages::class)->findBy(
-                array('room' => $roomId,
-                    'status' => array("active", "default")));
+                array(
+                    'room' => $roomId,
+                    'status' => array("active", "default")
+                )
+            );
 
             foreach ($roomImages as $roomImage) {
                 $responseArray[] = array(
@@ -544,9 +555,9 @@ class RoomApi
             $this->logger->debug("getting current beds");
             $currentSelectedBeds = $this->em->getRepository(RoomBeds::class)->findBy(array('room' => $room->getId()));
 
-            if($currentSelectedBeds !== null){
-                foreach ($currentSelectedBeds as $currentSelectedBed){
-                    $this->logger->debug("removing new Bed " .$currentSelectedBed->getBed()->getName() );
+            if ($currentSelectedBeds !== null) {
+                foreach ($currentSelectedBeds as $currentSelectedBed) {
+                    $this->logger->debug("removing new Bed " . $currentSelectedBed->getBed()->getName());
                     $this->em->remove($currentSelectedBed);
                     $this->em->flush($currentSelectedBed);
                 }
@@ -557,9 +568,9 @@ class RoomApi
             // add new selected beds
             //update beds
 
-            foreach ($bedsNameArray as $bedName){
+            foreach ($bedsNameArray as $bedName) {
                 $bed = $this->em->getRepository(RoomBedSize::class)->findOneBy(array('name' => trim($bedName)));
-                $this->logger->debug("creating new Bed " .$bed->getName() );
+                $this->logger->debug("creating new Bed " . $bed->getName());
                 $roomBeds = new RoomBeds();
                 $roomBeds->setRoom($room);
                 $roomBeds->setBed($bed);

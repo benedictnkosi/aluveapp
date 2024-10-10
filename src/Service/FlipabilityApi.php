@@ -86,8 +86,8 @@ class FlipabilityApi
                         $htmlTable .= '
                       <tr>
                         <td><a target="_blank" href="https://www.google.com/maps/place/' . $property['location'] . '">' . $property['location'] . '</a></td>
-                        <td>R' . number_format((float)$property['avg_price'], 0, '.', ' ') . '</td>
-                         <td>' . number_format((float)$property['avg_erf'], 0, '.', ' ') . '</td>
+                        <td>R' . number_format((float) $property['avg_price'], 0, '.', ' ') . '</td>
+                         <td>' . number_format((float) $property['avg_erf'], 0, '.', ' ') . '</td>
                         <td>' . $property['count'] . '</td>
                         <td><a target="_blank" href="/location/' . $property['location'] . '/' . $type . '/' . $percentageCheaper . '/' . $bedrooms . '/' . $bathrooms . '/' . $erf . '/' . $property['avg_erf'] . '">' . $property['flipable'] . '</a></td>
                      
@@ -296,7 +296,7 @@ class FlipabilityApi
                 foreach ($propertiesArray as $property) {
                     $htmlTable .= '
                       <tr>
-                      <td>R' . number_format((float)$property['price'], 0, '.', ' ') . '</td>
+                      <td>R' . number_format((float) $property['price'], 0, '.', ' ') . '</td>
                         <td>' . $property['erf'] . '</td>
                         <td>' . $property['bedrooms'] . '</td>
                         <td>' . $property['bathrooms'] . '</td>
@@ -385,7 +385,7 @@ class FlipabilityApi
                     $htmlTable .= '
                       <tr>
                       <td><a href="' . $property['url'] . '" target="_blank">Link</a></td>
-                      <td>R' . number_format((float)$property['price'], 0, '.', ' ') . '</td>
+                      <td>R' . number_format((float) $property['price'], 0, '.', ' ') . '</td>
                         <td>' . $property['erf'] . '</td>
                         <td>' . $property['bedrooms'] . '</td>
                         <td>' . $property['bathrooms'] . '</td>
@@ -563,20 +563,20 @@ class FlipabilityApi
 
                     $htmlTable .= '
                       <tr>
-                      <td>' . number_format((float)$property['score'], 2, '.', '') . '</td>
+                      <td>' . number_format((float) $property['score'], 2, '.', '') . '</td>
                       <td><a href="' . $property['url'] . '" target="_blank">Link</a></td>
                       <td><a target="_blank" href="https://www.google.com/maps/place/Gauteng ' . $property['location'] . '">' . $property['location'] . '</a></td>
                       <td> <a target="_blank" href="/location/' . $property['location'] . '/none/0/2/1/0/0">' . $property['count'] . '</a></td>
-                      <td>' . number_format((float)$property['avg_price'], 0, '.', '') . '</td>
+                      <td>' . number_format((float) $property['avg_price'], 0, '.', '') . '</td>
                       <td>' . $property['price'] . '</td>
-                      <td class="' . $priceBelowOfferClass . '">' . number_format((float)$maxOfferPrice, 0, '.', '') . '</td>
-                       <td>' . number_format((float)$sellingPriceToAvgPriceRatio, 0, '.', '') . '</td>
-                       <td>' . number_format((float)$property['avg_erf'], 0, '.', '') . '</td>
+                      <td class="' . $priceBelowOfferClass . '">' . number_format((float) $maxOfferPrice, 0, '.', '') . '</td>
+                       <td>' . number_format((float) $sellingPriceToAvgPriceRatio, 0, '.', '') . '</td>
+                       <td>' . number_format((float) $property['avg_erf'], 0, '.', '') . '</td>
                       
                         <td>' . $property['erf'] . '</td>
                         <td>' . $property['bedrooms'] . '</td>
                         <td>' . $property['bathrooms'] . '</td>
-                        <td><a  class="analyse_property" href="javascript:void(0)" data-property-link="' . $property['url'] . '" data-href="/public/property/' . $property['price'] . '/' . $property['location'] . '/' . $property['erf'] . '/' . $property['bedrooms'] . '/' . $property['bathrooms'] . '/' . $property['count'] . '/' . number_format((float)$property['avg_price'], 0, '.', '') . '/' . number_format((float)$property['avg_erf'], 0, '.', '') . '">Analyse</a></td>
+                        <td><a  class="analyse_property" href="javascript:void(0)" data-property-link="' . $property['url'] . '" data-href="/noauth/property/' . $property['price'] . '/' . $property['location'] . '/' . $property['erf'] . '/' . $property['bedrooms'] . '/' . $property['bathrooms'] . '/' . $property['count'] . '/' . number_format((float) $property['avg_price'], 0, '.', '') . '/' . number_format((float) $property['avg_erf'], 0, '.', '') . '">Analyse</a></td>
                         <td><select data-property-id="' . $property['id'] . '" name="state" class="state-dropdown" id="property_state">
                         <option value="new" ' . $newSelected . '>new</option>
         <option value="contacted" ' . $ContactedSelected . '>Agent Contacted</option>
@@ -673,20 +673,20 @@ class FlipabilityApi
             and p.bedrooms >= " . $bedrooms . "
              and p.bathrooms >= " . $bathrooms . " order by p.price ASC");
 
-            $properties =  $query->getResult();
+            $properties = $query->getResult();
             $this->logger->info("found properties " . count($properties));
             $totalPrice = 0;
             $totalErf = 0;
             $count = 0;
-            foreach($properties as $property){
+            foreach ($properties as $property) {
                 //exclude the 20 percent of most expesinve properties from the avg
-                if($count < count($properties) * 0.8){
+                if ($count < count($properties) * 0.8) {
                     $totalPrice += $property->getPrice();
-                    $totalErf  += $property->getErf();
+                    $totalErf += $property->getErf();
                     $count++;
                 }
             }
-            if(count($properties) > 0 ){
+            if (count($properties) > 0) {
                 $responseArray[] = array(
                     'avg_price' => $totalPrice / $count,
                     'avg_erf' => $totalErf / $count,

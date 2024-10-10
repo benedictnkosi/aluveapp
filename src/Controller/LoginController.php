@@ -36,7 +36,7 @@ class LoginController extends AbstractController
     }
 
     /**
-     * @Route("/public/me")
+     * @Route("/noauth/me")
      */
     public function meAction(): JsonResponse
     {
