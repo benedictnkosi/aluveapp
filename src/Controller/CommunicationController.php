@@ -16,25 +16,25 @@ require_once(__DIR__ . '/../app/application.php');
 class CommunicationController extends AbstractController
 {
     /**
-     * @Route("public/property/contact/{guestName}/{email}/{phoneNumber}/{message}")
+     * @Route("noauth/property/contact/{guestName}/{email}/{phoneNumber}/{message}")
      */
-    public function contactProperty($guestName, $email, $phoneNumber, $message, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    public function contactProperty($guestName, $email, $phoneNumber, $message, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->contactUs($guestName, $email, $phoneNumber, $message,$request);
+        $response = $propertyApi->contactUs($guestName, $email, $phoneNumber, $message, $request);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
 
     /**
-     * @Route("public/sales/contact/{customerName}/{email}/{phoneNumber}/{message}")
+     * @Route("noauth/sales/contact/{customerName}/{email}/{phoneNumber}/{message}")
      */
-    public function contactSales($customerName, $email, $phoneNumber, $message, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, CommunicationApi $communicationApi): Response
+    public function contactSales($customerName, $email, $phoneNumber, $message, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, CommunicationApi $communicationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $message.= "<br> from : $customerName
+        $message .= "<br> from : $customerName
             <br> phone number: $phoneNumber";
         $response = $communicationApi->sendEmailViaGmail(ALUVEAPP_ADMIN_EMAIL, ALUVEAPP_SALES_EMAIL, $message, "Aluve App - Message from customer", $email);
         $responseArray = array();
@@ -50,15 +50,15 @@ class CommunicationController extends AbstractController
             );
         }
         $callback = $request->get('callback');
-        $response = new JsonResponse($responseArray , 200, array());
+        $response = new JsonResponse($responseArray, 200, array());
         $response->setCallback($callback);
         return $response;
     }
 
     /**
-     * @Route("public/sales/trial/{customerName}/{email}/{phoneNumber}/{hotelName}")
+     * @Route("noauth/sales/trial/{customerName}/{email}/{phoneNumber}/{hotelName}")
      */
-    public function newTrial($customerName, $email, $phoneNumber, $hotelName, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, CommunicationApi $communicationApi): Response
+    public function newTrial($customerName, $email, $phoneNumber, $hotelName, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, CommunicationApi $communicationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $message = "<br> from : $customerName
@@ -79,7 +79,7 @@ class CommunicationController extends AbstractController
             );
         }
         $callback = $request->get('callback');
-        $response = new JsonResponse($responseArray , 200, array());
+        $response = new JsonResponse($responseArray, 200, array());
         $response->setCallback($callback);
         return $response;
     }

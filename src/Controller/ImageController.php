@@ -56,7 +56,7 @@ class ImageController extends AbstractController
     }
 
     /**
-     * @Route("public/room/image/{fileName}", name="signup")
+     * @Route("noauth/room/image/{fileName}", name="signup")
      */
     public function getFile($fileName): Response
     {

@@ -13,23 +13,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
-class NotificationController  extends AbstractController
+class NotificationController extends AbstractController
 {
     /**
      * @Route("api/notifications")
      */
-    public function getNotifications( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, NotificationApi $notificationApi): Response
+    public function getNotifications(LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, NotificationApi $notificationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $notifications = $notificationApi->getNotificationsToAction();
         $callback = $request->get('callback');
-        $response = new JsonResponse($notifications , 200, array());
+        $response = new JsonResponse($notifications, 200, array());
         $response->setCallback($callback);
         return $response;
     }
 
     /**
-     * @Route("public/notifications/ads/{propertyId}")
+     * @Route("noauth/notifications/ads/{propertyId}")
      */
     public function updateAdsNotification($propertyId, LoggerInterface $logger, Request $request, NotificationApi $notificationApi): Response
     {
@@ -40,7 +40,7 @@ class NotificationController  extends AbstractController
             'html' => $html,
         );
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -57,7 +57,7 @@ class NotificationController  extends AbstractController
             'html' => $html,
         );
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }

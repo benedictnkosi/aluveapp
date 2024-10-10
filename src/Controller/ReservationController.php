@@ -30,7 +30,7 @@ class ReservationController extends AbstractController
     /**
      * @Route("api/calendar")
      */
-    public function getCalendar( LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager): Response
+    public function getCalendar(LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $calendarHtml = new CalendarHTML($entityManager, $logger);
@@ -47,13 +47,13 @@ class ReservationController extends AbstractController
     /**
      * @Route("api/reservations/{period}")
      */
-    public function getReservations($period,  LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function getReservations($period, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $reservations = "";
         switch ($period) {
             case "future":
-                $reservations = $reservationApi->getUpComingReservations(0, true,true);
+                $reservations = $reservationApi->getUpComingReservations(0, true, true);
                 break;
             case "past":
                 $reservations = $reservationApi->getPastReservations();
@@ -85,7 +85,7 @@ class ReservationController extends AbstractController
     /**
      * @Route("api/reservation_html/{reservationId}")
      */
-    public function getReservationByIdHtml($reservationId,  LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
+    public function getReservationByIdHtml($reservationId, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $reservation = $reservationApi->getReservation($reservationId);
@@ -118,7 +118,7 @@ class ReservationController extends AbstractController
     /**
      * @Route("api/reservations/{reservationId}/update/{field}/{newValue}")
      */
-    public function updateReservation($reservationId, $field, $newValue, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, BlockedRoomApi $blockedRoomApi,  NotesApi $notesApi): Response
+    public function updateReservation($reservationId, $field, $newValue, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, BlockedRoomApi $blockedRoomApi, NotesApi $notesApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
 
@@ -127,14 +127,14 @@ class ReservationController extends AbstractController
         $now = new DateTime();
         switch ($field) {
             case "status":
-                $notesApi->addNote($reservation->getId(), "Status Changed to " .$newValue. " at " . $now->format("Y-m-d H:i"));
-                if(intval($newValue) !== 0){
+                $notesApi->addNote($reservation->getId(), "Status Changed to " . $newValue . " at " . $now->format("Y-m-d H:i"));
+                if (intval($newValue) !== 0) {
                     $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('id' => $newValue));
-                }else{
+                } else {
                     $status = $entityManager->getRepository(ReservationStatus::class)->findOneBy(array('name' => $newValue));
                 }
                 $reservation->SetStatus($status);
-                if(strcmp($status->getName(), 'cancelled')===0){
+                if (strcmp($status->getName(), 'cancelled') === 0) {
                     $blockedRoomApi->deleteBlockedRoomByReservation($reservation->getId());
                 }
                 break;
@@ -282,7 +282,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("public/reservations/create/{roomIds}/{guestName}/{phoneNumber}/{adultGuests}/{childGuests}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
+     * @Route("noauth/reservations/create/{roomIds}/{guestName}/{phoneNumber}/{adultGuests}/{childGuests}/{checkInDate}/{checkOutDate}/{email}", defaults={"email": ""})
      * @throws \Exception
      */
     public function creatReservation($roomIds, $guestName, $phoneNumber, $adultGuests, $childGuests, $checkInDate, $checkOutDate, $email, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
@@ -296,7 +296,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("public/invoice/{reservationId}")
+     * @Route("noauth/invoice/{reservationId}")
      * @throws \Exception
      */
     public function getInvoiceDetails($reservationId, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, RoomApi $roomApi): Response
@@ -315,7 +315,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("public/reviews/send/{propertyId}")
+     * @Route("noauth/reviews/send/{propertyId}")
      * @throws \Exception
      */
     public function sendReviewRequest($propertyId, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi): Response
@@ -331,12 +331,12 @@ class ReservationController extends AbstractController
     /**
      * @Route("admin_api/reservations/{reservationId}/blockguest/{reason}")
      */
-    public function blockGuest($reservationId, $reason, LoggerInterface $logger, Request $request,GuestApi $guestApi): Response
+    public function blockGuest($reservationId, $reason, LoggerInterface $logger, Request $request, GuestApi $guestApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $guestApi->blockGuest($reservationId, $reason);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -344,12 +344,12 @@ class ReservationController extends AbstractController
     /**
      * @Route("admin_api/reservation_addon/{addOnId}/delete")
      */
-    public function removeAddOnFromReservation($addOnId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
+    public function removeAddOnFromReservation($addOnId, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, AddOnsApi $addOnsApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $addOnsApi->removeAddOnFromReservation($addOnId);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }

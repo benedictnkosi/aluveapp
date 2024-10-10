@@ -19,21 +19,21 @@ class CommandsController extends AbstractController
 
 
     /**
-     * @Route("public/runcommand/clear")
+     * @Route("noauth/runcommand/clear")
      */
     public function clearSymfony(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        if(function_exists('exec')) {
+        if (function_exists('exec')) {
             echo "exec is enabled";
-        }else{
+        } else {
             echo "exec is not enabled";
         }
 
         $command = 'php ../bin/console doctrine:cache:clear-metadata';
         $result = $this->execute($command);
         $responseArray[] = array(
-            'command' =>  $command,
+            'command' => $command,
             'result_message' => print_r($result, true),
             'result_code' => 0
         );
@@ -41,7 +41,7 @@ class CommandsController extends AbstractController
         $command = 'php ../bin/console doctrine:cache:clear-query';
         $result = $this->execute($command);
         $responseArray[] = array(
-            'command' =>  $command,
+            'command' => $command,
             'result_message' => print_r($result, true),
             'result_code' => 0
         );
@@ -49,15 +49,15 @@ class CommandsController extends AbstractController
         $command = 'php ../bin/console doctrine:cache:clear-result';
         $result = $this->execute($command);
         $responseArray[] = array(
-            'command' =>  $command,
+            'command' => $command,
             'result_message' => print_r($result, true),
             'result_code' => 0
         );
-        return new JsonResponse( $responseArray, 200, array());
+        return new JsonResponse($responseArray, 200, array());
     }
 
     /**
-     * @Route("public/runcommand/phpmemory")
+     * @Route("noauth/runcommand/phpmemory")
      */
     public function checkPHPMemory(LoggerInterface $logger): Response
     {
@@ -65,16 +65,16 @@ class CommandsController extends AbstractController
         $command = 'php -i | grep "memory_limit"';
         $result = $this->execute($command);
         $responseArray[] = array(
-            'command' =>  $command,
+            'command' => $command,
             'result_message' => print_r($result, true),
             'result_code' => 0
         );
 
-        return new JsonResponse( $responseArray, 200, array());
+        return new JsonResponse($responseArray, 200, array());
     }
 
     /**
-     * @Route("public/runcommand/gitversion")
+     * @Route("noauth/runcommand/gitversion")
      */
     public function gitVersion(LoggerInterface $logger): Response
     {
@@ -83,25 +83,25 @@ class CommandsController extends AbstractController
         $command = 'git --version';
         $result = $this->execute($command);
         $responseArray[] = array(
-            'command' =>  $command,
+            'command' => $command,
             'result_message' => print_r($result, true),
             'result_code' => 0
         );
 
-        return new JsonResponse( $responseArray, 200, array());
+        return new JsonResponse($responseArray, 200, array());
     }
 
     /**
-     * @Route("public/runcommand/gitpull")
+     * @Route("noauth/runcommand/gitpull")
      */
     public function gitPull(LoggerInterface $logger): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        try{
+        try {
             $command = 'git config --global user.email nkosi.benedict@gmail.com';
             $result = $this->execute($command);
             $responseArray[] = array(
-                'command' =>  $command,
+                'command' => $command,
                 'result_message_auto' => print_r($result, true),
                 'result_code' => 0
             );
@@ -109,7 +109,7 @@ class CommandsController extends AbstractController
             $command = 'git config --global user.name nkosibenedict';
             $result = $this->execute($command);
             $responseArray[] = array(
-                'command' =>  $command,
+                'command' => $command,
                 'result_message_auto' => print_r($result, true),
                 'result_code' => 0
             );
@@ -118,32 +118,32 @@ class CommandsController extends AbstractController
             $command = 'git stash';
             $result = $this->execute($command);
             $responseArray[] = array(
-                'command' =>  $command,
+                'command' => $command,
                 'result_message_auto' => print_r($result, true),
                 'result_code' => 0
             );
 
-            if(str_contains(SERVER_NAME,"qa")){
-                $command = 'git pull https://'.GIT_TOKEN.'@github.com/benedictnkosi/aluveapp.git main --force';
-            }else{
-                $command = 'git pull https://'.GIT_TOKEN.'@github.com/benedictnkosi/aluveapp.git main --force';
+            if (str_contains(SERVER_NAME, "qa")) {
+                $command = 'git pull https://' . GIT_TOKEN . '@github.com/benedictnkosi/aluveapp.git main --force';
+            } else {
+                $command = 'git pull https://' . GIT_TOKEN . '@github.com/benedictnkosi/aluveapp.git main --force';
             }
 
             $result = $this->execute($command);
             $responseArray[] = array(
-                'command' =>  $command,
+                'command' => $command,
                 'result_message_auto' => print_r($result, true),
                 'result_code' => 0
             );
-            return new JsonResponse( $responseArray, 200, array());
-        }catch(Exception $ex){
-            $logger->error($ex->getMessage() .' - '. __METHOD__ . ':' . $ex->getLine() . ' ' .  $ex->getTraceAsString());
+            return new JsonResponse($responseArray, 200, array());
+        } catch (Exception $ex) {
+            $logger->error($ex->getMessage() . ' - ' . __METHOD__ . ':' . $ex->getLine() . ' ' . $ex->getTraceAsString());
         }
-        return new JsonResponse( $responseArray, 200, array());
+        return new JsonResponse($responseArray, 200, array());
     }
 
     /**
-     * @Route("public/runcommand/gitstash")
+     * @Route("noauth/runcommand/gitstash")
      */
     public function gitStash(LoggerInterface $logger): Response
     {
@@ -152,17 +152,17 @@ class CommandsController extends AbstractController
         $command = 'git stash';
         $result = $this->execute($command);
         $responseArray[] = array(
-            'command' =>  $command,
+            'command' => $command,
             'result_message_auto' => print_r($result, true),
             'result_code' => 0
         );
 
-        return new JsonResponse( $responseArray, 200, array());
+        return new JsonResponse($responseArray, 200, array());
     }
 
 
     /**
-     * @Route("public/runcommand/phpinfo")
+     * @Route("noauth/runcommand/phpinfo")
      */
     public function phpinfo(LoggerInterface $logger): Response
     {
@@ -178,7 +178,7 @@ class CommandsController extends AbstractController
     }
 
     /**
-     * @Route("public/runcommand/mysqldump")
+     * @Route("noauth/runcommand/mysqldump")
      */
     public function mysql(LoggerInterface $logger): Response
     {
@@ -186,12 +186,12 @@ class CommandsController extends AbstractController
         $command = 'mysql --version';
         $result = $this->execute($command);
         $responseArray[] = array(
-            'command' =>  $command,
+            'command' => $command,
             'result_message' => print_r($result, true),
             'result_code' => 0
         );
 
-        return new JsonResponse( $responseArray, 200, array());
+        return new JsonResponse($responseArray, 200, array());
     }
 
     /**
@@ -200,7 +200,8 @@ class CommandsController extends AbstractController
      * @param string|null $workdir - Default working directory
      * @return string[] - Array with keys: 'code' - exit code, 'out' - stdout, 'err' - stderr
      */
-    function execute($cmd, $workdir = null) {
+    function execute($cmd, $workdir = null)
+    {
 
         if (is_null($workdir)) {
             $workdir = __DIR__;

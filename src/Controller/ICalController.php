@@ -34,7 +34,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("public/ical/importall")
+     * @Route("noauth/ical/importall")
      */
     public function importAllRoomsIcalReservations(LoggerInterface $logger, Request $request, ICalApi $iCalApi): Response
     {
@@ -47,7 +47,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @Route("public/ical/export/{roomId}")
+     * @Route("noauth/ical/export/{roomId}")
      */
     public function exportIcalReservations($roomId, LoggerInterface $logger, Request $request, ICalApi $iCalApi): Response
     {

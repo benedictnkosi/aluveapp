@@ -17,12 +17,12 @@ class PaymentController extends AbstractController
     /**
      * @Route("api/payment/{reservationId}/amount/{amount}/{paymentChannel}/{reference}")
      */
-    public function addPayment($reservationId, $amount,  $paymentChannel, $reference, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function addPayment($reservationId, $amount, $paymentChannel, $reference, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $paymentApi->addPayment($reservationId, $amount, str_replace("_","/",$reference), $paymentChannel);
+        $response = $paymentApi->addPayment($reservationId, $amount, str_replace("_", "/", $reference), $paymentChannel);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -30,12 +30,12 @@ class PaymentController extends AbstractController
     /**
      * @Route("api/paymentdelete/{paymentId}")
      */
-    public function removePayment($paymentId, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function removePayment($paymentId, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $paymentApi->removePayment($paymentId);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -48,12 +48,12 @@ class PaymentController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
         $response = $paymentApi->addDiscount($reservationId, $amount, "discount");
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
     /**
-     * @Route("public/payfast_notify")
+     * @Route("noauth/payfast_notify")
      * @throws \Exception
      */
     public function payfast_notify(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, PaymentApi $paymentApi): Response
@@ -72,7 +72,7 @@ class PaymentController extends AbstractController
     }
 
     /**
-     * @Route("public/payfast_notify_test")
+     * @Route("noauth/payfast_notify_test")
      * @throws \Exception
      */
     public function payfast_notify_test(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, ReservationApi $reservationApi, PaymentApi $paymentApi): Response
@@ -91,12 +91,12 @@ class PaymentController extends AbstractController
     /**
      * @Route("api/payment/total/cash/{startDate}/{endDate}/{channel}")
      */
-    public function getTotalCashPayment($startDate, $endDate, $channel, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function getTotalCashPayment($startDate, $endDate, $channel, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $paymentApi->getCashReport($startDate, $endDate, $channel);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -104,12 +104,12 @@ class PaymentController extends AbstractController
     /**
      * @Route("api/payment/total/cashtransactions/{startDate}/{endDate}/{channel}/{isGroup}")
      */
-    public function getTotalCashPaymentByDay($startDate, $endDate,$channel, $isGroup, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
+    public function getTotalCashPaymentByDay($startDate, $endDate, $channel, $isGroup, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, PaymentApi $paymentApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         if (strcmp($isGroup, "true") === 0) {
             $response = $paymentApi->getCashReportByDay($startDate, $endDate, $channel);
-        }else{
+        } else {
             $response = $paymentApi->getCashReportAllTransactions($startDate, $endDate, $channel);
         }
 
@@ -118,7 +118,7 @@ class PaymentController extends AbstractController
         );
 
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }

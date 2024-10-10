@@ -15,14 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
 class PropertyController extends AbstractController
 {
     /**
-     * @Route("public/property/terms")
+     * @Route("noauth/property/terms")
      */
-    public function getPropertyTerms( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi, RoomApi $roomApi): Response
+    public function getPropertyTerms(LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, PropertyApi $propertyApi, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->getPropertyTerms($roomApi,  $request);
+        $response = $propertyApi->getPropertyTerms($roomApi, $request);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -30,12 +30,12 @@ class PropertyController extends AbstractController
     /**
      * @Route("admin_api/property/terms/update/{terms}")
      */
-    public function updatePropertyTerms( $terms, LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    public function updatePropertyTerms($terms, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $propertyApi->updatePropertyTerms( $terms);
+        $response = $propertyApi->updatePropertyTerms($terms);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
@@ -43,25 +43,25 @@ class PropertyController extends AbstractController
     /**
      * @Route("api/property/propertyuid")
      */
-    public function getPropertyUid( LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
+    public function getPropertyUid(LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $propertyApi->getPropertyUid();
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
 
     /**
-     * @Route("public/property_details/{uid}")
+     * @Route("noauth/property_details/{uid}")
      */
-    public function getPropertyDetails($uid,  LoggerInterface $logger, Request $request,EntityManagerInterface $entityManager, PropertyApi $propertyApi, RoomApi $roomApi): Response
+    public function getPropertyDetails($uid, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, PropertyApi $propertyApi, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
         $response = $propertyApi->getPropertyDetailsByUid($uid);
         $callback = $request->get('callback');
-        $response = new JsonResponse($response , 200, array());
+        $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);
         return $response;
     }
