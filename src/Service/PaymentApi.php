@@ -59,7 +59,7 @@ class PaymentApi
 					<td></td>
 					<td>Payment</td>
 					<td> ' . $payment->getDate()->format("d-M") . '</td>
-					<td>-R' . number_format((float)$payment->getAmount(), 2, '.', '') . '</td>
+					<td>-R' . number_format((float) $payment->getAmount(), 2, '.', '') . '</td>
 				</tr>';
             }
             return $html;
@@ -75,7 +75,7 @@ class PaymentApi
 
     public function addPayment($resId, $amount, $reference, $channel = null): array
     {
-        $this->logger->debug("Starting Method: " . __METHOD__);
+        $this->logger->debug(message: "Starting Method: " . __METHOD__);
         $responseArray = array();
         try {
 
@@ -91,15 +91,7 @@ class PaymentApi
                 $now = new DateTime();
 
 
-                            $this->logger->debug("Status is: " . $reservation->getStatus()->getName());
-
-                if(intval($amount) < 200 && strcmp($reservation->getStatus()->getName(), "pending") == 0){
-                    $responseArray[] = array(
-                        'result_code' => 1,
-                        'result_message' => 'Payment of less than R200 not allowed for pending reservations'
-                    );
-                    return $responseArray;
-                }
+                $this->logger->debug("Status is: " . $reservation->getStatus()->getName());
 
                 $payment->setReservation($reservation);
                 $amountPerReservation = intval($amount) / intval($numberOfReservations);
@@ -345,7 +337,7 @@ class PaymentApi
         try {
 
             $sql = "SELECT SUM(amount) as totalCash FROM `payments`
-            WHERE channel = '".$channel."'
+            WHERE channel = '" . $channel . "'
             and   DATE(`date`) >= '" . $startDate . "'
             and  DATE(`date`) <= '" . $endDate . "'";
 
@@ -364,14 +356,14 @@ class PaymentApi
             } else {
                 $amount = 0;
                 while ($results = $result->fetch_assoc()) {
-                    if($results["totalCash"] !== null){
+                    if ($results["totalCash"] !== null) {
                         $amount = $results["totalCash"];
                     }
 
                     $this->logger->info("amount is " . $results["totalCash"]);
                 }
                 $responseArray[] = array(
-                    'result_message' => number_format($amount,2),
+                    'result_message' => number_format($amount, 2),
                     'result_code' => 0
                 );
             }
@@ -388,7 +380,7 @@ class PaymentApi
         return $responseArray;
     }
 
-    public function getCashReportByDay($startDate, $endDate,$channel): string
+    public function getCashReportByDay($startDate, $endDate, $channel): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlResponse = "<tr><th>Date</th><th>Amount</th></tr>";
@@ -396,7 +388,7 @@ class PaymentApi
         try {
 
             $sql = "SELECT SUM(amount) as totalCash, LEFT( date, 10 ) as day FROM `payments`
-            WHERE channel = '".$channel."'
+            WHERE channel = '" . $channel . "'
             and   DATE(`date`) >= '" . $startDate . "'
             and  DATE(`date`) <= '" . $endDate . "'
 GROUP BY LEFT( date, 10 ) 
@@ -410,7 +402,7 @@ order by date desc";
 
             if ($result) {
                 while ($results = $result->fetch_assoc()) {
-                    $htmlResponse .= "<tr><td>".$results["day"] ."</td><td>".$results["totalCash"]."</td></tr>";
+                    $htmlResponse .= "<tr><td>" . $results["day"] . "</td><td>" . $results["totalCash"] . "</td></tr>";
                 }
             }
             return $htmlResponse;
@@ -422,7 +414,7 @@ order by date desc";
         return $htmlResponse;
     }
 
-    public function getCashReportAllTransactions($startDate, $endDate,$channel): string
+    public function getCashReportAllTransactions($startDate, $endDate, $channel): string
     {
         $this->logger->debug("Starting Method: " . __METHOD__);
         $htmlResponse = "<tr><th>Date</th><th>Amount</th><th>Reference</th><th>Reservation</th></tr>";
@@ -430,7 +422,7 @@ order by date desc";
         try {
 
             $sql = "SELECT amount, date, reservation_id, reference FROM `payments`
-            WHERE channel = '".$channel."'
+            WHERE channel = '" . $channel . "'
             and   DATE(`date`) >= '" . $startDate . "'
             and  DATE(`date`) <= '" . $endDate . "'
 order by date desc";
@@ -443,7 +435,7 @@ order by date desc";
 
             if ($result) {
                 while ($results = $result->fetch_assoc()) {
-                    $htmlResponse .= "<tr><td>".$results["date"] ."</td><td>".$results["amount"]."</td><td>".$results["reference"]."</td><td>".$results["reservation_id"]."</td></tr>";
+                    $htmlResponse .= "<tr><td>" . $results["date"] . "</td><td>" . $results["amount"] . "</td><td>" . $results["reference"] . "</td><td>" . $results["reservation_id"] . "</td></tr>";
                 }
             }
             return $htmlResponse;
@@ -473,7 +465,7 @@ order by date desc";
         } catch (Exception $ex) {
             $this->logger->error($ex->getMessage());
             $responseArray[] = array(
-                'result_message' =>$ex->getMessage(),
+                'result_message' => $ex->getMessage(),
                 'result_code' => 1
             );
         }
