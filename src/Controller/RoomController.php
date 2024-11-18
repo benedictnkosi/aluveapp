@@ -190,11 +190,15 @@ class RoomController extends AbstractController
         return $response;
     }
     /**
-     * @Route("/noauth/roomspage/{checkin}/{checkout}")
+     * @Route("/noauth/roomspage", methods={"POST"})
      */
-    public function getFilteredRoomsHtml($checkin, $checkout, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
+    public function getFilteredRoomsHtml(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, RoomApi $roomApi, PropertyApi $propertyApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
+
+        $data = json_decode($request->getContent(), true);
+        $checkin = $data['checkin'];
+        $checkout = $data['checkout'];
 
         $rooms = $roomApi->getAvailableRooms($checkin, $checkout, $request);
         $roomsPageHTML = new RoomsPageHTML($entityManager, $logger);
@@ -209,12 +213,26 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/admin_api/createroom/{id}/{name}/{price}/{sleeps}/{status}/{linkedRoom}/{size}/{beds}/{stairs}/{tv}/{description}")
+     * @Route("/admin_api/createroom", methods={"POST"})
      */
-    public function updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs, $tv, $description, Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, RoomApi $roomApi): Response
+    public function updateCreateRoom(Request $request, LoggerInterface $logger, EntityManagerInterface $entityManager, RoomApi $roomApi): Response
     {
         $logger->info("Starting Method: " . __METHOD__);
-        $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs, $tv, str_replace("###", "/", $description));
+
+        $data = json_decode($request->getContent(), true);
+        $id = $data['id'];
+        $name = $data['name'];
+        $price = $data['price'];
+        $sleeps = $data['sleeps'];
+        $status = $data['status'];
+        $linkedRoom = $data['linkedRoom'];
+        $size = $data['size'];
+        $beds = $data['beds'];
+        $stairs = $data['stairs'];
+        $tv = $data['tv'];
+        $description = str_replace("###", "/", $data['description']);
+
+        $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs, $tv, $description);
         $callback = $request->get('callback');
         $response = new JsonResponse($response, 200, array());
         $response->setCallback($callback);

@@ -195,36 +195,31 @@ function createUpdateRoom() {
 
   $("body").addClass("loading");
   isUserLoggedIn();
-  let url =
-    "/admin_api/createroom/" +
-    room_id +
-    "/" +
-    room_name +
-    "/" +
-    room_price +
-    "/" +
-    room_sleeps +
-    "/" +
-    select_room_status +
-    "/" +
-    select_linked_room +
-    "/" +
-    room_size +
-    "/" +
-    input_bed +
-    "/" +
-    select_Stairs +
-    "/" +
-    select_tv +
-    "/" +
-    encodeURIComponent(room_description.replaceAll("/", "###"));
+  let url = "/admin_api/createroom/";
+  const roomData = {
+    id: room_id,
+    name: room_name,
+    description: encodeURIComponent(
+      room_description.replaceAll("/", "###")
+    ),
+    price: room_price,
+    sleeps: room_sleeps,
+    size: room_size,
+    status: select_room_status,
+    linkedRoom: select_linked_room,
+    beds: input_bed,
+    stairs: select_Stairs,
+    tv: select_tv,
+  };
+
   $.ajax({
-    type: "get",
+    type: "post",
     url: url,
     crossDomain: true,
     cache: false,
-    dataType: "jsonp",
+    dataType: "json",
     contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify(roomData),
     success: function (data) {
       $("body").removeClass("loading");
       const jsonObj = data[0];
