@@ -427,7 +427,7 @@ function createReservation() {
 }
 
 function getPropertyName() {
-  let url = "public/property_details/" + getUrlParameter("uid");
+  let url = "noauth/property_details/" + getUrlParameter("uid");
   $.ajax({
     type: "get",
     url: url,
