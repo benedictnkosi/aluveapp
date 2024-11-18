@@ -195,13 +195,11 @@ function createUpdateRoom() {
 
   $("body").addClass("loading");
   isUserLoggedIn();
-  let url = "/admin_api/createroom/";
+  let url = "/admin_api/createroom";
   const roomData = {
     id: room_id,
     name: room_name,
-    description: encodeURIComponent(
-      room_description.replaceAll("/", "###")
-    ),
+    description: encodeURIComponent(room_description.replaceAll("/", "###")),
     price: room_price,
     sleeps: room_sleeps,
     size: room_size,

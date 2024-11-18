@@ -220,17 +220,21 @@ class RoomController extends AbstractController
         $logger->info("Starting Method: " . __METHOD__);
 
         $data = json_decode($request->getContent(), true);
-        $id = $data['id'];
-        $name = $data['name'];
-        $price = $data['price'];
-        $sleeps = $data['sleeps'];
-        $status = $data['status'];
-        $linkedRoom = $data['linkedRoom'];
-        $size = $data['size'];
-        $beds = $data['beds'];
-        $stairs = $data['stairs'];
-        $tv = $data['tv'];
-        $description = str_replace("###", "/", $data['description']);
+        if (!$data) {
+            throw new \InvalidArgumentException('Invalid JSON body');
+        }
+
+        $id = $data['id'] ?? null;
+        $name = $data['name'] ?? null;
+        $price = $data['price'] ?? null;
+        $sleeps = $data['sleeps'] ?? null;
+        $status = $data['status'] ?? null;
+        $linkedRoom = $data['linkedRoom'] ?? null;
+        $size = $data['size'] ?? null;
+        $beds = $data['beds'] ?? null;
+        $stairs = $data['stairs'] ?? null;
+        $tv = $data['tv'] ?? null;
+        $description = isset($data['description']) ? str_replace("###", "/", $data['description']) : null;
 
         $response = $roomApi->updateCreateRoom($id, $name, $price, $sleeps, $status, $linkedRoom, $size, $beds, $stairs, $tv, $description);
         $callback = $request->get('callback');
