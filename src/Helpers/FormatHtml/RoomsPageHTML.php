@@ -38,7 +38,9 @@ class RoomsPageHTML
             $roomPrice = $room->getPrice();
             $sleeps = $room->getSleeps();
             $size = $room->getSize();
-            $description = $roomApi->replaceWithBold($room->getDescription());
+            $description = urldecode($room->getDescription());
+            $description = urldecode($description);
+            $description = $roomApi->replaceWithBold($description);
 
             $roomBeds = $this->em->getRepository(RoomBeds::class)->findBy(array('room' => $roomId));
 
